@@ -495,6 +495,9 @@ Partial Public Class ClaimTransDetail
         ' Join EHRSS
         DisplayJoinEHRSS(False)
 
+        ' Non-Local Recovery History
+        DisplayNonLocalRecoveredHistory(False)
+
         'Vacc Record
         panVaccinationRecord.Visible = False
 
@@ -575,6 +578,10 @@ Partial Public Class ClaimTransDetail
                         DisplayJoinEHRSS(False)
                     End If
 
+                    ' Non-Local Recovered History
+                    DisplayNonLocalRecoveredHistory(True)
+                    FillNonLocalRecoveredHistory(udtEHSTransaction)
+
                 Else
                     udcReadOnlyEHSClaim.BuildRVP()
 
@@ -617,6 +624,10 @@ Partial Public Class ClaimTransDetail
                     Else
                         DisplayJoinEHRSS(False)
                     End If
+
+                    'Non-Local Recovered History
+                    DisplayNonLocalRecoveredHistory(True)
+                    FillNonLocalRecoveredHistory(udtEHSTransaction)
 
                 Else
                     udcReadOnlyEHSClaim.BuildVSS()
@@ -672,6 +683,10 @@ Partial Public Class ClaimTransDetail
                         DisplayJoinEHRSS(False)
                     End If
 
+                    'Non-Local Recovered History
+                    DisplayNonLocalRecoveredHistory(True)
+                    FillNonLocalRecoveredHistory(udtEHSTransaction)
+
                 Else
                     DisplayContactNo(False)
                     DisplayRemarks(False)
@@ -719,6 +734,10 @@ Partial Public Class ClaimTransDetail
                         DisplayJoinEHRSS(False)
                     End If
 
+                    'Non-Local Recovered History
+                    DisplayNonLocalRecoveredHistory(True)
+                    FillNonLocalRecoveredHistory(udtEHSTransaction)
+
                 Else
                     DisplayContactNo(False)
                     DisplayRemarks(False)
@@ -750,6 +769,10 @@ Partial Public Class ClaimTransDetail
                     Else
                         DisplayJoinEHRSS(False)
                     End If
+
+                    'Non-Local Recovered History
+                    DisplayNonLocalRecoveredHistory(True)
+                    FillNonLocalRecoveredHistory(udtEHSTransaction)
 
                 Else
                     DisplayContactNo(False)
@@ -1425,6 +1448,15 @@ Partial Public Class ClaimTransDetail
 
     End Sub
 
+    Private Sub DisplayNonLocalRecoveredHistory(ByVal blnDisplay As Boolean)
+        If blnDisplay Then
+            Me.trNonLocalRecoveredHistory.Style.Remove("display")
+        Else
+            Me.trNonLocalRecoveredHistory.Style.Add("display", "none")
+        End If
+
+    End Sub
+
     Private Function IsClaimCOVID19(ByVal udtEHSTransaction As EHSTransactionModel) As Boolean
         Dim udtTranDetailList As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
@@ -1437,10 +1469,10 @@ Partial Public Class ClaimTransDetail
     End Function
 
     Private Sub FillContactNo(ByVal udtEHSTransaction As EHSTransactionModel)
-        If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
+        If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
             lblContact.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
 
-            If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
+            If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
                 lblContact.Text = lblContact.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
             End If
 
@@ -1462,7 +1494,7 @@ Partial Public Class ClaimTransDetail
     End Sub
 
     Private Sub FillRemarks(ByVal udtEHSTransaction As EHSTransactionModel)
-        If udtEHSTransaction.TransactionAdditionFields.Remarks IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Remarks <> String.Empty Then
+        If udtEHSTransaction.TransactionAdditionFields.Remarks IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.Remarks <> String.Empty Then
             lblRemark.Text = udtEHSTransaction.TransactionAdditionFields.Remarks
         Else
             lblRemark.Text = GetGlobalResourceObject("Text", "NotProvided")
@@ -1471,13 +1503,27 @@ Partial Public Class ClaimTransDetail
     End Sub
 
     Private Sub FillJoinEHRSS(ByVal udtEHSTransaction As EHSTransactionModel)
-        If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+        If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
             lblJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
                                        GetGlobalResourceObject("Text", "Yes"), _
                                        GetGlobalResourceObject("Text", "No"))
 
         Else
             lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
+        End If
+
+    End Sub
+
+    Private Sub FillNonLocalRecoveredHistory(ByVal udtEHSTransaction As EHSTransactionModel)
+        If udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory IsNot Nothing AndAlso _
+            udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory <> String.Empty Then
+
+            lblNonLocalRecoveredHistory.Text = IIf(udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory = YesNo.Yes, _
+                                                   GetGlobalResourceObject("Text", "Yes"), _
+                                                   GetGlobalResourceObject("Text", "No"))
+
+        Else
+            lblNonLocalRecoveredHistory.Text = GetGlobalResourceObject("Text", "NA")
         End If
 
     End Sub

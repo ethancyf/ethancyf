@@ -599,6 +599,33 @@ Partial Public Class ClaimTransDetail
     Protected WithEvents lblJoinEHRSS As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trNonLocalRecoveredHistory As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblNonLocalRecoveredHistoryText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNonLocalRecoveredHistoryText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''trTMeansOfInput control.
     '''</summary>
     '''<remarks>

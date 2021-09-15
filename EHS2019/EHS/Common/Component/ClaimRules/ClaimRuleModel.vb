@@ -118,6 +118,11 @@ Namespace Component.ClaimRules
             ''' </summary>
             Public Const DISCHARGE = "DISCHARGE"
 
+            ''' <summary>
+            ''' Check Non-local recovered history
+            ''' </summary>
+            Public Const NON_LOCAL_RECOVERED = "NONLOCALRECOVERED"
+
         End Class
 
 

@@ -15,7 +15,9 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
                                              ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, _
                                              ByRef udtEHSAccount As EHSAccountModel, _
                                              ByRef dtmPrintTime As Date, _
-                                             ByVal blnDischarge As Boolean) As String
+                                             ByVal blnDischarge As Boolean, _
+                                             ByVal blnNonLocalRecoveredHistory1stDose As Boolean, _
+                                             ByVal blnNonLocalRecoveredHistory2ndDose As Boolean) As String
 
             Dim udtGeneralFunction As New ComFunction.GeneralFunction
             Dim udtCOVID19BLL As New COVID19.COVID19BLL
@@ -34,19 +36,19 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             Dim strDoseDate_1st As String = "|-"
             Dim strVaccineName_1st As String = "|"
             Dim strVaccineNameTC_1st As String = "|-"
-            Dim strBrandName_1st As String = "|"
-            Dim strBrandNameTC_1st As String = "|"
+            Dim strSpecialIndicator_1 As String = "|"
+            Dim strReservedField_1 As String = "|"
             Dim strDoseDate_2nd As String = "|-"
             Dim strVaccineName_2nd As String = "|"
             Dim strVaccineNameTC_2nd As String = "|-"
-            Dim strBrandName_2nd As String = "|"
-            Dim strBrandNameTC_2nd As String = "|"
+            Dim strSpecialIndicator_2 As String = "|"
+            Dim strReservedField_2 As String = "|"
 
             Dim strPrintDate As String = "|" + dtmPrintTime.ToString((New Formatter).DisplayVaccinationRecordClockFormat()) + "|"
             'Dim DigitialSignature As String = "|MEUCIQCvLIjK8IpB5Uk0TNgbVQoQy/I3z19yTeVohVeYsmfcnwIgcWF482uALTQUt9Oe8VJ/0K6FxWM1NAmGzDaqa5f9V94="
             Dim strDigitialSignature As String = "-"
 
-            Dim strCurrentDose As String = udtEHSTransaction.TransactionDetails(0).AvailableItemDesc
+            Dim strCurrentDose As String = udtEHSTransaction.TransactionDetails(0).AvailableItemCode
             Dim strVaccineLotNo As String = udtEHSTransaction.TransactionAdditionFields.VaccineLotNo
             Dim dt As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingByVaccineLotNo(strVaccineLotNo)
 
@@ -61,25 +63,25 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             End If
 
             'Get Vaccine Name & Injection date
-            If (strCurrentDose = "1st Dose") Then
+            If (strCurrentDose = "1STDOSE") Then
                 '===== Normal Case =====
                 strVaccineName_1st = "|" + dt.Rows(0)("Brand_Printout_Name")
                 strVaccineNameTC_1st = "|" + dt.Rows(0)("Brand_Printout_Name_Chi")
                 strDoseDate_1st = "|" + FormatDate(udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
-                If blnDischarge Then
-                    strBrandName_1st = "|001"
+                If blnDischarge OrElse blnNonLocalRecoveredHistory1stDose Then
+                    strSpecialIndicator_1 = "|001"
                 End If
                 '===== Normal Case =====
 
                 '===== date dateback dose record ====
                 If (Not udtVaccinationRecordHistory Is Nothing) Then
                     'date dateback fill second dose record
-                    If (udtVaccinationRecordHistory.AvailableItemDesc = "2nd Dose") Then
+                    If (udtVaccinationRecordHistory.AvailableItemCode = "2NDDOSE") Then
                         strVaccineName_2nd = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutName(udtVaccinationRecordHistory.VaccineBrand)
                         strVaccineNameTC_2nd = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(udtVaccinationRecordHistory.VaccineBrand)
                         strDoseDate_2nd = "|" + FormatDate(udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
-                        If blnDischarge Then
-                            strBrandName_2nd = "|001"
+                        If blnDischarge OrElse blnNonLocalRecoveredHistory2ndDose Then
+                            strSpecialIndicator_2 = "|001"
                         End If
                     End If
                 Else
@@ -93,18 +95,18 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
                 strVaccineName_2nd = "|" + dt.Rows(0)("Brand_Printout_Name")
                 strVaccineNameTC_2nd = "|" + dt.Rows(0)("Brand_Printout_Name_Chi")
                 strDoseDate_2nd = "|" + FormatDate(udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
-                If blnDischarge Then
-                    strBrandName_2nd = "|001"
+                If blnDischarge OrElse blnNonLocalRecoveredHistory2ndDose Then
+                    strSpecialIndicator_2 = "|001"
                 End If
                 '===== Normal Case =====
 
                 If (Not udtVaccinationRecordHistory Is Nothing) Then
-                    If (udtVaccinationRecordHistory.AvailableItemDesc = "1st Dose") Then
+                    If (udtVaccinationRecordHistory.AvailableItemCode = "1STDOSE") Then
                         strVaccineName_1st = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutName(udtVaccinationRecordHistory.VaccineBrand)
                         strVaccineNameTC_1st = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(udtVaccinationRecordHistory.VaccineBrand)
                         strDoseDate_1st = "|" + FormatDate(udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
-                        If blnDischarge Then
-                            strBrandName_1st = "|001"
+                        If blnDischarge OrElse blnNonLocalRecoveredHistory1stDose Then
+                            strSpecialIndicator_1 = "|001"
                         End If
                     End If
                 End If
@@ -113,7 +115,9 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             'Generate Digital Signature
             Dim udtQRcode As QRCodeModel = Nothing
 
-            strRawData = String.Concat(strPrefix1AndPrefix2, strQRCodeVersion, strKeyVersion, strTransId, strMaskedDocId, strMaskedName, strDoseDate_1st, strVaccineName_1st, strVaccineNameTC_1st, strBrandName_1st, strBrandNameTC_1st, strDoseDate_2nd, strVaccineName_2nd, strVaccineNameTC_2nd, strBrandName_2nd, strBrandNameTC_2nd, strPrintDate)
+            strRawData = String.Concat(strPrefix1AndPrefix2, strQRCodeVersion, strKeyVersion, strTransId, strMaskedDocId, strMaskedName, _
+                                       strDoseDate_1st, strVaccineName_1st, strVaccineNameTC_1st, strSpecialIndicator_1, strReservedField_1, _
+                                       strDoseDate_2nd, strVaccineName_2nd, strVaccineNameTC_2nd, strSpecialIndicator_2, strReservedField_2, strPrintDate)
 
             udtQRcode = udtCOVID19BLL.GenerateDigitalSignature(strRawData)
 

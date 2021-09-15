@@ -96,38 +96,33 @@ Namespace EHSVaccination
         Private Const TAG_INJECTION_DATE As String = "injection_date"
         Private Const TAG_VACCINE_CODE As String = "vaccine_code"
         Private Const TAG_VACCINE_DESC As String = "vaccine_desc"
-        Private Const TAG_VACCINE_DESC_CHINESE As String = "vaccine_desc_chinese"
-        ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-        ' ----------------------------------------------------------
+        'Private Const TAG_VACCINE_DESC_CHINESE As String = "vaccine_desc_chinese"
         Private Const TAG_VACCINE_LOT_NO As String = "vaccine_lot_no"
-        ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
         Private Const TAG_DOSE_SEQ_CODE As String = "dose_seq_code"
         Private Const TAG_DOSE_SEQ_DESC As String = "dose_seq_desc"
-        Private Const TAG_DOSE_SEQ_DESC_CHINESE As String = "dose_seq_desc_chinese"
+        'Private Const TAG_DOSE_SEQ_DESC_CHINESE As String = "dose_seq_desc_chinese"
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ----------------------------------------------------------
+        Private Const TAG_COVID19_NON_LOCAL_RECOVERED As String = "covid19_non_local_recovered"
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
         Private Const TAG_PROVIDER As String = "provider"
         Private Const TAG_LOCATION As String = "location"
         Private Const TAG_LOCATION_CHINESE As String = "location_chinese"
         Private Const TAG_SOURCE_SYSTEM As String = "source_system"
         Private Const TAG_ONSITE As String = "onsite"
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Const TAG_PATIENT_LIST As String = "patient_list"
         Private Const TAG_PATIENT_COUNT As String = "patient_count"
         Private Const TAG_PATIENT As String = "patient"
         Private Const TAG_PATIENT_ID As String = "patient_id"
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
         Private Const SOURCE_SYSTEM As String = "EHS"
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Enum RequestSystem
             CMS
             CIMS
         End Enum
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
 #End Region
 
@@ -430,18 +425,16 @@ Namespace EHSVaccination
             xml.AppendChild(nodeResult)
 
             GenMessageID(xml, nodeResult)
+
             GenReturnCode(xml, nodeResult)
-            ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-            ' ----------------------------------------------------------
+
             GenPatientList(xml, nodeResult)
-            ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
+
             GenSourceSystem(xml, nodeResult)
 
             Return xml
         End Function
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Public Function GenErrorXMLResult() As XmlDocument
             Dim xml As New XmlDocument()
 
@@ -458,7 +451,6 @@ Namespace EHSVaccination
             Return xml
 
         End Function
-        ' CRE18-001(CIMS Vaccination Sharing) [End][Chris YIM]
 
         ''' <summary>
         ''' CRE10-035
@@ -487,8 +479,6 @@ Namespace EHSVaccination
             nodeResult.AppendChild(nodeReturnCode)
         End Sub
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Sub GenPatientList(ByVal xml As XmlDocument, ByVal nodeResult As XmlElement)
             'If XML is the new version, the XML will include Tag "patient_list" and "patient_count".
             If Me.XMLWSVersion = CMSRequest.CMS_XML_Version.TWO Then
@@ -524,10 +514,7 @@ Namespace EHSVaccination
             End If
 
         End Sub
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Sub GenPatientCount(ByVal xml As XmlDocument, ByVal nodePatientList As XmlElement)
             Dim nodePatientCount As XmlElement
             nodePatientCount = xml.CreateElement(TAG_PATIENT_COUNT)
@@ -535,10 +522,7 @@ Namespace EHSVaccination
             nodePatientList.AppendChild(nodePatientCount)
 
         End Sub
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Sub GenPatient(ByVal xml As XmlDocument, ByVal nodeParent As XmlElement, ByVal udtPatientResult As PatientResult)
             'If XML is the new version, the XML will include Tag "patient_id"
             If Me.XMLWSVersion = CMSRequest.CMS_XML_Version.TWO Then
@@ -559,20 +543,14 @@ Namespace EHSVaccination
             End If
 
         End Sub
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Sub GenPatientId(ByVal xml As XmlDocument, ByVal nodePatient As XmlElement, ByVal udtPatientResult As PatientResult)
             Dim nodePatientId As XmlElement
             nodePatientId = xml.CreateElement(TAG_PATIENT_ID)
             nodePatientId.InnerText = udtPatientResult.PatientID
             nodePatient.AppendChild(nodePatientId)
         End Sub
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Sub GenPatientResultCode(ByVal xml As XmlDocument, ByVal nodeParent As XmlElement, ByVal udtPatientResult As PatientResult)
             Dim nodeReturnCode As XmlElement
             nodeReturnCode = xml.CreateElement(TAG_PATIENT_RESULT_CODE)
@@ -600,10 +578,7 @@ Namespace EHSVaccination
             nodeParent.AppendChild(nodeReturnCode)
 
         End Sub
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         ''' <summary>
         ''' 
         ''' </summary>
@@ -631,20 +606,14 @@ Namespace EHSVaccination
             End If
 
         End Sub
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Sub GenRecordCount(ByVal xml As XmlDocument, ByVal nodeReturnData As XmlElement, ByVal udtPatientResult As PatientResult)
             Dim nodeRecordnCount As XmlElement
             nodeRecordnCount = xml.CreateElement(TAG_RECORD_COUNT)
             nodeRecordnCount.InnerText = udtPatientResult.VaccinationRecordList.Rows.Count
             nodeReturnData.AppendChild(nodeRecordnCount)
         End Sub
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         Private Sub GenVaccinationRecord(ByVal xml As XmlDocument, ByVal nodeReturnData As XmlElement, ByVal drVaccinationRecord As DataRow)
             Dim nodeVR As XmlElement
             nodeVR = xml.CreateElement(TAG_VACCINATION_RECORD)
@@ -671,16 +640,6 @@ Namespace EHSVaccination
             nodeTmp.InnerText = drVaccinationRecord(TAG_VACCINE_DESC)
             nodeVR.AppendChild(nodeTmp)
 
-            ' vaccine_desc_chinese
-            'If XML is the new version, the Tag "vaccine_desc_chinese" will be removed
-            If Me.XMLWSVersion <> CMSRequest.CMS_XML_Version.TWO Then
-                nodeTmp = xml.CreateElement(TAG_VACCINE_DESC_CHINESE)
-                nodeTmp.InnerText = drVaccinationRecord(TAG_VACCINE_DESC_CHINESE)
-                nodeVR.AppendChild(nodeTmp)
-            End If
-
-            ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-            ' ----------------------------------------------------------
             ' vaccine lot no.
             Dim strVaccinLotNo As String = drVaccinationRecord(TAG_VACCINE_LOT_NO)
             If strVaccinLotNo <> String.Empty Then
@@ -688,7 +647,6 @@ Namespace EHSVaccination
                 nodeTmp.InnerText = strVaccinLotNo
                 nodeVR.AppendChild(nodeTmp)
             End If
-            ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
             ' dose_seq_code
             nodeTmp = xml.CreateElement(TAG_DOSE_SEQ_CODE)
@@ -700,13 +658,14 @@ Namespace EHSVaccination
             nodeTmp.InnerText = drVaccinationRecord(TAG_DOSE_SEQ_DESC)
             nodeVR.AppendChild(nodeTmp)
 
-            ' dose_seq_desc_chinese
-            'If XML is the new version, the Tag "dose_seq_desc_chinese" will be removed
-            If Me.XMLWSVersion <> CMSRequest.CMS_XML_Version.TWO Then
-                nodeTmp = xml.CreateElement(TAG_DOSE_SEQ_DESC_CHINESE)
-                nodeTmp.InnerText = drVaccinationRecord(TAG_DOSE_SEQ_DESC_CHINESE)
-                nodeVR.AppendChild(nodeTmp)
-            End If
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ----------------------------------------------------------
+            ' covid19_non_local_recovered
+            nodeTmp = xml.CreateElement(TAG_COVID19_NON_LOCAL_RECOVERED)
+            nodeTmp.InnerText = drVaccinationRecord(TAG_COVID19_NON_LOCAL_RECOVERED)
+            If nodeTmp.InnerText = String.Empty Then nodeTmp.IsEmpty = True
+            nodeVR.AppendChild(nodeTmp)
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
             ' provider
             nodeTmp = xml.CreateElement(TAG_PROVIDER)
@@ -730,7 +689,6 @@ Namespace EHSVaccination
 
         End Sub
         ' CRE18-001(CIMS Vaccination Sharing) [End][Chris YIM]
-
 
         Private Sub GenSourceSystem(ByVal xml As XmlDocument, ByVal nodeResult As XmlElement)
             Dim nodeReturnData As XmlElement

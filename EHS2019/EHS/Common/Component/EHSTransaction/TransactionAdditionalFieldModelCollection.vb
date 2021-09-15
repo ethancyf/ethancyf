@@ -415,6 +415,17 @@ Namespace Component.EHSTransaction
         End Property
         ' CRE20-0023 (Immu record) [End][Chris YIM]
 
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property NonLocalRecoveredHistory() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.NonLocalRecoveredHistory)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
         ' CRE20-0023 (Immu record) [Start][Martin Tang]
         ' ---------------------------------------------------------------------------------------------------------
         Public ReadOnly Property ClinicType() As String

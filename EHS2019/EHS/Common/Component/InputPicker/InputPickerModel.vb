@@ -13,6 +13,7 @@
         Private _strSPID As String
         Private _strBrand As String
         Private _strClinicType As String
+        Private _strNonLocalRecoveredHistory As String
 
         'Integer
         Private _intPracticeDisplaySeq As Integer
@@ -97,6 +98,15 @@
             End Set
         End Property
 
+        Public Property NonLocalRecoveredHistory() As String
+            Get
+                Return _strNonLocalRecoveredHistory
+            End Get
+            Set(ByVal Value As String)
+                _strNonLocalRecoveredHistory = Value
+            End Set
+        End Property
+
         Public Property EHSClaimVaccine() As InputVaccineModelCollection
             Get
                 Return _udtInputVaccineModelCollection
@@ -155,6 +165,8 @@
             _strSchoolCode = String.Empty
             _strSPID = String.Empty
             _strBrand = String.Empty
+            _strClinicType = String.Empty
+            _strNonLocalRecoveredHistory = String.Empty
 
             _intPracticeDisplaySeq = Nothing
 

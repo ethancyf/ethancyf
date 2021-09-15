@@ -419,6 +419,33 @@ Partial Public Class ClaimCreation
     Protected WithEvents FilteredSearchSPID As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
+    '''FilteredSearcheHSAccountDocNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FilteredSearcheHSAccountDocNo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''FilteredSearcheHSAccountID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FilteredSearcheHSAccountID As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''FilteredSearchRefNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FilteredSearchRefNo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
     '''lblEnterCreationDetailSPNameText control.
     '''</summary>
     '''<remarks>

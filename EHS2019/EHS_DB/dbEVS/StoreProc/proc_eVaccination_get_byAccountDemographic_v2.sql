@@ -7,6 +7,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-58 (COVID19)
+-- Modified by:		Chris YIM
+-- Modified date:	31 Aug 2021
+-- Description:		Add [COVID19_Non_Local_Recovered]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023-53 (COVID19)
@@ -301,21 +309,22 @@ DECLARE @Account TABLE
  -- Create table for processing vaccine records  
 CREATE TABLE #tempVaccine   
  (  
-	Acc_Type				CHAR(1),  
-	Voucher_Acc_ID			CHAR(15),
-	Record_Creation_Dtm		DATETIME		NOT NULL,  
-	Injection_Date			DATETIME		NOT NULL,  
-	Vaccine_Code			VARCHAR(25)		NOT NULL,  
-	Vaccine_Desc			VARCHAR(100)	NOT NULL,  
-	Vaccine_Desc_Chinese	NVARCHAR(100)	NOT NULL,  
-	Dose_Seq_Code			VARCHAR(20)		NOT NULL,  
-	Dose_Seq_Desc			VARCHAR(100)	NOT NULL,  
-	Dose_Seq_Desc_Chinese	NVARCHAR(100)	NOT NULL,  
-	[Provider]				NVARCHAR(100)	NOT NULL,  
-	[Location]				NVARCHAR(100)	NOT NULL,  
-	Location_Chinese		NVARCHAR(100)	NOT NULL,
-	Vaccine_Brand			VARCHAR(50),
-	Vaccine_Lot_No			VARCHAR(50)
+	Acc_Type					CHAR(1),  
+	Voucher_Acc_ID				CHAR(15),
+	Record_Creation_Dtm			DATETIME		NOT NULL,  
+	Injection_Date				DATETIME		NOT NULL,  
+	Vaccine_Code				VARCHAR(25)		NOT NULL,  
+	Vaccine_Desc				VARCHAR(100)	NOT NULL,  
+	Vaccine_Desc_Chinese		NVARCHAR(100)	NOT NULL,  
+	Dose_Seq_Code				VARCHAR(20)		NOT NULL,  
+	Dose_Seq_Desc				VARCHAR(100)	NOT NULL,  
+	Dose_Seq_Desc_Chinese		NVARCHAR(100)	NOT NULL,  
+	[Provider]					NVARCHAR(100)	NOT NULL,  
+	[Location]					NVARCHAR(100)	NOT NULL,  
+	Location_Chinese			NVARCHAR(100)	NOT NULL,
+	Vaccine_Brand				VARCHAR(50),
+	Vaccine_Lot_No				VARCHAR(50),
+	COVID19_Non_Local_Recovered	VARCHAR(1)
  )  
   
  DECLARE @AvailableDocCode TABLE  
@@ -613,7 +622,8 @@ SELECT
 	P.Practice_Name AS location,  
 	ISNULL(P.Practice_Name_chi, '') AS location_chinese,
 	T.Vaccine_Brand,
-	T.Vaccine_Lot_No
+	T.Vaccine_Lot_No,
+	T.Non_Local_Recovered
 FROM  
 	(
 	-- +++++++++++++++++++++
@@ -633,7 +643,8 @@ FROM
 		SP_ID,  
 		Practice_Display_Seq,
 		ISNULL(Vaccine_Brand,'') AS Vaccine_Brand,
-		ISNULL(Vaccine_Lot_No,'') AS Vaccine_Lot_No
+		ISNULL(Vaccine_Lot_No,'') AS Vaccine_Lot_No,
+		ISNULL(Non_Local_Recovered,'') AS Non_Local_Recovered
 	FROM   
 		(
 		-- +++++++++++++++++++++
@@ -653,7 +664,8 @@ FROM
 			VVT.SP_ID,  
 			VVT.Practice_Display_Seq,
 			TAF_Brand.AdditionalFieldValueCode AS [Vaccine_Brand],
-			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No]
+			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No],
+			TAF_NonLocal.AdditionalFieldValueCode AS [Non_Local_Recovered]
 		FROM 
 			VoucherTransaction VVT WITH (NOLOCK)
 				INNER JOIN @Account VVR  
@@ -662,6 +674,8 @@ FROM
 					ON VVT.Transaction_ID = TAF_Brand.Transaction_ID AND TAF_Brand.AdditionalFieldID = 'VaccineBrand'
 				LEFT OUTER JOIN TransactionAdditionalField TAF_LotNo
 					ON VVT.Transaction_ID = TAF_LotNo.Transaction_ID AND TAF_LotNo.AdditionalFieldID = 'VaccineLotNo'
+				LEFT OUTER JOIN TransactionAdditionalField TAF_NonLocal
+					ON VVT.Transaction_ID = TAF_NonLocal.Transaction_ID AND TAF_NonLocal.AdditionalFieldID = 'NonLocalRecovered'
 		WHERE 
 			VVT.Record_Status NOT IN ('I','W','D') 
 			AND	(@In_InjectionDateStart IS NULL OR VVT.Service_Receive_Dtm >= @In_InjectionDateStart) 
@@ -687,7 +701,8 @@ FROM
 			TVT.SP_ID,  
 			TVT.Practice_Display_Seq,
 			TAF_Brand.AdditionalFieldValueCode AS [Vaccine_Brand],
-			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No]
+			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No],
+			TAF_NonLocal.AdditionalFieldValueCode AS [Non_Local_Recovered]
 		FROM VoucherTransaction TVT WITH (NOLOCK)
 				INNER JOIN @Account TVR  
 					ON TVT.Temp_Voucher_Acc_ID = TVR.Voucher_Acc_ID 
@@ -695,6 +710,8 @@ FROM
 					ON TVT.Transaction_ID = TAF_Brand.Transaction_ID AND TAF_Brand.AdditionalFieldID = 'VaccineBrand'
 				LEFT OUTER JOIN TransactionAdditionalField TAF_LotNo
 					ON TVT.Transaction_ID = TAF_LotNo.Transaction_ID AND TAF_LotNo.AdditionalFieldID = 'VaccineLotNo'
+				LEFT OUTER JOIN TransactionAdditionalField TAF_NonLocal
+					ON TVT.Transaction_ID = TAF_NonLocal.Transaction_ID AND TAF_NonLocal.AdditionalFieldID = 'NonLocalRecovered'
 		WHERE 
 			TVT.Record_Status NOT IN ('I','W','D') 
 			AND	(@In_InjectionDateStart IS NULL OR TVT.Service_Receive_Dtm >= @In_InjectionDateStart) 
@@ -721,7 +738,8 @@ FROM
 			SVT.SP_ID,  
 			SVT.Practice_Display_Seq,
 			TAF_Brand.AdditionalFieldValueCode AS [Vaccine_Brand],
-			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No]
+			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No],
+			TAF_NonLocal.AdditionalFieldValueCode AS [Non_Local_Recovered]
 		FROM VoucherTransaction SVT WITH (NOLOCK)
 				INNER JOIN @Account SVR  
 					ON SVT.Special_Acc_ID = SVR.Voucher_Acc_ID 
@@ -729,6 +747,8 @@ FROM
 					ON SVT.Transaction_ID = TAF_Brand.Transaction_ID AND TAF_Brand.AdditionalFieldID = 'VaccineBrand'
 				LEFT OUTER JOIN TransactionAdditionalField TAF_LotNo
 					ON SVT.Transaction_ID = TAF_LotNo.Transaction_ID AND TAF_LotNo.AdditionalFieldID = 'VaccineLotNo'
+				LEFT OUTER JOIN TransactionAdditionalField TAF_NonLocal
+					ON SVT.Transaction_ID = TAF_NonLocal.Transaction_ID AND TAF_NonLocal.AdditionalFieldID = 'NonLocalRecovered'
 		WHERE 
 			SVT.Record_Status NOT IN ('I','W','D')
 			AND	(@In_InjectionDateStart IS NULL OR SVT.Service_Receive_Dtm >= @In_InjectionDateStart) 
@@ -890,9 +910,11 @@ FROM
 			Location_Chinese, 
 			@OnSite AS Onsite,
 			Vaccine_Brand,
-			Vaccine_Lot_No
+			Vaccine_Lot_No,
+			COVID19_Non_Local_Recovered
 		FROM #tempVaccine  
 		WHERE injection_date >= @CurrentSeasonStartDate  
+		ORDER BY Injection_Date, Record_Creation_Dtm
 	END
  ELSE  
 	BEGIN
@@ -910,8 +932,10 @@ FROM
 			Location_Chinese,
 			@OnSite AS Onsite,
 			Vaccine_Brand,
-			Vaccine_Lot_No
+			Vaccine_Lot_No,
+			COVID19_Non_Local_Recovered
 		FROM #tempVaccine  
+		ORDER BY Injection_Date, Record_Creation_Dtm
 	END
 
 -- Housekeeping

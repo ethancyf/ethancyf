@@ -59,9 +59,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
 #Region "Object Class"
 
 
-
-
-
         <Serializable()> Enum RuleID
             InnerDoseBlock
             InnerDoseWarning
@@ -194,6 +191,15 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 Next
             End Sub
 
+            Public Sub Add(ByVal udtRuleResult As RuleResult)
+                Me.RuleResults.Add(udtRuleResult)
+            End Sub
+
+            Public Sub Delete(ByVal udtRuleResultList As RuleResultList)
+                For Each udtRuleResult As RuleResult In udtRuleResultList.RuleResults
+                    Me.RuleResults.Remove(udtRuleResult)
+                Next
+            End Sub
 
         End Class
 
@@ -202,6 +208,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
         '               -> List of RuleResult
 
         <Serializable()> Public Class RuleResult
+
+#Region "Private Members"
             Private _enumRuleID As RuleID
             Private _strValidationRuleID As String
             Private _objSystemMessage As SystemMessage
@@ -210,9 +218,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Private _strMessageVariableNameChi As String
             Private _strMessageVariableValueChi As String
             Private _strMessageDescription As String
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             Private _strMessageDescriptionChi As String
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+
             Private _strSchemeCode As String
             Private _strSchemeSeq As String
             Private _strSubsidizeCode As String
@@ -220,38 +227,26 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Private _strRuleGroup2 As String
             Private _strWarnIndicatorCode As String
 
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             Private _alMessageVariableName As New ArrayList
             Private _alMessageVariableValue As New ArrayList
             Private _alMessageVariableNameChi As New ArrayList
             Private _alMessageVariableValueChi As New ArrayList
-            'Private _alMessageVariableName As ArrayList
-            'Private _alMessageVariableValue As ArrayList
-            'Private _alMessageVariableNameChi As ArrayList
-            'Private _alMessageVariableValueChi As ArrayList
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
 
-            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             Private _udtClaimRuleResult As ClaimRuleResult
-            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+#End Region
 
+#Region "Properties"
             ReadOnly Property ValidationRuleID() As String
                 Get
                     Return Me._strValidationRuleID
                 End Get
             End Property
+
             ReadOnly Property RuleID() As RuleID
                 Get
                     Return Me._enumRuleID
                 End Get
             End Property
-
-            'ReadOnly Property ErrorMessage() As SystemMessage
-            '    Get
-            '        Return Me._objSystemMessage
-            '    End Get
-            'End Property
 
             Public Property ErrorMessage() As SystemMessage
                 Get
@@ -270,6 +265,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     Me._strMessageVariableName = value
                 End Set
             End Property
+
             Property MessageVariableValue() As String
                 Get
                     Return Me._strMessageVariableValue
@@ -278,6 +274,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     Me._strMessageVariableValue = value
                 End Set
             End Property
+
             Property MessageVariableNameChi() As String
                 Get
                     Return Me._strMessageVariableNameChi
@@ -286,6 +283,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     Me._strMessageVariableNameChi = value
                 End Set
             End Property
+
             Property MessageVariableValueChi() As String
                 Get
                     Return Me._strMessageVariableValueChi
@@ -300,28 +298,24 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     Return Me._alMessageVariableName
                 End Get
             End Property
+
             ReadOnly Property MessageVariableValueArrayList() As ArrayList
                 Get
                     Return Me._alMessageVariableValue
                 End Get
             End Property
+
             ReadOnly Property MessageVariableNameChiArrayList() As ArrayList
                 Get
                     Return Me._alMessageVariableNameChi
                 End Get
             End Property
+
             ReadOnly Property MessageVariableValueChiArrayList() As ArrayList
                 Get
                     Return Me._alMessageVariableValueChi
                 End Get
             End Property
-
-            'ReadOnly Property MessageDescription() As String
-            '    Get
-            '        Return Me._strMessageDescription
-            '    End Get
-            'End Property
-
 
             Public Property MessageDescription() As String
                 Get
@@ -332,7 +326,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 End Set
             End Property
 
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             Public Property MessageDescriptionChi() As String
                 Get
                     Return Me._strMessageDescriptionChi
@@ -341,33 +334,37 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     Me._strMessageDescriptionChi = value
                 End Set
             End Property
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
             ReadOnly Property SchemeCode() As String
                 Get
                     Return Me._strSchemeCode
                 End Get
             End Property
+
             ReadOnly Property SchemeSeq() As String
                 Get
                     Return Me._strSchemeSeq
                 End Get
             End Property
+
             ReadOnly Property SubsidizeCode() As String
                 Get
                     Return Me._strSubsidizeCode
                 End Get
             End Property
+
             ReadOnly Property RuleGroup1() As String
                 Get
                     Return Me._strRuleGroup1
                 End Get
             End Property
+
             ReadOnly Property RuleGroup2() As String
                 Get
                     Return Me._strRuleGroup2
                 End Get
             End Property
+
             Public Property WarnIndicatorCode() As String
                 Get
                     Return Me._strWarnIndicatorCode
@@ -377,8 +374,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 End Set
             End Property
 
-            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             Public Property ClaimRuleResult() As ClaimRuleResult
                 Get
                     Return Me._udtClaimRuleResult
@@ -387,35 +382,10 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     Me._udtClaimRuleResult = value
                 End Set
             End Property
-            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
+#End Region
 
-
-            'Public Sub New(ByVal enumRuleID As RuleID, ByVal strMessageVariableName As String, ByVal strMessageVariableValue As String, ByVal strMessageVariableNameChi As String, ByVal strMessageVariableValueChi As String, ByVal strSchemeCode As String, ByVal strSchemeSeq As String, ByVal strSubsidizeCode As String)
-
-            '    Dim udtClaimValidationRule As EHSClaimValidationRuleModel = GetValidationRule(_enumClaimAction, enumRuleID)
-            '    Dim udtSystemMessage As New SystemMessage(udtClaimValidationRule.Function_Code, udtClaimValidationRule.Severity_Code, udtClaimValidationRule.Message_Code)
-
-            '    Me._enumRuleID = enumRuleID
-            '    Me._objSystemMessage = udtSystemMessage
-
-            '    Me._strMessageVariableName = strMessageVariableName
-            '    Me._strMessageVariableValue = strMessageVariableValue
-            '    Me._strMessageVariableNameChi = strMessageVariableNameChi
-            '    Me._strMessageVariableValueChi = strMessageVariableValueChi
-            '    Me._strSchemeCode = strSchemeCode
-            '    Me._strSchemeSeq = strSchemeSeq
-            '    Me._strSubsidizeCode = strSubsidizeCode
-
-            '    Me._alMessageVariableName = ReturnMessageVariableAsArrayList(strMessageVariableName)
-            '    Me._alMessageVariableValue = ReturnMessageVariableAsArrayList(strMessageVariableValue)
-            '    Me._alMessageVariableNameChi = ReturnMessageVariableAsArrayList(strMessageVariableNameChi)
-            '    Me._alMessageVariableValueChi = ReturnMessageVariableAsArrayList(strMessageVariableValueChi)
-
-            '    Me._strMessageDescription = ReturnVariableFeedMessage(Me.objSystemMessage, Me._alMessageVariableName, Me._alMessageVariableValue, Me._alMessageVariableNameChi, Me._alMessageVariableValueChi)
-
-            'End Sub
-
+#Region "Constructors"
             Public Sub New(ByVal enumRuleID As RuleID, _
                            Optional ByVal strMessageVariableName As String = Nothing, _
                            Optional ByVal strMessageVariableValue As String = Nothing, _
@@ -493,20 +463,63 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 Me._strMessageDescription = ReturnVariableFeedMessage(objSystemMessage, Me._alMessageVariableName, Me._alMessageVariableValue, Me._alMessageVariableNameChi, Me._alMessageVariableValueChi)
             End Sub
 
+            Public Sub New(ByVal objSystemMessage As SystemMessage, _
+                           Optional ByVal strMessageVariableName As String = Nothing, _
+                           Optional ByVal strMessageVariableValue As String = Nothing, _
+                           Optional ByVal strMessageVariableNameChi As String = Nothing, _
+                           Optional ByVal strMessageVariableValueChi As String = Nothing)
 
-            'Public Sub New(ByVal enumRuleID As RuleID, ByVal objSystemMessage As SystemMessage)
-            '    Me._enumRuleID = enumRuleID
-            '    Me._objSystemMessage = objSystemMessage
-            'End Sub
+                Me.New(EHSClaimBLL.RuleID.None, objSystemMessage, _
+                       strMessageVariableName, strMessageVariableValue, _
+                       strMessageVariableNameChi, strMessageVariableValueChi)
 
-            Public Sub New(ByVal objSystemMessage As SystemMessage, Optional ByVal strMessageVariableName As String = Nothing, Optional ByVal strMessageVariableValue As String = Nothing, Optional ByVal strMessageVariableNameChi As String = Nothing, Optional ByVal strMessageVariableValueChi As String = Nothing)
-                Me.New(EHSClaimBLL.RuleID.None, objSystemMessage, strMessageVariableName, strMessageVariableValue, strMessageVariableNameChi, strMessageVariableValueChi)
-
-                'Me.New(EHSClaimBLL.RuleID.None, objSystemMessage, ReturnMessageVariableAsArrayList(strMessageVariableName), ReturnMessageVariableAsArrayList(strMessageVariableValue), ReturnMessageVariableAsArrayList(strMessageVariableNameChi), ReturnMessageVariableAsArrayList(strMessageVariableValueChi))
             End Sub
+
+            Public Sub New(ByVal udtRuleResult As RuleResult)
+                Me._enumRuleID = udtRuleResult.RuleID
+                Me._strValidationRuleID = udtRuleResult.ValidationRuleID
+                Me._objSystemMessage = New SystemMessage(udtRuleResult.ErrorMessage.FunctionCode, udtRuleResult.ErrorMessage.SeverityCode, udtRuleResult.ErrorMessage.MessageCode)
+                Me._strMessageVariableName = udtRuleResult.MessageVariableName
+                Me._strMessageVariableValue = udtRuleResult.MessageVariableValue
+                Me._strMessageVariableNameChi = udtRuleResult.MessageVariableNameChi
+                Me._strMessageVariableValueChi = udtRuleResult.MessageVariableValueChi
+                Me._strMessageDescription = udtRuleResult.MessageDescription
+                Me._strMessageDescriptionChi = udtRuleResult.MessageDescriptionChi
+
+                Me._strSchemeCode = udtRuleResult.SchemeCode
+                Me._strSchemeSeq = udtRuleResult.SchemeSeq
+                Me._strSubsidizeCode = udtRuleResult.SubsidizeCode
+                Me._strRuleGroup1 = udtRuleResult.RuleGroup1
+                Me._strRuleGroup2 = udtRuleResult.RuleGroup2
+                Me._strWarnIndicatorCode = udtRuleResult.WarnIndicatorCode
+
+                Me._alMessageVariableName = New ArrayList
+                For i As Integer = 0 To udtRuleResult.MessageVariableNameArrayList.Count - 1
+                    Me._alMessageVariableName.Add(udtRuleResult.MessageVariableNameArrayList(i))
+                Next
+
+                Me._alMessageVariableValue = New ArrayList
+                For i As Integer = 0 To udtRuleResult.MessageVariableValueArrayList.Count - 1
+                    Me._alMessageVariableValue.Add(udtRuleResult.MessageVariableValueArrayList(i))
+                Next
+
+                Me._alMessageVariableNameChi = New ArrayList
+                For i As Integer = 0 To udtRuleResult.MessageVariableNameChiArrayList.Count - 1
+                    Me._alMessageVariableNameChi.Add(udtRuleResult.MessageVariableNameChiArrayList(i))
+                Next
+
+                Me._alMessageVariableValueChi = New ArrayList
+                For i As Integer = 0 To udtRuleResult.MessageVariableValueChiArrayList.Count - 1
+                    Me._alMessageVariableValueChi.Add(udtRuleResult.MessageVariableValueChiArrayList(i))
+                Next
+
+                Me._udtClaimRuleResult = New ClaimRuleResult(udtRuleResult.ClaimRuleResult)
+
+            End Sub
+
+#End Region
+
         End Class
-
-
 
         ' RuleResult
         '           -> Rule ID
@@ -732,6 +745,15 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 udtInputPicker.ClinicType = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeValue.Clinic
             End If
 
+            'Non-Local Recovered History
+            If udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
+                udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory IsNot Nothing AndAlso _
+                udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory <> String.Empty Then
+                udtInputPicker.NonLocalRecoveredHistory = udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory
+            Else
+                udtInputPicker.NonLocalRecoveredHistory = Nothing
+            End If
+
             '----------------------------------------------------------------
             ' a1. If has inputted benefit, use it. If not, get benefit again
             '----------------------------------------------------------------
@@ -794,18 +816,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 Dim udtLatestC19Vaccine As TransactionDetailVaccineModel = Nothing
                 Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
 
-                For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                    'Find the latest COVID19 transaction in EHS
-                    If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                        If udtLatestC19Vaccine Is Nothing Then
-                            udtLatestC19Vaccine = udtC19Vaccine
-                        Else
-                            If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
-                                udtLatestC19Vaccine = udtC19Vaccine
-                            End If
-                        End If
-                    End If
-                Next
+                'Find the latest COVID19 transaction in EHS
+                udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
 
                 'Only allow EHS Transaction, not include CMS / CIMS record
                 If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then

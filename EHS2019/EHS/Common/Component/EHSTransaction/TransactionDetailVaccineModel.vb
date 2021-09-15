@@ -22,14 +22,18 @@ Namespace Component.EHSTransaction
         Private _strHighRisk As String = String.Empty
         Private _udtPersonalInformationDemographic As EHSPersonalInformationDemographicModel
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
+
         Private _strVaccineBrand As String = String.Empty
         Private _strVaccineLotNo As String = String.Empty
         Private _strVaccineTradeName As String = String.Empty
         Private _strVaccineTradeNameChi As String = String.Empty
         Private _strClinicType As String = String.Empty
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strJoinEHRSS As String = String.Empty
+        Private _strContactNo As String = String.Empty
+        Private _strNonLocalRecovered As String = String.Empty
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
 #Region "Status"
 
@@ -183,8 +187,6 @@ Namespace Component.EHSTransaction
             End Set
         End Property
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property VaccineBrand() As String
             Get
                 Return _strVaccineBrand
@@ -193,10 +195,7 @@ Namespace Component.EHSTransaction
                 _strVaccineBrand = value
             End Set
         End Property
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property VaccineLotNo() As String
             Get
                 Return _strVaccineLotNo
@@ -205,10 +204,7 @@ Namespace Component.EHSTransaction
                 _strVaccineLotNo = value
             End Set
         End Property
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property VaccineTradeName() As String
             Get
                 Return _strVaccineTradeName
@@ -217,10 +213,7 @@ Namespace Component.EHSTransaction
                 _strVaccineTradeName = value
             End Set
         End Property
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property VaccineTradeNameChi() As String
             Get
                 Return _strVaccineTradeNameChi
@@ -229,10 +222,7 @@ Namespace Component.EHSTransaction
                 _strVaccineTradeNameChi = value
             End Set
         End Property
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property ClinicType() As PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeEnum
             Get
                 Select Case _strClinicType
@@ -253,6 +243,41 @@ Namespace Component.EHSTransaction
                     Case Else
                         _strClinicType = String.Empty
                 End Select
+            End Set
+        End Property
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property JoinEHRSS() As String
+            Get
+                Return _strJoinEHRSS
+            End Get
+            Set(ByVal value As String)
+                _strJoinEHRSS = value
+            End Set
+        End Property
+        ' CRE20-0023 (Immu record) [End][Chris YIM
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property ContactNo() As String
+            Get
+                Return _strContactNo
+            End Get
+            Set(ByVal value As String)
+                _strContactNo = value
+            End Set
+        End Property
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property NonLocalRecovered() As String
+            Get
+                Return _strNonLocalRecovered
+            End Get
+            Set(ByVal value As String)
+                _strNonLocalRecovered = value
             End Set
         End Property
         ' CRE20-0023 (Immu record) [End][Chris YIM]
@@ -285,6 +310,10 @@ Namespace Component.EHSTransaction
             Me.VaccineTradeName = udtTransactionDetailVaccine.VaccineTradeName
             Me.VaccineTradeNameChi = udtTransactionDetailVaccine.VaccineTradeNameChi
             Me.ClinicType = udtTransactionDetailVaccine.ClinicType
+
+            Me.JoinEHRSS = udtTransactionDetailVaccine.JoinEHRSS
+            Me.ContactNo = udtTransactionDetailVaccine.ContactNo
+            Me.NonLocalRecovered = udtTransactionDetailVaccine.NonLocalRecovered
 
         End Sub
 
@@ -374,6 +403,11 @@ Namespace Component.EHSTransaction
                 Me.VaccineLotNo = .VaccineLotNo
                 Me.VaccineTradeName = (New COVID19.COVID19BLL).GetVaccineTradeName(.VaccineBrand)
                 Me.VaccineTradeNameChi = (New COVID19.COVID19BLL).GetVaccineTradeNameChi(.VaccineBrand)
+
+                Me.JoinEHRSS = String.Empty
+                Me.ContactNo = String.Empty
+                Me.NonLocalRecovered = String.Empty
+
             End With
         End Sub
 
@@ -412,6 +446,11 @@ Namespace Component.EHSTransaction
                 Me.VaccineLotNo = String.Empty
                 Me.VaccineTradeName = String.Empty
                 Me.VaccineTradeNameChi = String.Empty
+
+                Me.JoinEHRSS = String.Empty
+                Me.ContactNo = String.Empty
+                Me.NonLocalRecovered = String.Empty
+
             End With
         End Sub
 

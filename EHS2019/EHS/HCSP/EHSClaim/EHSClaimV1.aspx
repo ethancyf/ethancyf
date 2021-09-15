@@ -1051,7 +1051,6 @@
                         <div style="padding-top:3px"></div>
                         <table cellspacing="0" cellpadding="0" border="0" style="position:relative;left:-1px">
                             <tr id="trStep2aDeclareClaim" runat="server">
-                                <%--<td style="width: 200px; padding-right: 5px; height: 16px; padding-top:10px"></td>--%>
                                 <td style="width: 930px; min-height: 48px; vertical-align: top;background-color:white!important" class="checkboxStyle">
                                     <asp:label ID="lblStep2aDeclareClaim1" runat="server" AssociatedControlID="chkStep2aDeclareClaim" Text="<%$ Resources:Text, VerificationCheckList %>" />
                                     <table style="width:100%;border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
@@ -1081,6 +1080,31 @@
                                 <td style="vertical-align:top;padding-left:5px">
                                     <asp:ImageButton ID="imgStep2aDeclareClaimError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
+                    <asp:Panel ID="panStep2aDeclareNonLocalRecoveredHistory" runat="server">
+                        <div style="padding-top:10px"></div>
+                        <table cellspacing="0" cellpadding="0" border="0" style="position:relative;left:-1px">
+                            <tr id="trStep2aDeclareNonLocalRecoveredHistory" runat="server">
+                                <td style="width: 930px; min-height: 48px; vertical-align: top;background-color:white!important" class="checkboxStyle">
+                                    <asp:label ID="lblStep2aDeclareNonLocalRecoveredHistory" runat="server" 
+                                        AssociatedControlID="chkStep2aDeclareNonLocalRecoveredHistory" 
+                                        Text="<%$ Resources:Text, NonLocalRecoveredHistoryDeclare %>" />
+                                    <table style="width:100%;border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
+                                        <tr style="min-height :20px">
+                                            <td style="vertical-align:top;width:30px;padding-top:10px;padding-bottom:5px">
+                                                <asp:CheckBox ID="chkStep2aDeclareNonLocalRecoveredHistory" runat="server" AutoPostBack="false" style="position:relative;left:2px;top:3px;-ms-transform:scale(1.5)"/>
+                                            </td>
+                                            <td style="text-align:left;padding-top:10px;padding-bottom:5px">
+                                                <asp:label ID="lblStep2aDeclareNonLocalRecoveredHistoryContent" 
+                                                    AssociatedControlID="chkStep2aDeclareNonLocalRecoveredHistory" runat="server" 
+                                                    Text="<%$ Resources:Text, NonLocalRecoveredHistoryContent %>" />
+                                            </td>
+                                        </tr>                                                                                             
+                                    </table>
                                 </td>
                             </tr>
                         </table>
@@ -1205,6 +1229,16 @@
                                 </td>
                                 <td height="25" style="vertical-align:top;">
                                     <asp:Label ID="lblStep2bJoinEHRSS" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
+                                </td>
+                            </tr>
+                            </asp:Panel>
+                            <asp:Panel ID="panStep2bNonLocalRecoveredHistory" runat="server">
+                            <tr>
+                                <td height="25" style="width: 205px;vertical-align:top;">
+                                    <asp:Label ID="lblStep2bNonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top;">
+                                    <asp:Label ID="lblStep2bNonLocalRecoveredHistory" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
                                 </td>
                             </tr>
                             </asp:Panel>
@@ -1442,6 +1476,16 @@
                                 </td>
                                 <td height="25" style="vertical-align:top;">
                                     <asp:Label ID="lblStep3JoinEHRSS" runat="server" CssClass="tableText"/>
+                                </td>
+                            </tr>
+                            </asp:Panel>
+                            <asp:Panel ID="panStep3NonLocalRecoveredHistory" runat="server">
+                            <tr>
+                                <td height="25" style="width: 205px;vertical-align:top;">
+                                    <asp:Label ID="lblStep3NonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top;">
+                                    <asp:Label ID="lblStep3NonLocalRecoveredHistory" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
                                 </td>
                             </tr>
                             </asp:Panel>

@@ -2102,6 +2102,51 @@ Partial Public Class EHSClaimV1
     Protected WithEvents imgStep2aDeclareClaimError As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''panStep2aDeclareNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aDeclareNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''trStep2aDeclareNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep2aDeclareNonLocalRecoveredHistory As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblStep2aDeclareNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aDeclareNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''chkStep2aDeclareNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkStep2aDeclareNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''lblStep2aDeclareNonLocalRecoveredHistoryContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aDeclareNonLocalRecoveredHistoryContent As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''btnStep2aCancel control.
     '''</summary>
     '''<remarks>
@@ -2388,6 +2433,33 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStep2bJoinEHRSS As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panStep2bNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2bNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblStep2bNonLocalRecoveredHistoryText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bNonLocalRecoveredHistoryText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep2bNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''panStep2bPrintClaimConsentForm control.
@@ -2885,6 +2957,33 @@ Partial Public Class EHSClaimV1
     Protected WithEvents lblStep3JoinEHRSS As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panStep3NonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep3NonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblStep3NonLocalRecoveredHistoryText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep3NonLocalRecoveredHistoryText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep3NonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep3NonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''btnStep3Reprint control.
     '''</summary>
     '''<remarks>
@@ -2902,15 +3001,6 @@ Partial Public Class EHSClaimV1
     '''</remarks>
     Protected WithEvents btnStep3NextClaim As Global.System.Web.UI.WebControls.ImageButton
 
-  '''<summary>
-    '''btnStep3ClaimClose control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnStep3ClaimClose As Global.System.Web.UI.WebControls.ImageButton
-
     '''<summary>
     '''btnStep3ClaimForSamePatient control.
     '''</summary>
@@ -2919,6 +3009,15 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnStep3ClaimForSamePatient As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnStep3ClaimClose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnStep3ClaimClose As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''vSelectPractice control.

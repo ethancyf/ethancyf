@@ -126,11 +126,12 @@ Partial Public Class ClaimTranEnquiry
                  udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
                  udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) Then
 
+                'Join EHRSS
                 If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSTransaction.EHSAcct, udtEHSTransaction.DocCode) Then
                     panJoinEHRSS.Visible = True
 
-                    'Join EHRSS
-                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+
+                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
                         lblJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
                                                    GetGlobalResourceObject("Text", "Yes"), _
                                                    GetGlobalResourceObject("Text", "No"))
@@ -144,8 +145,23 @@ Partial Public Class ClaimTranEnquiry
 
                 End If
 
+                'Non-Local Recovered History
+                panNonLocalRecoveredHistory.Visible = True
+
+                If udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory IsNot Nothing AndAlso _
+                    udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory <> String.Empty Then
+
+                    lblNonLocalRecoveredHistory.Text = IIf(udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory = YesNo.Yes, _
+                                                           GetGlobalResourceObject("Text", "Yes"), _
+                                                           GetGlobalResourceObject("Text", "No"))
+
+                Else
+                    lblNonLocalRecoveredHistory.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+
             Else
                 panJoinEHRSS.Visible = False
+                panNonLocalRecoveredHistory.Visible = False
 
             End If
 

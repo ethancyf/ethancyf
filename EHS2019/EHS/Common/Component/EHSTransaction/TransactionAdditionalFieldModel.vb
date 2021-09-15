@@ -62,7 +62,7 @@ Namespace Component.EHSTransaction
             Public Const ExemptRegFee As String = "ExemptRegFee" ' CRE20-015-06 (Special Support Scheme) [Winnie]
             ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             Public Const ContactNo As String = "ContactNo"
             Public Const Mobile As String = "Mobile"
@@ -80,7 +80,8 @@ Namespace Component.EHSTransaction
             Public Const DischargeResult As String = "DischargeResult"
             Public Const DischargeDate As String = "DischargeDate"
             Public Const DischargeFileID As String = "DischargeFileID"
-            ' CRE20-0022 (Immu record) [End][Chris YIM]
+            Public Const NonLocalRecoveredHistory As String = "NonLocalRecovered"
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
             Public Shared Function ReasonForVisitL1() As String()
                 ' Principal

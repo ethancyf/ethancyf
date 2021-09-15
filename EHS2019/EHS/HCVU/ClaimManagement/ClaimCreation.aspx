@@ -232,7 +232,7 @@
                                                                     <asp:Label ID="lblEnterCreationDetaileHSAccountIDPrefix" runat="server" CssClass="tableTitle" Text="" Width="32px" Height="18" />
                                                                 </td>
                                                                 <td>
-                                                                    <asp:TextBox ID="txtEnterCreationDetaileHSAccountID" runat="server" Width="144" onChange="convertToUpper(this)" MaxLength="18"/>
+                                                                    <asp:TextBox ID="txtEnterCreationDetaileHSAccountID" runat="server" Width="144" onChange="convertToUpper(this)" MaxLength="9"/>
                                                                 </td>
                                                                 <td>
                                                                     <asp:Image ID="imgEnterCreationDetaileHSAccountIDErr" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
@@ -281,6 +281,15 @@
                                                             ImageUrl="<%$ Resources:ImageUrl, ClearSBtn %>" OnClick="ibtnClearSearchSP_Click" />&nbsp;
                                                         <cc1:FilteredTextBoxExtender ID="FilteredSearchSPID" runat="server" FilterType="Custom, Numbers"
                                                             TargetControlID="txtEnterCreationDetailSPID">
+                                                        </cc1:FilteredTextBoxExtender>
+                                                        <cc1:FilteredTextBoxExtender ID="FilteredSearcheHSAccountDocNo" runat="server" FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers"
+                                                            TargetControlID="txtEnterCreationDetaileHSAccountDocNo" ValidChars="()/-">
+                                                        </cc1:FilteredTextBoxExtender>
+                                                        <cc1:FilteredTextBoxExtender ID="FilteredSearcheHSAccountID" runat="server" FilterType="Custom, Numbers"
+                                                            TargetControlID="txtEnterCreationDetaileHSAccountID">
+                                                        </cc1:FilteredTextBoxExtender>
+                                                        <cc1:FilteredTextBoxExtender ID="FilteredSearchRefNo" runat="server" FilterType="Custom, Numbers, UppercaseLetters, LowercaseLetters"
+                                                            TargetControlID="txtEnterCreationDetaileHSAccountRefNo" ValidChars='-'>
                                                         </cc1:FilteredTextBoxExtender>
                                                     </td>
                                                 </tr>

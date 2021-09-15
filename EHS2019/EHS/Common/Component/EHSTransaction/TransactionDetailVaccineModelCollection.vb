@@ -184,6 +184,11 @@ Namespace Component.EHSTransaction
                 End If
                 ' CRE18-004(CIMS Vaccination Sharing) [End][Koala CHENG]
 
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                udtTransactionDetailModelCopy.NonLocalRecovered = udtCurrentHAVaccineModel.NonLocalRecovery
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
+
                 Me.Add(udtTransactionDetailModelCopy)
             Next
         End Sub
@@ -828,8 +833,6 @@ Namespace Component.EHSTransaction
             End Function
         End Class
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Function FilterFindNearestRecord(Optional ByVal strInfoProvider As String = "") As TransactionDetailVaccineModel
             Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
 
@@ -848,10 +851,7 @@ Namespace Component.EHSTransaction
             Return udtResTranDetailVaccineModel
 
         End Function
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Function FilterIncludeBySubsidizeItemCode(ByVal strSubsidizeItemCode As String) As TransactionDetailVaccineModelCollection
             Dim udtResTranDetailVaccineList As New TransactionDetailVaccineModelCollection
 
@@ -864,10 +864,7 @@ Namespace Component.EHSTransaction
             Return udtResTranDetailVaccineList
 
         End Function
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Function FilterExcludeBySubsidizeItemCode(ByVal strSubsidizeItemCode As String) As TransactionDetailVaccineModelCollection
             Dim udtResTranDetailVaccineList As New TransactionDetailVaccineModelCollection
 
@@ -880,6 +877,74 @@ Namespace Component.EHSTransaction
             Return udtResTranDetailVaccineList
 
         End Function
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterFindNearestContactNo() As String
+            Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
+            Dim strNearestContactNo As String = String.Empty
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If udtResTranDetailVaccineModel Is Nothing Then
+                    'Vaccine
+                    udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+
+                    'Contact No.
+                    If udtResTranDetailVaccineModel.ContactNo <> String.Empty Then
+                        strNearestContactNo = udtResTranDetailVaccineModel.ContactNo
+                    End If
+
+                Else
+                    If udtResTranDetailVaccineModel.ServiceReceiveDtm < udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                        'Vaccine
+                        udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+
+                        'Contact No.
+                        If udtResTranDetailVaccineModel.ContactNo <> String.Empty Then
+                            strNearestContactNo = udtResTranDetailVaccineModel.ContactNo
+                        End If
+
+                    End If
+
+                End If
+            Next
+
+            Return strNearestContactNo
+
+        End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterJoinEHRSSHistory() As Boolean
+            Dim blnRes As Boolean = False
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If udtTranDetailVaccineModel.JoinEHRSS = YesNo.Yes Then
+                    blnRes = True
+                End If
+            Next
+
+            Return blnRes
+
+        End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterNonLocalRecoveredHistory() As Boolean
+            Dim blnRes As Boolean = False
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If udtTranDetailVaccineModel.NonLocalRecovered = YesNo.Yes Then
+                    blnRes = True
+                End If
+            Next
+
+            Return blnRes
+
+        End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
     End Class
 End Namespace

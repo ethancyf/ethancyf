@@ -443,8 +443,7 @@ Namespace WebService.Interface
                                 strDoseSeqDescChinese = drVaccine("dose_seq_desc_chinese")
                             End If
 
-                            ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                            ' ---------------------------------------------------------------------------------------------------------
+                            ' Brand ID
                             Dim udtVaccineCodeMapping As VaccineCodeMappingCollection = (New Component.HATransaction.HAVaccineBLL).GetAllVaccineCodeMapping()
 
                             Dim strBrandID As String = String.Empty
@@ -462,19 +461,28 @@ Namespace WebService.Interface
                                 strBrandID = String.Empty
                             End If
 
+                            ' Vaccine Lot No
                             Dim strVaccineLotNo As String = String.Empty
 
                             If drVaccine.Table.Columns.Contains("vaccine_lot_no") AndAlso drVaccine("vaccine_lot_no") IsNot Nothing Then
                                 strVaccineLotNo = drVaccine("vaccine_lot_no").ToString.Trim
                             End If
 
-                            ' CRE20-0022 (Immu record) [End][Chris YIM]
+                            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            ' Non Local Recovered History
+                            Dim strNonLocalRecovered As String = String.Empty
+
+                            If drVaccine.Table.Columns.Contains("covid19_non_local_recovered") AndAlso drVaccine("covid19_non_local_recovered") IsNot Nothing Then
+                                strNonLocalRecovered = drVaccine("covid19_non_local_recovered").ToString.Trim
+                            End If
+                            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
                             udtHAVaccineList.Add(New HAVaccineModel(dtmRecordCreation, dtmInjection, _
                                                                     drVaccine("vaccine_code"), drVaccine("vaccine_desc"), strVaccineDescChinese, _
                                                                     drVaccine("dose_seq_code"), drVaccine("dose_seq_desc"), strDoseSeqDescChinese, _
                                                                     drVaccine("provider"), drVaccine("location"), drVaccine("location_chinese"), drVaccine("onsite"), _
-                                                                    strBrandID, strVaccineLotNo)
+                                                                    strBrandID, strVaccineLotNo, strNonLocalRecovered)
                                                 )
                         Next
 

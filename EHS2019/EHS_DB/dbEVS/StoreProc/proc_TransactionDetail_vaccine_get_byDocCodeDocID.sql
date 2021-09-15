@@ -10,6 +10,13 @@ GO
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
+-- Modified by:		Chris YIM
+-- Modified date:	24 Aug 2021
+-- Description:		Add column [Join_EHRSS], [Contact_No] & [Non_Local_Recovered]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
 -- Modified date:	16 June 2021
 -- Description:		Extend patient name's maximum length (varbinary 100->200)
@@ -596,7 +603,10 @@ EXEC [proc_SymmetricKey_open]
 				WHEN CBD.[Brand_Trade_Name_Chi] = '' THEN CBD.[Brand_Trade_Name]
 				ELSE CBD.[Brand_Trade_Name_Chi]
 			END,
-		TAF.[AdditionalFieldValueCode] AS [Clinic_Type]
+		TAF.[AdditionalFieldValueCode] AS [Clinic_Type],
+		TAF_1.[AdditionalFieldValueCode] AS [Join_EHRSS],
+		TAF_2.[AdditionalFieldValueCode] AS [Contact_No],
+		TAF_3.[AdditionalFieldValueCode] AS [Non_Local_Recovered]
 	FROM 
 		@result R
 			INNER JOIN SubsidizeItem I
@@ -607,6 +617,15 @@ EXEC [proc_SymmetricKey_open]
 			LEFT OUTER JOIN TransactionAdditionalField TAF WITH(NOLOCK)
 				ON R.[Transaction_ID] = TAF.[Transaction_ID]
 					AND TAF.[AdditionalFieldID] = 'ClinicType'
+			LEFT OUTER JOIN TransactionAdditionalField TAF_1 WITH(NOLOCK)
+				ON R.[Transaction_ID] = TAF_1.[Transaction_ID]
+					AND TAF_1.[AdditionalFieldID] = 'JoinEHRSS'
+			LEFT OUTER JOIN TransactionAdditionalField TAF_2 WITH(NOLOCK)
+				ON R.[Transaction_ID] = TAF_2.[Transaction_ID]
+					AND TAF_2.[AdditionalFieldID] = 'ContactNo'
+			LEFT OUTER JOIN TransactionAdditionalField TAF_3 WITH(NOLOCK)
+				ON R.[Transaction_ID] = TAF_3.[Transaction_ID]
+					AND TAF_3.[AdditionalFieldID] = 'NonLocalRecovered'
 			
 	ORDER BY R.[Service_Receive_Dtm]
 

@@ -448,6 +448,28 @@ Namespace Component.ClaimRules
                 End Select
             End Sub
 
+            Sub New(ByVal udtClaimRuleResult As ClaimRuleResult)
+                Me._strSchemeCode = udtClaimRuleResult.SchemeCode
+                Me._intSchemeSeq = udtClaimRuleResult.SchemeSeq
+                Me._strSubsidizeCode = udtClaimRuleResult.SubsidizeCode
+                Me._strRuleGroupCode = udtClaimRuleResult.RuleGroupCode
+
+                Me._blnMatchedCase = udtClaimRuleResult.IsMatched
+
+                Me._strHandleMethod = udtClaimRuleResult.HandleMethod
+                Me._dicResultParam = New Dictionary(Of String, Object)
+
+                For Each udtKVP As KeyValuePair(Of String, Object) In udtClaimRuleResult.ResultParam
+                    Me._dicResultParam.Add(udtKVP.Key, udtKVP.Value)
+                Next
+
+                Me._enumRuleType = udtClaimRuleResult.RuleType
+
+                Me._blnBlock = udtClaimRuleResult.IsBlock
+                Me._enumHandleMethod = udtClaimRuleResult.HandleMethod
+
+            End Sub
+
         End Class
 
         'CRE16-026 (Add PCV13) [Start][Chris YIM]
@@ -2529,18 +2551,8 @@ Namespace Component.ClaimRules
                                     Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
                                     Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
-                                    For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                                        'Find the latest COVID19 transaction in EHS
-                                        If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                                            If udtLatestC19Vaccine Is Nothing Then
-                                                udtLatestC19Vaccine = udtC19Vaccine
-                                            Else
-                                                If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
-                                                    udtLatestC19Vaccine = udtC19Vaccine
-                                                End If
-                                            End If
-                                        End If
-                                    Next
+                                    'Find the latest COVID19 transaction in EHS
+                                    udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
 
                                     'Only allow EHS Transaction, not include CMS / CIMS record
                                     If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -4554,6 +4566,66 @@ Namespace Component.ClaimRules
                                             lstSystemMessage.Add(New ComObject.SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00477))
                                         End If
                                     End If
+                                End If
+
+                            End If
+
+                            If lstSystemMessage.Count > 0 Then
+                                dicResultParam.Add("SystemMessage", lstSystemMessage)
+                            End If
+
+                        End If
+
+                        If Not blnValid Then
+                            Return True
+                        End If
+                    End If
+
+                    Return False
+
+                Case ClaimRuleModel.RuleTypeClass.NON_LOCAL_RECOVERED
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    If udtInputPicker Is Nothing Then Return False
+
+                    If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
+                        Dim blnHasHistory As Boolean = False
+                        Dim blnValid As Boolean = True
+                        Dim strNonLocalRecoveredHistory As String = udtInputPicker.NonLocalRecoveredHistory
+
+                        If strNonLocalRecoveredHistory IsNot Nothing AndAlso strNonLocalRecoveredHistory = YesNo.Yes Then
+                            blnHasHistory = True
+                        Else
+                            Return False
+                        End If
+
+                        If blnHasHistory Then
+                            Dim lstSystemMessage As New List(Of ComObject.SystemMessage)
+                            Dim udtVaccinationRecord As TransactionDetailVaccineModel = Nothing
+
+                            'When claims 2nd dose, find the latest C19 vaccination record
+                            If strDoseCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                                'Find the nearest vaccination record
+                                Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
+                                udtVaccinationRecordList = udtInputPicker.VaccinationRecord.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                                If udtVaccinationRecordList.Count > 0 Then
+                                    udtVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord()
+                                End If
+                            End If
+
+                            '1. Check subsidy 
+                            If strDoseCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                                If udtVaccinationRecord IsNot Nothing Then
+                                    'Warning when the latest vaccination is 1st dose
+                                    If udtVaccinationRecord.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                                        blnValid = False
+                                        lstSystemMessage.Add(New ComObject.SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00482))
+                                    End If
+                                Else
+                                    'Warning when claims 2nd dose C19 vaccine without any C19 vaccination record
+                                    blnValid = False
+                                    lstSystemMessage.Add(New ComObject.SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00482))
                                 End If
 
                             End If

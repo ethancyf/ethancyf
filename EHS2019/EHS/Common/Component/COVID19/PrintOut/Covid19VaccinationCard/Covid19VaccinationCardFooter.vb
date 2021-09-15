@@ -24,6 +24,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
         Private _blnDischarge As Boolean
+        Private _blnNonLocalRecoveredHistory1stDose As Boolean
+        Private _blnNonLocalRecoveredHistory2ndDose As Boolean
 
 #Region "Constructor"
 
@@ -37,7 +39,9 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                        ByRef udtEHSAccount As EHSAccountModel, _
                        ByRef udtPrintTime As Date, _
                        ByRef blnIsSample As Boolean, _
-                       ByVal blnDischarge As Boolean)
+                       ByVal blnDischarge As Boolean, _
+                       ByVal blnNonLocalRecoveredHistory1stDose As Boolean, _
+                       ByVal blnNonLocalRecoveredHistory2ndDose As Boolean)
 
             ' Invoke default constructor
             Me.New()
@@ -49,6 +53,9 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             _udtPrintTime = udtPrintTime
             _blnIsSample = blnIsSample
             _blnDischarge = blnDischarge
+            _blnNonLocalRecoveredHistory1stDose = blnNonLocalRecoveredHistory1stDose
+            _blnNonLocalRecoveredHistory2ndDose = blnNonLocalRecoveredHistory2ndDose
+
             LoadReport()
             ChkIsSample()
 
@@ -89,14 +96,16 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             End If
 
             txtHKID.Text = _udtFormatter.FormatDocIdentityNoForDisplay(patientInformation.DocCode.Trim(), patientInformation.IdentityNum, False, IIf(patientInformation.DocCode = "ADOPC", patientInformation.AdoptionPrefixNum, vbNull))
-            srCovid19FooterDoseTable.Report = New Covid19FooterDoseTableWithNoSignature(_udtEHSTransaction, _udtVaccinationRecordHistory, _blnIsSample, _blnDischarge)
+            srCovid19FooterDoseTable.Report = New Covid19FooterDoseTableWithNoSignature(_udtEHSTransaction, _udtVaccinationRecordHistory, _blnIsSample, _
+                                                                                        _blnDischarge, _blnNonLocalRecoveredHistory1stDose, _blnNonLocalRecoveredHistory2ndDose)
 
             'Transaction No.
             Me.txtTransactionNumber.Text = "Ref: " + _udtFormatter.formatSystemNumber(_udtEHSTransaction.TransactionID)
 
             Me.txtPrintDate.Text = "Printed on " + _udtPrintTime.ToString(_udtFormatter.DisplayVaccinationRecordClockFormat())
 
-            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecordHistory, _udtEHSAccount, _udtPrintTime, _blnDischarge)
+            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecordHistory, _udtEHSAccount, _udtPrintTime, _
+                                                                     _blnDischarge, _blnNonLocalRecoveredHistory1stDose, _blnNonLocalRecoveredHistory2ndDose)
 
         End Sub
 

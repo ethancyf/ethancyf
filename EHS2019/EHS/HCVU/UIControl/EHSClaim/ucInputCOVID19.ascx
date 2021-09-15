@@ -135,6 +135,14 @@
                 <asp:checkbox ID="chkCJoinEHRSS" runat="server" AutoPostBack="false" style="position:relative;left:-5px"/>
             </td>
         </tr>
+        <tr id="trNonLocalRecoveredHistory" runat="server">
+            <td style="width:200px;height:25px;vertical-align:top;padding-bottom:5px">
+                <asp:Label ID="lblCNonLocalRecoveredHistory" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" />
+            </td>
+            <td style="height:25px;vertical-align:top;padding-bottom:5px">
+                <asp:checkbox ID="chkCNonLocalRecoveredHistory" runat="server" AutoPostBack="false" style="position:relative;left:-5px"/>
+            </td>
+        </tr>
     </table>
 </asp:Panel>
 

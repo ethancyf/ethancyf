@@ -1119,6 +1119,7 @@ Partial Public Class EHSClaimV1
                                         End If
 
                                         Me.chkStep2aDeclareClaim.Checked = False
+                                        Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
                                     Else
                                         Dim udcInputRVP As ucInputRVP = Me.udcStep2aInputEHSClaim.GetRVPControl()
 
@@ -1138,6 +1139,7 @@ Partial Public Class EHSClaimV1
                                         End If
 
                                         Me.chkStep2aDeclareClaim.Checked = False
+                                        Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
                                     Else
                                         Dim udcInputVSS As ucInputVSS = Me.udcStep2aInputEHSClaim.GetVSSControl()
 
@@ -1168,6 +1170,7 @@ Partial Public Class EHSClaimV1
                                     End If
 
                                     Me.chkStep2aDeclareClaim.Checked = False
+                                    Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
                                     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
                                 Case SchemeClaimModel.EnumControlType.COVID19RVP
@@ -1184,6 +1187,7 @@ Partial Public Class EHSClaimV1
                                     End If
 
                                     Me.chkStep2aDeclareClaim.Checked = False
+                                    Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
                                     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
                                 Case SchemeClaimModel.EnumControlType.COVID19OR
@@ -1200,6 +1204,7 @@ Partial Public Class EHSClaimV1
                                     End If
 
                                     Me.chkStep2aDeclareClaim.Checked = False
+                                    Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
 
                             End Select
                         End If
@@ -3974,6 +3979,7 @@ Partial Public Class EHSClaimV1
             'Me._udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
 
             Me.chkStep2aDeclareClaim.Checked = False
+            Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
 
             If Not udtSchemeClaim Is Nothing Then
                 Select Case udtSchemeClaim.ControlType
@@ -4661,9 +4667,9 @@ Partial Public Class EHSClaimV1
             Me.udcMsgBoxInfo.Clear()
         End If
 
-        ' CRE20-0022 (Immu record) [Start][Martin Tang]
         Me.chkStep2aDeclareClaim.Checked = False
-        ' CRE20-0022 (Immu record) [End][Martin Tang]
+        Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
+
         Me.udcMsgBoxErr.BuildMessageBox(Me._strValidationFail, udtAuditLogEntry, Common.Component.LogID.LOG00066, "Change ServiceDate")
 
         EHSClaimBasePage.AuditLogChangeServiceDateEnd(udtAuditLogEntry, Me.txtStep2aServiceDate.Text)
@@ -5139,6 +5145,7 @@ Partial Public Class EHSClaimV1
             Me.panStep2aVaccinationRecord.Visible = False
             Me.panStep2aRecipinetContactInfo.Visible = False
             Me.panStep2aDeclareClaim.Visible = False
+            Me.panStep2aDeclareNonLocalRecoveredHistory.Visible = False
             Me.panStep2aPrintClaimConsentForm.Visible = False
             Me.panStep2aPerprintFormNotice.Visible = False
             ' CRE20-0022 (Immu record) [End][Chris YIM]
@@ -5214,6 +5221,9 @@ Partial Public Class EHSClaimV1
         Dim noCategorys As Boolean = True
         Dim blnCOVID19ForClaim As Boolean = False
         Dim blnDischargeClaimed As Boolean = False
+        Dim blnNonLocalRecoveredHistoryClaimed As Boolean = False
+        Dim blnJoinEHRSS As Boolean = False
+        Dim blnNonLocalRecovered As Boolean = False
 
         Dim udtFormatter As Formatter = New Formatter
 
@@ -5532,18 +5542,14 @@ Partial Public Class EHSClaimV1
                                     Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
                                     Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
-                                    For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                                        'Find the latest COVID19 transaction in EHS
-                                        If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                                            If udtLatestC19Vaccine Is Nothing Then
-                                                udtLatestC19Vaccine = udtC19Vaccine
-                                            Else
-                                                If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
-                                                    udtLatestC19Vaccine = udtC19Vaccine
-                                                End If
-                                            End If
-                                        End If
-                                    Next
+                                    'Find the latest COVID19 transaction in EHS
+                                    udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
+
+                                    'Join EHRSS History
+                                    blnJoinEHRSS = udtC19VaccineList.FilterJoinEHRSSHistory
+
+                                    'Non-Local Recovered History
+                                    blnNonLocalRecovered = udtC19VaccineList.FilterNonLocalRecoveredHistory
 
                                     'Only allow EHS Transaction, not include CMS / CIMS record
                                     If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -5655,23 +5661,23 @@ Partial Public Class EHSClaimV1
                                             Dim blnHas1STDOSE As Boolean = False
                                             Dim blnHas2NDDOSE As Boolean = False
 
-                                            'If on list, check whether has injected the 1st dose COVID19 vaccine
+                                            For Each udtVaccine As TransactionDetailVaccineModel In udtC19VaccineList
+                                                'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
+                                                If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                                                    blnHas1STDOSE = True
+                                                End If
+
+                                                'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
+                                                If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                                                    blnHas2NDDOSE = True
+                                                End If
+
+                                            Next
+
+                                            '1. If on discharge list, check whether has injected the 1st dose COVID19 vaccine
                                             If udtDischargeResult IsNot Nothing AndAlso _
                                                 (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
                                                 udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch) Then
-
-                                                For Each udtVaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                                                    'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
-                                                    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                                                        blnHas1STDOSE = True
-                                                    End If
-
-                                                    'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
-                                                    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
-                                                        blnHas2NDDOSE = True
-                                                    End If
-
-                                                Next
 
                                                 If blnHas1STDOSE AndAlso Not blnHas2NDDOSE Then
                                                     notAvailableForClaim = True
@@ -5697,6 +5703,16 @@ Partial Public Class EHSClaimV1
                                                         Next
                                                     End If
                                                 End If
+                                            End If
+
+                                            '2. Check non-local recovered history from previous transaction
+                                            If blnNonLocalRecovered Then
+                                                If blnHas1STDOSE AndAlso Not blnHas2NDDOSE Then
+                                                    notAvailableForClaim = True
+                                                    blnNonLocalRecoveredHistoryClaimed = True
+
+                                                End If
+
                                             End If
 
                                         End If
@@ -5948,7 +5964,7 @@ Partial Public Class EHSClaimV1
                         ' -------------------------------------------------------------------------------------
                         If udtVaccinationBLL.SchemeContainVaccine(udtSchemeClaim) Then
                             If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                                If blnDischargeClaimed Then
+                                If blnDischargeClaimed OrElse blnNonLocalRecoveredHistoryClaimed Then
                                     Me._udtSystemMessage = New SystemMessage("990000", "E", "00483")
                                 Else
                                     Me._udtSystemMessage = New SystemMessage("990000", "E", "00474")
@@ -6079,6 +6095,7 @@ Partial Public Class EHSClaimV1
 
                         'Set Popup if recipient on discharge list
                         Dim udtDischargeResult As DischargeResultModel = _udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(FunctionCode)
+                        Dim blnPopupUsed As Boolean = False
 
                         'Case 1: demographic not matched
                         If _udtSessionHandler.ClaimCOVID19DischargeDemographicReminderGetFromSession(FunctionCode) = False Then
@@ -6090,28 +6107,38 @@ Partial Public Class EHSClaimV1
                         End If
 
                         'Case 2: used of 1 COVID19 vaccine for recovery patient
-                        If _udtSessionHandler.ClaimCOVID19DischargeReminderGetFromSession(FunctionCode) = False Then
-                            If notAvailableForClaim AndAlso blnDischargeClaimed AndAlso udtDischargeResult IsNot Nothing AndAlso _
+                        If _udtSessionHandler.ClaimCOVID19DischargeReminderGetFromSession(FunctionCode) = False AndAlso Not blnPopupUsed Then
+                            If notAvailableForClaim AndAlso _
+                                ((blnDischargeClaimed AndAlso _
+                                 udtDischargeResult IsNot Nothing AndAlso _
                                 (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
-                                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch) Then
+                                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch)) _
+                                OrElse _
+                                (blnNonLocalRecoveredHistoryClaimed)) Then
 
                                 panPopupExclamationImportantReminder.Width = Unit.Pixel(500)
                                 ucNoticePopUpExclamationImportantReminder.HeaderText = GetGlobalResourceObject("Text", "RecoveredPatientReceived1DosesHeading")
                                 ucNoticePopUpExclamationImportantReminder.MessageText = GetGlobalResourceObject("Text", "RecoveredPatientReceived1DosesContent")
                                 ModalPopupExclamationImportantReminder.Show()
+                                blnPopupUsed = True
                             End If
                         End If
 
                         'Case 3: used of 2 COVID19 vaccine before infected
-                        If _udtSessionHandler.ClaimCOVID19DischargeReminderGetFromSession(FunctionCode) = False Then
-                            If notAvailableForClaim AndAlso Not blnDischargeClaimed AndAlso udtDischargeResult IsNot Nothing AndAlso _
+                        If _udtSessionHandler.ClaimCOVID19DischargeReminderGetFromSession(FunctionCode) = False AndAlso Not blnPopupUsed Then
+                            If notAvailableForClaim AndAlso _
+                                ((Not blnDischargeClaimed AndAlso _
+                                udtDischargeResult IsNot Nothing AndAlso _
                                 (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
-                                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch) Then
+                                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch)) _
+                                OrElse _
+                                (Not blnNonLocalRecoveredHistoryClaimed AndAlso blnNonLocalRecovered)) Then
 
                                 panPopupExclamationImportantReminder.Width = Unit.Pixel(500)
                                 ucNoticePopUpExclamationImportantReminder.HeaderText = GetGlobalResourceObject("Text", "RecoveredPatientReceived2DosesHeading")
                                 ucNoticePopUpExclamationImportantReminder.MessageText = GetGlobalResourceObject("Text", "RecoveredPatientReceived2DosesContent")
                                 ModalPopupExclamationImportantReminder.Show()
+                                blnPopupUsed = True
                             End If
                         End If
 
@@ -6129,6 +6156,7 @@ Partial Public Class EHSClaimV1
 
                             Dim udtPersonalInfo As EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode)
 
+                            'Display of Join eHealth
                             If Not CompareEligibleRuleByAge(dtmServiceDate, udtPersonalInfo, intAge, "<", "Y", "DAY3") Then
 
                                 If COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
@@ -6176,9 +6204,12 @@ Partial Public Class EHSClaimV1
 
                                     'Carry Forward: Join eHealth
                                     If udtTranDetailLatestVaccine IsNot Nothing Then
+                                        'Default settings
                                         chkStep2aDeclareJoineHRSS.Enabled = False
+
                                         If udtEHSTransactionLatestVaccine IsNot Nothing Then
 
+                                            'Join eHealth
                                             If udtEHSTransactionLatestVaccine.TransactionAdditionFields IsNot Nothing AndAlso _
                                                udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS IsNot Nothing Then
 
@@ -6187,7 +6218,7 @@ Partial Public Class EHSClaimV1
                                                          SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, SchemeClaimModel.COVID19SB, _
                                                          SchemeClaimModel.VSS, SchemeClaimModel.RVP
 
-                                                        If udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS = YesNo.Yes Then
+                                                        If blnJoinEHRSS Then
                                                             panStep2aDeclareJoineHRSS.Visible = False
                                                             'If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
                                                             '    chkStep2aDeclareJoineHRSS.Checked = True
@@ -6208,14 +6239,53 @@ Partial Public Class EHSClaimV1
                                                 'chkStep2aDeclareJoineHRSS.Checked = False
 
                                             End If
+
                                         Else
                                             chkStep2aDeclareJoineHRSS.Enabled = True
-                                            'chkStep2aDeclareJoineHRSS.Checked = False
 
                                         End If
                                     End If
 
                                 End If
+
+                            End If
+
+                            'Carry Forward: Non-Local Recovered History
+                            If udtTranDetailLatestVaccine IsNot Nothing Then
+                                'Default settings
+                                chkStep2aDeclareNonLocalRecoveredHistory.Enabled = False
+
+                                'If udtEHSTransactionLatestVaccine IsNot Nothing Then
+                                '    'Non-Local Recovered History
+                                '    If udtEHSTransactionLatestVaccine.TransactionAdditionFields IsNot Nothing AndAlso _
+                                '       udtEHSTransactionLatestVaccine.TransactionAdditionFields.NonLocalRecoveredHistory IsNot Nothing Then
+
+                                Select Case udtSchemeClaim.SchemeCode.Trim.ToUpper
+                                    Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19RVP, _
+                                         SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, SchemeClaimModel.COVID19SB, _
+                                         SchemeClaimModel.VSS, SchemeClaimModel.RVP
+
+                                        'If udtEHSTransactionLatestVaccine.TransactionAdditionFields.NonLocalRecoveredHistory = YesNo.Yes Then
+                                        If blnNonLocalRecovered Then
+                                            'panStep2aDeclareNonLocalRecoveredHistory.Visible = False
+                                            chkStep2aDeclareNonLocalRecoveredHistory.Enabled = False
+                                            chkStep2aDeclareNonLocalRecoveredHistory.Checked = True
+                                        Else
+                                            chkStep2aDeclareNonLocalRecoveredHistory.Enabled = True
+                                        End If
+
+                                    Case Else
+                                        chkStep2aDeclareNonLocalRecoveredHistory.Enabled = True
+                                End Select
+
+                                '    Else
+                                '        chkStep2aDeclareNonLocalRecoveredHistory.Enabled = True
+                                '    End If
+
+                                'Else
+                                '    chkStep2aDeclareNonLocalRecoveredHistory.Enabled = True
+
+                                'End If
 
                             End If
 
@@ -6247,6 +6317,7 @@ Partial Public Class EHSClaimV1
                 panStep2aRecipinetContactInfo.Visible = True
                 panStep2aPrintClaimConsentForm.Visible = False
                 panStep2aDeclareClaim.Visible = True
+                panStep2aDeclareNonLocalRecoveredHistory.Visible = True
 
                 'Bind the vaccination record table in enter claim page
                 Dim dtVaccineRecord As DataTable = TransactionDetailListToCOVID19DataTable(GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode))
@@ -6423,6 +6494,7 @@ Partial Public Class EHSClaimV1
                 panStep2aRecipinetContactInfo.Visible = False
                 panStep2aPrintClaimConsentForm.Visible = False
                 panStep2aDeclareClaim.Visible = False
+                panStep2aDeclareNonLocalRecoveredHistory.Visible = False
 
                 CheckValidHKICInScheme(udtSchemeClaim.SchemeCode)
 
@@ -6436,16 +6508,15 @@ Partial Public Class EHSClaimV1
 
     Private Sub Step2aClear()
         Me.imgStep2aServiceDateError.Visible = False
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Me.imgStep2aContactNoError.Visible = False
         Me.txtStep2aContactNo.Text = String.Empty
         Me.imgStep2aDeclareClaimError.Visible = False
         Me.chkStep2aDeclareClaim.Checked = False
+        Me.chkStep2aDeclareNonLocalRecoveredHistory.Enabled = True
+        Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
         Me.chkStep2aDeclareJoineHRSS.Checked = False
         Me.chkStep2aMobile.Checked = False
         Me.txtStep2aRemark.Text = String.Empty
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Me.udcStep2aInputEHSClaim.Clear()
         Me.udcStep2aReadOnlyDocumnetType.Clear()
@@ -6734,9 +6805,8 @@ Partial Public Class EHSClaimV1
             Else
 
                 Step2bClaimSubmit()
-                ' CRE20-0022 (Immu record) [Start][Martin Tang]
                 Me.chkStep2aDeclareClaim.Checked = False
-                ' CRE20-0022 (Immu record) [End][Martin Tang]
+                Me.chkStep2aDeclareNonLocalRecoveredHistory.Checked = False
             End If
 
         Else
@@ -8245,6 +8315,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
         udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
         udtInputPicker.DischargeResult = udtDischargeResult
+        udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
 
         udcInputRVPCOVID19.SetDoseErrorImage(False)
 
@@ -8323,18 +8394,8 @@ Partial Public Class EHSClaimV1
             udtInputPicker.Brand = udcInputRVPCOVID19.VaccineBrand
             udtInputPicker.VaccinationRecord = udtC19VaccineList
 
-            For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                'Find the latest COVID19 transaction in EHS
-                If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                    If udtLatestC19Vaccine Is Nothing Then
-                        udtLatestC19Vaccine = udtC19Vaccine
-                    Else
-                        If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
-                            udtLatestC19Vaccine = udtC19Vaccine
-                        End If
-                    End If
-                End If
-            Next
+            'Find the latest COVID19 transaction in EHS
+            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
 
             'Only allow EHS Transaction, not include CMS / CIMS record
             If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -8418,6 +8479,10 @@ Partial Public Class EHSClaimV1
                             Me.ucNoticePopUpExclamationError.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
 
                             Me.ucNoticePopUpExclamationError.MessageText = strHTMLList
+
+                            Me.ucNoticePopUpExclamationError.ShowEnquiryDesc = False
+
+                            'Me.ucNoticePopUpExclamationError.EnquiryDescText = "<span style='font-weight:bold'>" & GetGlobalResourceObject("Text", "RecoveredPatientEnquiry") & "</span>"
 
                             Me.ModalPopupExclamationErrorBox.Show()
 
@@ -8659,6 +8724,26 @@ Partial Public Class EHSClaimV1
                     udtTransactAdditionfield = New TransactionAdditionalFieldModel()
                     udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
                     udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+                    'Non-Local Recovered History
+                    Dim strNonLocalRecoveredHistory As String = String.Empty
+
+                    If panStep2aDeclareNonLocalRecoveredHistory.Visible Then
+                        If chkStep2aDeclareNonLocalRecoveredHistory.Enabled Then
+                            strNonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+                        Else
+                            strNonLocalRecoveredHistory = YesNo.Yes
+                        End If
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.NonLocalRecoveredHistory
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strNonLocalRecoveredHistory
                     udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
                     udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
                     udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
@@ -9296,6 +9381,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
         udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
         udtInputPicker.DischargeResult = udtDischargeResult
+        udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
 
         udcInputVSSCOVID19.SetDoseErrorImage(False)
 
@@ -9379,18 +9465,8 @@ Partial Public Class EHSClaimV1
             udtInputPicker.Brand = udcInputVSSCOVID19.VaccineBrand
             udtInputPicker.VaccinationRecord = udtC19VaccineList
 
-            For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                'Find the latest COVID19 transaction in EHS
-                If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                    If udtLatestC19Vaccine Is Nothing Then
-                        udtLatestC19Vaccine = udtC19Vaccine
-                    Else
-                        If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
-                            udtLatestC19Vaccine = udtC19Vaccine
-                        End If
-                    End If
-                End If
-            Next
+            'Find the latest COVID19 transaction in EHS
+            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
 
             'Only allow EHS Transaction, not include CMS / CIMS record
             If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -9474,6 +9550,10 @@ Partial Public Class EHSClaimV1
                             Me.ucNoticePopUpExclamationError.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
 
                             Me.ucNoticePopUpExclamationError.MessageText = strHTMLList
+
+                            Me.ucNoticePopUpExclamationError.ShowEnquiryDesc = False
+
+                            'Me.ucNoticePopUpExclamationError.EnquiryDescText = "<span style='font-weight:bold'>" & GetGlobalResourceObject("Text", "RecoveredPatientEnquiry") & "</span>"
 
                             Me.ModalPopupExclamationErrorBox.Show()
 
@@ -9602,18 +9682,18 @@ Partial Public Class EHSClaimV1
 
                             Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
 
-                        	Me.ModalPopupExclamationConfirmationBox.Show()
+                            Me.ModalPopupExclamationConfirmationBox.Show()
 
-                        	_udtAuditLogEntry.AddDescripton("Message", strText)
-                        	EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
 
-                   		End If
+                        End If
 
-                    	isValid = False
-                	End If
-                
-				End If
-				
+                        isValid = False
+                    End If
+
+                End If
+
                 Me._udtSessionHandler.EligibleResultSaveToSession(udtRuleResults)
             End If
         Else
@@ -9704,6 +9784,26 @@ Partial Public Class EHSClaimV1
                     udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
                     udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
                     Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+                    'Non-Local Recovered History
+                    Dim strNonLocalRecoveredHistory As String = String.Empty
+
+                    If panStep2aDeclareNonLocalRecoveredHistory.Visible Then
+                        If chkStep2aDeclareNonLocalRecoveredHistory.Enabled Then
+                            strNonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+                        Else
+                            strNonLocalRecoveredHistory = YesNo.Yes
+                        End If
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.NonLocalRecoveredHistory
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strNonLocalRecoveredHistory
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
                 End If
             End If
 
@@ -9749,6 +9849,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
         udtInputPicker.DischargeResult = udtDischargeResult
+        udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
 
         Me.udcMsgBoxErr.Clear()
 
@@ -10166,6 +10267,26 @@ Partial Public Class EHSClaimV1
                     udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
                     udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
                     Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+                    'Non-Local Recovered History
+                    Dim strNonLocalRecoveredHistory As String = String.Empty
+
+                    If panStep2aDeclareNonLocalRecoveredHistory.Visible Then
+                        If chkStep2aDeclareNonLocalRecoveredHistory.Enabled Then
+                            strNonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+                        Else
+                            strNonLocalRecoveredHistory = YesNo.Yes
+                        End If
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.NonLocalRecoveredHistory
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strNonLocalRecoveredHistory
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
                 End If
             End If
 
@@ -10211,6 +10332,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
         udtInputPicker.DischargeResult = udtDischargeResult
+        udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
 
         Me.udcMsgBoxErr.Clear()
 
@@ -10604,6 +10726,26 @@ Partial Public Class EHSClaimV1
                     udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
                     udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
                     Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+                    'Non-Local Recovered History
+                    Dim strNonLocalRecoveredHistory As String = String.Empty
+
+                    If panStep2aDeclareNonLocalRecoveredHistory.Visible Then
+                        If chkStep2aDeclareNonLocalRecoveredHistory.Enabled Then
+                            strNonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+                        Else
+                            strNonLocalRecoveredHistory = YesNo.Yes
+                        End If
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.NonLocalRecoveredHistory
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strNonLocalRecoveredHistory
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
                 End If
             End If
 
@@ -10649,6 +10791,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
         udtInputPicker.DischargeResult = udtDischargeResult
+        udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
 
         Me.udcMsgBoxErr.Clear()
 
@@ -10724,18 +10867,8 @@ Partial Public Class EHSClaimV1
             udtInputPicker.Brand = udcInputCOVID19OR.VaccineBrand
             udtInputPicker.VaccinationRecord = udtC19VaccineList
 
-            For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                'Find the latest COVID19 transaction in EHS
-                If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                    If udtLatestC19Vaccine Is Nothing Then
-                        udtLatestC19Vaccine = udtC19Vaccine
-                    Else
-                        If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
-                            udtLatestC19Vaccine = udtC19Vaccine
-                        End If
-                    End If
-                End If
-            Next
+            'Find the latest COVID19 transaction in EHS
+            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
 
             'Only allow EHS Transaction, not include CMS / CIMS record
             If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -10932,29 +11065,29 @@ Partial Public Class EHSClaimV1
                     If Not blnError AndAlso blnWarning Then
                         udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
 
-	                    'not Popup prompt before
-	                    If strText.Equals(String.Empty) AndAlso isValid Then
+                        'not Popup prompt before
+                        If strText.Equals(String.Empty) AndAlso isValid Then
                             Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
 
                             'Get the prompt message from ClaimRule
                             If udtClaimRuleResultList.Count = 1 Then
                                 strHeader = Me.Step2aPromptHeader(udtClaimRuleResultList(0))
                             End If
-	
-	                        If strHeader <> String.Empty Then
-	                            Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = strHeader
-	                        End If
-	
+
+                            If strHeader <> String.Empty Then
+                                Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = strHeader
+                            End If
+
                             Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
-	
-	                        Me.ModalPopupExclamationConfirmationBox.Show()
-	
-	                        _udtAuditLogEntry.AddDescripton("Message", strText)
-	                        EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
-	
-	                    End If
-	
-	                    isValid = False
+
+                            Me.ModalPopupExclamationConfirmationBox.Show()
+
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                        End If
+
+                        isValid = False
                     End If
 
                 End If
@@ -11044,6 +11177,26 @@ Partial Public Class EHSClaimV1
                     udtTransactAdditionfield = New TransactionAdditionalFieldModel()
                     udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
                     udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+                    'Non-Local Recovered History
+                    Dim strNonLocalRecoveredHistory As String = String.Empty
+
+                    If panStep2aDeclareNonLocalRecoveredHistory.Visible Then
+                        If chkStep2aDeclareNonLocalRecoveredHistory.Enabled Then
+                            strNonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+                        Else
+                            strNonLocalRecoveredHistory = YesNo.Yes
+                        End If
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.NonLocalRecoveredHistory
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strNonLocalRecoveredHistory
                     udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
                     udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
                     udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
@@ -11763,34 +11916,52 @@ Partial Public Class EHSClaimV1
         'Get the prompt message from ClaimRule
         If udtClaimRuleResultList.Count > 1 Then
             Dim intCt As Integer = 1
+
+            'Message Content
             For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
                 Dim strTempText As String = Me.Step2aPromptClaimRule(udtClaimRuleResult, lstRemark, udtClaimRuleResult.HandleMethod)
 
                 If udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
                     Dim strTextArr() As String = Split(strTempText, "|||")
 
-                    For intTextArr As Integer = 0 To strTextArr.Length - 1
-                        If strFormattedText = String.Empty Then
-                            strFormattedText = strTextArr(intTextArr)
-                        Else
-                            strFormattedText = strFormattedText + "</li><li style='padding-bottom:10px'>" + strTextArr(intTextArr)
-                        End If
+                    strFormattedText = String.Empty
 
+                    For intTextArr As Integer = 0 To strTextArr.Length - 1
+                        If Not strText.Contains(strTextArr(intTextArr)) Then
+                            If strFormattedText = String.Empty Then
+                                strFormattedText = strTextArr(intTextArr)
+                            Else
+                                strFormattedText = strFormattedText + "</li><li style='padding-bottom:10px'>" + strTextArr(intTextArr)
+                            End If
+                        End If
                     Next
 
                     strTempText = strFormattedText
-                End If
 
-                If strText = String.Empty Then
-                    strText = strTempText
+                    If strTempText <> String.Empty Then
+                        If strText = String.Empty Then
+                            strText = strTempText
+                        Else
+                            strText = strText + "</li><li style='padding-bottom:10px'>" + strTempText
+                        End If
+                    End If
+
                 Else
-                    strText = strText + "</li><li style='padding-bottom:10px'>" + strTempText
+                    If Not strText.Contains(strTempText) Then
+                        If strText = String.Empty Then
+                            strText = strTempText
+                        Else
+                            strText = strText + "</li><li style='padding-bottom:10px'>" + strTempText
+                        End If
+                    End If
+
                 End If
 
                 intCt = intCt + 1
 
             Next
 
+            'Remarks
             For intRemark As Integer = 0 To lstRemark.Count - 1
                 'If strRemark = String.Empty Then
                 '    strRemark = lstRemark(intRemark)
@@ -11801,6 +11972,7 @@ Partial Public Class EHSClaimV1
                 intRemark = intRemark + 1
             Next
 
+            'Final string result
             If strRemark <> String.Empty Then
                 strRes = strStartHTML + strText + strRemark + strEndHTML
             Else
@@ -11813,6 +11985,8 @@ Partial Public Class EHSClaimV1
             If udtClaimRuleResultList(0).HandleMethod = HandleMethodENum.WarningReason Then
 
                 Dim strTextArr() As String = Split(strText, "|||")
+
+                strFormattedText = String.Empty
 
                 For intTextArr As Integer = 0 To strTextArr.Length - 1
                     If strFormattedText = String.Empty Then
@@ -12507,7 +12681,7 @@ Partial Public Class EHSClaimV1
                 End If
             End If
 
-            'Join EHRSS
+            'Join EHRSS, Non-Local Recovered History
             If (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19RVP OrElse _
@@ -12517,11 +12691,11 @@ Partial Public Class EHSClaimV1
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) Then
 
+                'Join EHRSS
                 If COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
                     panStep2bJoinEHRSS.Visible = True
 
-                    'Join EHRSS
-                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
                         lblStep2bJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
                                                    GetGlobalResourceObject("Text", "Yes"), _
                                                    GetGlobalResourceObject("Text", "No"))
@@ -12535,8 +12709,23 @@ Partial Public Class EHSClaimV1
 
                 End If
 
+                'Non-Local Recovered History
+                panStep2bNonLocalRecoveredHistory.Visible = True
+
+                If udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory IsNot Nothing AndAlso _
+                    udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory <> String.Empty Then
+
+                    lblStep2bNonLocalRecoveredHistory.Text = IIf(udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory = YesNo.Yes, _
+                                                             GetGlobalResourceObject("Text", "Yes"), _
+                                                             GetGlobalResourceObject("Text", "No"))
+
+                Else
+                    lblStep2bNonLocalRecoveredHistory.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+
             Else
                 panStep2bJoinEHRSS.Visible = False
+                panStep2bNonLocalRecoveredHistory.Visible = False
 
             End If
 
@@ -13210,7 +13399,7 @@ Partial Public Class EHSClaimV1
                 lblStep3Remark.Text = GetGlobalResourceObject("Text", "NotProvided")
             End If
 
-            'Join EHRSS
+            'Join EHRSS, Non-Local Recovered History
             If (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19RVP OrElse _
@@ -13220,11 +13409,11 @@ Partial Public Class EHSClaimV1
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) Then
 
+                'Join EHRSS
                 If COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
                     panStep3JoinEHRSS.Visible = True
 
-                    'Join EHRSS
-                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
                         lblStep3JoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
                                                    GetGlobalResourceObject("Text", "Yes"), _
                                                    GetGlobalResourceObject("Text", "No"))
@@ -13238,8 +13427,23 @@ Partial Public Class EHSClaimV1
 
                 End If
 
+                'Non-Local Recovered History
+                panStep3NonLocalRecoveredHistory.Visible = True
+
+                If udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory IsNot Nothing AndAlso _
+                    udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory <> String.Empty Then
+
+                    lblStep3NonLocalRecoveredHistory.Text = IIf(udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory = YesNo.Yes, _
+                                                             GetGlobalResourceObject("Text", "Yes"), _
+                                                             GetGlobalResourceObject("Text", "No"))
+
+                Else
+                    lblStep3NonLocalRecoveredHistory.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+
             Else
                 panStep3JoinEHRSS.Visible = False
+                panStep3NonLocalRecoveredHistory.Visible = False
 
             End If
 

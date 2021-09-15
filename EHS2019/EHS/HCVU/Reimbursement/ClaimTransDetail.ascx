@@ -260,6 +260,14 @@
                                     <asp:Label ID="lblJoinEHRSS" runat="server" CssClass="tableText"></asp:Label>
                                 </td>
                             </tr>
+                            <tr id="trNonLocalRecoveredHistory" runat="server">
+                                <td style="vertical-align: top; width: 200px">
+                                    <asp:Label ID="lblNonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory %>"></asp:Label>
+                                </td>
+                                <td style="vertical-align: top">
+                                    <asp:Label ID="lblNonLocalRecoveredHistory" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                            </tr>
                             <tr id="trTMeansOfInput" runat="server">
                                 <td style="vertical-align: top; width: 200px">
                                     <asp:Label ID="lblTMeansOfInputText" runat="server" Text="<%$ Resources: Text, MeansOfInput %>"></asp:Label></td>

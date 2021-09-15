@@ -22,6 +22,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
         Private _blnDischarge As Boolean
+        Private _blnNonLocalRecoveredHistory1stDose As Boolean
+        Private _blnNonLocalRecoveredHistory2ndDose As Boolean
         Private udtCOVID19BLL As New COVID19.COVID19BLL
 
 #Region "Constructor"
@@ -34,7 +36,9 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel, _
                        ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, _
                        ByRef blnIsSample As Boolean, _
-                       ByVal blnDischarge As Boolean)
+                       ByVal blnDischarge As Boolean, _
+                       ByVal blnNonLocalRecoveredHistory1stDose As Boolean, _
+                       ByVal blnNonLocalRecoveredHistory2ndDose As Boolean)
             ' Invoke default constructor
             Me.New()
 
@@ -42,6 +46,9 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             _udtVaccinationRecordHistory = udtVaccinationRecordHistory
             _blnIsSample = blnIsSample
             _blnDischarge = blnDischarge
+            _blnNonLocalRecoveredHistory1stDose = blnNonLocalRecoveredHistory1stDose
+            _blnNonLocalRecoveredHistory2ndDose = blnNonLocalRecoveredHistory2ndDose
+
             LoadReport()
             ChkIsSample()
 
@@ -110,7 +117,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     '                           Environment.NewLine & _
                     '                           HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
                     'End If
-                    If _blnDischarge Then
+                    If _blnDischarge OrElse _blnNonLocalRecoveredHistory1stDose OrElse _blnNonLocalRecoveredHistory2ndDose Then
                         SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
                         SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
                                                Environment.NewLine & _

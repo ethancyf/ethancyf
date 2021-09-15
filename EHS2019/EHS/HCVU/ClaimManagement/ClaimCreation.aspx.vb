@@ -2374,6 +2374,10 @@ Partial Public Class ClaimCreation
                 udtWarningMessage = udtValidationResults.WarningResults
                 If udtWarningMessage.RuleResults.Count > 0 Then
                     udtEHSTransaction.WarningMessage = udtWarningMessage
+
+                    Dim udtAdditionalWarningMessage As New EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResultList
+                    Dim udtDeleteWarningMessage As New EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResultList
+
                     For Each udtWarning As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtWarningMessage.RuleResults
 
                         If udtWarning.ClaimRuleResult IsNot Nothing AndAlso _
@@ -2383,8 +2387,25 @@ Partial Public Class ClaimCreation
                             Dim udtSystemMessageList As List(Of SystemMessage) = udtWarning.ClaimRuleResult.ResultParam("SystemMessage")
 
                             For Each udtSystemMessage As SystemMessage In udtSystemMessageList
-                                Me.udcWarningMessageBox.AddMessage(udtSystemMessage)
+                                If Not udcWarningMessageBox.ContainSystemMessage(udtSystemMessage.FunctionCode, udtSystemMessage.SeverityCode, udtSystemMessage.MessageCode) Then
+                                    Me.udcWarningMessageBox.AddMessage(udtSystemMessage)
+
+                                    Dim udtAdditionalWarning As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult = New EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult(udtWarning)
+
+                                    udtAdditionalWarning.ErrorMessage.FunctionCode = udtSystemMessage.FunctionCode
+                                    udtAdditionalWarning.ErrorMessage.SeverityCode = udtSystemMessage.SeverityCode
+                                    udtAdditionalWarning.ErrorMessage.MessageCode = udtSystemMessage.MessageCode
+                                    udtAdditionalWarning.MessageDescription = udtSystemMessage.GetMessage(EnumLanguage.EN)
+                                    udtAdditionalWarning.MessageDescriptionChi = udtSystemMessage.GetMessage(EnumLanguage.TC)
+
+                                    udtAdditionalWarningMessage.Add(udtAdditionalWarning)
+
+                                End If
+
                             Next
+
+                            udtDeleteWarningMessage.Add(udtWarning)
+
 
                         Else
                             If Not IsNothing(udtWarning.MessageVariableNameArrayList) AndAlso Not IsNothing(udtWarning.MessageVariableValueArrayList) AndAlso _
@@ -2398,20 +2419,17 @@ Partial Public Class ClaimCreation
 
                         blnNeedOverrideReason = True
                     Next
+
+                    If udtDeleteWarningMessage.RuleResults.Count > 0 Then
+                        udtEHSTransaction.WarningMessage.Delete(udtDeleteWarningMessage)
+                    End If
+
+                    If udtAdditionalWarningMessage.RuleResults.Count > 0 Then
+                        udtEHSTransaction.WarningMessage.Merge(udtAdditionalWarningMessage)
+                    End If
+
                 End If
             End If
-
-
-            'If udtClaimRuleResult IsNot Nothing Then
-            '    Select Case (sm.FunctionCode.ToString + "-" + sm.SeverityCode.ToString + "-" + sm.MessageCode.ToString)
-            '        Case "990000-E-00461"
-            '            Me.udcMsgBoxErr.AddMessage(sm, "%s", udtClaimRuleResult.ResultParam("%DaysApart"))
-            '        Case Else
-            '            Me.udcMsgBoxErr.AddMessage(sm)
-            '    End Select
-            'Else
-            '    Me.udcMsgBoxErr.AddMessage(sm)
-            'End If
 
         End If
 
@@ -2923,7 +2941,7 @@ Partial Public Class ClaimCreation
         Dim udtSelectedScheme As SchemeClaimModel = udtSessionHandlerBLL.SelectSchemeGetFromSession(FunctionCode)
 
         Select Case udtSelectedScheme.SchemeCode.Trim
-            Case SchemeClaimModel.PPP
+            Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
                 CType(Me.udInputEHSClaim.GetPPPControl(), ucInputPPP).SetSchoolCode(strSchoolCode, udtSelectedScheme.SchemeCode)
 
             Case Else

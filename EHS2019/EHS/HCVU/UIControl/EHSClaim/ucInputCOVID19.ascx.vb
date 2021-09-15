@@ -740,6 +740,7 @@ Partial Public Class ucInputCOVID19
 
             '_udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(txtCVaccineLotNo.Text.Trim, FunctCode)
 
+            'Contact No.
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
             udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
             udtTransactAdditionfield.AdditionalFieldValueCode = txtCContactNo.Text.Trim
@@ -749,15 +750,7 @@ Partial Public Class ucInputCOVID19
             udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-            'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-            'udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Mobile
-            'udtTransactAdditionfield.AdditionalFieldValueCode = IIf(Me.chkStep2aMobile.Checked, YesNo.Yes, YesNo.No)
-            'udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-            'udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
-            'udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
-            'udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
-            'Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-
+            'Remarks
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
             udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Remarks
             udtTransactAdditionfield.AdditionalFieldValueCode = String.Empty
@@ -767,6 +760,7 @@ Partial Public Class ucInputCOVID19
             udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
+            'Join eHRSS
             Dim strJoinEHRSS As String = String.Empty
 
             If udtEHSTransaction.EHSAcct.SearchDocCode IsNot Nothing Then
@@ -780,6 +774,20 @@ Partial Public Class ucInputCOVID19
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
             udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
             udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
+            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+            udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+            'Non-Local Recoverd History
+            Dim strNonLocalRecoveredHistory As String = String.Empty
+
+            strNonLocalRecoveredHistory = IIf(chkCNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.NonLocalRecoveredHistory
+            udtTransactAdditionfield.AdditionalFieldValueCode = strNonLocalRecoveredHistory
             udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
             udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
             udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq

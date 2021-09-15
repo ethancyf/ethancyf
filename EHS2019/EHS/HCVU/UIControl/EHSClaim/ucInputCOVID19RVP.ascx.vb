@@ -1032,7 +1032,6 @@ Partial Public Class ucInputCOVID19RVP
             udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-
             'Contact No.
             Dim strContactNo As String = String.Empty
 
@@ -1075,6 +1074,20 @@ Partial Public Class ucInputCOVID19RVP
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
             udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
             udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
+            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+            udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+            'Non-Local Recoverd History
+            Dim strNonLocalRecoveredHistory As String = String.Empty
+
+            strNonLocalRecoveredHistory = IIf(chkCNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.NonLocalRecoveredHistory
+            udtTransactAdditionfield.AdditionalFieldValueCode = strNonLocalRecoveredHistory
             udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
             udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
             udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq

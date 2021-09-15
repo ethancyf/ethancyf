@@ -4232,8 +4232,6 @@ Namespace Component.EHSTransaction
             Dim strHighRisk As String = String.Empty
             If Not drSource.IsNull("High_Risk") Then strHighRisk = drSource("High_Risk").ToString().Trim()
 
-            ' CRE20-0023 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             Dim strVaccineBrand As String = String.Empty
             If Not drSource.IsNull("Vaccine_Brand") Then strVaccineBrand = drSource("Vaccine_Brand").ToString().Trim()
 
@@ -4249,6 +4247,17 @@ Namespace Component.EHSTransaction
             Dim strClinicType As String = String.Empty
             If Not drSource.IsNull("Clinic_Type") Then strClinicType = drSource("Clinic_Type").ToString().Trim()
 
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strJoinEHRSS As String = String.Empty
+            If Not drSource.IsNull("Join_EHRSS") Then strJoinEHRSS = drSource("Join_EHRSS").ToString().Trim()
+
+            Dim strContactNo As String = String.Empty
+            If Not drSource.IsNull("Contact_No") Then strContactNo = drSource("Contact_No").ToString().Trim()
+
+            Dim strNonLocalRecovered As String = String.Empty
+            If Not drSource.IsNull("Non_Local_Recovered") Then strNonLocalRecovered = drSource("Non_Local_Recovered").ToString().Trim()
+
             Dim udtTransactionDetailVaccineModel As New TransactionDetailVaccineModel( _
                 drSource("Transaction_ID").ToString(), _
                 drSource("Scheme_Code").ToString(), _
@@ -4263,7 +4272,7 @@ Namespace Component.EHSTransaction
                 dtmTransactionDtm, _
                 strAvailableItemDesc, _
                 strAvailableItemDescChi)
-            ' CRE20-0023 (Immu record) [End][Chris YIM]
+
 
             udtTransactionDetailVaccineModel.AvailableItemDescCN = strAvailableItemDescCN
             udtTransactionDetailVaccineModel.ServiceReceiveDtm = dtmServiceReceiveDtm
@@ -4290,6 +4299,12 @@ Namespace Component.EHSTransaction
                 Case Else
                     udtTransactionDetailVaccineModel.ClinicType = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeEnum.NA
             End Select
+
+            udtTransactionDetailVaccineModel.JoinEHRSS = strJoinEHRSS.Trim
+            udtTransactionDetailVaccineModel.ContactNo = strContactNo.Trim
+            udtTransactionDetailVaccineModel.NonLocalRecovered = strNonLocalRecovered.Trim
+
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
             Return udtTransactionDetailVaccineModel
 

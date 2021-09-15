@@ -237,4 +237,31 @@ Partial Public Class ucInputRVPCOVID19
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkCJoinEHRSS As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''trNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trNonLocalRecoveredHistory As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblCNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''chkCNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkCNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.CheckBox
 End Class

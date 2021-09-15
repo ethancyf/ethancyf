@@ -129,11 +129,18 @@ Namespace Component.HATransaction
             End Get
         End Property
 
+        Private _strNonLocalRecovery As String
+        Public ReadOnly Property NonLocalRecovery() As String
+            Get
+                Return _strNonLocalRecovery
+            End Get
+        End Property
+
         Public Sub New(ByVal dtmCreateDtm As DateTime, ByVal dtmInjectionDtm As DateTime, _
                         ByVal strVaccineCode As String, ByVal strVaccineDesc As String, ByVal strVaccineDescChinese As String, _
                         ByVal strDoseSeqCode As String, ByVal strDoseSeqDesc As String, ByVal strDoseSeqDescChinese As String, _
                         ByVal strProvider As String, ByVal strLocation As String, ByVal strLocationChinese As String, ByVal strOnSite As String,
-                        ByVal strVaccineBrand As String, ByVal strVaccineLotNo As String)
+                        ByVal strVaccineBrand As String, ByVal strVaccineLotNo As String, ByVal strNonLocalRecovery As String)
 
             _dCreateDtm = dtmCreateDtm
             _dInjectionDtm = dtmInjectionDtm
@@ -148,6 +155,7 @@ Namespace Component.HATransaction
             _strLocationChinese = strLocationChinese
             _strVaccineBrand = strVaccineBrand
             _strVaccineLotNo = strVaccineLotNo
+            _strNonLocalRecovery = strNonLocalRecovery
 
             If strOnSite <> OnSiteClass.Y AndAlso strOnSite <> OnSiteClass.N Then
                 Throw New Exception(String.Format("HAVaccineModel: Invalid onsite value ({0})", strOnSite))
@@ -162,7 +170,7 @@ Namespace Component.HATransaction
                                         _strVaccineCode, _strVaccineDesc, _strVaccineDescChinese, _
                                         _strDoseSeqCode, _strDoseSeqDesc, _strDoseSeqDescChinese, _
                                         _strProvider, _strLocation, _strLocationChinese, _strOnSite, _
-                                        _strVaccineBrand, _strVaccineLotNo)
+                                        _strVaccineBrand, _strVaccineLotNo, _strNonLocalRecovery)
         End Function
     End Class
 End Namespace

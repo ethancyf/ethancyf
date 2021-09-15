@@ -30,7 +30,8 @@ Namespace PrintOut.ConfirmationLetter
                 Me.CreateEnrolmentSchemeTextBox(strSchemeCode, sngStartTop)
             Next
 
-            strSchemeCodeArrayList.Clear()
+            'strSchemeCodeArrayList.Clear() 'Not to clear scheme list, otherwise the scheme information will be missing when download via Chrome/Edge
+
             Me.PrintWidth = 6.563!
             Me.dtlEnrolmentScheme.Height = sngStartTop
         End Sub

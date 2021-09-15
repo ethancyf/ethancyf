@@ -36,6 +36,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
         Private _blnDischarge As Boolean
+        Private _blnNonLocalRecoveredHistory1stDose As Boolean
+        Private _blnNonLocalRecoveredHistory2ndDose As Boolean
 
 #Region "Constructor"
         Private Sub New()
@@ -54,7 +56,10 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel,
                        ByRef udtEHSAccount As EHSAccountModel,
                        ByVal udtVaccinationRecord As TransactionDetailVaccineModel, _
-                       ByVal blnDischarge As Boolean)
+                       ByVal blnDischarge As Boolean, _
+                       ByVal blnNonLocalRecoveredHistory1stDose As Boolean, _
+                       ByVal blnNonLocalRecoveredHistory2ndDose As Boolean)
+
             Me.New()
 
             ' Init variable
@@ -66,6 +71,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             'Setting for blank sample of vaccination card true = printSample, false = print normal form
             _blnIsSample = False
             _blnDischarge = blnDischarge
+            _blnNonLocalRecoveredHistory1stDose = blnNonLocalRecoveredHistory1stDose
+            _blnNonLocalRecoveredHistory2ndDose = blnNonLocalRecoveredHistory2ndDose
 
             LoadReport()
             ChkIsSample()
@@ -88,12 +95,15 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             srCovid19PatientName.Report = New Covid19PatientName(_udtEHSAccount, _blnIsSample)
 
             ' Vaccination Info                                                  'second _udtEHSTransaction is history Transaction 
-            srCovid19DoseTable.Report = New Covid19DoseTable(_udtEHSTransaction, _udtVaccinationRecord, _blnIsSample, _blnDischarge)
+            srCovid19DoseTable.Report = New Covid19DoseTable(_udtEHSTransaction, _udtVaccinationRecord, _blnIsSample, _
+                                                             _blnDischarge, _blnNonLocalRecoveredHistory1stDose, _blnNonLocalRecoveredHistory2ndDose)
 
             'Footer                                                                                     'second _udtEHSTransaction is history Transaction 
-            srCovid19VaccinationCardFooter.Report = New Covid19VaccinationCardFooter(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnIsSample, _blnDischarge)
+            srCovid19VaccinationCardFooter.Report = New Covid19VaccinationCardFooter(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnIsSample, _
+                                                                                     _blnDischarge, _blnNonLocalRecoveredHistory1stDose, _blnNonLocalRecoveredHistory2ndDose)
 
-            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
+            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _
+                                                                     _blnDischarge, _blnNonLocalRecoveredHistory1stDose, _blnNonLocalRecoveredHistory2ndDose)
 
         End Sub
 

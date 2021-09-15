@@ -14,6 +14,14 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023-58 (Non-local Recovered History)
+-- Modified by:		Winnie SUEN
+-- Modified date:	18 Aug 2021
+-- Description:		1. Revise Reserved field 11 for [Non-local Recovery Information]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-0023-54
@@ -778,7 +786,11 @@ AS
                                                ELSE ''
                                            END
                                   END, ''))) AS 'Reserved_field_10', --Issuing Country/Region
-               '' AS 'Reserved_field_11', 
+               LTRIM(RTRIM(ISNULL(CASE
+                                      WHEN ISNULL(NonLocalRecovered.AdditionalFieldValueCode, '') = 'Y'
+                                      THEN '001'
+                                      ELSE ''
+                                  END, ''))) AS 'Reserved_field_11', -- non-local recovered indicator
                '' AS 'Reserved_field_12', 
                '' AS 'Reserved_field_13', 
                '' AS 'Reserved_field_14', 
@@ -825,6 +837,9 @@ AS
              LEFT OUTER JOIN TransactionAdditionalField AS ORCode WITH(NOLOCK)
              ON vt.Transaction_ID = ORCode.Transaction_ID
                 AND ORCode.AdditionalFieldID = 'OutreachCode'
+             LEFT OUTER JOIN TransactionAdditionalField AS NonLocalRecovered WITH(NOLOCK)
+             ON vt.Transaction_ID = NonLocalRecovered.Transaction_ID
+                AND NonLocalRecovered.AdditionalFieldID = 'NonLocalRecovered'
              LEFT OUTER JOIN RVPHomeList AS rvpl WITH(NOLOCK)
              ON rvpl.RCH_code = RCHCode.AdditionalFieldValueCode
              LEFT OUTER JOIN OutreachList AS orl WITH(NOLOCK)

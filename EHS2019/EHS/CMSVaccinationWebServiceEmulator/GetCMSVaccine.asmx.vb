@@ -116,6 +116,7 @@ Public Class WebService1
                                                                                              GetAttributeString(drVaccination, "Location_Chinese"), _
                                                                                              GetAttributeString(drVaccination, "Onsite"), _
                                                                                              String.Empty, _
+                                                                                             String.Empty, _
                                                                                              String.Empty _
                                                                                              ))
                         Next
@@ -265,6 +266,17 @@ Public Class WebService1
                                 '        strBrandID = "3"
                                 'End Select
 
+                                Dim strVaccineLotNo As String = String.Empty
+                                Dim strCovid19NonLocalRecovered As String = Common.Component.YesNo.No
+
+                                If drVaccination.Table.Columns.Contains("vaccine_lot_no") Then
+                                    strVaccineLotNo = GetAttributeString(drVaccination, "vaccine_lot_no")
+                                End If
+
+                                If drVaccination.Table.Columns.Contains("covid19_non_local_recovered") Then
+                                    strCovid19NonLocalRecovered = GetAttributeString(drVaccination, "covid19_non_local_recovered")
+                                End If
+
                                 udtHAPatient.VaccineList.Add(New HATransaction.HAVaccineModel(GetAttributeDate(drVaccination, "service_date"), _
                                                                                              GetAttributeDate(drVaccination, "service_date"), _
                                                                                              GetAttributeString(drVaccination, "vaccine_code"), _
@@ -278,7 +290,8 @@ Public Class WebService1
                                                                                              GetAttributeString(drVaccination, "location_chinese"), _
                                                                                              GetAttributeString(drVaccination, "onsite"), _
                                                                                              String.Empty, _
-                                                                                             GetAttributeString(drVaccination, "vaccine_lot_no") _
+                                                                                             strVaccineLotNo, _
+                                                                                             strCovid19NonLocalRecovered _
                                                                                              ))
                             Next
 
@@ -325,6 +338,7 @@ Public Class WebService1
                             If udtHAVaccine.VaccineLotNo IsNot Nothing AndAlso udtHAVaccine.VaccineLotNo <> String.Empty Then
                                 strXMLVaccinationRecord += "<vaccine_lot_no>" + udtHAVaccine.VaccineLotNo + "</vaccine_lot_no>"
                             End If
+                            strXMLVaccinationRecord += "<covid19_non_local_recovered>" + udtHAVaccine.NonLocalRecovery + "</covid19_non_local_recovered>"
                             strXMLVaccinationRecord += "<provider>" + udtHAVaccine.Provider + "</provider>"
                             strXMLVaccinationRecord += "<location>" + udtHAVaccine.Location + "</location>"
                             strXMLVaccinationRecord += "<location_chinese>" + udtHAVaccine.LocationChinese + "</location_chinese>"

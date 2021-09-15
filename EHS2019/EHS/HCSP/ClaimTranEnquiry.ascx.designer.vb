@@ -518,6 +518,33 @@ Partial Public Class ClaimTranEnquiry
     Protected WithEvents lblJoinEHRSS As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblNonLocalRecoveredHistoryText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNonLocalRecoveredHistoryText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNonLocalRecoveredHistory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNonLocalRecoveredHistory As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''trCreateBy control.
     '''</summary>
     '''<remarks>
