@@ -24,10 +24,10 @@ Partial Public Class RVPHomeListSearch
 #Region "Property"
     Public Property Scheme() As String
         Get
-            Return Me._strScheme
+            Return Me.ViewState("Scheme")
         End Get
         Set(ByVal value As String)
-            Me._strScheme = value
+            Me.ViewState("Scheme") = value
         End Set
     End Property
 
@@ -61,6 +61,7 @@ Partial Public Class RVPHomeListSearch
         If Not udtEHSTransaction Is Nothing Then
             Me.Scheme = udtEHSTransaction.SchemeCode.Trim
         End If
+
     End Sub
 
     Protected Overrides Sub Render(ByVal writer As System.Web.UI.HtmlTextWriter)
@@ -90,7 +91,7 @@ Partial Public Class RVPHomeListSearch
 
         Dim udtRVPHomeListSearch As RVPHomeListSearch = CType(CType(sender, ImageButton).NamingContainer, RVPHomeListSearch)
 
-        Dim strRCHType As String
+        Dim strRCHType As String = String.Empty
 
         Select Case udtRVPHomeListSearch.Scheme.Trim
             Case SchemeClaimModel.RVP

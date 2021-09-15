@@ -689,6 +689,7 @@ Partial Public Class VaccinationFileUpload ' 010413
         Select Case ddlIScheme.SelectedValue
             Case SchemeClaimModel.RVP
                 Session(SESS.SearchRVPHomeList) = True
+                Me.udcRVPHomeListSearch.Scheme = ddlIScheme.SelectedValue
                 Me.udcRVPHomeListSearch.BindRVPHomeList(Nothing)
                 Me.udcRVPHomeListSearch.ClearFilter()
 
@@ -1005,8 +1006,13 @@ Partial Public Class VaccinationFileUpload ' 010413
                     Dim blnContainScheme As Boolean = False
 
                     For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPractice.PracticeSchemeInfoList.Values
-                        If udtPracticeSchemeInfo.SchemeCode = ddlIScheme.SelectedValue _
-                            AndAlso udtPracticeSchemeInfo.RecordStatusEnum = PracticeSchemeInfoModel.RecordStatusEnumClass.Active Then
+                        ' CRE21-013 (SIV 2021-2022) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If udtPracticeSchemeInfo.SchemeCode = ddlIScheme.SelectedValue AndAlso _
+                            (udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
+                            udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend OrElse _
+                            udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist) Then
+                            ' CRE21-013 (SIV 2021-2022) [End][Chris YIM]
 
                             blnContainScheme = True
                             Exit For
@@ -1402,8 +1408,13 @@ Partial Public Class VaccinationFileUpload ' 010413
                             Dim blnContainSubsidy As Boolean = False
 
                             For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtCPractice.PracticeSchemeInfoList.Values
-                                If udtPracticeSchemeInfo.SchemeCode = ddlIScheme.SelectedValue _
-                                    AndAlso udtPracticeSchemeInfo.RecordStatusEnum = PracticeSchemeInfoModel.RecordStatusEnumClass.Active Then
+                                ' CRE21-013 (SIV 2021-2022) [Start][Chris YIM]
+                                ' ---------------------------------------------------------------------------------------------------------
+                                If udtPracticeSchemeInfo.SchemeCode = ddlIScheme.SelectedValue AndAlso _
+                                    (udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
+                                    udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend OrElse _
+                                    udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist) Then
+                                    ' CRE21-013 (SIV 2021-2022) [End][Chris YIM]
 
                                     If strSubsidizeCode <> String.Empty Then
                                         If udtPracticeSchemeInfo.SubsidizeCode = strSubsidizeCode Then
@@ -2890,7 +2901,7 @@ Partial Public Class VaccinationFileUpload ' 010413
         Dim blnAbnormal As Boolean = False
         Dim udtStudentFileSetting As StudentFileBLL.StudentFileSetting = StudentFileBLL.GetSetting(strScheme)
 
-        If Not dtmReportDate <= DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_ReportGenerationDateBefore, dtmVaccineDate) Then            
+        If Not dtmReportDate <= DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_ReportGenerationDateBefore, dtmVaccineDate) Then
             blnAbnormal = True
         End If
 
@@ -5434,11 +5445,14 @@ Partial Public Class VaccinationFileUpload ' 010413
                     Else
                         ' Filter practice that enrolled selected scheme
                         For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPractice.PracticeSchemeInfoList.Values
-                            If udtPracticeSchemeInfo.SchemeCode = hfScheme.Value _
-                                    AndAlso udtPracticeSchemeInfo.RecordStatusEnum = PracticeSchemeInfoModel.RecordStatusEnumClass.Active Then
+                            ' CRE21-013 (SIV 2021-2022) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            If udtPracticeSchemeInfo.SchemeCode = hfScheme.Value AndAlso _
+                                (udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
+                                udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend OrElse _
+                                udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist) Then
+                                ' CRE21-013 (SIV 2021-2022) [End][Chris YIM]
 
-                                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-                                ' ---------------------------------------------------------------------------------------------------------
                                 If ddlIScheme.SelectedValue.Trim = Scheme.SchemeClaimModel.VSS Then
                                     If udtPracticeSchemeInfo.ClinicType <> PracticeSchemeInfoModel.ClinicTypeEnum.NonClinic Then
                                         lstPractice.Add(udtPractice.DisplaySeq, String.Format("{0} ({1})", udtPractice.PracticeName, udtPractice.DisplaySeq))
@@ -5448,7 +5462,7 @@ Partial Public Class VaccinationFileUpload ' 010413
                                     lstPractice.Add(udtPractice.DisplaySeq, String.Format("{0} ({1})", udtPractice.PracticeName, udtPractice.DisplaySeq))
                                     Exit For
                                 End If
-                                ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
 
                             End If
                         Next

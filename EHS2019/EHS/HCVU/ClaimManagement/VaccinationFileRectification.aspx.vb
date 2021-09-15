@@ -1365,8 +1365,14 @@ Partial Public Class VaccinationFileRectification ' 010414
         For Each udtPractice As PracticeModel In udtSP.PracticeList.Values
             If udtPractice.RecordStatusEnum = PracticeModel.RecordStatusEnumClass.Active Then
                 For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPractice.PracticeSchemeInfoList.Values
-                    If udtPracticeSchemeInfo.SchemeCode = udtStudentFileHeader.SchemeCode _
-                            AndAlso udtPracticeSchemeInfo.RecordStatusEnum = PracticeSchemeInfoModel.RecordStatusEnumClass.Active Then
+                    ' CRE21-013 (SIV 2021-2022) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    If udtPracticeSchemeInfo.SchemeCode = udtStudentFileHeader.SchemeCode AndAlso _
+                        (udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
+                        udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend OrElse _
+                        udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist) Then
+                        ' CRE21-013 (SIV 2021-2022) [End][Chris YIM]
+
                         ddlIPractice.Items.Add(New ListItem(String.Format("{0} ({1})", udtPractice.PracticeName, udtPractice.DisplaySeq), udtPractice.DisplaySeq))
                         Exit For
 
@@ -3382,8 +3388,13 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If udtPractice.RecordStatusEnum = PracticeModel.RecordStatusEnumClass.Active Then
                     For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPractice.PracticeSchemeInfoList.Values
-                        If udtPracticeSchemeInfo.SchemeCode = udtStudentFileHeader.SchemeCode _
-                                AndAlso udtPracticeSchemeInfo.RecordStatusEnum = PracticeSchemeInfoModel.RecordStatusEnumClass.Active Then
+                        ' CRE21-013 (SIV 2021-2022) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If udtPracticeSchemeInfo.SchemeCode = udtStudentFileHeader.SchemeCode AndAlso _
+                            (udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
+                            udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend OrElse _
+                            udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist) Then
+                            ' CRE21-013 (SIV 2021-2022) [End][Chris YIM]
 
                             blnContainScheme = True
 

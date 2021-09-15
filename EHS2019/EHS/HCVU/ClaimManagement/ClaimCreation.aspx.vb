@@ -1975,8 +1975,6 @@ Partial Public Class ClaimCreation
 
     Private Sub udInputEHSClaim_ClaimControlEventFired(ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udInputEHSClaim.ClaimControlEventFired
 
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Select Case strSchemeCode
             Case SchemeClaimModel.VSS
                 Session(SESS_SearchRVPHomeList) = True
@@ -1985,6 +1983,7 @@ Partial Public Class ClaimCreation
                     udtSessionHandlerBLL.ClaimCOVID19SaveToSession(True)
                 End If
 
+                Me.udcRVPHomeListSearch.Scheme = SchemeClaimModel.VSS
                 Me.udcRVPHomeListSearch.BindRVPHomeList(Nothing)
                 Me.udcRVPHomeListSearch.ClearFilter()
 
@@ -1999,6 +1998,7 @@ Partial Public Class ClaimCreation
                     udtSessionHandlerBLL.ClaimCOVID19SaveToSession(True)
                 End If
 
+                Me.udcRVPHomeListSearch.Scheme = SchemeClaimModel.RVP
                 Me.udcRVPHomeListSearch.BindRVPHomeList(Nothing)
                 Me.udcRVPHomeListSearch.ClearFilter()
 
@@ -2032,6 +2032,8 @@ Partial Public Class ClaimCreation
             Case SchemeClaimModel.COVID19RVP
                 Session(SESS_SearchRVPHomeList) = True
                 udtSessionHandlerBLL.ClaimCOVID19SaveToSession(True)
+
+                Me.udcRVPHomeListSearch.Scheme = SchemeClaimModel.COVID19RVP
                 Me.udcRVPHomeListSearch.BindRVPHomeList(Nothing)
                 Me.udcRVPHomeListSearch.ClearFilter()
 
@@ -2044,8 +2046,6 @@ Partial Public Class ClaimCreation
                 Throw New Exception(String.Format("No available popup for scheme({0}).", strSchemeCode))
 
         End Select
-
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
     End Sub
 
@@ -2941,7 +2941,7 @@ Partial Public Class ClaimCreation
         Dim udtSelectedScheme As SchemeClaimModel = udtSessionHandlerBLL.SelectSchemeGetFromSession(FunctionCode)
 
         Select Case udtSelectedScheme.SchemeCode.Trim
-            Case SchemeClaimModel.PPP
+            Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
                 CType(Me.udInputEHSClaim.GetPPPControl(), ucInputPPP).SetSchoolCode(strSchoolCode, udtSelectedScheme.SchemeCode)
 
             Case Else
