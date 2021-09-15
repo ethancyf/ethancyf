@@ -2941,7 +2941,7 @@ Partial Public Class ClaimCreation
         Dim udtSelectedScheme As SchemeClaimModel = udtSessionHandlerBLL.SelectSchemeGetFromSession(FunctionCode)
 
         Select Case udtSelectedScheme.SchemeCode.Trim
-            Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
+            Case SchemeClaimModel.PPP
                 CType(Me.udInputEHSClaim.GetPPPControl(), ucInputPPP).SetSchoolCode(strSchoolCode, udtSelectedScheme.SchemeCode)
 
             Case Else

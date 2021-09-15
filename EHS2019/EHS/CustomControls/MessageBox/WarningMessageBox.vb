@@ -301,6 +301,25 @@ Public Class WarningMessageBox
         Return dtCode
     End Function
 
+    ''' <summary>
+    ''' Check system message whether added in message box
+    ''' </summary>
+    ''' <returns>True / False</returns>
+    ''' <remarks></remarks>
+    Public Function ContainSystemMessage(ByVal strFunctionCode As String, ByVal strSeverityCode As String, ByVal strMsgCode As String) As Boolean
+        Dim blnRes As Boolean = False
+        Dim dtCode As DataTable = Me.GetCodeTable
+
+        Dim drCode() As DataRow = dtCode.Select(String.Format("msgCode='{0}'", strFunctionCode & "-" & strSeverityCode & "-" & strMsgCode))
+
+        If drCode.Length > 0 Then
+            blnRes = True
+        End If
+
+        Return blnRes
+
+    End Function
+
 #Region "Add Message"
 
     ''' <summary>
