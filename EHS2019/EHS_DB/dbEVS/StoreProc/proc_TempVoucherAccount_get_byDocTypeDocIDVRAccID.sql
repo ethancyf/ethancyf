@@ -8,10 +8,11 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
+-- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
+-- Modified by:		Winnie SUEN
+-- Modified date:	02 Sep 2021
+-- Description:		(1) Search with Raw Doc No. to handle "Search by any doc type issue"
+--					(2) Fine Tune performance with adding "OPTION (RECOMPILE)"
 -- =============================================
 -- =============================================
 -- Modification History
@@ -142,14 +143,20 @@ BEGIN
 				ON TP.Voucher_Acc_ID = TVA.Voucher_Acc_ID  
 			INNER JOIN [VoucherAccountCreationLOG] VACL WITH (NOLOCK)
 				ON TP.Voucher_Acc_ID = VACL.Voucher_Acc_ID
-	WHERE  
-		(@IdentityNum = '' OR TP.[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum) OR TP.[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		AND (@AdoptionPrefixNum = '' OR TP.[Encrypt_Field11] = EncryptByKey(KEY_GUID('sym_Key'), @AdoptionPrefixNum))
+	WHERE
+		(	(	(@IdentityNum = ''
+					OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+					OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+				AND (@AdoptionPrefixNum = ''
+					OR TP.[Encrypt_Field11] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @AdoptionPrefixNum)))
+			OR (@IdentityNum3 = ''
+				OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))
 		AND (@DocCode = '' OR TP.[Doc_Code] = @DocCode OR (@SameIDChecking = 1 AND TP.[Doc_Code] in ('HKIC', 'HKBC')))
 		AND (@VoucherAccID = '' OR TP.[Voucher_Acc_ID] = @VoucherAccID)
 		AND TVA.[Record_Status] NOT IN ('D','V')
 	ORDER BY
 		TP.[Doc_Code]
+	OPTION (RECOMPILE);
 	
 	EXEC [proc_SymmetricKey_close]
         

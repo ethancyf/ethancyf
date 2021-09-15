@@ -14,6 +14,15 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
+-- Modified by:		Winnie SUEN
+-- Modified date:	02 Sep 2021
+-- Description:		(1) Search with Raw Doc No. to handle "Search by any doc type issue"
+--					(2) Fine Tune performance with adding "OPTION (RECOMPILE)"
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			INT21-0016
@@ -277,17 +286,17 @@ ON #TempTransaction
                    OR @voucher_acc_id = ISNULL(VT.Voucher_Acc_ID, ''))
               AND (@Invalidation IS NULL
                    OR @Invalidation = ISNULL(VT.Invalidation, ''))
-              AND (@identity_no1 IS NULL
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-              --AND (@name is null or PINFO.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @name))
-              --AND (@name_chi is null or PINFO.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @name_chi))
+			  AND (	(	(@identity_no1 IS NULL
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+						AND (@Adoption_Prefix_Num IS NULL
+							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@identity_no3 IS NULL
+						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	              
               AND (@eHA_name IS NULL
                    OR PINFO.Encrypt_Field2 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_name))
               AND (@eHA_chi_name IS NULL
-                   OR PINFO.Encrypt_Field3 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_chi_name))
-              AND (@Adoption_Prefix_Num IS NULL
-                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+                   OR PINFO.Encrypt_Field3 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_chi_name))        
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -333,7 +342,8 @@ ON #TempTransaction
                  MR.Record_Status, 
                  VT.Manual_Reimburse, 
                  TAF.AdditionalFieldValueCode, 
-                 TAFSC.AdditionalFieldValueCode;  
+                 TAFSC.AdditionalFieldValueCode
+				 OPTION (RECOMPILE);  
         -- =============================================    
         -- Max Row Checking  
         -- =============================================  
@@ -463,13 +473,13 @@ ON #TempTransaction
                       AND @voucher_acc_id IS NULL
                       AND (@Invalidation IS NULL
                            OR @Invalidation = ISNULL(VT.Invalidation, ''))
-                      AND (@identity_no1 IS NULL
-                           OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                           OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-                      AND (@Adoption_Prefix_Num IS NULL
-                           OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
-                      --AND (@name is null or PINFO.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @name))
-                      --AND (@name_chi is null or PINFO.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @name_chi))
+					  AND (	(	(@identity_no1 IS NULL
+									OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+									OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+								AND (@Adoption_Prefix_Num IS NULL
+									OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+							OR (@identity_no3 IS NULL
+								OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	                     
                       AND (@eHA_name IS NULL
                            OR PINFO.Encrypt_Field2 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_name))
                       AND (@eHA_chi_name IS NULL
@@ -506,7 +516,8 @@ ON #TempTransaction
                          TI.TSMP, 
                          VT.Manual_Reimburse, 
                          TAF.AdditionalFieldValueCode, 
-                         TAFSC.AdditionalFieldValueCode;
+                         TAFSC.AdditionalFieldValueCode
+						 OPTION (RECOMPILE);  
 
                 -- =============================================    
                 -- Max Row Checking  
@@ -647,13 +658,13 @@ ON #TempTransaction
                       AND @voucher_acc_id IS NULL
                       AND (@Invalidation IS NULL
                            OR @Invalidation = ISNULL(VT.Invalidation, ''))
-                      AND (@identity_no1 IS NULL
-                           OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                           OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-                      AND (@Adoption_Prefix_Num IS NULL
-                           OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
-                      --AND (@name is null or PINFO.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @name))
-                      --AND (@name_chi is null or PINFO.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @name_chi))
+					  AND (	(	(@identity_no1 IS NULL
+									OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+									OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+								AND (@Adoption_Prefix_Num IS NULL
+									OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+							OR (@identity_no3 IS NULL
+								OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	                     
                       AND (@eHA_name IS NULL
                            OR PINFO.Encrypt_Field2 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_name))
                       AND (@eHA_chi_name IS NULL
@@ -700,7 +711,8 @@ ON #TempTransaction
                          TI.TSMP, 
                          VT.Manual_Reimburse, 
                          TAF.AdditionalFieldValueCode, 
-                         TAFSC.AdditionalFieldValueCode;
+                         TAFSC.AdditionalFieldValueCode
+						 OPTION (RECOMPILE);
 
                 -- =============================================    
                 -- Max Row Checking  
@@ -839,11 +851,13 @@ ON #TempTransaction
               AND @voucher_acc_id IS NULL
               AND (@Invalidation IS NULL
                    OR @Invalidation = ISNULL(VT.Invalidation, ''))
-              AND (@identity_no1 IS NULL
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-              AND (@Adoption_Prefix_Num IS NULL
-                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+			  AND (	(	(@identity_no1 IS NULL
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+						AND (@Adoption_Prefix_Num IS NULL
+							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@identity_no3 IS NULL
+						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	              
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -894,7 +908,8 @@ ON #TempTransaction
                  VT.Manual_Reimburse, 
                  MR.Record_status, 
                  TAF.AdditionalFieldValueCode, 
-                 TAFSC.AdditionalFieldValueCode;
+                 TAFSC.AdditionalFieldValueCode
+				 OPTION (RECOMPILE);
 
         -- =============================================    
         -- Max Row Checking  

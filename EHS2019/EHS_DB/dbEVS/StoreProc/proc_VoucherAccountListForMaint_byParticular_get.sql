@@ -5,6 +5,15 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
+-- Modified by:		Winnie SUEN
+-- Modified date:	02 Sep 2021
+-- Description:		(1) Search with Raw Doc No. to handle "Search by any doc type issue"
+--					(2) Fine Tune performance with adding "OPTION (RECOMPILE)"
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			INT21-0016
@@ -275,9 +284,13 @@ BEGIN
 			or
 			(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 		)
-		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+		and (	(	(@IdentityNum = ''
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+					AND (@Adoption_Prefix_Num = ''
+						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+				OR (@IdentityNum3 = ''
+					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
@@ -289,6 +302,7 @@ BEGIN
 		AND TP.Doc_Code = DTL.Doc_Code
 		and (TVA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 		and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
+		OPTION (RECOMPILE);
 
 
 		-- =============================================    
@@ -404,9 +418,13 @@ BEGIN
 			--	or
 			--	(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 			--)
-			and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-				or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-			and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+			and (	(	(@IdentityNum = ''
+							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+						AND (@Adoption_Prefix_Num = ''
+							OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@IdentityNum3 = ''
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))				
 			and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 			and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 			and (@DOB is NULL or TP.DOB = @DOB)
@@ -420,6 +438,7 @@ BEGIN
 			and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 			and TVA.Record_Status in ('P','I','C','D','V','R')
 			and TVA.Account_Purpose in ('C','V')
+			OPTION (RECOMPILE);
 			
 	END
 	ELSE
@@ -510,9 +529,13 @@ BEGIN
 				and TVA.Voucher_Acc_ID = PV.Voucher_Acc_ID	
 				and TVA.Record_Status='I' and (TVA.Account_Purpose='C' or TVA.Account_Purpose='V')
 				and DATEDIFF(Day, PV.First_Validate_Dtm, getdate()) > @day_level
-				and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-					or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-				and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+				and (	(	(@IdentityNum = ''
+								OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+								OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+							AND (@Adoption_Prefix_Num = ''
+								OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+						OR (@IdentityNum3 = ''
+							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))					
 				and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 				and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 				and (@DOB is NULL or TP.DOB = @DOB)
@@ -522,6 +545,7 @@ BEGIN
 				AND TP.Doc_Code = DTL.Doc_Code
 				and (TVA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 				and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
+				OPTION (RECOMPILE);
 		END	
 	END
 	
@@ -637,9 +661,13 @@ BEGIN
 		INNER JOIN @DocTypeList DTL
 			ON P.Doc_Code = DTL.Doc_Code
 	where 
-	(@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-		or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-	and (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+	 (	(	(@IdentityNum = ''
+				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+			AND (@Adoption_Prefix_Num = ''
+				OR P.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+		OR (@IdentityNum3 = ''
+			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
@@ -649,6 +677,7 @@ BEGIN
 	and (VA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 	and (VA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 	and (VA.Record_Status = @AccountType or ISNULL(@AccountType,'') = '')
+	OPTION (RECOMPILE);
 
 
 	-- =============================================    
@@ -765,9 +794,13 @@ BEGIN
 		--	or
 		--	(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 		--)
-		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+		and (	(	(@IdentityNum = ''
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+					AND (@Adoption_Prefix_Num = ''
+						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+				OR (@IdentityNum3 = ''
+					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))			
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
@@ -780,6 +813,7 @@ BEGIN
 		and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 		and TVA.Record_Status = 'I'
 		and TVA.Account_Purpose = 'O'
+		OPTION (RECOMPILE);
 				
 
 	-- =============================================    
@@ -893,9 +927,13 @@ BEGIN
 		INNER JOIN @DocTypeList DTL
 			ON P.Doc_Code = DTL.Doc_Code
 	where 
-	(@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-		or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-	and (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+	(	(	(@IdentityNum = ''
+				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+			AND (@Adoption_Prefix_Num = ''
+				OR P.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+		OR (@IdentityNum3 = ''
+			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
@@ -915,6 +953,7 @@ BEGIN
 				AND Record_Status = 'A'
 				AND Action_Type = 'A'
 	)
+	OPTION (RECOMPILE);
 
 
 	-- =============================================    
@@ -1023,9 +1062,13 @@ BEGIN
 	where 
 		TVA.Special_Acc_ID = TP.Special_Acc_ID
 		and C.Voucher_Acc_Type = 'S'
-		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+		and (	(	(@IdentityNum = ''
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+					AND (@Adoption_Prefix_Num = ''
+						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+				OR (@IdentityNum3 = ''
+					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))			
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
@@ -1037,6 +1080,7 @@ BEGIN
 		AND TP.Doc_Code = DTL.Doc_Code
 		and (TVA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 		and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
+		OPTION (RECOMPILE);
 
 
 	-- =============================================    

@@ -5,6 +5,15 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
+-- Modified by:		Winnie SUEN
+-- Modified date:	02 Sep 2021
+-- Description:		(1) Search with Raw Doc No. to handle "Search by any doc type issue"
+--					(2) Fine Tune performance with adding "OPTION (RECOMPILE)"
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			INT21-0016
@@ -142,12 +151,17 @@ EXEC [proc_SymmetricKey_open]
 				ON P.Voucher_Acc_ID = VACL.Voucher_Acc_ID
 	WHERE  
 		(@doc_code = '' or P.[Doc_Code] = @doc_code or (@SameIDChecking = 1 and P.[Doc_Code] in ('HKIC', 'HKBC')))
-		AND (@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-			or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		AND (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+		AND (	(	(@IdentityNum = ''
+						OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+						OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+					AND (@Adoption_Prefix_Num = ''
+						OR P.[Encrypt_Field11] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+				OR (@IdentityNum3 = ''
+					OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 		AND (@VRAccID = '' or P.Voucher_Acc_ID=@VRAccID)
 	ORDER BY
 		P.[Doc_Code]
+	OPTION (RECOMPILE);
 	
 EXEC [proc_SymmetricKey_close] 
         

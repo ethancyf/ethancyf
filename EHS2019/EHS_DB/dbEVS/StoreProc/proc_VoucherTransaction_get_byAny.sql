@@ -14,6 +14,15 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
+-- Modified by:		Winnie SUEN
+-- Modified date:	02 Sep 2021
+-- Description:		(1) Search with Raw Doc No. to handle "Search by any doc type issue"
+--					(2) Fine Tune performance with adding "OPTION (RECOMPILE)"
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			INT21-0016
@@ -510,11 +519,13 @@ AS
                    OR ENCRYPTBYKEY(KEY_GUID('sym_Key'), @sp_name) = SP.Encrypt_Field2)
               AND (@bank_acc IS NULL
                    OR @bank_acc = B.Bank_Account_No)
-              AND (@identity_no1 IS NULL
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-              AND (@Adoption_Prefix_Num IS NULL
-                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+			  AND (((@identity_no1 IS NULL
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+						AND (@Adoption_Prefix_Num IS NULL
+							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@identity_no3 IS NULL
+						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -561,8 +572,8 @@ AS
                  MR.Record_Status, 
                  VT.Manual_Reimburse, 
                  TAF.AdditionalFieldValueCode, 
-                 TAFSC.AdditionalFieldValueCode;
-
+                 TAFSC.AdditionalFieldValueCode
+				 OPTION (RECOMPILE); 
         -- =============================================    
         -- Max Row Checking  
         -- =============================================  
@@ -710,11 +721,13 @@ AS
                    OR ENCRYPTBYKEY(KEY_GUID('sym_Key'), @sp_name) = SP.Encrypt_Field2)
               AND (@bank_acc IS NULL
                    OR @bank_acc = B.Bank_Account_No)
-              AND (@identity_no1 IS NULL
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-              AND (@Adoption_Prefix_Num IS NULL
-                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+			  AND ((	(@identity_no1 IS NULL
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+						AND (@Adoption_Prefix_Num IS NULL
+							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@identity_no3 IS NULL
+						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -748,7 +761,8 @@ AS
                  TI.TSMP, 
                  VT.Manual_Reimburse, 
                  TAF.AdditionalFieldValueCode, 
-                 TAFSC.AdditionalFieldValueCode;
+                 TAFSC.AdditionalFieldValueCode
+				 OPTION (RECOMPILE); 
 
         -- =============================================    
         -- Max Row Checking  
@@ -906,11 +920,13 @@ AS
                    OR ENCRYPTBYKEY(KEY_GUID('sym_Key'), @sp_name) = SP.Encrypt_Field2)
               AND (@bank_acc IS NULL
                    OR @bank_acc = B.Bank_Account_No)
-              AND (@identity_no1 IS NULL
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-              AND (@Adoption_Prefix_Num IS NULL
-                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+			  AND ((	(@identity_no1 IS NULL
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+						AND (@Adoption_Prefix_Num IS NULL
+							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@identity_no3 IS NULL
+						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	              
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -954,7 +970,8 @@ AS
                  TI.TSMP, 
                  VT.Manual_Reimburse, 
                  TAF.AdditionalFieldValueCode, 
-                 TAFSC.AdditionalFieldValueCode;
+                 TAFSC.AdditionalFieldValueCode
+				 OPTION (RECOMPILE); 
 
         -- =============================================    
         -- Max Row Checking  
@@ -1112,11 +1129,13 @@ AS
                    OR ENCRYPTBYKEY(KEY_GUID('sym_Key'), @sp_name) = SP.Encrypt_Field2)
               AND (@bank_acc IS NULL
                    OR @bank_acc = B.Bank_Account_No)
-              AND (@identity_no1 IS NULL
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-              AND (@Adoption_Prefix_Num IS NULL
-                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+			  AND ((	(@identity_no1 IS NULL
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+						AND (@Adoption_Prefix_Num IS NULL
+							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@identity_no3 IS NULL
+						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	              
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -1163,7 +1182,8 @@ AS
                  VT.Manual_Reimburse, 
                  MR.Record_status, 
                  TAF.AdditionalFieldValueCode, 
-                 TAFSC.AdditionalFieldValueCode;
+                 TAFSC.AdditionalFieldValueCode
+				 OPTION (RECOMPILE); 
 
         -- =============================================    
         -- Max Row Checking  

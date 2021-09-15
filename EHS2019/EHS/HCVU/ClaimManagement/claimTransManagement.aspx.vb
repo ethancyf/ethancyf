@@ -1118,6 +1118,10 @@ Partial Public Class claimTransManagement
         Dim imgDateErr As Image = Nothing
         Dim imgAccIDErr As Image = Nothing
         Dim lblDateText As Label = Nothing
+        'INT21-0022 Performance tuning on advanced search [Start][Nichole]
+        Dim blnSPTextFieldInputted As Boolean = False
+        Dim blnDateTextFieldInputted As Boolean = False
+        'INT21-0022 Performance tuning on advanced search [End][Nichole]
 
         'Invisible all alert
         imgTabTransactionTransactionNoErr.Visible = False
@@ -1172,23 +1176,51 @@ Partial Public Class claimTransManagement
 
                 ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
             Case Aspect.ServiceProvider
-                blnTextFieldInputted = Me.txtTabServiceProviderSPID.Text.Trim <> String.Empty _
-                                                        OrElse Me.txtTabServiceProviderSPHKID.Text.Trim <> String.Empty _
-                                                        OrElse Me.txtTabServiceProviderSPName.Text.Trim <> String.Empty _
-                                                        OrElse Me.txtTabServiceProviderSPChiName.Text.Trim <> String.Empty _
-                                                        OrElse Me.txtTabServiceProviderBankAccountNo.Text.Trim <> String.Empty _
-                                                        OrElse Me.txtTabServiceProviderDateFrom.Text.Trim <> String.Empty _
-                                                        OrElse Me.txtTabServiceProviderDateTo.Text.Trim <> String.Empty
+                'blnTextFieldInputted = Me.txtTabServiceProviderSPID.Text.Trim <> String.Empty _
+                '                                        OrElse Me.txtTabServiceProviderSPHKID.Text.Trim <> String.Empty _
+                '                                        OrElse Me.txtTabServiceProviderSPName.Text.Trim <> String.Empty _
+                '                                        OrElse Me.txtTabServiceProviderSPChiName.Text.Trim <> String.Empty _
+                '                                        OrElse Me.txtTabServiceProviderBankAccountNo.Text.Trim <> String.Empty _
+                '                                        OrElse Me.txtTabServiceProviderDateFrom.Text.Trim <> String.Empty _
+                '                                        OrElse Me.txtTabServiceProviderDateTo.Text.Trim <> String.Empty
+
+                'INT21-0022 Performance tuning on advanced search [Start][Nichole]
+                blnTextFieldInputted = ((Me.txtTabServiceProviderSPID.Text.Trim <> String.Empty _
+                                                       OrElse Me.txtTabServiceProviderSPHKID.Text.Trim <> String.Empty _
+                                                       OrElse Me.txtTabServiceProviderSPName.Text.Trim <> String.Empty _
+                                                       OrElse Me.txtTabServiceProviderSPChiName.Text.Trim <> String.Empty _
+                                                       OrElse Me.txtTabServiceProviderBankAccountNo.Text.Trim <> String.Empty) _
+                                                       And (Me.txtTabServiceProviderDateFrom.Text.Trim <> String.Empty _
+                                                       Or Me.txtTabServiceProviderDateTo.Text.Trim <> String.Empty))
+
+                blnSPTextFieldInputted = (Me.txtTabServiceProviderSPID.Text.Trim <> String.Empty _
+                                                       Or Me.txtTabServiceProviderSPHKID.Text.Trim <> String.Empty _
+                                                       Or Me.txtTabServiceProviderSPName.Text.Trim <> String.Empty _
+                                                       Or Me.txtTabServiceProviderSPChiName.Text.Trim <> String.Empty _
+                                                       Or Me.txtTabServiceProviderBankAccountNo.Text.Trim <> String.Empty)
+
+                blnDateTextFieldInputted = (Me.txtTabServiceProviderDateFrom.Text.Trim <> String.Empty _
+                                                       Or Me.txtTabServiceProviderDateTo.Text.Trim <> String.Empty)
 
                 If Not blnTextFieldInputted Then
-                    udtSM = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00257)
+                    If Not blnSPTextFieldInputted And Not blnDateTextFieldInputted Then 'No Date and any SP criteria input
+                        udtSM = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00478)
+                    ElseIf Not blnSPTextFieldInputted And blnDateTextFieldInputted Then 'Date has input but haven't any SP criteria
+                        udtSM = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00480)
+                    Else
+                        udtSM = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00481) 'Any SP criteria has input but haven't Date input
+                    End If
+
                     Me.udcMessageBox.AddMessage(udtSM)
-                    imgTabServiceProviderSPIDErr.Visible = True
-                    imgTabServiceProviderSPHKIDErr.Visible = True
-                    imgTabServiceProviderSPNameErr.Visible = True
-                    imgTabServiceProviderSPChiNameErr.Visible = True
-                    imgTabServiceProviderBankAccountNoErr.Visible = True
-                    imgTabServiceProviderDateErr.Visible = True
+                    If (blnSPTextFieldInputted = False) Then
+                        imgTabServiceProviderSPIDErr.Visible = True
+                        imgTabServiceProviderSPHKIDErr.Visible = True
+                        imgTabServiceProviderSPNameErr.Visible = True
+                        imgTabServiceProviderSPChiNameErr.Visible = True
+                        imgTabServiceProviderBankAccountNoErr.Visible = True
+                    End If
+
+                    imgTabServiceProviderDateErr.Visible = IIf(blnDateTextFieldInputted = False, True, False)
 
                     udtAuditLogEntry.AddDescripton("SPID", Me.txtTabServiceProviderSPID.Text.Trim)
                     udtAuditLogEntry.AddDescripton("SP HKIC No.", Me.txtTabServiceProviderSPHKID.Text.Trim)
@@ -1198,7 +1230,7 @@ Partial Public Class claimTransManagement
                     udtAuditLogEntry.AddDescripton("Date From", Me.txtTabServiceProviderDateFrom.Text.Trim)
                     udtAuditLogEntry.AddDescripton("Date To", Me.txtTabServiceProviderDateTo.Text.Trim)
                 End If
-
+                'INT21-0022 Performance tuning on advanced search [End][Nichole]
                 txtDateFrom = Me.txtTabServiceProviderDateFrom
                 txtDateTo = Me.txtTabServiceProviderDateTo
                 imgDateErr = Me.imgTabServiceProviderDateErr

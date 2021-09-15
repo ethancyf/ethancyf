@@ -14,6 +14,14 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
+-- Modified by:		Winnie SUEN
+-- Modified date:	02 Sep 2021
+-- Description:		(1) Fine Tune performance with adding "OPTION (RECOMPILE)"
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -309,7 +317,8 @@ ON #TempTransaction
                          MR.Record_Status, 
                          VT.Manual_Reimburse, 
                          TAF.AdditionalFieldValueCode, 
-                         TAFSC.AdditionalFieldValueCode;
+                         TAFSC.AdditionalFieldValueCode
+				OPTION (RECOMPILE);
             END;
             ELSE
             BEGIN
@@ -470,7 +479,8 @@ ON #TempTransaction
                          MR.Record_Status, 
                          VT.Manual_Reimburse, 
                          TAF.AdditionalFieldValueCode, 
-                         TAFSC.AdditionalFieldValueCode;
+                         TAFSC.AdditionalFieldValueCode
+				OPTION (RECOMPILE);
             END;
 
         -- =============================================    

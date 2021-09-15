@@ -5,6 +5,15 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
+-- Modified by:		Winnie SUEN
+-- Modified date:	02 Sep 2021
+-- Description:		(1) Search with Raw Doc No. to handle "Search by any doc type issue"
+--					(2) Fine Tune performance with adding "OPTION (RECOMPILE)"
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			INT21-0016
@@ -197,11 +206,16 @@ select TVA.Validated_Acc_ID, P.Doc_Code, TVA.Last_Fail_Validate_Dtm, TVA.Record_
  and TVA.Account_Purpose = 'A'   
  --and (TP.Validating is null or TP.Validating = 'N')  
  and TVA.Create_By_BO = 'Y'  
- and (@strIdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @strIdentityNum)    
-   or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @strIdentityNum2))    
- and (@strAdoptionPrefixNum = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @strAdoptionPrefixNum))    
+ and ((	(@strIdentityNum = ''
+			OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum)
+			OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum2))
+		AND (@strAdoptionPrefixNum = '' 
+			OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strAdoptionPrefixNum)))
+	OR (@strIdentityNum3 = ''
+		OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum3)))
  and (@strAccountStatus = '' or TVA.Record_Status = @strAccountStatus)
  and (@strDocCode = '' or TP.Doc_Code = @strDocCode)
+ OPTION (RECOMPILE);
    
  insert into @result  
  (  
@@ -246,9 +260,14 @@ select TVA.Validated_Acc_ID, P.Doc_Code, TVA.Last_Fail_Validate_Dtm, TVA.Record_
  VA.Voucher_Acc_ID = P.Voucher_Acc_ID   
  and VA.Voucher_Acc_ID = T.Vaildated_Acc_ID  
  and P.Doc_Code = T.Doc_Code  
- and (@strIdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @strIdentityNum)    
-   or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @strIdentityNum2))    
- and (@strAdoptionPrefixNum = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @strAdoptionPrefixNum))    
+ and (((@strIdentityNum = ''
+			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum)
+			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum2))
+		AND (@strAdoptionPrefixNum = ''
+			OR P.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strAdoptionPrefixNum)))
+	OR (@strIdentityNum3 = ''
+		OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum3)))	 
+ OPTION (RECOMPILE);
  
 	-- =============================================    
 	-- Max Row Checking  
@@ -326,11 +345,16 @@ select  TOP ([dbo].[func_get_top_row](@result_limit_1st_enable,@result_limit_ove
  --and P.Validating = 'N'      
  and TA.Voucher_acc_id = C.Voucher_Acc_ID      
  and C.voucher_acc_type = 'T'   
- and (@strIdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @strIdentityNum)    
-   or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @strIdentityNum2))    
- and (@strAdoptionPrefixNum = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @strAdoptionPrefixNum))    
+ and (((@strIdentityNum = ''
+			OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum)
+			OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum2))
+		AND (@strAdoptionPrefixNum = ''
+			OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strAdoptionPrefixNum)))
+	OR (@strIdentityNum3 = ''
+		OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum3)))
  and (@strAccountStatus = '' or TA.Record_Status = @strAccountStatus)    
  and (@strDocCode = '' or TP.Doc_Code = @strDocCode)
+ OPTION (RECOMPILE)
 
 	-- =============================================    
 	-- Max Row Checking  
@@ -408,11 +432,16 @@ BEGIN
   --and P.Validating = 'N'      
   and VA.Special_acc_id = C.Voucher_Acc_ID      
   and C.voucher_acc_type = 'S'      
-  and (@strIdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @strIdentityNum)    
-   or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @strIdentityNum2))    
-  and (@strAdoptionPrefixNum = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @strAdoptionPrefixNum))    
+  and (((@strIdentityNum = ''
+			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum)
+			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum2))
+		AND (@strAdoptionPrefixNum = ''
+			OR P.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strAdoptionPrefixNum)))
+	OR (@strIdentityNum3 = ''
+		OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @strIdentityNum3)))	  
   and (@strAccountStatus = '' or VA.Record_Status = @strAccountStatus) 
   and (@strDocCode = '' or P.Doc_Code = @strDocCode)
+  OPTION (RECOMPILE);
      
 	-- =============================================    
 	-- Max Row Checking  
