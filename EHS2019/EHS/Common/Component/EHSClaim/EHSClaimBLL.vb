@@ -1,14 +1,14 @@
-ï»¿' ID    | Validated rules                                               | HCSP Platform | HCSP Platform | Back office   | Upload Claim
+' ID    | Validated rules                                               | HCSP Platform | HCSP Platform | Back office   | Upload Claim
 '       |                                                               | Claim         | Rectification | Claim         | (HKMA)
 ' ------------------------------------------------------------------------------------------------------------------------------------
-' 1     | service date outside subsidyâ€™s claim period                  | Block         | N/A           | Block         | Reject
+' 1     | service date outside subsidy¡¦s claim period                  | Block         | N/A           | Block         | Reject
 ' 2     | service date before SP / SP scheme enrol and effective date   | Block         | N/A           | Block         | Reject
 ' 3     | service date later then permit to remain until of ID235B      | Block         | N/A           | Block         | Reject
 ' 4     | Exceed day-back limit                                         | Block         | N/A           | Block         | Reject
 ' 5     | Validated eHealth account with status not active              | Block         | N/A           | Block         | Reject
 ' ------------------------------------------------------------------------------------------------------------------------------------
 ' 6     | SP & Practice with status not active                          | Block         | N/A           | Block         | Reject
-' 7     | Patientâ€™s age outside documentâ€™s accepted age               | Block         | N/A           | Block         | Reject
+' 7     | Patient¡¦s age outside document¡¦s accepted age               | Block         | N/A           | Block         | Reject
 ' 8     | No available subsidies                                        | Block         | N/A           | Block         | Reject
 ' 9     | Eligibility Rules for Scheme                                  | Block         | N/A           | Block         | Reject
 ' 10    | Eligibility Rules for Subsidy                                 | Block         | N/A           | Block         | Reject
@@ -745,6 +745,15 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 udtInputPicker.ClinicType = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeValue.Clinic
             End If
 
+            'Non-Local Recovered History
+            If udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
+                udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory IsNot Nothing AndAlso _
+                udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory <> String.Empty Then
+                udtInputPicker.NonLocalRecoveredHistory = udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory
+            Else
+                udtInputPicker.NonLocalRecoveredHistory = Nothing
+            End If
+
             '----------------------------------------------------------------
             ' a1. If has inputted benefit, use it. If not, get benefit again
             '----------------------------------------------------------------
@@ -807,18 +816,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 Dim udtLatestC19Vaccine As TransactionDetailVaccineModel = Nothing
                 Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
 
-                For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                    'Find the latest COVID19 transaction in EHS
-                    If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                        If udtLatestC19Vaccine Is Nothing Then
-                            udtLatestC19Vaccine = udtC19Vaccine
-                        Else
-                            If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
-                                udtLatestC19Vaccine = udtC19Vaccine
-                            End If
-                        End If
-                    End If
-                Next
+                'Find the latest COVID19 transaction in EHS
+                udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
 
                 'Only allow EHS Transaction, not include CMS / CIMS record
                 If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -1212,7 +1211,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Return Nothing
         End Function
 
-        '1 service date outside subsidyâ€™s claim period    
+        '1 service date outside subsidy¡¦s claim period    
         Private Function CheckServiceDateClaimPeriod(ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtSchemeClaimModel As SchemeClaimModel) As RuleResult
 
             'Dim udtSystemMessage As New SystemMessage(cFunctionCode, "E", "00237")
@@ -1637,7 +1636,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
         End Function
 
-        ' 7 Patientâ€™s age outside documentâ€™s accepted age   
+        ' 7 Patient¡¦s age outside document¡¦s accepted age   
 
         Private Function CheckDocumentAcceptedAge(ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, ByVal udtSchemeClaimModel As SchemeClaimModel) As RuleResult
             Dim blnExceedLimit As Boolean = False
