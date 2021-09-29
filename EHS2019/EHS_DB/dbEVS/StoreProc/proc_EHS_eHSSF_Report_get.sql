@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	03 Sep 2020
+-- CR No.			CRE21-014 (PPP COVID19 14 days)
+-- Description:		Apply COVID19 14 days checking in [VF000] and [VF001] Report
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -257,18 +264,18 @@ AS BEGIN
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, 
 			Col17, Col18, Col19, Col20,
-			Col21, Col22, Col23, Col24, Col25
+			Col21, Col22, Col23, Col24, Col25, Col26
 		)
 		SELECT 1, 
 				'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', '', '', 
 				'Service Provider ID', 'Service Provider Name', '', 'Practice Name (Practice No.)', '', 
 				'', 'Scheme' , 'No. of ' + @ClassOrCategory, 
 				'No. of Clients', '','No. of Clients failed to connect HA CMS/DH CIMS on vaccination checking','No. of Clients found in HA CMS/DH CIMS but demographics not match',
-				'','No. of Clients available to inject', 'No. of Clients confirmed NOT to inject', '', 'Report Generation Time', ''	
+				'','No. of Clients available to inject', 'No. of Clients injected Covid-19 vaccine within 14 days', 'No. of Clients confirmed NOT to inject', '', 'Report Generation Time', ''	
 	END
 	ELSE IF @File_ID = 'EHSVF001'
 	BEGIN
-					
+
 		INSERT INTO #BatchTT
 		(
 			R1, 
@@ -278,7 +285,8 @@ AS BEGIN
 			Col18, Col19, Col20, Col21, Col22, 
 			Col23, Col24, Col25, Col26, Col27, 
 			Col28, Col29, Col30, Col31, Col32, 
-			Col33, Col34, Col35, Col36, Col37, Col38, Col39
+			Col33, Col34, Col35, Col36, Col37, 
+			Col38, Col39, Col40
 		)
 		SELECT 1, 
 				'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', '', '', 
@@ -294,6 +302,7 @@ AS BEGIN
 				CASE WHEN @AvailableDose_Item1 <> '' THEN ' - ' + @AvailableDose_Item1 ELSE '' END,
 				CASE WHEN @AvailableDose_Item2 <> '' THEN ' - ' + @AvailableDose_Item2 ELSE '' END,
 				CASE WHEN @AvailableDose_Item3 <> '' THEN ' - ' + @AvailableDose_Item3 ELSE '' END,
+				'No. of Clients injected Covid-19 vaccine within 14 days',
 				'No. of Clients confirmed NOT to inject', '', '', 'Checking Date', '', 'Report Generation Time', '', @DoseRemark
 
 	END
@@ -413,7 +422,7 @@ AS BEGIN
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, 
 			Col17, Col18, Col19, Col20,
-			Col21, Col22, Col23, Col24, Col25, Col26
+			Col21, Col22, Col23, Col24, Col25, Col26, Col27
 		)
 		SELECT  DISTINCT
 			2,
@@ -443,6 +452,7 @@ AS BEGIN
 			ET.VaccineDemographicsNotMatch,
 			'',
 			AvailbleToInjectCount,
+			ISNULL(EV.WithCOVID19RecordCount, 0) AS [WithCOVID19RecordCount],
 			NotInjectCount,
 			'',
 			CONVERT(varchar, GETDATE(), 111) + ' ' + CONVERT(VARCHAR(5), GETDATE(), 108), '', ''
@@ -492,6 +502,17 @@ AS BEGIN
 					AND P.Display_Seq = H.Practice_Display_Seq
 			INNER JOIN SchemeClaim SC
 				ON SC.Scheme_Code = H.Scheme_Code
+			LEFT JOIN (	-- Check Student Count who has COVID19 records within 14 days by current date
+				SELECT V.Student_File_ID, 
+					COUNT(DISTINCT V.Student_Seq) AS WithCOVID19RecordCount
+				FROM StudentFileEntryVaccine V
+				WHERE 
+					V.Student_File_ID= @Input_Student_File_ID
+					AND V.Subsidize_Item_Code = 'C19'
+					AND (DATEDIFF(D, V.Service_Receive_Dtm, GETDATE()) < 14 AND DATEDIFF(D, V.Service_Receive_Dtm, GETDATE()) > -14)
+				GROUP BY V.Student_File_ID
+			) AS EV
+			ON EV.Student_File_ID = E.Student_File_ID
 		WHERE 
 			E.Student_File_ID = @Input_Student_File_ID
 
@@ -503,7 +524,7 @@ AS BEGIN
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, 
 			Col17, Col18, Col19, Col20,
-			Col21, Col22, Col23, Col24, Col25, Col26
+			Col21, Col22, Col23, Col24, Col25, Col26, Col27
 		)
 		SELECT  DISTINCT
 			3,
@@ -530,7 +551,7 @@ AS BEGIN
 			'',
 			'',
 			'',
-			'', '', ''
+			'', '', '', ''
 		FROM StudentFileHeader
 		WHERE Student_File_ID= @Input_Student_File_ID
 
@@ -546,7 +567,8 @@ AS BEGIN
 			Col18, Col19, Col20, Col21, Col22, 
 			Col23, Col24, Col25, Col26, Col27, 
 			Col28, Col29, col30, col31,	Col32, 
-			Col33, Col34, Col35, Col36, col37, Col38, Col39
+			Col33, Col34, Col35, Col36, col37, 
+			Col38, Col39, Col40
 		)
 		SELECT  DISTINCT
 			2,
@@ -659,7 +681,7 @@ AS BEGIN
 					ELSE
 						''
 				END,
-
+			ISNULL(EV.WithCOVID19RecordCount, 0) AS [WithCOVID19RecordCount],
 			NotInjectCount,
 			[Checking Date_1] =
 				CASE 
@@ -761,6 +783,19 @@ AS BEGIN
 			AND VS.Subsidize_Item_Code = SUB.Subsidize_Item_Code
 		INNER JOIN SchemeClaim SC
 		ON SC.Scheme_Code = H.Scheme_Code
+		LEFT JOIN (	-- Check Student Count who has COVID19 records within 14 days by service date
+			SELECT V.Student_File_ID, 
+				COUNT(DISTINCT V.Student_Seq) AS WithCOVID19RecordCount
+			FROM StudentFileEntryVaccine V
+			INNER JOIN StudentFileHeader H ON V.Student_File_ID = H.Student_File_ID
+			WHERE 
+				V.Student_File_ID= @Input_Student_File_ID
+				AND V.Subsidize_Item_Code = 'C19'
+				AND (DATEDIFF(D, V.Service_Receive_Dtm, H.Service_Receive_Dtm) < 14 AND DATEDIFF(D, V.Service_Receive_Dtm, H.Service_Receive_Dtm) > -14)
+			GROUP BY V.Student_File_ID
+		) AS EV
+		ON EV.Student_File_ID = E.Student_File_ID
+
 		WHERE E.Student_File_ID = @Input_Student_File_ID
 
 		-- 2nd Dose Column
@@ -774,7 +809,7 @@ AS BEGIN
 			Col23, Col24, Col25, Col26, Col27, 
 			Col28, Col29, col30, col31,	Col32, 
 			Col33, Col34, Col35, Col36, Col37, 
-			Col38, Col39
+			Col38, Col39, Col40
 		)
 		SELECT  DISTINCT
 			3,
@@ -851,11 +886,12 @@ AS BEGIN
 			'',
 			'',
 			'',
+			'',
 			'', '', '',
 			'', '', '', '', '', ''
 		FROM StudentFileHeader H
 		WHERE Student_File_ID= @Input_Student_File_ID
-			
+
 
 	END
 	ELSE IF @File_ID = 'EHSVF002'
@@ -1755,7 +1791,7 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35, 
-				Col36, Col37, Col38
+				Col36, Col37, Col38, Col39, Col40
 			FROM #BatchTT
 			WHERE R1 = 1
 		)p
@@ -1768,7 +1804,7 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35,
-				Col36, Col37, Col38
+				Col36, Col37, Col38, Col39, Col40
 			)
 		)AS unpvt1
 	) T1
@@ -1784,7 +1820,7 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35,
-				Col36, Col37, Col38
+				Col36, Col37, Col38, Col39, Col40
 			FROM #BatchTT
 			WHERE R1 = 2
 		)p
@@ -1797,7 +1833,7 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35,
-				Col36, Col37, Col38
+				Col36, Col37, Col38, Col39, Col40
 			)
 		)AS unpvt2
 	) T2
@@ -1814,7 +1850,7 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35,
-				Col36, Col37, Col38
+				Col36, Col37, Col38, Col39, Col40
 			FROM #BatchTT
 			WHERE R1 = 3
 		)p
@@ -1827,7 +1863,7 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35,
-				Col36, Col37, Col38
+				Col36, Col37, Col38, Col39, Col40
 			)
 		)AS unpvt3
 	) T3

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	03 Sep 2021
+-- CR No.			CRE21-014 (PPP COVID19 14 days)
+-- Description:		Display Covid-19 Vaccine Record
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -121,6 +128,18 @@ AS BEGIN
 		Vaccine VARCHAR(4000)
 	)
 
+	CREATE TABLE #COVID19VaccineRowTT (
+		Student_Seq INT,
+		Vaccine_Seq INT,
+		Vaccine_Date DATETIME,
+		Vaccine VARCHAR(4000)
+	)
+
+	CREATE TABLE #COVID19VaccineTT (
+		Student_Seq INT,
+		Vaccine VARCHAR(4000)
+	)
+
 	CREATE TABLE #StudentTT (
 		TableID		INT,		
 		Student_File_ID		VARCHAR(15),
@@ -176,6 +195,8 @@ AS BEGIN
 		Entitle_Inject	CHAR(1),
 		Last3Vaccine	VARCHAR(4000),
 		Entitle_Inject_Fail_Reason	VARCHAR(1000),
+		COVID19_Vaccine	VARCHAR(4000),
+		Has_COVID19_Within_Period	CHAR(1),
 
 		Injected	CHAR(1),
 
@@ -203,7 +224,9 @@ AS BEGIN
 
 	SET @File_ID = UPPER(@File_ID)
 
-	-- Vaccine
+	-- ================================================
+	-- Last 3 vaccination record of SIV / PV / PV13 / MMR
+	-- ================================================
 	SELECT 
 		@VaccineType = Vaccine_Type,
 		@SchemeCode = Scheme_Code,
@@ -229,7 +252,7 @@ AS BEGIN
 		INNER JOIN StatusData SD
 			ON v.Record_Type = SD.Status_Value AND SD.Enum_Class = 'VaccinationRecordRecordType'
 	WHERE Student_File_ID = @Input_Student_File_ID AND (
-		(@VaccineType IN ('QIV','LAIV') AND v.Subsidize_Item_Code NOT IN ('PV','PV13','MMR'))
+		(@VaccineType IN ('QIV','LAIV') AND v.Subsidize_Item_Code NOT IN ('PV','PV13','MMR','C19'))
 		OR (@VaccineType IN ('PV','PV13') AND v.Subsidize_Item_Code IN ('PV','PV13'))
 		OR (@VaccineType IN ('MMR') AND v.Subsidize_Item_Code IN ('MMR'))
 	)
@@ -243,10 +266,38 @@ AS BEGIN
 	FROM (SELECT DISTINCT Student_Seq FROM #Last3VaccineRowTT  ) t
 	
 
+	-- ========================
+	-- All COVID-19 Vaccine Record
+	-- ========================
+	INSERT INTO #COVID19VaccineRowTT (Student_Seq, Vaccine_Seq, Vaccine_Date, Vaccine)
+	SELECT Student_Seq, 
+		ROW_NUMBER() OVER(PARTITION BY Student_Seq ORDER BY Service_Receive_Dtm DESC),
+		Service_Receive_Dtm,
+		FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd') + ' ' 
+			+ 'Covid-19'
+			+ ' (' + Available_Item_Desc + ')'		
+			+ CASE WHEN v.Record_Type = 'H' THEN + ' (' + SD.Status_Description + ')' ELSE '' END 
+	FROM StudentFileEntryVaccine v 
+		INNER JOIN Subsidize s
+			ON v.Subsidize_Code = s.Subsidize_Code
+		INNER JOIN StatusData SD
+			ON v.Record_Type = SD.Status_Value AND SD.Enum_Class = 'VaccinationRecordRecordType'
+	WHERE 
+		Student_File_ID = @Input_Student_File_ID
+		AND v.Subsidize_Item_Code = 'C19'
+
+	INSERT INTO #COVID19VaccineTT (Student_Seq, Vaccine)
+	SELECT t.Student_Seq,
+		STUFF(
+		(
+			SELECT CHAR(10) + Vaccine FROM #COVID19VaccineRowTT a WHERE a.Student_Seq = t.Student_Seq FOR XML PATH('')
+		),1,1,'') 
+	FROM (SELECT DISTINCT Student_Seq FROM #COVID19VaccineRowTT  ) t
+
 -- =============================================
 -- Return results
 -- =============================================
-	
+
 	EXEC [proc_SymmetricKey_open]
 	
 	-- 
@@ -313,12 +364,14 @@ AS BEGIN
 			Entitle_Inject,
 			Last3Vaccine,
 			Entitle_Inject_Fail_Reason,
+			COVID19_Vaccine,
+			Has_COVID19_Within_Period,
 			Injected,
 			Require_Follow_Up
 		)
 		SELECT 
 			DENSE_RANK() OVER( ORDER BY Class_Seq.Seq) AS TABLEID,
-			Student_File_ID,
+			E.Student_File_ID,
 			E.Student_Seq,
 			E.Class_Name,
 			Class_No,
@@ -469,8 +522,15 @@ AS BEGIN
 			Entitle_2NDDOSE,
 			Entitle_3RDDOSE,
 			Entitle_Inject,
-			ISNULL(L3V.Vaccine, ''),
+			ISNULL(L3V.Vaccine, '') AS [Last3Vaccine],
 			CASE WHEN ISNULL(Entitle_Inject_Fail_Reason, '') = '' THEN NULL ELSE Entitle_Inject_Fail_Reason END AS Entitle_Inject_Fail_Reason,
+			
+			ISNULL(C19V.Vaccine, '') AS [COVID19_Vaccine],
+			CASE WHEN (DATEDIFF(D, LastC19V.Vaccine_Date, H.Service_Receive_Dtm) < 14 
+					AND DATEDIFF(D, LastC19V.Vaccine_Date, H.Service_Receive_Dtm) > -14) THEN 'Y'
+				ELSE 'N'
+			END AS [Has_COVID19_Within_Period],
+
 			Injected,
 			CASE WHEN (E.Acc_Type IS NULL)
 					OR (E.Acc_Type = 'T'	AND E.Temp_Acc_Record_Status IN ('R','I'))
@@ -498,7 +558,13 @@ AS BEGIN
 		--	ON PInfo.Voucher_Acc_ID = VA.Voucher_Acc_ID
 		LEFT JOIN #Last3VaccineTT L3V
 			ON L3V.Student_Seq = e.Student_Seq
-		WHERE Student_File_ID = @Input_Student_File_ID
+		LEFT JOIN #COVID19VaccineTT C19V
+			ON C19V.Student_Seq = e.Student_Seq
+		LEFT JOIN #COVID19VaccineRowTT LastC19V				-- Get the latest C19 Vaccine to check within period
+			ON LastC19V.Student_Seq = e.Student_Seq AND LastC19V.Vaccine_Seq = 1
+		INNER JOIN StudentFileHeader H
+			ON E.Student_File_ID = H.Student_File_ID
+		WHERE E.Student_File_ID = @Input_Student_File_ID
 
 	END
 	ELSE IF @File_ID = 'EHSVF003'
@@ -838,7 +904,7 @@ AS BEGIN
 						CASE WHEN Require_Follow_Up = 'Y' THEN 'Y' ELSE 'N' END AS [Require_Follow_Up],		-- Added by Winnie [CRE20-003-02]
 						CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
 						'',
-						-- Section 3 - Section 3 - Vaccination checking result (generated by system)
+						-- Section 3 - Vaccination checking result (generated by system)
 						CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
 						[Service_Receive_Dtm] = FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd'),
 						CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
@@ -904,12 +970,15 @@ AS BEGIN
 						CASE WHEN Require_Follow_Up = 'Y' THEN 'Y' ELSE 'N' END AS [Require_Follow_Up],		-- Added by Winnie [CRE20-003-02]
 						CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
 						'',
-						-- Section 3 - Section 3 - Vaccination checking result (generated by system)
+						-- Section 3 - Vaccination checking result (generated by system)
 						CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
 						CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
 						CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
 						CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
-						CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
+						CASE 
+							WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' 
+							WHEN ISNULL(Has_COVID19_Within_Period, '') = 'Y' THEN 'Assessed by doctor'
+						ELSE 'Yes' END AS [Entitle_Inject],
 						ISNULL(Last3Vaccine,''),
 						[Entitle_Inject_Fail_Reason] = SUBSTRING(CONCAT(							
 									CASE 
@@ -923,7 +992,10 @@ AS BEGIN
 									IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
 									IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
 									IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
-									IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000)
+									IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000),					
+					ISNULL(COVID19_Vaccine,'') AS [COVID19_Vaccine],
+					CASE WHEN ISNULL(Has_COVID19_Within_Period, '') = 'N' THEN 'No' ELSE 'Yes' END AS Has_COVID19_Within_Period
+
 					FROM #StudentTT T
 					WHERE Require_Follow_Up = 'Y'
 					ORDER BY Class_Name, Student_Seq
@@ -994,7 +1066,7 @@ AS BEGIN
 					--ISNULL(EC_Serial_No,'') AS EC_Serial_No,
 					--ISNULL(EC_Reference_No,'') AS EC_Reference_No,
 					'',
-					-- Section 3 - Section 3 - Vaccination checking result (generated by system)
+					-- Section 3 - Vaccination checking result (generated by system)
 					CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
 					[Service_Receive_Dtm] = FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd'),
 					CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
@@ -1075,13 +1147,20 @@ AS BEGIN
 					--ISNULL(EC_Serial_No,'') AS EC_Serial_No,
 					--ISNULL(EC_Reference_No,'') AS EC_Reference_No,
 					'',
-					-- Section 3 - Section 3 - Vaccination checking result (generated by system)
+					-- Section 3 - Vaccination checking result (generated by system)
 					CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
+
+					-- ============
+					-- SIV / PV
+					-- ============
 					CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
 					CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
-					CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
-					CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
-					ISNULL(Last3Vaccine,''),
+					CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,					
+					CASE 
+						WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' 
+						WHEN ISNULL(Has_COVID19_Within_Period, '') = 'Y' THEN 'Assessed by doctor'
+					ELSE 'Yes' END AS [Entitle_Inject],
+					ISNULL(Last3Vaccine,''),					
 					[Entitle_Inject_Fail_Reason] = SUBSTRING(CONCAT(							
 								CASE 
 									WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN 
@@ -1094,7 +1173,13 @@ AS BEGIN
 								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
 								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
 								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
-								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000)
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000),
+
+					-- ============
+					-- COVID-19
+					-- ============
+					ISNULL(COVID19_Vaccine,'') AS [COVID19_Vaccine],
+					CASE WHEN ISNULL(Has_COVID19_Within_Period, '') = 'N' THEN 'No' ELSE 'Yes' END AS Has_COVID19_Within_Period
 				FROM #StudentTT T
 				WHERE TableID = @RowCount
 				ORDER BY Class_Name, Student_Seq
@@ -1488,6 +1573,8 @@ AS BEGIN
 	DROP TABLE #Last3VaccineTT
 	DROP TABLE #Last3VaccineRowTT
 	DROP TABLE #Control
+	DROP TABLE #COVID19VaccineRowTT
+	DROP TABLE #COVID19VaccineTT
 
 END
 GO
