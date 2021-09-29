@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	17 Sep 2021
+-- CR. No			INT21-0023
+-- Description:		(1) Only include Doc Type 'HKIC' and 'EC'
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -426,7 +432,11 @@ BEGIN
 				)
 			)
 			AND VT.Voucher_Acc_ID <> ''
-	
+			AND EXISTS (SELECT 1
+						FROM SchemeDocType D WITH (NOLOCK) 
+						WHERE Scheme_code IN (@scheme_code, @scheme_code_mainland, @scheme_code_DHC)
+						AND D.Doc_Code = VT.Doc_Code)
+
 		----------------------
 		-- Temporary Account
 		----------------------
@@ -497,6 +507,10 @@ BEGIN
 				)
 			)
 			AND VT.Voucher_Acc_ID = ''	
+			AND EXISTS (SELECT 1
+						FROM SchemeDocType D WITH (NOLOCK) 
+						WHERE Scheme_code IN (@scheme_code, @scheme_code_mainland, @scheme_code_DHC)
+						AND D.Doc_Code = VT.Doc_Code)
 
 		-- ---------------------------------------------------------------
 		-- Patch "Is_Terminate" : Check whether transaction is terminated
@@ -563,6 +577,10 @@ BEGIN
 					ON VA.Voucher_Acc_ID = P.Voucher_Acc_ID 
 		WHERE 
 			P.Create_Dtm < @cutOffDtm
+			AND EXISTS (SELECT 1
+						FROM SchemeDocType D WITH (NOLOCK) 
+						WHERE Scheme_code IN (@scheme_code, @scheme_code_mainland, @scheme_code_DHC)
+						AND D.Doc_Code = P.Doc_Code)
 
 		--RAISERROR ('Get validated account completed', 0, 1) WITH NOWAIT
 
@@ -605,6 +623,10 @@ BEGIN
 			TVA.Record_Status NOT IN ('V', 'D')
 			AND	TVA.account_purpose IN ('C', 'V')
 			AND TP.Create_Dtm < @cutOffDtm
+			AND EXISTS (SELECT 1
+						FROM SchemeDocType D WITH (NOLOCK) 
+						WHERE Scheme_code IN (@scheme_code, @scheme_code_mainland, @scheme_code_DHC)
+						AND D.Doc_Code = TP.Doc_Code)
 
 		--RAISERROR ('Get temp account completed', 0, 1) WITH NOWAIT
 
