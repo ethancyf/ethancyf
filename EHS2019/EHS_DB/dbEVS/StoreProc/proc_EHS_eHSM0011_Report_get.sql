@@ -9,6 +9,14 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Nichole IP
+-- CR No.:			CRE21-008-02
+-- Modified date:	13 Sep 2021
+-- Description:		 
+--     1) Add sub report for use of vouchers for District Health Centre related services (Yau Tsim Mong & Kowloon City)
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Nichole IP
 -- CR No.:			CRE21-008
 -- Modified date:	18 Aug 2021
 -- Description:		 
@@ -230,44 +238,44 @@ AS BEGIN
 	DECLARE @District_Name1 AS VARCHAR(100) = 'Kwai Tsing'
 	DECLARE @District_Name2 AS VARCHAR(100) = 'Sham Shui Po'
 	DECLARE @District_Name3 AS VARCHAR(100) = 'Sai Kung'
-	--DECLARE @District_Name4 AS VARCHAR(100) = 'Yau Tsim Mong' -- operation at 01-10-2021
-	--DECLARE @District_Name5 AS VARCHAR(100) = 'Kowloon City' -- operation at 01-10-2021
-	--DECLARE @District_Name6 AS VARCHAR(100) = 'Wan Chai' -- operation at 04-10-2021
-	--DECLARE @District_Name7 AS VARCHAR(100) = 'Kwun Tong' -- operation at 15-10-2021
-	--DECLARE @District_Name8 AS VARCHAR(100) = 'Tai Po' -- operation at 15-10-2021
-	--DECLARE @District_Name9 AS VARCHAR(100) = 'Islands' -- operation at 18-10-2021
-	--DECLARE @District_Name10 AS VARCHAR(100) = 'North District' -- operation at 18-10-2021
-	--DECLARE @District_Name11 AS VARCHAR(100) = 'Central & Western' -- operation at 30-10-2021
-	--DECLARE @District_Name12 AS VARCHAR(100) = 'Sha Tin' -- operation at 30-10-2021
-	--DECLARE @District_Name13 AS VARCHAR(100) = 'Eastern' -- operation at 30-10-2021
+	DECLARE @District_Name4 AS VARCHAR(100) = 'Yau Tsim Mong' -- operation at 01-10-2021
+	DECLARE @District_Name5 AS VARCHAR(100) = 'Kowloon City' -- operation at 01-10-2021
+	DECLARE @District_Name6 AS VARCHAR(100) = 'Wan Chai' -- operation at 04-10-2021
+	DECLARE @District_Name7 AS VARCHAR(100) = 'Kwun Tong' -- operation at 15-10-2021
+	DECLARE @District_Name8 AS VARCHAR(100) = 'Tai Po' -- operation at 15-10-2021
+	DECLARE @District_Name9 AS VARCHAR(100) = 'Islands' -- operation at 18-10-2021
+	DECLARE @District_Name10 AS VARCHAR(100) = 'North District' -- operation at 18-10-2021
+	DECLARE @District_Name11 AS VARCHAR(100) = 'Central & Western' -- operation at 30-10-2021
+	DECLARE @District_Name12 AS VARCHAR(100) = 'Sha Tin' -- operation at 30-10-2021
+	DECLARE @District_Name13 AS VARCHAR(100) = 'Eastern' -- operation at 30-10-2021
 
 	DECLARE @District_Code1 AS VARCHAR(100) = 'KC'
 	DECLARE @District_Code2 AS VARCHAR(100) = 'SSP'
 	DECLARE @District_Code3 AS VARCHAR(100) = 'SK'
-	--DECLARE @District_Code4 AS VARCHAR(100) = 'YTM' -- operation at 01-10-2021
-	--DECLARE @District_Code5 AS VARCHAR(100) = 'KLC' -- operation at 01-10-2021
-	--DECLARE @District_Code6 AS VARCHAR(100) = 'WC' -- operation at 04-10-2021
-	--DECLARE @District_Code7 AS VARCHAR(100) = 'KT' -- operation at 15-10-2021
-	--DECLARE @District_Code8 AS VARCHAR(100) = 'TP' -- operation at 15-10-2021
-	--DECLARE @District_Code9 AS VARCHAR(100) = 'ILD' -- operation at 18-10-2021
-	--DECLARE @District_Code10 AS VARCHAR(100) = 'NTH' -- operation at 18-10-2021
-	--DECLARE @District_Code11 AS VARCHAR(100) = 'CW' -- operation at 30-10-2021
-	--DECLARE @District_Code12 AS VARCHAR(100) = 'ST' -- operation at 30-10-2021
-	--DECLARE @District_Code13 AS VARCHAR(100) = 'EST' -- operation at 30-10-2021
+	DECLARE @District_Code4 AS VARCHAR(100) = 'YTM' -- operation at 01-10-2021
+	DECLARE @District_Code5 AS VARCHAR(100) = 'KLC' -- operation at 01-10-2021
+	DECLARE @District_Code6 AS VARCHAR(100) = 'WC' -- operation at 04-10-2021
+	DECLARE @District_Code7 AS VARCHAR(100) = 'KT' -- operation at 15-10-2021
+	DECLARE @District_Code8 AS VARCHAR(100) = 'TP' -- operation at 15-10-2021
+	DECLARE @District_Code9 AS VARCHAR(100) = 'ILD' -- operation at 18-10-2021
+	DECLARE @District_Code10 AS VARCHAR(100) = 'NTH' -- operation at 18-10-2021
+	DECLARE @District_Code11 AS VARCHAR(100) = 'CW' -- operation at 30-10-2021
+	DECLARE @District_Code12 AS VARCHAR(100) = 'ST' -- operation at 30-10-2021
+	DECLARE @District_Code13 AS VARCHAR(100) = 'EST' -- operation at 30-10-2021
 
 	INSERT INTO @tempDistrict values (1,@District_Name1,@District_Code1)
 	INSERT INTO @tempDistrict values (2,@District_Name2,@District_Code2)
 	INSERT INTO @tempDistrict values (3,@District_Name3,@District_Code3)
-	--INSERT INTO @tempDistrict values (4,@District_Name4,@District_Code4) -- operation at 01-10-2021
-	--INSERT INTO @tempDistrict values (5,@District_Name5,@District_Code5) -- operation at 01-10-2021
-	--INSERT INTO @tempDistrict values (6,@District_Name6,@District_Code6) -- operation at 04-10-2021
-	--INSERT INTO @tempDistrict values (7,@District_Name7,@District_Code7) -- operation at 15-10-2021
-	--INSERT INTO @tempDistrict values (8,@District_Name8,@District_Code8) -- operation at 15-10-2021
-	--INSERT INTO @tempDistrict values (9,@District_Name9,@District_Code9) -- operation at 18-10-2021
-	--INSERT INTO @tempDistrict values (10,@District_Name10,@District_Code10) -- operation at 18-10-2021
-	--INSERT INTO @tempDistrict values (11,@District_Name11,@District_Code11) -- operation at 30-10-2021
-	--INSERT INTO @tempDistrict values (12,@District_Name12,@District_Code12) -- operation at 30-10-2021
-	--INSERT INTO @tempDistrict values (13,@District_Name13,@District_Code13) -- operation at 30-10-2021
+	INSERT INTO @tempDistrict values (4,@District_Name4,@District_Code4) -- operation at 01-10-2021
+	INSERT INTO @tempDistrict values (5,@District_Name5,@District_Code5) -- operation at 01-10-2021
+	INSERT INTO @tempDistrict values (6,@District_Name6,@District_Code6) -- operation at 04-10-2021
+	INSERT INTO @tempDistrict values (7,@District_Name7,@District_Code7) -- operation at 15-10-2021
+	INSERT INTO @tempDistrict values (8,@District_Name8,@District_Code8) -- operation at 15-10-2021
+	INSERT INTO @tempDistrict values (9,@District_Name9,@District_Code9) -- operation at 18-10-2021
+	INSERT INTO @tempDistrict values (10,@District_Name10,@District_Code10) -- operation at 18-10-2021
+	INSERT INTO @tempDistrict values (11,@District_Name11,@District_Code11) -- operation at 30-10-2021
+	INSERT INTO @tempDistrict values (12,@District_Name12,@District_Code12) -- operation at 30-10-2021
+	INSERT INTO @tempDistrict values (13,@District_Name13,@District_Code13) -- operation at 30-10-2021
 
 	-- Profession
 	INSERT INTO @Profession
