@@ -15,6 +15,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         ' Model in use
         Private _udtEHSAccount As EHSAccountModel
         Private _udtFormatter As Formatter
+        Private _udtPrintoutFormatter As Common.Format.Formatter        
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
 
@@ -31,6 +32,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
             _udtEHSAccount = udtEHSAccount
             _udtFormatter = New Formatter
+            _udtPrintoutFormatter = New Common.Format.Formatter
             _blnIsSample = blnIsSample
             LoadReport()
             ChkIsSample()
@@ -60,6 +62,25 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             If txtDocTypeChi.Text = txtDocType.Text Then
                 txtDocTypeChi.Visible = False
             End If
+
+            'DOB
+
+            Dim txtDOBDisplay_Eng As String = String.Empty
+            Dim txtDOBDisplay_Chi As String = String.Empty
+
+            txtDOBDisplay_Eng = _udtPrintoutFormatter.formatDOBDisplay(patientInformation.DOB, patientInformation.ExactDOB, CultureLanguage.English)
+            txtDOBDisplay_Chi = _udtPrintoutFormatter.formatDOBDisplay(patientInformation.DOB, patientInformation.ExactDOB, CultureLanguage.TradChinese)
+
+            If txtDOBDisplay_Eng = txtDOBDisplay_Chi Then
+                txtDOB.Text = String.Format("{0}", txtDOBDisplay_Eng)
+            Else
+                txtDOB.Text = String.Format("{0} / {1}", txtDOBDisplay_Chi, txtDOBDisplay_Eng)
+            End If
+
+
+            txtGenderChi.Text = HttpContext.GetGlobalResourceObject("PrintoutText", IIf(patientInformation.Gender = "M", "GenderMale", "GenderFemale"), New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+            txtGenderEng.Text = String.Format("/ {0}", HttpContext.GetGlobalResourceObject("PrintoutText", IIf(patientInformation.Gender = "M", "GenderMale", "GenderFemale"), New System.Globalization.CultureInfo(CultureLanguage.English)))
+
         End Sub
 
         Private Sub ChkIsSample()
@@ -69,8 +90,11 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 txtHKID.Visible = False
                 txtDocTypeChi.Visible = False
                 txtDocType.Visible = False
+                txtDOB.Visible = False
+                txtGenderEng.Visible = False
+                txtGenderChi.Visible = False
             End If
         End Sub
-
     End Class
+
 End Namespace

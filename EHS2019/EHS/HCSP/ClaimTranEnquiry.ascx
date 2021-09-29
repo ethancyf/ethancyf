@@ -160,7 +160,7 @@
                 <asp:Panel ID="panNonLocalRecoveredHistory" runat="server">
                 <tr>
                     <td style="height:25px;width: 205px;vertical-align:top">
-                        <asp:Label ID="lblNonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" CssClass="tableTitle" Width="160px" Style="position:relative;left:-1px"/>
+                        <asp:Label ID="lblNonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" CssClass="tableTitle" Style="position:relative;left:-1px"/>
                     </td>
                     <td style="height:25px;vertical-align:top">
                         <asp:Label ID="lblNonLocalRecoveredHistory" runat="server" CssClass="tableText" Style="position:relative;left:-2px"/>

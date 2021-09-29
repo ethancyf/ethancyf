@@ -169,7 +169,8 @@ Namespace BLL
             Public Const SESS_ClaimCOVID19_VaccineBrand As String = "SESS_CLAIMCOVID19_VACCINEBRAND"
             Public Const SESS_ClaimCOVID19_VaccineLotNo As String = "SESS_CLAIMCOVID19_VACCINELOTNO"
             Public Const SESS_ClaimCOVID19_Dose As String = "SESS_CLAIMCOVID19_DOSE"
-            Public Const SESS_ClaimCOVID19_VaccineRecord As String = "SESS_CLAIMCOVID19_VACCINERECORD" ' CRE20-0022 (Immu record) [End][Martin]
+            Public Const SESS_ClaimCOVID19_C19VaccineRecord As String = "SESS_CLAIMCOVID19_C19VACCINERECORD"
+            Public Const SESS_ClaimCOVID19_OtherVaccineRecord As String = "SESS_CLAIMCOVID19_OTHERVACCINERECORD"
             Public Const SESS_ClaimCOVID19_DischargeRecord As String = "SESS_CLAIMCOVID19_DISCHARGERECORD"
             Public Const SESS_ClaimCOVID19_DischargeReminder As String = "SESS_CLAIMCOVID19_DISCHARGEREMINDER"
             Public Const SESS_ClaimCOVID19_DischargeDemographicReminder As String = "SESS_CLAIMCOVID19_DISCHARGEDEMOGRAPHICREMINDER"
@@ -1556,31 +1557,48 @@ Namespace BLL
         End Sub
 
 #End Region
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Martin]
-#Region "Claim COVID-19 - Vaccine Record."
+#Region "Claim COVID-19 - C19 Vaccine Record"
 
-        Public Sub ClaimCOVID19VaccineRecordSaveToSession(ByVal dtVaccineRecord As DataTable)
-            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_VaccineRecord) = dtVaccineRecord
+        Public Sub ClaimCOVID19C19VaccineRecordSaveToSession(ByVal dtVaccineRecord As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_C19VaccineRecord) = dtVaccineRecord
         End Sub
 
-        Public Function ClaimCOVID19VaccineRecordGetFromSession() As DataTable
-            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_VaccineRecord) Is Nothing Then
+        Public Function ClaimCOVID19C19VaccineRecordGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_C19VaccineRecord) Is Nothing Then
                 Return Nothing
             Else
-                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_VaccineRecord), DataTable)
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_C19VaccineRecord), DataTable)
             End If
         End Function
 
-        Public Sub ClaimCOVID19VaccineRecordRemoveFromSession()
-            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_VaccineRecord)
+        Public Sub ClaimCOVID19C19VaccineRecordRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_C19VaccineRecord)
         End Sub
 #End Region
-        ' CRE20-0022 (Immu record) [End][Martin]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
+#Region "Claim COVID-19 - Other Vaccine Record"
+
+        Public Sub ClaimCOVID19OtherVaccineRecordSaveToSession(ByVal dtVaccineRecord As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_OtherVaccineRecord) = dtVaccineRecord
+        End Sub
+
+        Public Function ClaimCOVID19OtherVaccineRecordGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_OtherVaccineRecord) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_OtherVaccineRecord), DataTable)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19OtherVaccineRecordRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_OtherVaccineRecord)
+        End Sub
+#End Region
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
 #Region "Claim COVID-19 - Scheme Selected"
         Public Sub ClaimCOVID19SchemeSelectedSaveToSession(ByVal udtSchemeClaim As SchemeClaimModel, ByVal strFunctionCode As String)
             HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_SchemeSelected)) = udtSchemeClaim
@@ -1595,10 +1613,7 @@ Namespace BLL
         End Sub
 
 #End Region
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
 #Region "Claim COVID-19 - Vaccination Card"
         Public Sub ClaimCOVID19VaccinationCardSaveToSession(ByVal udtEHSTransaction As TransactionDetailVaccineModel, ByVal strFunctionCode As String)
             HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)) = udtEHSTransaction
@@ -1613,10 +1628,7 @@ Namespace BLL
         End Sub
 
 #End Region
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
 #Region "Claim COVID-19 - Carry Forword"
         Public Sub ClaimCOVID19CarryForwordSaveToSession(ByVal blnUsed As Boolean, ByVal strFunctionCode As String)
             HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_CarryForward)) = blnUsed
@@ -1631,9 +1643,7 @@ Namespace BLL
         End Sub
 
 #End Region
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
 #Region "Claim COVID-19 - Discharge Record"
 
         Public Sub ClaimCOVID19DischargeRecordSaveToSession(ByVal udtDischargeResult As COVID19.DischargeResultModel, ByVal strFunctionCode As String)
@@ -1652,9 +1662,7 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord))
         End Sub
 #End Region
-        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
 #Region "Claim COVID-19 - Discharge Reminder"
 
         Public Sub ClaimCOVID19DischargeReminderSaveToSession(ByVal blnShow As Boolean, ByVal strFunctionCode As String)
@@ -1673,9 +1681,7 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeReminder))
         End Sub
 #End Region
-        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
 #Region "Claim COVID-19 - Discharge Reminder"
 
         Public Sub ClaimCOVID19DischargeDemographicReminderSaveToSession(ByVal blnShow As Boolean, ByVal strFunctionCode As String)
@@ -1694,9 +1700,7 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeDemographicReminder))
         End Sub
 #End Region
-        ' CRE20-0023 (Immu record) [End][Chris YIM]
-
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+      
 #Region "Claim COVID-19 - Discharge Override Reason"
 
         Public Sub ClaimCOVID19DischargeOverrideReasonSaveToSession(ByVal strReason As String, ByVal strFunctionCode As String)
@@ -1715,7 +1719,6 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeOverrideReason))
         End Sub
 #End Region
-        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
 #End Region
 

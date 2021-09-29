@@ -4555,14 +4555,14 @@ Partial Public Class eHSAccountMaint
                                 If blnManualValidation.HasValue Then
                                     If blnManualValidation.Value Then
                                         Me.udcInfoMsgBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00015, _
-                                                                    New String() {"%s"}, New Object() {udtformatter.formatSystemNumber(udtEHSAccount.VoucherAccID.Trim)})
+                                                                    New String() {"%s"}, New String() {udtformatter.formatSystemNumber(udtEHSAccount.VoucherAccID.Trim)})
                                     Else
                                         Me.udcInfoMsgBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00012, _
-                                                                    New String() {"%s"}, New Object() {udtformatter.formatSystemNumber(udtEHSAccount.VoucherAccID.Trim)})
+                                                                    New String() {"%s"}, New String() {udtformatter.formatSystemNumber(udtEHSAccount.VoucherAccID.Trim)})
                                     End If
                                 Else
                                     Me.udcInfoMsgBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00012, _
-                                                                New String() {"%s"}, New Object() {udtformatter.formatSystemNumber(udtEHSAccount.VoucherAccID.Trim)})
+                                                                New String() {"%s"}, New String() {udtformatter.formatSystemNumber(udtEHSAccount.VoucherAccID.Trim)})
                                 End If
 
                                 ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Dickson]

@@ -123,6 +123,11 @@ Namespace Component.ClaimRules
             ''' </summary>
             Public Const NON_LOCAL_RECOVERED = "NONLOCALRECOVERED"
 
+            ''' <summary>
+            ''' Claim with target dose
+            ''' </summary>
+            Public Const EXTRA_DOSE = "EXTRADOSE"
+
         End Class
 
 

@@ -10,6 +10,8 @@ Imports Common.Format
 Imports Common.ComFunction
 Imports Common.Component.COVID19.PrintOut.Common
 Imports Common.Component.COVID19.PrintOut.Common.QrCodeFormatter
+Imports Common.Component.COVID19.PrintOut.Common.Format.Formatter
+
 'Imports HCSP.BLL
 
 
@@ -30,7 +32,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         'Private _udtSmartIDContent As Component.COVID19.BLL.SmartIDContentModel
         Private _udtPrintoutHelper As PrintoutHelper = New PrintoutHelper()
         ' Private _udtSessionHandler As New SessionHandler
-
+        
         'Date for QR code printing
         Private _udtPrintTime As Date
         'Setting for blank sample of vaccination card
@@ -94,6 +96,17 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             'Patient Name
             srCovid19PatientName.Report = New Covid19PatientName(_udtEHSAccount, _blnIsSample)
 
+
+            'Transaction No.
+            Me.txtTransactionNumber.Text = "Ref: " + _udtFormatter.formatSystemNumber(_udtEHSTransaction.TransactionID)
+
+            ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+            'Me.txtPrintDate.Text = "Printed on " + _udtPrintTime.ToString(_udtFormatter.DisplayVaccinationRecordClockFormat())
+            Me.txtPrintDate.Text = "Printed on " + FormatDisplayClock(_udtPrintTime)
+            ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
+
+
+
             ' Vaccination Info                                                  'second _udtEHSTransaction is history Transaction 
             srCovid19DoseTable.Report = New Covid19DoseTable(_udtEHSTransaction, _udtVaccinationRecord, _blnIsSample, _
                                                              _blnDischarge, _blnNonLocalRecoveredHistory1stDose, _blnNonLocalRecoveredHistory2ndDose)
@@ -111,6 +124,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             If (_blnIsSample) Then
                 qrCode.Visible = False
                 qrCodeLabel.Visible = False
+                Me.txtPrintDate.Visible = False
+                Me.txtTransactionNumber.Visible = False
             End If
 
         End Sub

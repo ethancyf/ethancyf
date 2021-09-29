@@ -473,6 +473,23 @@ Namespace Component.COVID19
             Return strResult
 
         End Function
+
+        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
+        Public Function GetVaccineManufacturer(ByVal strBrand As String) As String
+            Dim strResult As String = String.Empty
+            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineBrand()
+            Dim dr() As DataRow = dt.Select(String.Format("Brand_ID = '{0}'", strBrand.Trim))
+
+            If dr.Length > 0 Then
+                strResult = dr(0)("Manufacturer")
+            End If
+
+            Return strResult
+
+        End Function
+        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
+
 #End Region
 
 #Region "Get Vaccination Centre"
@@ -516,6 +533,26 @@ Namespace Component.COVID19
             End If
 
         End Function
+
+        ' CRE20-023-59 (New Prefix of Centre Code 'Q') [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
+        Public Function FilterByCentreType(ByVal strCentreType As String) As String
+            Dim strFilter As String = String.Empty
+            Dim strDHClinicPrefix As String = "DH"
+            'Dim strCentrePrefix As String = "CVC"
+
+            If strCentreType.Trim.ToUpper = "CENTRE" Then
+                strFilter = String.Format("Centre_ID not like '{0}%'", strDHClinicPrefix)
+                'strFilter = String.Format("Centre_ID like '{0}%'", strCentrePrefix)
+            Else
+                strFilter = String.Format("Centre_ID like '{0}%'", strDHClinicPrefix)
+            End If
+
+            Return strFilter
+
+        End Function
+        ' CRE20-023-59 (New Prefix of Centre Code 'Q') [End][Winnie SUEN]
+
 #End Region
 
 #Region "Set Vaccination Centre"

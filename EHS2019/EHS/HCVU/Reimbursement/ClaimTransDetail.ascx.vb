@@ -12,6 +12,8 @@ Imports Common.Component.StaticData
 Imports Common.ComObject
 Imports Common.WebService.Interface
 Imports HCVU.BLL
+Imports Common.Component.COVID19
+Imports Common.Component.SchemeDetails
 
 Partial Public Class ClaimTransDetail
     Inherits BaseControlWithGridView

@@ -9,6 +9,19 @@ Namespace Component.COVID19.PrintOut.Common.Format
 
     Public Class Formatter
 
+        'CRE20-0022 (Immu record) [Start][Raiman]
+        Const strDisplayVaccinationRecordClockFormat As String = "dd-MMM-yyyy HH:mm"
+        Const strDisplayDateFormat As String = "dd-MMM-yyyy"
+        Const strDisplayDateFormatChi As String = "yyyy年M月d日"
+
+        Const strDisplayDOBDayFormat As String = "dd-MMM-yyyy"
+        Const strDisplayDOBDayFormatChi As String = "yyyy年M月d日"
+        Const strDisplayDOBMonthFormat As String = "MMM-yyyy"
+        Const strDisplayDOBMonthFormatChi As String = "yyyy年M月"
+        Const strDisplayDOBYearFormat As String = "yyyy"
+        Const strDisplayDOBYearFormatChi As String = "yyyy年"
+        'CRE20-0022 (Immu record) [End][Raiman]
+
         Public Enum EnumDateFormat
             YYYYMMDD
             DDMMYYYY
@@ -98,42 +111,70 @@ Namespace Component.COVID19.PrintOut.Common.Format
             Return strHKID.Substring(0, strHKID.Length - 1) + "(" + strHKID.Substring(strHKID.Length - 1, 1) + ")"
         End Function
 
-        ' CRE13-018 - Change Voucher Amount to 1 Dollar [Start][Tommy L]
-        ' -----------------------------------------------------------------------------------------
-        Public Shared Function FormatMoney(ByVal strMoney As String, ByVal enumLang As EnumLang) As String
-            Select Case enumLang
-                Case Formatter.EnumLang.Chi
-                    Return "港幣 " + strMoney + " 元"
+        Public Function formatDOBDisplay(ByVal dtDOB As Date, ByVal strExactDOB As String, ByVal strLanguage As String) As String
+            Dim strRes As String
+            strRes = ""
+            Dim providerEN As New System.Globalization.CultureInfo("en-us")
+            Dim providerTW As New System.Globalization.CultureInfo("zh-tw")
+            Dim providerCN As New System.Globalization.CultureInfo("zh-cn")
 
-                Case Formatter.EnumLang.Eng
-                    Return "HK$ " + strMoney
+            Select Case strExactDOB
+                Case "Y", "V"
+                    If UCase(strLanguage) = CultureLanguage.TradChinese.ToUpper() OrElse
+                        UCase(strLanguage) = CultureLanguage.SimpChinese.ToUpper() Then
+                        strRes = dtDOB.ToString(strDisplayDOBYearFormatChi, providerTW)
+                    Else
+                        strRes = dtDOB.ToString(strDisplayDOBYearFormat, providerEN)
+                    End If
+                Case "M", "U"
+                    If UCase(strLanguage) = CultureLanguage.TradChinese.ToUpper() OrElse
+                        UCase(strLanguage) = CultureLanguage.SimpChinese.ToUpper() Then
+                        strRes = dtDOB.ToString(strDisplayDOBMonthFormatChi, providerTW)
+                    Else
+                        strRes = dtDOB.ToString(strDisplayDOBMonthFormat, providerEN)
+                    End If
+                Case "D", "T"
+                    If UCase(strLanguage) = CultureLanguage.TradChinese.ToUpper() OrElse
+                        UCase(strLanguage) = CultureLanguage.SimpChinese.ToUpper() Then
+                        strRes = dtDOB.ToString(strDisplayDOBDayFormatChi, providerTW)
+                    Else
+                        strRes = dtDOB.ToString(strDisplayDOBDayFormat, providerEN)
+                    End If
+                Case "A"
+                    ' Display Year Only
+                    If UCase(strLanguage) = CultureLanguage.TradChinese.ToUpper() OrElse
+                        UCase(strLanguage) = CultureLanguage.SimpChinese.ToUpper() Then
+                        strRes = dtDOB.ToString(strDisplayDOBYearFormatChi, providerTW)
+                    Else
+                        strRes = dtDOB.ToString(strDisplayDOBYearFormat, providerEN)
+                    End If
 
-                    'CRE13-019-02 Extend HCVS to China [Start][Winnie]
-                Case Formatter.EnumLang.SimpChi
-                    Return "港币 " + strMoney + " 元"
-                    'CRE13-019-02 Extend HCVS to China [End][Winnie]
+                Case "R"
+                    If UCase(strLanguage) = CultureLanguage.TradChinese.ToUpper() OrElse
+                        UCase(strLanguage) = CultureLanguage.SimpChinese.ToUpper() Then
+                        strRes = dtDOB.ToString(strDisplayDOBYearFormatChi, providerTW)
+                    Else
+                        strRes = dtDOB.ToString(strDisplayDOBYearFormat, providerEN)
+                    End If
+
             End Select
 
-            Return Nothing
+            Return strRes
         End Function
-        ' CRE13-018 - Change Voucher Amount to 1 Dollar [End][Tommy L]
 
-        'CRE13-019-02 Extend HCVS to China [Start][Winnie]
-        Public Shared Function FormatMoneyRMB(ByVal strMoney As String, ByVal enumLang As EnumLang) As String
-            Select Case enumLang
-                Case Formatter.EnumLang.Chi
-                    Return "人民幣 " + strMoney + " 元"
 
-                Case Formatter.EnumLang.Eng
-                    Return "RMB¥ " + strMoney
-
-                Case Formatter.EnumLang.SimpChi
-                    Return "人民币 " + strMoney + " 元"
-            End Select
-
-            Return Nothing
+        Public Shared Function FormatDisplayDate(ByVal dtmDate As Date) As String
+            Return dtmDate.ToString(strDisplayDateFormat, New System.Globalization.CultureInfo(CultureLanguage.English))
         End Function
-        'CRE13-019-02 Extend HCVS to China [End][Winnie]
+
+        Public Shared Function FormatDisplayDateChinese(ByVal dtmDate As Date) As String
+            Return dtmDate.ToString(strDisplayDateFormatChi, New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+        End Function
+
+        Public Shared Function FormatDisplayClock(ByVal dtmDate As Date) As String
+            Return dtmDate.ToString(strDisplayVaccinationRecordClockFormat, New System.Globalization.CultureInfo(CultureLanguage.English))
+        End Function
+
 
         Public Shared Sub FormatUnderLineTextBox(ByVal strText As String, ByVal textBox As GrapeCity.ActiveReports.SectionReportModel.TextBox)
             Dim sigNoTextWidth As Single = textBox.Width

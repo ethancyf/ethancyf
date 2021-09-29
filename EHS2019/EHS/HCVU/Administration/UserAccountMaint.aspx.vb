@@ -277,26 +277,18 @@ Partial Public Class UserAccountMaint
             Me.ckbScheme.DataBind()
 
 
-            ' CRE20-023 (Immu record) [Start][Raiman Chong]
-            ' ---------------------------------------------------------------------------------------------------------
-
+            ' CRE20-023-59 (New Prefix of Centre Code 'Q') [Start][Winnie SUEN]
+            ' -------------------------------------------------------------
+            ' Vaccine Centre: Exclude 'DH Clinic' 
             Dim udtCovid19BLL As New COVID19.COVID19BLL
             Dim dvVaccineCentre As DataView = New DataView(udtCovid19BLL.GetVaccineCentre)
-            dvVaccineCentre.RowFilter = "Centre_ID like 'CVC%'"
+            dvVaccineCentre.RowFilter = udtCovid19BLL.FilterByCentreType("CENTRE")
             Dim dtVaccineCentre As DataTable = dvVaccineCentre.ToTable()
             ckbVaccineCentre.DataTextField = "Centre_Name"
             ckbVaccineCentre.DataValueField = "Centre_ID"
             Me.ckbVaccineCentre.DataSource = dtVaccineCentre
             Me.ckbVaccineCentre.DataBind()
-            ' CRE20-023 (Immu record) [End][Raiman Chong]
-            ' ---------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
+            ' CRE20-023-59 (New Prefix of Centre Code 'Q') [End][Winnie SUEN]
 
             ' CRE19-022 -  [Begin][Golden]
             Dim udtStaticDataBLL As StaticDataBLL = New StaticDataBLL

@@ -69,7 +69,11 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 'FirstDoseLotNumber.Text = "Lot No. : " + dt.Rows(0)("Vaccine_Lot_No")
                 FirstDoseVaccineNameChi.Text = dt.Rows(0)("Brand_Printout_Name_Chi")
                 FirstDoseVaccineName.Text = dt.Rows(0)("Brand_Printout_Name")
-                FirstDoseInjectionDate.Text = FormatDate(_udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
+
+                ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+                FirstDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtEHSTransaction.ServiceDate)
+                FirstDoseInjectionDate.Text = FormatDisplayDate(_udtEHSTransaction.ServiceDate)
+                ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
 
                 FirstDoseCover.Visible = False
                 SecondDoseCover.Visible = True
@@ -80,7 +84,11 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     'date dateback fill second dose record
                     If (_udtVaccinationRecordHistory.AvailableItemDesc = "2nd Dose") Then
                         SecondDoseCover.Visible = False
-                        SecondDoseInjectionDate.Text = FormatDate(_udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
+
+                        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+                        SecondDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtVaccinationRecordHistory.ServiceReceiveDtm)
+                        SecondDoseInjectionDate.Text = FormatDisplayDate(_udtVaccinationRecordHistory.ServiceReceiveDtm)
+                        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
 
                         'get SecondDose by history object brand id
                         SecondDoseVaccineNameChi.Text = udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(_udtVaccinationRecordHistory.VaccineBrand)
@@ -90,14 +98,6 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     End If
                     '===== date dateback dose record ====
                 Else
-                    'If _udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
-                    '   _udtEHSTransaction.TransactionAdditionFields.DischargeResult IsNot Nothing AndAlso _
-                    '   _udtEHSTransaction.TransactionAdditionFields.DischargeResult = "F" Then
-                    '    SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
-                    '    SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
-                    '                           Environment.NewLine & _
-                    '                           HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
-                    'End If
 
                     If _blnDischarge OrElse _blnNonLocalRecoveredHistory1stDose OrElse _blnNonLocalRecoveredHistory2ndDose Then
                         SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
@@ -118,7 +118,10 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 'SecondDoseLotNumber.Text = "Lot No. : " + dt.Rows(0)("Vaccine_Lot_No")
                 SecondDoseVaccineNameChi.Text = dt.Rows(0)("Brand_Printout_Name_Chi")
                 SecondDoseVaccineName.Text = dt.Rows(0)("Brand_Printout_Name")
-                SecondDoseInjectionDate.Text = FormatDate(_udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
+                ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+                SecondDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtEHSTransaction.ServiceDate)
+                SecondDoseInjectionDate.Text = FormatDisplayDate(_udtEHSTransaction.ServiceDate)
+                ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
 
                 SecondDoseCover.Visible = False
                 FirstDoseCover.Visible = True
@@ -128,7 +131,11 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
                     If (_udtVaccinationRecordHistory.AvailableItemDesc = "1st Dose") Then
                         FirstDoseCover.Visible = False
-                        FirstDoseInjectionDate.Text = FormatDate(_udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
+
+                        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+                        FirstDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtVaccinationRecordHistory.ServiceReceiveDtm)
+                        FirstDoseInjectionDate.Text = FormatDisplayDate(_udtVaccinationRecordHistory.ServiceReceiveDtm)
+                        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
 
                         'get first does by history object brand id
                         FirstDoseVaccineNameChi.Text = udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(_udtVaccinationRecordHistory.VaccineBrand)
@@ -147,11 +154,13 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 FirstDoseVaccineName.Visible = False
                 FirstDoseVaccineNameChi.Visible = False
                 FirstDoseInjectionDate.Visible = False
+                FirstDoseInjectionDateChi.Visible = False
 
                 SecondDoseCover.Visible = False
                 SecondDoseVaccineName.Visible = False
                 SecondDoseVaccineNameChi.Visible = False
                 SecondDoseInjectionDate.Visible = False
+                SecondDoseInjectionDateChi.Visible = False
             End If
         End Sub
 

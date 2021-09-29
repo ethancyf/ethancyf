@@ -1264,12 +1264,12 @@ Partial Public Class RecordConfirmation
             Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
             If udtEHSUpdatedTransaction.EHSAcct.RecordStatus = "D" Then
                 If Not udtEHSUpdatedTransaction.EHSAcct.OriginalAccID Is Nothing AndAlso Not udtEHSUpdatedTransaction.EHSAcct.OriginalAccID.Equals(String.Empty) Then
-                    Me.udcInfoMessageBox.AddMessage(Me.strFuncCode, "I", "00002", New String() {"%s"}, New Object() {udtFormatter.formatSystemNumber(udtEHSUpdatedTransaction.VoidTranNo)})
+                    Me.udcInfoMessageBox.AddMessage(Me.strFuncCode, "I", "00002", New String() {"%s"}, New String() {udtFormatter.formatSystemNumber(udtEHSUpdatedTransaction.VoidTranNo)})
                 Else
-                    Me.udcInfoMessageBox.AddMessage(Me.strFuncCode, "I", "00003", New String() {"%r", "%s"}, New Object() {udtFormatter.formatSystemNumber(udtEHSUpdatedTransaction.EHSAcct.VoucherAccID), udtFormatter.formatSystemNumber(udtEHSUpdatedTransaction.VoidTranNo)})
+                    Me.udcInfoMessageBox.AddMessage(Me.strFuncCode, "I", "00003", New String() {"%r", "%s"}, New String() {udtFormatter.formatSystemNumber(udtEHSUpdatedTransaction.EHSAcct.VoucherAccID), udtFormatter.formatSystemNumber(udtEHSUpdatedTransaction.VoidTranNo)})
                 End If
             Else
-                Me.udcInfoMessageBox.AddMessage(Me.strFuncCode, "I", "00002", New String() {"%s"}, New Object() {udtFormatter.formatSystemNumber(udtEHSUpdatedTransaction.VoidTranNo)})
+                Me.udcInfoMessageBox.AddMessage(Me.strFuncCode, "I", "00002", New String() {"%s"}, New String() {udtFormatter.formatSystemNumber(udtEHSUpdatedTransaction.VoidTranNo)})
             End If
             Me.udcInfoMessageBox.BuildMessageBox()
 

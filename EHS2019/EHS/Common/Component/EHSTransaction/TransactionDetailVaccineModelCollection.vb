@@ -11,6 +11,12 @@ Namespace Component.EHSTransaction
     <Serializable()> Public Class TransactionDetailVaccineModelCollection
         Inherits TransactionDetailModelCollection
 
+        Public Enum COVID19Category
+            None = 0
+            MainCategory = 1
+            SubCategory = 2
+        End Enum
+
         Public Sub New()
         End Sub
 
@@ -844,6 +850,12 @@ Namespace Component.EHSTransaction
                         If udtResTranDetailVaccineModel.ServiceReceiveDtm < udtTranDetailVaccineModel.ServiceReceiveDtm Then
                             udtResTranDetailVaccineModel = udtTranDetailVaccineModel
                         End If
+
+                        If udtResTranDetailVaccineModel.ServiceReceiveDtm = udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                            If udtResTranDetailVaccineModel.TransactionDtm < udtTranDetailVaccineModel.TransactionDtm Then
+                                udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+                            End If
+                        End If
                     End If
                 End If
             Next
@@ -880,17 +892,73 @@ Namespace Component.EHSTransaction
 
         ' CRE20-0023 (Immu record) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterFindNearestCategary() As Dictionary(Of COVID19Category, String)
+            Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
+            Dim dicNearestCategory As New Dictionary(Of COVID19Category, String)
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If udtResTranDetailVaccineModel Is Nothing Then
+                    If udtTranDetailVaccineModel.MainCategory <> String.Empty Then
+                        'Vaccine
+                        udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+
+                        'Category
+                        dicNearestCategory.Add(COVID19Category.MainCategory, udtResTranDetailVaccineModel.MainCategory)
+                        dicNearestCategory.Add(COVID19Category.SubCategory, udtResTranDetailVaccineModel.SubCategory)
+
+                    End If
+
+                Else
+                    If udtResTranDetailVaccineModel.ServiceReceiveDtm < udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                        'Vaccine
+                        udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+
+                        'Category
+                        If udtResTranDetailVaccineModel.MainCategory <> String.Empty Then
+                            dicNearestCategory.Remove(COVID19Category.MainCategory)
+                            dicNearestCategory.Remove(COVID19Category.SubCategory)
+                            dicNearestCategory.Add(COVID19Category.MainCategory, udtResTranDetailVaccineModel.MainCategory)
+                            dicNearestCategory.Add(COVID19Category.SubCategory, udtResTranDetailVaccineModel.SubCategory)
+                        End If
+
+                    End If
+
+                    If udtResTranDetailVaccineModel.ServiceReceiveDtm = udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                        If udtResTranDetailVaccineModel.TransactionDtm < udtTranDetailVaccineModel.TransactionDtm Then
+                            'Vaccine
+                            udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+
+                            'Category
+                            If udtResTranDetailVaccineModel.MainCategory <> String.Empty Then
+                                dicNearestCategory.Remove(COVID19Category.MainCategory)
+                                dicNearestCategory.Remove(COVID19Category.SubCategory)
+                                dicNearestCategory.Add(COVID19Category.MainCategory, udtResTranDetailVaccineModel.MainCategory)
+                                dicNearestCategory.Add(COVID19Category.SubCategory, udtResTranDetailVaccineModel.SubCategory)
+                            End If
+
+                        End If
+                    End If
+
+                End If
+            Next
+
+            Return dicNearestCategory
+
+        End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Public Function FilterFindNearestContactNo() As String
             Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
             Dim strNearestContactNo As String = String.Empty
 
             For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
                 If udtResTranDetailVaccineModel Is Nothing Then
-                    'Vaccine
-                    udtResTranDetailVaccineModel = udtTranDetailVaccineModel
-
-                    'Contact No.
-                    If udtResTranDetailVaccineModel.ContactNo <> String.Empty Then
+                    If udtTranDetailVaccineModel.ContactNo <> String.Empty Then
+                        'Vaccine
+                        udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+                        'Contact No.
                         strNearestContactNo = udtResTranDetailVaccineModel.ContactNo
                     End If
 
@@ -904,6 +972,18 @@ Namespace Component.EHSTransaction
                             strNearestContactNo = udtResTranDetailVaccineModel.ContactNo
                         End If
 
+                    End If
+
+                    If udtResTranDetailVaccineModel.ServiceReceiveDtm = udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                        If udtResTranDetailVaccineModel.TransactionDtm < udtTranDetailVaccineModel.TransactionDtm Then
+                            'Vaccine
+                            udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+
+                            'Contact No.
+                            If udtResTranDetailVaccineModel.ContactNo <> String.Empty Then
+                                strNearestContactNo = udtResTranDetailVaccineModel.ContactNo
+                            End If
+                        End If
                     End If
 
                 End If

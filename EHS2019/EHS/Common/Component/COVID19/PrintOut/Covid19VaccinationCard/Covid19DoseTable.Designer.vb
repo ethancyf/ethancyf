@@ -22,19 +22,19 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.Label35 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label36 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label37 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label4 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseVaccineTitle = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label2 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label11 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label10 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label14 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label13 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label6 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label7 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label8 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label15 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label16 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label17 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label18 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseVaccineNameChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseLotNumberLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseInjectionDateLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseInjectionDateChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseVaccinationCenterLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseVaccinationCenterChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label19 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.FirstDoseVaccineName = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.FirstDoseLotNumber = New GrapeCity.ActiveReports.SectionReportModel.Label()
@@ -47,40 +47,46 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.FirstDoseVaccineNameChi = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.SecondDoseVaccineName = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.SecondDoseVaccineNameChi = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label23 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseVaccineTitle = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label24 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label25 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label26 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label27 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label28 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label29 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label30 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label31 = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.Label32 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseVaccineNameChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseLotNumberLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseInjectionDateLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseInjectionDateChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseVaccinationCenterLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseVaccinationCenterChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label33 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label34 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.SecondDoseVaccinationCenter = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.FirstDoseVaccinationCenter = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.SecondDoseVaccinationCenterEngOnly = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.FirstDoseVaccinationCenterEngOnly = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.SecondDoseCover = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseLotNumberChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseVaccineNameLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseLotNumberChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseVaccineNameLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseInjectionDateChi = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.FirstDoseCover = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseInjectionDateChi = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.SecondDoseCover = New GrapeCity.ActiveReports.SectionReportModel.Label()
             CType(Me.Label35, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label36, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label37, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label4, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseVaccineTitle, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label2, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label11, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label10, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label14, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label13, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label6, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label7, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label8, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label15, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label16, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label17, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label18, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseVaccineNameChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseLotNumberLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseInjectionDateLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseInjectionDateChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseVaccinationCenterLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseVaccinationCenterChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label19, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.FirstDoseVaccineName, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.FirstDoseLotNumber, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -93,29 +99,35 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.FirstDoseVaccineNameChi, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.SecondDoseVaccineName, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.SecondDoseVaccineNameChi, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label23, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseVaccineTitle, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label24, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label25, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label26, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label27, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label28, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label29, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label30, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label31, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.Label32, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseVaccineNameChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseLotNumberLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseInjectionDateLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseInjectionDateChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseVaccinationCenterLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseVaccinationCenterChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label33, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label34, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.SecondDoseVaccinationCenter, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.FirstDoseVaccinationCenter, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.SecondDoseVaccinationCenterEngOnly, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.FirstDoseVaccinationCenterEngOnly, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.SecondDoseCover, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseLotNumberChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseVaccineNameLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseLotNumberChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseVaccineNameLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseInjectionDateChi, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.FirstDoseCover, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseInjectionDateChi, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.SecondDoseCover, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
             '
             'Detail
             '
-            Me.Detail.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.Label35, Me.Label36, Me.Label37, Me.Label4, Me.Label2, Me.Label11, Me.Label10, Me.Label14, Me.Label13, Me.Label6, Me.Label7, Me.Label8, Me.Label15, Me.Label16, Me.Label17, Me.Label18, Me.Label19, Me.FirstDoseVaccineName, Me.FirstDoseLotNumber, Me.FirstDoseInjectionDate, Me.FirstDoseVaccinationCenterChi, Me.SecondDoseLotNumber, Me.SecondDoseInjectionDate, Me.SecondDoseVaccinationCenterChi, Me.Label3, Me.FirstDoseVaccineNameChi, Me.SecondDoseVaccineName, Me.SecondDoseVaccineNameChi, Me.Label23, Me.Label24, Me.Label25, Me.Label26, Me.Label27, Me.Label28, Me.Label29, Me.Label30, Me.Label31, Me.Label32, Me.Label33, Me.Label34, Me.SecondDoseVaccinationCenter, Me.FirstDoseVaccinationCenter, Me.SecondDoseVaccinationCenterEngOnly, Me.FirstDoseVaccinationCenterEngOnly, Me.SecondDoseCover, Me.FirstDoseCover})
+            Me.Detail.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.Label35, Me.Label36, Me.Label37, Me.FirstDoseVaccineTitle, Me.Label2, Me.Label11, Me.Label10, Me.Label14, Me.Label13, Me.Label6, Me.FirstDoseVaccineNameChiLabel, Me.FirstDoseLotNumberLabel, Me.FirstDoseInjectionDateLabel, Me.FirstDoseInjectionDateChiLabel, Me.FirstDoseVaccinationCenterLabel, Me.FirstDoseVaccinationCenterChiLabel, Me.Label19, Me.FirstDoseVaccineName, Me.FirstDoseLotNumber, Me.FirstDoseInjectionDate, Me.FirstDoseVaccinationCenterChi, Me.SecondDoseLotNumber, Me.SecondDoseInjectionDate, Me.SecondDoseVaccinationCenterChi, Me.Label3, Me.FirstDoseVaccineNameChi, Me.SecondDoseVaccineName, Me.SecondDoseVaccineNameChi, Me.SecondDoseVaccineTitle, Me.Label24, Me.Label25, Me.Label26, Me.SecondDoseVaccineNameChiLabel, Me.SecondDoseLotNumberLabel, Me.SecondDoseInjectionDateLabel, Me.SecondDoseInjectionDateChiLabel, Me.SecondDoseVaccinationCenterLabel, Me.SecondDoseVaccinationCenterChiLabel, Me.Label33, Me.Label34, Me.SecondDoseVaccinationCenter, Me.FirstDoseVaccinationCenter, Me.SecondDoseVaccinationCenterEngOnly, Me.FirstDoseVaccinationCenterEngOnly, Me.FirstDoseLotNumberChiLabel, Me.FirstDoseVaccineNameLabel, Me.SecondDoseLotNumberChiLabel, Me.SecondDoseVaccineNameLabel, Me.FirstDoseInjectionDateChi, Me.FirstDoseCover, Me.SecondDoseInjectionDateChi, Me.SecondDoseCover})
             Me.Detail.Height = 4.686!
             Me.Detail.Name = "Detail"
             '
@@ -164,20 +176,20 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.Label37.Top = 3.845!
             Me.Label37.Width = 5.812!
             '
-            'Label4
+            'FirstDoseVaccineTitle
             '
-            Me.Label4.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.Label4.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.Label4.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.Label4.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.Label4.Height = 0.825!
-            Me.Label4.HyperLink = Nothing
-            Me.Label4.Left = 0.0!
-            Me.Label4.Name = "Label4"
-            Me.Label4.Style = ""
-            Me.Label4.Text = ""
-            Me.Label4.Top = 0.352!
-            Me.Label4.Width = 2.064!
+            Me.FirstDoseVaccineTitle.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.FirstDoseVaccineTitle.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.FirstDoseVaccineTitle.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.FirstDoseVaccineTitle.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.FirstDoseVaccineTitle.Height = 0.825!
+            Me.FirstDoseVaccineTitle.HyperLink = Nothing
+            Me.FirstDoseVaccineTitle.Left = 0.0!
+            Me.FirstDoseVaccineTitle.Name = "FirstDoseVaccineTitle"
+            Me.FirstDoseVaccineTitle.Style = ""
+            Me.FirstDoseVaccineTitle.Text = ""
+            Me.FirstDoseVaccineTitle.Top = 0.352!
+            Me.FirstDoseVaccineTitle.Width = 2.064!
             '
             'Label2
             '
@@ -269,77 +281,77 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.Label6.Top = 0.042!
             Me.Label6.Width = 7.875!
             '
-            'Label7
+            'FirstDoseVaccineNameChiLabel
             '
-            Me.Label7.Height = 0.2!
-            Me.Label7.HyperLink = Nothing
-            Me.Label7.Left = 0.05!
-            Me.Label7.Name = "Label7"
-            Me.Label7.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+            Me.FirstDoseVaccineNameChiLabel.Height = 0.2!
+            Me.FirstDoseVaccineNameChiLabel.HyperLink = Nothing
+            Me.FirstDoseVaccineNameChiLabel.Left = 0.05!
+            Me.FirstDoseVaccineNameChiLabel.Name = "FirstDoseVaccineNameChiLabel"
+            Me.FirstDoseVaccineNameChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
         " ddo-char-set: 1"
-            Me.Label7.Text = "疫苗名稱 / 批號"
-            Me.Label7.Top = 0.472!
-            Me.Label7.Width = 1.313!
+            Me.FirstDoseVaccineNameChiLabel.Text = "疫苗名稱"
+            Me.FirstDoseVaccineNameChiLabel.Top = 0.393!
+            Me.FirstDoseVaccineNameChiLabel.Width = 1.313!
             '
-            'Label8
+            'FirstDoseLotNumberLabel
             '
-            Me.Label8.Height = 0.25!
-            Me.Label8.HyperLink = Nothing
-            Me.Label8.Left = 0.05!
-            Me.Label8.Name = "Label8"
-            Me.Label8.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+            Me.FirstDoseLotNumberLabel.Height = 0.2!
+            Me.FirstDoseLotNumberLabel.HyperLink = Nothing
+            Me.FirstDoseLotNumberLabel.Left = 0.05!
+            Me.FirstDoseLotNumberLabel.Name = "FirstDoseLotNumberLabel"
+            Me.FirstDoseLotNumberLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
         "middle; ddo-char-set: 1"
-            Me.Label8.Text = "Vaccine Name / Lot No."
-            Me.Label8.Top = 0.784!
-            Me.Label8.Width = 1.75!
+            Me.FirstDoseLotNumberLabel.Text = "Manufacturer / Lot No."
+            Me.FirstDoseLotNumberLabel.Top = 0.988!
+            Me.FirstDoseLotNumberLabel.Width = 1.75!
             '
-            'Label15
+            'FirstDoseInjectionDateLabel
             '
-            Me.Label15.Height = 0.2000003!
-            Me.Label15.HyperLink = Nothing
-            Me.Label15.Left = 0.6920004!
-            Me.Label15.Name = "Label15"
-            Me.Label15.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+            Me.FirstDoseInjectionDateLabel.Height = 0.2000003!
+            Me.FirstDoseInjectionDateLabel.HyperLink = Nothing
+            Me.FirstDoseInjectionDateLabel.Left = 0.05!
+            Me.FirstDoseInjectionDateLabel.Name = "FirstDoseInjectionDateLabel"
+            Me.FirstDoseInjectionDateLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
         "middle; ddo-char-set: 1"
-            Me.Label15.Text = "Vaccination Date"
-            Me.Label15.Top = 1.273625!
-            Me.Label15.Width = 1.132!
+            Me.FirstDoseInjectionDateLabel.Text = "Vaccination Date"
+            Me.FirstDoseInjectionDateLabel.Top = 1.376!
+            Me.FirstDoseInjectionDateLabel.Width = 1.132!
             '
-            'Label16
+            'FirstDoseInjectionDateChiLabel
             '
-            Me.Label16.Height = 0.2!
-            Me.Label16.HyperLink = Nothing
-            Me.Label16.Left = 0.05!
-            Me.Label16.Name = "Label16"
-            Me.Label16.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+            Me.FirstDoseInjectionDateChiLabel.Height = 0.2!
+            Me.FirstDoseInjectionDateChiLabel.HyperLink = Nothing
+            Me.FirstDoseInjectionDateChiLabel.Left = 0.05!
+            Me.FirstDoseInjectionDateChiLabel.Name = "FirstDoseInjectionDateChiLabel"
+            Me.FirstDoseInjectionDateChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
         " ddo-char-set: 1"
-            Me.Label16.Text = "接種日期"
-            Me.Label16.Top = 1.274!
-            Me.Label16.Width = 0.6210001!
+            Me.FirstDoseInjectionDateChiLabel.Text = "接種日期"
+            Me.FirstDoseInjectionDateChiLabel.Top = 1.212!
+            Me.FirstDoseInjectionDateChiLabel.Width = 0.6210001!
             '
-            'Label17
+            'FirstDoseVaccinationCenterLabel
             '
-            Me.Label17.Height = 0.1999998!
-            Me.Label17.HyperLink = Nothing
-            Me.Label17.Left = 0.692!
-            Me.Label17.Name = "Label17"
-            Me.Label17.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+            Me.FirstDoseVaccinationCenterLabel.Height = 0.1999998!
+            Me.FirstDoseVaccinationCenterLabel.HyperLink = Nothing
+            Me.FirstDoseVaccinationCenterLabel.Left = 0.05000001!
+            Me.FirstDoseVaccinationCenterLabel.Name = "FirstDoseVaccinationCenterLabel"
+            Me.FirstDoseVaccinationCenterLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
         "middle; ddo-char-set: 1"
-            Me.Label17.Text = "Vaccination Premises"
-            Me.Label17.Top = 1.691!
-            Me.Label17.Width = 1.372!
+            Me.FirstDoseVaccinationCenterLabel.Text = "Vaccination Premises"
+            Me.FirstDoseVaccinationCenterLabel.Top = 1.949!
+            Me.FirstDoseVaccinationCenterLabel.Width = 1.372!
             '
-            'Label18
+            'FirstDoseVaccinationCenterChiLabel
             '
-            Me.Label18.Height = 0.2!
-            Me.Label18.HyperLink = Nothing
-            Me.Label18.Left = 0.05!
-            Me.Label18.Name = "Label18"
-            Me.Label18.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+            Me.FirstDoseVaccinationCenterChiLabel.Height = 0.2!
+            Me.FirstDoseVaccinationCenterChiLabel.HyperLink = Nothing
+            Me.FirstDoseVaccinationCenterChiLabel.Left = 0.05!
+            Me.FirstDoseVaccinationCenterChiLabel.Name = "FirstDoseVaccinationCenterChiLabel"
+            Me.FirstDoseVaccinationCenterChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
         " ddo-char-set: 1"
-            Me.Label18.Text = "接種地點"
-            Me.Label18.Top = 1.691!
-            Me.Label18.Width = 0.6210001!
+            Me.FirstDoseVaccinationCenterChiLabel.Text = "接種地點"
+            Me.FirstDoseVaccinationCenterChiLabel.Top = 1.741!
+            Me.FirstDoseVaccinationCenterChiLabel.Width = 0.6210001!
             '
             'Label19
             '
@@ -355,16 +367,16 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             '
             'FirstDoseVaccineName
             '
-            Me.FirstDoseVaccineName.Height = 0.272!
+            Me.FirstDoseVaccineName.Height = 0.22!
             Me.FirstDoseVaccineName.HyperLink = Nothing
             Me.FirstDoseVaccineName.Left = 2.12!
             Me.FirstDoseVaccineName.Name = "FirstDoseVaccineName"
             Me.FirstDoseVaccineName.ShrinkToFit = True
-            Me.FirstDoseVaccineName.Style = "font-family: Times New Roman; font-size: 13.5pt; font-weight: bold; text-align: l" & _
-        "eft; vertical-align: middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.FirstDoseVaccineName.Style = "font-family: Times New Roman; font-size: 10pt; font-weight: bold; text-align: lef" & _
+        "t; vertical-align: middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.FirstDoseVaccineName.Text = ""
-            Me.FirstDoseVaccineName.Top = 0.665!
-            Me.FirstDoseVaccineName.Width = 5.756!
+            Me.FirstDoseVaccineName.Top = 0.573!
+            Me.FirstDoseVaccineName.Width = 5.693!
             '
             'FirstDoseLotNumber
             '
@@ -373,36 +385,36 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.FirstDoseLotNumber.Left = 2.12!
             Me.FirstDoseLotNumber.Name = "FirstDoseLotNumber"
             Me.FirstDoseLotNumber.ShrinkToFit = True
-            Me.FirstDoseLotNumber.Style = "font-family: Times New Roman; font-size: 13.5pt; text-align: left; vertical-align" & _
-        ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.FirstDoseLotNumber.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.FirstDoseLotNumber.Text = ""
-            Me.FirstDoseLotNumber.Top = 0.937!
+            Me.FirstDoseLotNumber.Top = 0.853!
             Me.FirstDoseLotNumber.Width = 5.756!
             '
             'FirstDoseInjectionDate
             '
-            Me.FirstDoseInjectionDate.Height = 0.3340001!
+            Me.FirstDoseInjectionDate.Height = 0.22!
             Me.FirstDoseInjectionDate.HyperLink = Nothing
             Me.FirstDoseInjectionDate.Left = 2.12!
             Me.FirstDoseInjectionDate.Name = "FirstDoseInjectionDate"
             Me.FirstDoseInjectionDate.ShrinkToFit = True
-            Me.FirstDoseInjectionDate.Style = "font-family: Times New Roman; font-size: 13.5pt; text-align: left; vertical-align" & _
-        ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.FirstDoseInjectionDate.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+        " ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.FirstDoseInjectionDate.Text = ""
-            Me.FirstDoseInjectionDate.Top = 1.212!
+            Me.FirstDoseInjectionDate.Top = 1.376!
             Me.FirstDoseInjectionDate.Width = 5.463!
             '
             'FirstDoseVaccinationCenterChi
             '
-            Me.FirstDoseVaccinationCenterChi.Height = 0.272!
+            Me.FirstDoseVaccinationCenterChi.Height = 0.35!
             Me.FirstDoseVaccinationCenterChi.HyperLink = Nothing
             Me.FirstDoseVaccinationCenterChi.Left = 2.12!
             Me.FirstDoseVaccinationCenterChi.Name = "FirstDoseVaccinationCenterChi"
             Me.FirstDoseVaccinationCenterChi.ShrinkToFit = True
-            Me.FirstDoseVaccinationCenterChi.Style = "font-family: PMingLiU; font-size: 13.5pt; text-align: left; vertical-align: middl" & _
-        "e; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.FirstDoseVaccinationCenterChi.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: bottom;" & _
+        " ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.FirstDoseVaccinationCenterChi.Text = ""
-            Me.FirstDoseVaccinationCenterChi.Top = 1.603!
+            Me.FirstDoseVaccinationCenterChi.Top = 1.579!
             Me.FirstDoseVaccinationCenterChi.Width = 5.756!
             '
             'SecondDoseLotNumber
@@ -412,37 +424,37 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.SecondDoseLotNumber.Left = 2.12!
             Me.SecondDoseLotNumber.Name = "SecondDoseLotNumber"
             Me.SecondDoseLotNumber.ShrinkToFit = True
-            Me.SecondDoseLotNumber.Style = "font-family: Times New Roman; font-size: 13.5pt; text-align: left; vertical-align" & _
-        ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.SecondDoseLotNumber.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.SecondDoseLotNumber.Text = ""
-            Me.SecondDoseLotNumber.Top = 3.213!
+            Me.SecondDoseLotNumber.Top = 3.128!
             Me.SecondDoseLotNumber.Width = 5.756!
             '
             'SecondDoseInjectionDate
             '
-            Me.SecondDoseInjectionDate.Height = 0.334!
+            Me.SecondDoseInjectionDate.Height = 0.22!
             Me.SecondDoseInjectionDate.HyperLink = Nothing
             Me.SecondDoseInjectionDate.Left = 2.12!
             Me.SecondDoseInjectionDate.Name = "SecondDoseInjectionDate"
             Me.SecondDoseInjectionDate.ShrinkToFit = True
-            Me.SecondDoseInjectionDate.Style = "font-family: Times New Roman; font-size: 13.5pt; text-align: left; vertical-align" & _
-        ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.SecondDoseInjectionDate.Style = "font-family: PMingLiU; font-size: 9.75pt; text-align: left; vertical-align: middl" & _
+        "e; ddo-char-set: 0; ddo-shrink-to-fit: true"
             Me.SecondDoseInjectionDate.Text = ""
-            Me.SecondDoseInjectionDate.Top = 3.481625!
+            Me.SecondDoseInjectionDate.Top = 3.652!
             Me.SecondDoseInjectionDate.Width = 5.463!
             '
             'SecondDoseVaccinationCenterChi
             '
-            Me.SecondDoseVaccinationCenterChi.Height = 0.272!
+            Me.SecondDoseVaccinationCenterChi.Height = 0.35!
             Me.SecondDoseVaccinationCenterChi.HyperLink = Nothing
             Me.SecondDoseVaccinationCenterChi.Left = 2.12!
             Me.SecondDoseVaccinationCenterChi.Name = "SecondDoseVaccinationCenterChi"
             Me.SecondDoseVaccinationCenterChi.ShrinkToFit = True
-            Me.SecondDoseVaccinationCenterChi.Style = "font-family: PMingLiU; font-size: 13.5pt; text-align: left; vertical-align: middl" & _
-        "e; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.SecondDoseVaccinationCenterChi.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: bottom;" & _
+        " ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.SecondDoseVaccinationCenterChi.Text = ""
-            Me.SecondDoseVaccinationCenterChi.Top = 3.878!
-            Me.SecondDoseVaccinationCenterChi.Width = 5.756!
+            Me.SecondDoseVaccinationCenterChi.Top = 3.854!
+            Me.SecondDoseVaccinationCenterChi.Width = 5.756001!
             '
             'Label3
             '
@@ -458,57 +470,57 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             '
             'FirstDoseVaccineNameChi
             '
-            Me.FirstDoseVaccineNameChi.Height = 0.272!
+            Me.FirstDoseVaccineNameChi.Height = 0.22!
             Me.FirstDoseVaccineNameChi.HyperLink = Nothing
             Me.FirstDoseVaccineNameChi.Left = 2.12!
             Me.FirstDoseVaccineNameChi.Name = "FirstDoseVaccineNameChi"
             Me.FirstDoseVaccineNameChi.ShrinkToFit = True
-            Me.FirstDoseVaccineNameChi.Style = "font-family: PMingLiU; font-size: 13.5pt; font-weight: bold; text-align: left; ve" & _
-        "rtical-align: top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.FirstDoseVaccineNameChi.Style = "font-family: PMingLiU; font-size: 10pt; font-weight: bold; text-align: left; vert" & _
+        "ical-align: top; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.FirstDoseVaccineNameChi.Text = ""
             Me.FirstDoseVaccineNameChi.Top = 0.393!
             Me.FirstDoseVaccineNameChi.Width = 5.756!
             '
             'SecondDoseVaccineName
             '
-            Me.SecondDoseVaccineName.Height = 0.272!
+            Me.SecondDoseVaccineName.Height = 0.22!
             Me.SecondDoseVaccineName.HyperLink = Nothing
             Me.SecondDoseVaccineName.Left = 2.12!
             Me.SecondDoseVaccineName.Name = "SecondDoseVaccineName"
             Me.SecondDoseVaccineName.ShrinkToFit = True
-            Me.SecondDoseVaccineName.Style = "font-family: Times New Roman; font-size: 13.5pt; font-weight: bold; text-align: l" & _
-        "eft; vertical-align: middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.SecondDoseVaccineName.Style = "font-family: Times New Roman; font-size: 10pt; font-weight: bold; text-align: lef" & _
+        "t; vertical-align: middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.SecondDoseVaccineName.Text = ""
-            Me.SecondDoseVaccineName.Top = 2.941!
-            Me.SecondDoseVaccineName.Width = 5.756!
+            Me.SecondDoseVaccineName.Top = 2.848!
+            Me.SecondDoseVaccineName.Width = 5.693!
             '
             'SecondDoseVaccineNameChi
             '
-            Me.SecondDoseVaccineNameChi.Height = 0.272!
+            Me.SecondDoseVaccineNameChi.Height = 0.22!
             Me.SecondDoseVaccineNameChi.HyperLink = Nothing
             Me.SecondDoseVaccineNameChi.Left = 2.12!
             Me.SecondDoseVaccineNameChi.Name = "SecondDoseVaccineNameChi"
             Me.SecondDoseVaccineNameChi.ShrinkToFit = True
-            Me.SecondDoseVaccineNameChi.Style = "font-family: PMingLiU; font-size: 13.5pt; font-weight: bold; text-align: left; ve" & _
-        "rtical-align: top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.SecondDoseVaccineNameChi.Style = "font-family: PMingLiU; font-size: 10pt; font-weight: bold; text-align: left; vert" & _
+        "ical-align: top; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.SecondDoseVaccineNameChi.Text = ""
-            Me.SecondDoseVaccineNameChi.Top = 2.669!
+            Me.SecondDoseVaccineNameChi.Top = 2.668!
             Me.SecondDoseVaccineNameChi.Width = 5.756!
             '
-            'Label23
+            'SecondDoseVaccineTitle
             '
-            Me.Label23.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.Label23.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.Label23.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.Label23.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.Label23.Height = 0.825!
-            Me.Label23.HyperLink = Nothing
-            Me.Label23.Left = 0.0000002011657!
-            Me.Label23.Name = "Label23"
-            Me.Label23.Style = ""
-            Me.Label23.Text = ""
-            Me.Label23.Top = 2.627!
-            Me.Label23.Width = 2.064!
+            Me.SecondDoseVaccineTitle.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.SecondDoseVaccineTitle.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.SecondDoseVaccineTitle.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.SecondDoseVaccineTitle.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.SecondDoseVaccineTitle.Height = 0.825!
+            Me.SecondDoseVaccineTitle.HyperLink = Nothing
+            Me.SecondDoseVaccineTitle.Left = 0.0000002011657!
+            Me.SecondDoseVaccineTitle.Name = "SecondDoseVaccineTitle"
+            Me.SecondDoseVaccineTitle.Style = ""
+            Me.SecondDoseVaccineTitle.Text = ""
+            Me.SecondDoseVaccineTitle.Top = 2.627!
+            Me.SecondDoseVaccineTitle.Width = 2.064!
             '
             'Label24
             '
@@ -555,77 +567,77 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.Label26.Top = 2.318!
             Me.Label26.Width = 7.875!
             '
-            'Label27
+            'SecondDoseVaccineNameChiLabel
             '
-            Me.Label27.Height = 0.2!
-            Me.Label27.HyperLink = Nothing
-            Me.Label27.Left = 0.05!
-            Me.Label27.Name = "Label27"
-            Me.Label27.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+            Me.SecondDoseVaccineNameChiLabel.Height = 0.2!
+            Me.SecondDoseVaccineNameChiLabel.HyperLink = Nothing
+            Me.SecondDoseVaccineNameChiLabel.Left = 0.05!
+            Me.SecondDoseVaccineNameChiLabel.Name = "SecondDoseVaccineNameChiLabel"
+            Me.SecondDoseVaccineNameChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
         " ddo-char-set: 1"
-            Me.Label27.Text = "疫苗名稱 / 批號"
-            Me.Label27.Top = 2.738!
-            Me.Label27.Width = 1.314!
+            Me.SecondDoseVaccineNameChiLabel.Text = "疫苗名稱"
+            Me.SecondDoseVaccineNameChiLabel.Top = 2.668!
+            Me.SecondDoseVaccineNameChiLabel.Width = 1.313!
             '
-            'Label28
+            'SecondDoseLotNumberLabel
             '
-            Me.Label28.Height = 0.25!
-            Me.Label28.HyperLink = Nothing
-            Me.Label28.Left = 0.05!
-            Me.Label28.Name = "Label28"
-            Me.Label28.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+            Me.SecondDoseLotNumberLabel.Height = 0.2!
+            Me.SecondDoseLotNumberLabel.HyperLink = Nothing
+            Me.SecondDoseLotNumberLabel.Left = 0.05!
+            Me.SecondDoseLotNumberLabel.Name = "SecondDoseLotNumberLabel"
+            Me.SecondDoseLotNumberLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
         "middle; ddo-char-set: 1"
-            Me.Label28.Text = "Vaccine Name / Lot No."
-            Me.Label28.Top = 3.05!
-            Me.Label28.Width = 1.872!
+            Me.SecondDoseLotNumberLabel.Text = "Manufacturer / Lot No."
+            Me.SecondDoseLotNumberLabel.Top = 3.263!
+            Me.SecondDoseLotNumberLabel.Width = 1.75!
             '
-            'Label29
+            'SecondDoseInjectionDateLabel
             '
-            Me.Label29.Height = 0.2000003!
-            Me.Label29.HyperLink = Nothing
-            Me.Label29.Left = 0.6920004!
-            Me.Label29.Name = "Label29"
-            Me.Label29.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+            Me.SecondDoseInjectionDateLabel.Height = 0.2!
+            Me.SecondDoseInjectionDateLabel.HyperLink = Nothing
+            Me.SecondDoseInjectionDateLabel.Left = 0.05!
+            Me.SecondDoseInjectionDateLabel.Name = "SecondDoseInjectionDateLabel"
+            Me.SecondDoseInjectionDateLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
         "middle; ddo-char-set: 1"
-            Me.Label29.Text = "Vaccination Date"
-            Me.Label29.Top = 3.549625!
-            Me.Label29.Width = 1.128!
+            Me.SecondDoseInjectionDateLabel.Text = "Vaccination Date"
+            Me.SecondDoseInjectionDateLabel.Top = 3.645!
+            Me.SecondDoseInjectionDateLabel.Width = 1.132!
             '
-            'Label30
+            'SecondDoseInjectionDateChiLabel
             '
-            Me.Label30.Height = 0.2!
-            Me.Label30.HyperLink = Nothing
-            Me.Label30.Left = 0.05!
-            Me.Label30.Name = "Label30"
-            Me.Label30.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+            Me.SecondDoseInjectionDateChiLabel.Height = 0.2!
+            Me.SecondDoseInjectionDateChiLabel.HyperLink = Nothing
+            Me.SecondDoseInjectionDateChiLabel.Left = 0.05!
+            Me.SecondDoseInjectionDateChiLabel.Name = "SecondDoseInjectionDateChiLabel"
+            Me.SecondDoseInjectionDateChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
         " ddo-char-set: 1"
-            Me.Label30.Text = "接種日期"
-            Me.Label30.Top = 3.55!
-            Me.Label30.Width = 0.6210001!
+            Me.SecondDoseInjectionDateChiLabel.Text = "接種日期"
+            Me.SecondDoseInjectionDateChiLabel.Top = 3.488!
+            Me.SecondDoseInjectionDateChiLabel.Width = 0.6210001!
             '
-            'Label31
+            'SecondDoseVaccinationCenterLabel
             '
-            Me.Label31.Height = 0.1999998!
-            Me.Label31.HyperLink = Nothing
-            Me.Label31.Left = 0.692!
-            Me.Label31.Name = "Label31"
-            Me.Label31.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+            Me.SecondDoseVaccinationCenterLabel.Height = 0.2!
+            Me.SecondDoseVaccinationCenterLabel.HyperLink = Nothing
+            Me.SecondDoseVaccinationCenterLabel.Left = 0.05!
+            Me.SecondDoseVaccinationCenterLabel.Name = "SecondDoseVaccinationCenterLabel"
+            Me.SecondDoseVaccinationCenterLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
         "middle; ddo-char-set: 1"
-            Me.Label31.Text = "Vaccination Premises"
-            Me.Label31.Top = 3.966!
-            Me.Label31.Width = 1.376!
+            Me.SecondDoseVaccinationCenterLabel.Text = "Vaccination Premises"
+            Me.SecondDoseVaccinationCenterLabel.Top = 4.224!
+            Me.SecondDoseVaccinationCenterLabel.Width = 1.372!
             '
-            'Label32
+            'SecondDoseVaccinationCenterChiLabel
             '
-            Me.Label32.Height = 0.2!
-            Me.Label32.HyperLink = Nothing
-            Me.Label32.Left = 0.05!
-            Me.Label32.Name = "Label32"
-            Me.Label32.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+            Me.SecondDoseVaccinationCenterChiLabel.Height = 0.2!
+            Me.SecondDoseVaccinationCenterChiLabel.HyperLink = Nothing
+            Me.SecondDoseVaccinationCenterChiLabel.Left = 0.05!
+            Me.SecondDoseVaccinationCenterChiLabel.Name = "SecondDoseVaccinationCenterChiLabel"
+            Me.SecondDoseVaccinationCenterChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
         " ddo-char-set: 1"
-            Me.Label32.Text = "接種地點"
-            Me.Label32.Top = 3.966!
-            Me.Label32.Width = 0.6210002!
+            Me.SecondDoseVaccinationCenterChiLabel.Text = "接種地點"
+            Me.SecondDoseVaccinationCenterChiLabel.Top = 4.016!
+            Me.SecondDoseVaccinationCenterChiLabel.Width = 0.6210002!
             '
             'Label33
             '
@@ -653,28 +665,28 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             '
             'SecondDoseVaccinationCenter
             '
-            Me.SecondDoseVaccinationCenter.Height = 0.443!
+            Me.SecondDoseVaccinationCenter.Height = 0.35!
             Me.SecondDoseVaccinationCenter.HyperLink = Nothing
             Me.SecondDoseVaccinationCenter.Left = 2.12!
             Me.SecondDoseVaccinationCenter.Name = "SecondDoseVaccinationCenter"
             Me.SecondDoseVaccinationCenter.ShrinkToFit = True
-            Me.SecondDoseVaccinationCenter.Style = "font-family: Times New Roman; font-size: 13.5pt; text-align: left; vertical-align" & _
-        ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.SecondDoseVaccinationCenter.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "top; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.SecondDoseVaccinationCenter.Text = ""
-            Me.SecondDoseVaccinationCenter.Top = 4.15!
+            Me.SecondDoseVaccinationCenter.Top = 4.233!
             Me.SecondDoseVaccinationCenter.Width = 5.756!
             '
             'FirstDoseVaccinationCenter
             '
-            Me.FirstDoseVaccinationCenter.Height = 0.443!
+            Me.FirstDoseVaccinationCenter.Height = 0.35!
             Me.FirstDoseVaccinationCenter.HyperLink = Nothing
             Me.FirstDoseVaccinationCenter.Left = 2.12!
             Me.FirstDoseVaccinationCenter.Name = "FirstDoseVaccinationCenter"
             Me.FirstDoseVaccinationCenter.ShrinkToFit = True
-            Me.FirstDoseVaccinationCenter.Style = "font-family: Times New Roman; font-size: 13.5pt; text-align: left; vertical-align" & _
-        ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.FirstDoseVaccinationCenter.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "top; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.FirstDoseVaccinationCenter.Text = ""
-            Me.FirstDoseVaccinationCenter.Top = 1.875!
+            Me.FirstDoseVaccinationCenter.Top = 1.958!
             Me.FirstDoseVaccinationCenter.Width = 5.756!
             '
             'SecondDoseVaccinationCenterEngOnly
@@ -684,8 +696,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.SecondDoseVaccinationCenterEngOnly.Left = 2.12!
             Me.SecondDoseVaccinationCenterEngOnly.Name = "SecondDoseVaccinationCenterEngOnly"
             Me.SecondDoseVaccinationCenterEngOnly.ShrinkToFit = True
-            Me.SecondDoseVaccinationCenterEngOnly.Style = "font-family: Times New Roman; font-size: 13.5pt; text-align: left; vertical-align" & _
-        ": top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.SecondDoseVaccinationCenterEngOnly.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "top; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.SecondDoseVaccinationCenterEngOnly.Text = ""
             Me.SecondDoseVaccinationCenterEngOnly.Top = 3.878!
             Me.SecondDoseVaccinationCenterEngOnly.Visible = False
@@ -698,30 +710,73 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.FirstDoseVaccinationCenterEngOnly.Left = 2.12!
             Me.FirstDoseVaccinationCenterEngOnly.Name = "FirstDoseVaccinationCenterEngOnly"
             Me.FirstDoseVaccinationCenterEngOnly.ShrinkToFit = True
-            Me.FirstDoseVaccinationCenterEngOnly.Style = "font-family: Times New Roman; font-size: 13.5pt; text-align: left; vertical-align" & _
-        ": top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.FirstDoseVaccinationCenterEngOnly.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "top; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.FirstDoseVaccinationCenterEngOnly.Text = ""
             Me.FirstDoseVaccinationCenterEngOnly.Top = 1.603!
             Me.FirstDoseVaccinationCenterEngOnly.Visible = False
             Me.FirstDoseVaccinationCenterEngOnly.Width = 5.756!
             '
-            'SecondDoseCover
+            'FirstDoseLotNumberChiLabel
             '
-            Me.SecondDoseCover.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.SecondDoseCover.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.SecondDoseCover.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.SecondDoseCover.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.SecondDoseCover.Height = 1.966!
-            Me.SecondDoseCover.HyperLink = Nothing
-            Me.SecondDoseCover.Left = 2.064!
-            Me.SecondDoseCover.Name = "SecondDoseCover"
-            Me.SecondDoseCover.Style = "background-color: White; font-family: PMingLiU; font-size: 13.5pt; text-align: le" & _
-        "ft; text-justify: auto; vertical-align: middle; ddo-char-set: 1"
-            Me.SecondDoseCover.Text = " 請根據已預約的日期接種第二針疫苗。 如您尚未預約，敬請使用網上" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " 預約系統完成預約手續。" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " Remember to get the 2nd dose i" & _
-        "njection according to your booked appointment," & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " otherwise please get booking on" & _
-        "line."
-            Me.SecondDoseCover.Top = 2.627!
-            Me.SecondDoseCover.Width = 5.811999!
+            Me.FirstDoseLotNumberChiLabel.Height = 0.2!
+            Me.FirstDoseLotNumberChiLabel.HyperLink = Nothing
+            Me.FirstDoseLotNumberChiLabel.Left = 0.05!
+            Me.FirstDoseLotNumberChiLabel.Name = "FirstDoseLotNumberChiLabel"
+            Me.FirstDoseLotNumberChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+        " ddo-char-set: 1"
+            Me.FirstDoseLotNumberChiLabel.Text = "生產商 / 批號"
+            Me.FirstDoseLotNumberChiLabel.Top = 0.813!
+            Me.FirstDoseLotNumberChiLabel.Width = 1.313!
+            '
+            'FirstDoseVaccineNameLabel
+            '
+            Me.FirstDoseVaccineNameLabel.Height = 0.2!
+            Me.FirstDoseVaccineNameLabel.HyperLink = Nothing
+            Me.FirstDoseVaccineNameLabel.Left = 0.05!
+            Me.FirstDoseVaccineNameLabel.Name = "FirstDoseVaccineNameLabel"
+            Me.FirstDoseVaccineNameLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1"
+            Me.FirstDoseVaccineNameLabel.Text = "Vaccine Name"
+            Me.FirstDoseVaccineNameLabel.Top = 0.573!
+            Me.FirstDoseVaccineNameLabel.Width = 1.75!
+            '
+            'SecondDoseLotNumberChiLabel
+            '
+            Me.SecondDoseLotNumberChiLabel.Height = 0.2!
+            Me.SecondDoseLotNumberChiLabel.HyperLink = Nothing
+            Me.SecondDoseLotNumberChiLabel.Left = 0.05!
+            Me.SecondDoseLotNumberChiLabel.Name = "SecondDoseLotNumberChiLabel"
+            Me.SecondDoseLotNumberChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+        " ddo-char-set: 1"
+            Me.SecondDoseLotNumberChiLabel.Text = "生產商 / 批號"
+            Me.SecondDoseLotNumberChiLabel.Top = 3.088!
+            Me.SecondDoseLotNumberChiLabel.Width = 1.313!
+            '
+            'SecondDoseVaccineNameLabel
+            '
+            Me.SecondDoseVaccineNameLabel.Height = 0.2!
+            Me.SecondDoseVaccineNameLabel.HyperLink = Nothing
+            Me.SecondDoseVaccineNameLabel.Left = 0.04999995!
+            Me.SecondDoseVaccineNameLabel.Name = "SecondDoseVaccineNameLabel"
+            Me.SecondDoseVaccineNameLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1"
+            Me.SecondDoseVaccineNameLabel.Text = "Vaccine Name"
+            Me.SecondDoseVaccineNameLabel.Top = 2.848!
+            Me.SecondDoseVaccineNameLabel.Width = 1.75!
+            '
+            'FirstDoseInjectionDateChi
+            '
+            Me.FirstDoseInjectionDateChi.Height = 0.22!
+            Me.FirstDoseInjectionDateChi.HyperLink = Nothing
+            Me.FirstDoseInjectionDateChi.Left = 2.12!
+            Me.FirstDoseInjectionDateChi.Name = "FirstDoseInjectionDateChi"
+            Me.FirstDoseInjectionDateChi.ShrinkToFit = True
+            Me.FirstDoseInjectionDateChi.Style = "font-family: PMingLiU; font-size: 10pt; font-weight: normal; text-align: left; ve" & _
+        "rtical-align: top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.FirstDoseInjectionDateChi.Text = ""
+            Me.FirstDoseInjectionDateChi.Top = 1.212!
+            Me.FirstDoseInjectionDateChi.Width = 5.463!
             '
             'FirstDoseCover
             '
@@ -733,12 +788,41 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.FirstDoseCover.HyperLink = Nothing
             Me.FirstDoseCover.Left = 2.064!
             Me.FirstDoseCover.Name = "FirstDoseCover"
-            Me.FirstDoseCover.Style = "background-color: White; font-family: PMingLiU; font-size: 13.5pt; text-align: le" & _
-        "ft; vertical-align: middle; ddo-char-set: 0"
+            Me.FirstDoseCover.Style = "background-color: White; font-family: PMingLiU; font-size: 10pt; text-align: left" & _
+        "; vertical-align: middle; ddo-char-set: 1"
             Me.FirstDoseCover.Text = " 未有紀錄" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " No Records"
             Me.FirstDoseCover.Top = 0.352!
             Me.FirstDoseCover.Visible = False
             Me.FirstDoseCover.Width = 5.811999!
+            '
+            'SecondDoseInjectionDateChi
+            '
+            Me.SecondDoseInjectionDateChi.Height = 0.22!
+            Me.SecondDoseInjectionDateChi.HyperLink = Nothing
+            Me.SecondDoseInjectionDateChi.Left = 2.12!
+            Me.SecondDoseInjectionDateChi.Name = "SecondDoseInjectionDateChi"
+            Me.SecondDoseInjectionDateChi.ShrinkToFit = True
+            Me.SecondDoseInjectionDateChi.Style = "font-family: PMingLiU; font-size: 10pt; font-weight: normal; text-align: left; ve" & _
+        "rtical-align: top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.SecondDoseInjectionDateChi.Text = ""
+            Me.SecondDoseInjectionDateChi.Top = 3.488!
+            Me.SecondDoseInjectionDateChi.Width = 5.463!
+            '
+            'SecondDoseCover
+            '
+            Me.SecondDoseCover.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.SecondDoseCover.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.SecondDoseCover.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.SecondDoseCover.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.SecondDoseCover.Height = 1.966!
+            Me.SecondDoseCover.HyperLink = Nothing
+            Me.SecondDoseCover.Left = 2.064!
+            Me.SecondDoseCover.Name = "SecondDoseCover"
+            Me.SecondDoseCover.Style = "background-color: White; font-family: PMingLiU; font-size: 10pt; text-align: left" & _
+        "; text-justify: auto; vertical-align: middle; ddo-char-set: 1"
+            Me.SecondDoseCover.Text = " 未接種" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " Pending"
+            Me.SecondDoseCover.Top = 2.627!
+            Me.SecondDoseCover.Width = 5.811999!
             '
             'Covid19DoseTable
             '
@@ -756,19 +840,19 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.Label35, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label36, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label37, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label4, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseVaccineTitle, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label2, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label11, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label10, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label14, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label13, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label6, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label7, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label8, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label15, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label16, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label17, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label18, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseVaccineNameChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseLotNumberLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseInjectionDateLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseInjectionDateChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseVaccinationCenterLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseVaccinationCenterChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label19, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.FirstDoseVaccineName, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.FirstDoseLotNumber, System.ComponentModel.ISupportInitialize).EndInit()
@@ -781,41 +865,47 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.FirstDoseVaccineNameChi, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.SecondDoseVaccineName, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.SecondDoseVaccineNameChi, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label23, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseVaccineTitle, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label24, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label25, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label26, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label27, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label28, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label29, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label30, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label31, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.Label32, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseVaccineNameChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseLotNumberLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseInjectionDateLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseInjectionDateChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseVaccinationCenterLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseVaccinationCenterChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label33, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label34, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.SecondDoseVaccinationCenter, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.FirstDoseVaccinationCenter, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.SecondDoseVaccinationCenterEngOnly, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.FirstDoseVaccinationCenterEngOnly, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.SecondDoseCover, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseLotNumberChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseVaccineNameLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseLotNumberChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseVaccineNameLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseInjectionDateChi, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.FirstDoseCover, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseInjectionDateChi, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.SecondDoseCover, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
         End Sub
         Private WithEvents Label6 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label7 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label8 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label15 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label16 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label17 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label18 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseVaccineNameChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseLotNumberLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseInjectionDateLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseInjectionDateChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseVaccinationCenterLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseVaccinationCenterChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label19 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents FirstDoseInjectionDate As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents FirstDoseVaccinationCenterChi As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseLotNumber As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseInjectionDate As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseVaccinationCenterChi As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label4 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseVaccineTitle As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label3 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label2 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label11 As GrapeCity.ActiveReports.SectionReportModel.Label
@@ -827,16 +917,16 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private WithEvents FirstDoseVaccineNameChi As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseVaccineName As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseVaccineNameChi As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label23 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseVaccineTitle As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label24 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label25 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label26 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label27 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label28 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label29 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label30 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label31 As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents Label32 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseVaccineNameChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseLotNumberLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseInjectionDateLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseInjectionDateChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseVaccinationCenterLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseVaccinationCenterChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label33 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label34 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label35 As GrapeCity.ActiveReports.SectionReportModel.Label
@@ -848,5 +938,11 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private WithEvents FirstDoseVaccinationCenterEngOnly As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseCover As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents FirstDoseCover As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseLotNumberChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseVaccineNameLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseLotNumberChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseVaccineNameLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents FirstDoseInjectionDateChi As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents SecondDoseInjectionDateChi As GrapeCity.ActiveReports.SectionReportModel.Label
     End Class
 End Namespace

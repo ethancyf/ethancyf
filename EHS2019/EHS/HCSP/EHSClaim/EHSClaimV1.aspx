@@ -448,8 +448,48 @@
                     </tr>
                 </table>
             </asp:Panel>
+            <asp:Panel Style="display: none" ID="panOtherVaccinationRecordRemark" runat="server">
+                <asp:Panel ID="panOtherVaccinationRecordRemarkHeading" runat="server" Style="cursor: move;">
+                    <table border="0" cellpadding="0" cellspacing="0" style="width: 660px">
+                        <tr>
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
+                                <asp:Label ID="lblpanOtherVaccinationRecordRemarkHeading" runat="server" Text="<%$ Resources:Text, Remarks %>" />
+                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
+                        </tr>
+                    </table>
+                </asp:Panel>
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 660px">
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
+                        <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
+                            <asp:Panel ID="panOtherVaccinationRecordRemarkContent" runat="server" ScrollBars="None">
+                                <div id="divOtherVaccinationRecordRemarkTitle" runat="server" style="width: 620px; margin: 14px 2px 0px 2px">
+                                </div>
+                                <div id="divOtherVaccinationRecordRemark" runat="server" style="width: 620px; margin: 6px 2px 2px 2px">
+                                    <asp:Label ID="lblpanOtherVaccinationRecordRemarkContent" runat="server" Text="<%$ Resources:Text, VaccinationOtherRecordForCOVID19Remark %>" />                                    
+                                </div>
+                            </asp:Panel>
+                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                    </tr>
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
+                        <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
+                            <asp:ImageButton ID="btnOtherVaccinationRecordRemarkClose" runat="server" AlternateText="<%$ Resources:AlternateText, CloseBtn %>"
+                                ImageUrl="<%$ Resources:ImageUrl, CloseBtn %>" /></td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                    </tr>
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
+                    </tr>
+                </table>
+            </asp:Panel>
 
-             <asp:Panel Style="display: none; z-index:10003;" ID="panConfirmSelectPractice" runat="server" Width="600px">
+            <asp:Panel Style="display: none; z-index:10003;" ID="panConfirmSelectPractice" runat="server" Width="600px">
                 <uc1:ucNoticePopUp ID="ucNoticePopUpConfirmSelectPractice" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel" 
                     MessageText="<%$ Resources:Text, SelectPracticePopup %>"  />
             </asp:Panel>
@@ -543,13 +583,22 @@
             <asp:Button ID="btnModalPopupSubsidizeDisabledRemark" runat="server" Style="display: none" />
             <%-- End of Popup for Subsidize Disabled Remark --%>
 
-            <%-- Popup for Subsidize Disabled Remark --%>
+            <%-- Popup for Recipient Condition Help --%>
             <cc1:ModalPopupExtender ID="ModalPopupExtenderRecipientConditionHelp" runat="server" BackgroundCssClass="modalBackgroundTransparent"
                 TargetControlID="btnModalPopupRecipientConditionHelp" PopupControlID="panRecipientConditionHelp"
                 PopupDragHandleControlID="panRecipientConditionHelpHeading" RepositionMode="None">
             </cc1:ModalPopupExtender>
             <asp:Button ID="btnModalPopupRecipientConditionHelp" runat="server" Style="display: none" />
-            <%-- End of Popup for Subsidize Disabled Remark --%>
+            <%-- End of Popup for Recipient Condition Help --%>
+
+            <%-- Popup for Other Vaccination Record Remark --%>
+            <cc1:ModalPopupExtender ID="ModalPopupExtenderOtherVaccinationRecordRemark" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupOtherVaccinationRecordRemark" PopupControlID="panOtherVaccinationRecordRemark" BehaviorID="mpeOtherVaccinationRecordRemark"
+                PopupDragHandleControlID="panOtherVaccinationRecordRemarkHeading" OkControlID="btnOtherVaccinationRecordRemarkClose" RepositionMode="None">
+            </cc1:ModalPopupExtender>
+            <%--<asp:Button ID="btnModalPopupOtherVaccinationRecordRemark" runat="server" Style="display: none" >
+            </asp:Button>--%>
+            <%-- End of Popup for Other Vaccination Record Remark --%>
 
             <%-- Popup for Select Practice Confirmation in covid-19 program --%>
             <cc1:ModalPopupExtender ID="ModalPopupExtenderConfirmSelectPractice" runat="server" BackgroundCssClass="modalBackgroundTransparent"
@@ -716,16 +765,79 @@
                             </tr>
                     </table>
 
-                    <asp:Panel ID="panStep2aVaccinationRecord" runat="server">
+                    <asp:Panel ID="panStep2aOtherVaccinationRecord" runat="server">
                         <table cellspacing="0" cellpadding="0" border="0">
                             <tr>
                                 <td class="eHSTableHeading">
-                                    <asp:Label ID="lblCVaccinationRecordHeading" runat="server" Text="<%$ Resources:Text, VaccinationRecordForCOVID19%>" />
+                                    <asp:Label ID="lblCOtherVaccinationRecordHeading" runat="server" Text="<%$ Resources:Text, VaccinationOtherRecordForCOVID19%>" />
+                                    <asp:Button ID="btnModalPopupOtherVaccinationRecordRemark" runat="server" BorderWidth="0" BorderStyle="None" Width="17px" Height="17px"
+                                        AlternateText="<%$ Resources:Text, Remarks%>" 
+                                        style="vertical-align:top;position:relative;top:2px;background-color: transparent;background-image:url('../Images/others/info.png');background-repeat: no-repeat;"
+                                        onmouseover="this.style.cursor='pointer'" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <asp:Panel ID="panNoVaccinationRecord" runat="server">
+                                    <asp:Panel ID="panNoOtherVaccinationRecord" runat="server">
+                                        <table style="border:0px solid;padding:0px;border-spacing:2px;border-collapse:separate;border-color:#CCCCCC;width:930px">
+                                            <tr style="background-color:#5b9bd5">
+                                                <td style="width:125px;vertical-align:middle;text-align:center;border:0px solid;border-color:transparent">
+                                                    <asp:Label ID="lblCOtherInjectionDate" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, InjectionDate %>" />
+                                                </td>
+                                                <td style="width:280px;vertical-align:middle;text-align:center;border:0px solid;border-color:transparent">
+                                                    <asp:Label ID="lblCOtherVaccines" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, Vaccines %>" />
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color:#d2deef">
+                                                <td style="vertical-align:middle;border:0px solid;border-color:transparent;height:20px" colspan="2">
+                                                    <asp:Label ID="lblCNoOtherRecord" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px"
+                                                        Text="<%$ Resources:Text, NoVaccinationRecordFound%>" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </asp:Panel>
+                                    <asp:GridView ID="gvCOtherVaccinationRecord" runat="server" AutoGenerateColumns="False" Width="930px" BorderColor="Transparent"
+                                        AllowSorting="True"  AllowPaging="False"  OnRowDataBound="gvCOtherVaccinationRecord_RowDataBound"
+                                        OnPreRender="gvCOtherVaccinationRecord_PreRender" OnSorting="gvCOtherVaccinationRecord_Sorting">
+                                        <Columns>
+                                            <asp:TemplateField SortExpression="ServiceReceiveDtm" HeaderText="<%$ Resources: Text, InjectionDate %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#5b9bd5" BorderColor="Transparent"/>                                  
+                                                <ItemStyle Width="125px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCOtherInjectionDate" runat="server" Text='<%# Bind("ServiceReceiveDtm") %>' />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField SortExpression="SubsidizeDescSorting" HeaderText="<%$ Resources: Text, Vaccines %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#5b9bd5" BorderColor="Transparent"/>
+                                                <ItemStyle Width="280px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCOtherVaccination" runat="server" Text='<%# Bind("SubsidizeDesc")%>' />
+                                                    <asp:Label ID="lblCOtherVaccinationChi" runat="server" Text='<%# Bind("SubsidizeDescChi") %>' />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                        <AlternatingRowStyle BackColor="#BFE4FF" ForeColor="Black"  />
+                                        
+                                    </asp:GridView>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-bottom:20px">
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
+                    <asp:Panel ID="panStep2aC19VaccinationRecord" runat="server">
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                                <td class="eHSTableHeading">
+                                    <asp:Label ID="lblCC19VaccinationRecordHeading" runat="server" Text="<%$ Resources:Text, VaccinationRecordForCOVID19%>" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Panel ID="panNoC19VaccinationRecord" runat="server">
                                         <table style="border:1px solid;padding:0px;border-spacing:1px;border-collapse:collapse;border-color:#CCCCCC;width:930px">
                                             <tr style="background-color:#f08000">
                                                 <td style="width:16px;vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b;height:20px"">
@@ -755,9 +867,9 @@
                                             </tr>
                                         </table>
                                     </asp:Panel>
-                                    <asp:GridView ID="gvCVaccinationRecord" runat="server" AutoGenerateColumns="False" Width="930px"
-                                        AllowSorting="True"  AllowPaging="False"  OnRowDataBound="gvCVaccinationRecord_RowDataBound"
-                                        OnPreRender="gvCVaccinationRecord_PreRender" OnSorting="gvCVaccinationRecord_Sorting">
+                                    <asp:GridView ID="gvCC19VaccinationRecord" runat="server" AutoGenerateColumns="False" Width="930px"
+                                        AllowSorting="True"  AllowPaging="False"  OnRowDataBound="gvCC19VaccinationRecord_RowDataBound"
+                                        OnPreRender="gvCC19VaccinationRecord_PreRender" OnSorting="gvCC19VaccinationRecord_Sorting">
                                         <Columns>
                                             <asp:TemplateField HeaderText="">
                                                 <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000"/>
@@ -1235,7 +1347,7 @@
                             <asp:Panel ID="panStep2bNonLocalRecoveredHistory" runat="server">
                             <tr>
                                 <td height="25" style="width: 205px;vertical-align:top;">
-                                    <asp:Label ID="lblStep2bNonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" CssClass="tableTitle" Width="160px" />
+                                    <asp:Label ID="lblStep2bNonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" CssClass="tableTitle" />
                                 </td>
                                 <td height="25" style="vertical-align:top;">
                                     <asp:Label ID="lblStep2bNonLocalRecoveredHistory" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
@@ -1482,7 +1594,7 @@
                             <asp:Panel ID="panStep3NonLocalRecoveredHistory" runat="server">
                             <tr>
                                 <td height="25" style="width: 205px;vertical-align:top;">
-                                    <asp:Label ID="lblStep3NonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" CssClass="tableTitle" Width="160px" />
+                                    <asp:Label ID="lblStep3NonLocalRecoveredHistoryText" runat="server" Text="<%$ Resources:Text, NonLocalRecoveredHistory%>" CssClass="tableTitle" />
                                 </td>
                                 <td height="25" style="vertical-align:top;">
                                     <asp:Label ID="lblStep3NonLocalRecoveredHistory" runat="server" CssClass="tableText" style="position:relative;left:1px"/>

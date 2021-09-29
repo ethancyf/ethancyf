@@ -36,8 +36,6 @@
             Me.Label18 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.srCovid19FooterDoseTable = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
             Me.txtEngNameOnly = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.txtTransactionNumber = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.txtPrintDate = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.qrCode = New GrapeCity.ActiveReports.SectionReportModel.Barcode()
             Me.qrCodeLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
             CType(Me.txtHKID, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -53,15 +51,13 @@
             CType(Me.txtDocTypeChi, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label18, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtEngNameOnly, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.txtTransactionNumber, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.txtPrintDate, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.qrCodeLabel, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
             '
             'Detail
             '
-            Me.Detail.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.Shape1, Me.txtHKID, Me.Shape2, Me.Label6, Me.Label5, Me.Picture1, Me.Label4, Me.Label3, Me.txtName, Me.Label14, Me.txtDocType, Me.Line1, Me.Line2, Me.txtNameChi, Me.txtDocTypeChi, Me.Label18, Me.srCovid19FooterDoseTable, Me.txtEngNameOnly, Me.txtTransactionNumber, Me.txtPrintDate, Me.qrCode, Me.qrCodeLabel})
-            Me.Detail.Height = 2.237!
+            Me.Detail.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.Shape1, Me.txtHKID, Me.Shape2, Me.Label6, Me.Label5, Me.Picture1, Me.Label4, Me.Label3, Me.txtName, Me.Label14, Me.txtDocType, Me.Line1, Me.Line2, Me.txtNameChi, Me.txtDocTypeChi, Me.Label18, Me.srCovid19FooterDoseTable, Me.txtEngNameOnly, Me.qrCode, Me.qrCodeLabel})
+            Me.Detail.Height = 2.007833!
             Me.Detail.Name = "Detail"
             '
             'Shape1
@@ -280,29 +276,6 @@
             Me.txtEngNameOnly.Top = 0.522!
             Me.txtEngNameOnly.Width = 2.501!
             '
-            'txtTransactionNumber
-            '
-            Me.txtTransactionNumber.Height = 0.145!
-            Me.txtTransactionNumber.HyperLink = Nothing
-            Me.txtTransactionNumber.Left = 0.0!
-            Me.txtTransactionNumber.Name = "txtTransactionNumber"
-            Me.txtTransactionNumber.Style = "font-size: 9pt; text-align: left; ddo-char-set: 1"
-            Me.txtTransactionNumber.Text = ""
-            Me.txtTransactionNumber.Top = 1.992!
-            Me.txtTransactionNumber.Width = 3.437!
-            '
-            'txtPrintDate
-            '
-            Me.txtPrintDate.Height = 0.25!
-            Me.txtPrintDate.HyperLink = Nothing
-            Me.txtPrintDate.Left = 4.458001!
-            Me.txtPrintDate.Name = "txtPrintDate"
-            Me.txtPrintDate.Style = "font-family: Times New Roman; font-size: 13.75pt; font-weight: normal; text-align" & _
-        ": right; ddo-char-set: 1"
-            Me.txtPrintDate.Text = ""
-            Me.txtPrintDate.Top = 1.992!
-            Me.txtPrintDate.Width = 3.437!
-            '
             'qrCode
             '
             Me.qrCode.Font = New System.Drawing.Font("Courier New", 8.0!)
@@ -356,8 +329,6 @@
             CType(Me.txtDocTypeChi, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label18, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtEngNameOnly, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.txtTransactionNumber, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.txtPrintDate, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.qrCodeLabel, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
@@ -380,8 +351,6 @@
         Private WithEvents Label18 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents srCovid19FooterDoseTable As GrapeCity.ActiveReports.SectionReportModel.SubReport
         Private WithEvents txtEngNameOnly As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents txtTransactionNumber As GrapeCity.ActiveReports.SectionReportModel.Label
-        Private WithEvents txtPrintDate As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents qrCode As GrapeCity.ActiveReports.SectionReportModel.Barcode
         Private WithEvents qrCodeLabel As GrapeCity.ActiveReports.SectionReportModel.Label
     End Class

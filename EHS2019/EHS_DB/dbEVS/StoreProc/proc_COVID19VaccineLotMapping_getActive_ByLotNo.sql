@@ -11,6 +11,13 @@ IF EXISTS
     END;
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-59 
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 Sep 2021
+-- Description:		Handle New Prefix of Centre Code 'Q'
+-- =============================================
 -- =============================================  
 -- Author:  Nichole Ip 
 -- CR No.:  CRE20 - 023
@@ -43,10 +50,9 @@ AS
                centre_id, 
                centre_name,
                CASE
-                   WHEN LEFT(centre_id, 3) = 'CVC'
-                        AND service_type = 'CENTRE'
-                   THEN 'CENTRE'
-                   ELSE 'DH CLINIC'
+					WHEN Centre_ID IS NULL OR service_type <> 'CENTRE' THEN '' 
+					WHEN LEFT(centre_id, 2) = 'DH' THEN 'DH CLINIC'
+					ELSE 'CENTRE'
                END AS centre_service_type
         FROM
         (

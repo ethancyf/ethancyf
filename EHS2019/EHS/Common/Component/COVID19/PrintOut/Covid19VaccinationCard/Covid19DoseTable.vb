@@ -66,11 +66,17 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 Dim strVaccineLotNo As String = _udtEHSTransaction.TransactionAdditionFields.VaccineLotNo
                 Dim dt As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingByVaccineLotNo(strVaccineLotNo)
 
-                FirstDoseLotNumber.Text = "Lot No. : " + dt.Rows(0)("Vaccine_Lot_No")
+                ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+                ' -------------------------------------------------------------
+                FirstDoseLotNumber.Text = String.Format("{0} / {1}", dt.Rows(0)("Manufacturer"), dt.Rows(0)("Vaccine_Lot_No"))
+
                 FirstDoseVaccineNameChi.Text = dt.Rows(0)("Brand_Printout_Name_Chi")
                 FirstDoseVaccineName.Text = dt.Rows(0)("Brand_Printout_Name")
 
-                FirstDoseInjectionDate.Text = FormatDate(_udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
+                FirstDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtEHSTransaction.ServiceDate)
+                FirstDoseInjectionDate.Text = FormatDisplayDate(_udtEHSTransaction.ServiceDate)                
+                ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
+                
                 setVaccinationCenterTextLabel(True, FirstDoseVaccinationCenter, FirstDoseVaccinationCenterChi)
 
 
@@ -90,12 +96,21 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     'date dateback fill second dose record
                     If (_udtVaccinationRecordHistory.AvailableItemDesc = "2nd Dose") Then
                         SecondDoseCover.Visible = False
-                        SecondDoseLotNumber.Text = "Lot No. : " + _udtVaccinationRecordHistory.VaccineLotNo
+
+                        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+                        ' -------------------------------------------------------------
+                        SecondDoseLotNumber.Text = String.Format("{0} / {1}", _
+                                                                 udtCOVID19BLL.GetVaccineManufacturer(_udtVaccinationRecordHistory.VaccineBrand), _
+                                                                 _udtVaccinationRecordHistory.VaccineLotNo)
 
                         'get second does by history object brand id
                         SecondDoseVaccineNameChi.Text = udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(_udtVaccinationRecordHistory.VaccineBrand)
                         SecondDoseVaccineName.Text = udtCOVID19BLL.GetVaccineBrandPrintoutName(_udtVaccinationRecordHistory.VaccineBrand)
-                        SecondDoseInjectionDate.Text = FormatDate(_udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
+
+                        SecondDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtVaccinationRecordHistory.ServiceReceiveDtm)
+                        SecondDoseInjectionDate.Text = FormatDisplayDate(_udtVaccinationRecordHistory.ServiceReceiveDtm)
+                        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
+
                         setVaccinationCenterTextLabel(False, SecondDoseVaccinationCenter, SecondDoseVaccinationCenterChi)
 
                         If (SecondDoseVaccinationCenterChi.Text = String.Empty) Then
@@ -108,15 +123,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     End If
                     '===== date dateback second dose record ====
                 Else
-                    'If _udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
-                    '   _udtEHSTransaction.TransactionAdditionFields.DischargeResult IsNot Nothing AndAlso _
-                    '   _udtEHSTransaction.TransactionAdditionFields.DischargeResult = "F" Then
-                    '    SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
-                    '    SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
-                    '                           Environment.NewLine & _
-                    '                           Environment.NewLine & _
-                    '                           HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
-                    'End If
+
                     If _blnDischarge OrElse _blnNonLocalRecoveredHistory1stDose OrElse _blnNonLocalRecoveredHistory2ndDose Then
                         SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
                         SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
@@ -132,11 +139,17 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 Dim strVaccineLotNo As String = _udtEHSTransaction.TransactionAdditionFields.VaccineLotNo
                 Dim dt As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingByVaccineLotNo(strVaccineLotNo)
 
-                SecondDoseLotNumber.Text = "Lot No. : " + dt.Rows(0)("Vaccine_Lot_No")
+                ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+                ' -------------------------------------------------------------
+                SecondDoseLotNumber.Text = String.Format("{0} / {1}", dt.Rows(0)("Manufacturer"), dt.Rows(0)("Vaccine_Lot_No"))
+
                 SecondDoseVaccineNameChi.Text = dt.Rows(0)("Brand_Printout_Name_Chi")
                 SecondDoseVaccineName.Text = dt.Rows(0)("Brand_Printout_Name")
 
-                SecondDoseInjectionDate.Text = FormatDate(_udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
+                SecondDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtEHSTransaction.ServiceDate)
+                SecondDoseInjectionDate.Text = FormatDisplayDate(_udtEHSTransaction.ServiceDate)
+                ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
+
                 setVaccinationCenterTextLabel(True, SecondDoseVaccinationCenter, SecondDoseVaccinationCenterChi)
 
 
@@ -157,12 +170,21 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     'fill first dose record if _udtVaccinationRecordHistory not empty and  _udtVaccinationRecordHistory = first dose
                     If (_udtVaccinationRecordHistory.AvailableItemDesc = "1st Dose") Then
                         FirstDoseCover.Visible = False
-                        FirstDoseLotNumber.Text = "Lot No. : " + _udtVaccinationRecordHistory.VaccineLotNo
+                        
+                        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
+                        ' -------------------------------------------------------------
+                        FirstDoseLotNumber.Text = String.Format("{0} / {1}", _
+                                                                 udtCOVID19BLL.GetVaccineManufacturer(_udtVaccinationRecordHistory.VaccineBrand), _
+                                                                 _udtVaccinationRecordHistory.VaccineLotNo)
 
                         'get first does by history object brand id
                         FirstDoseVaccineNameChi.Text = udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(_udtVaccinationRecordHistory.VaccineBrand)
                         FirstDoseVaccineName.Text = udtCOVID19BLL.GetVaccineBrandPrintoutName(_udtVaccinationRecordHistory.VaccineBrand)
-                        FirstDoseInjectionDate.Text = FormatDate(_udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
+
+                        FirstDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtVaccinationRecordHistory.ServiceReceiveDtm)
+                        FirstDoseInjectionDate.Text = FormatDisplayDate(_udtVaccinationRecordHistory.ServiceReceiveDtm)                        
+                        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
+
                         setVaccinationCenterTextLabel(False, FirstDoseVaccinationCenter, FirstDoseVaccinationCenterChi)
 
                         If (FirstDoseVaccinationCenterChi.Text = String.Empty) Then
@@ -350,6 +372,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 FirstDoseVaccineNameChi.Visible = False
                 FirstDoseVaccineName.Visible = False
                 FirstDoseLotNumber.Visible = False
+                FirstDoseInjectionDateChi.Visible = False
                 FirstDoseInjectionDate.Visible = False
                 FirstDoseVaccinationCenter.Visible = False
                 FirstDoseVaccinationCenterChi.Visible = False
@@ -360,6 +383,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 SecondDoseVaccineNameChi.Visible = False
                 SecondDoseVaccineName.Visible = False
                 SecondDoseLotNumber.Visible = False
+                SecondDoseInjectionDateChi.Visible = False
                 SecondDoseInjectionDate.Visible = False
                 SecondDoseVaccinationCenter.Visible = False
                 SecondDoseVaccinationCenterChi.Visible = False

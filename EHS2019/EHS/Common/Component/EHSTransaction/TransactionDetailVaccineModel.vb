@@ -12,27 +12,28 @@ Namespace Component.EHSTransaction
         Private _strSubsidize_Desc_Chi As String
         Private _strRecordType As String = RecordTypeClass.OnSite
         Private _bForBar As Boolean = True
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Koala CHENG]
-        ' ----------------------------------------------------------
         Private _bIsUnknownVaccine As Boolean = False
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Koala CHENG]
+
         Private _strPracticeName As String = String.Empty
         Private _strPracticeNameChi As String = String.Empty
         Private _strExtRefStatus As String = String.Empty
         Private _strHighRisk As String = String.Empty
         Private _udtPersonalInformationDemographic As EHSPersonalInformationDemographicModel
 
-
         Private _strVaccineBrand As String = String.Empty
         Private _strVaccineLotNo As String = String.Empty
         Private _strVaccineTradeName As String = String.Empty
         Private _strVaccineTradeNameChi As String = String.Empty
         Private _strClinicType As String = String.Empty
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
+
         Private _strJoinEHRSS As String = String.Empty
         Private _strContactNo As String = String.Empty
         Private _strNonLocalRecovered As String = String.Empty
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strMainCategory As String = String.Empty
+        Private _strSubCategory As String = String.Empty
         ' CRE20-0023 (Immu record) [End][Chris YIM]
 
 #Region "Status"
@@ -246,8 +247,6 @@ Namespace Component.EHSTransaction
             End Set
         End Property
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property JoinEHRSS() As String
             Get
                 Return _strJoinEHRSS
@@ -256,10 +255,7 @@ Namespace Component.EHSTransaction
                 _strJoinEHRSS = value
             End Set
         End Property
-        ' CRE20-0023 (Immu record) [End][Chris YIM
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property ContactNo() As String
             Get
                 Return _strContactNo
@@ -268,16 +264,36 @@ Namespace Component.EHSTransaction
                 _strContactNo = value
             End Set
         End Property
-        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property NonLocalRecovered() As String
             Get
                 Return _strNonLocalRecovered
             End Get
             Set(ByVal value As String)
                 _strNonLocalRecovered = value
+            End Set
+        End Property
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property MainCategory() As String
+            Get
+                Return _strMainCategory
+            End Get
+            Set(ByVal value As String)
+                _strMainCategory = value
+            End Set
+        End Property
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property SubCategory() As String
+            Get
+                Return _strSubCategory
+            End Get
+            Set(ByVal value As String)
+                _strSubCategory = value
             End Set
         End Property
         ' CRE20-0023 (Immu record) [End][Chris YIM]
@@ -314,6 +330,8 @@ Namespace Component.EHSTransaction
             Me.JoinEHRSS = udtTransactionDetailVaccine.JoinEHRSS
             Me.ContactNo = udtTransactionDetailVaccine.ContactNo
             Me.NonLocalRecovered = udtTransactionDetailVaccine.NonLocalRecovered
+            Me.MainCategory = udtTransactionDetailVaccine.MainCategory
+            Me.SubCategory = udtTransactionDetailVaccine.SubCategory
 
         End Sub
 
@@ -407,6 +425,8 @@ Namespace Component.EHSTransaction
                 Me.JoinEHRSS = String.Empty
                 Me.ContactNo = String.Empty
                 Me.NonLocalRecovered = String.Empty
+                Me.MainCategory = String.Empty
+                Me.SubCategory = String.Empty
 
             End With
         End Sub
@@ -450,6 +470,8 @@ Namespace Component.EHSTransaction
                 Me.JoinEHRSS = String.Empty
                 Me.ContactNo = String.Empty
                 Me.NonLocalRecovered = String.Empty
+                Me.MainCategory = String.Empty
+                Me.SubCategory = String.Empty
 
             End With
         End Sub

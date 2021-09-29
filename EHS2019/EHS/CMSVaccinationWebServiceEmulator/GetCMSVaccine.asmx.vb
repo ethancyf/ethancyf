@@ -266,18 +266,25 @@ Public Class WebService1
                                 '        strBrandID = "3"
                                 'End Select
 
+                                Dim strCreationDate As String = String.Empty
                                 Dim strVaccineLotNo As String = String.Empty
                                 Dim strCovid19NonLocalRecovered As String = Common.Component.YesNo.No
 
-                                If drVaccination.Table.Columns.Contains("vaccine_lot_no") Then
+                                If drVaccination.Item("creation_date") IsNot Nothing Then
+                                    strCreationDate = GetAttributeDate(drVaccination, "creation_date")
+                                Else
+                                    strCreationDate = GetAttributeDate(drVaccination, "service_date")
+                                End If
+
+                                If drVaccination.Item("vaccine_lot_no") IsNot Nothing Then
                                     strVaccineLotNo = GetAttributeString(drVaccination, "vaccine_lot_no")
                                 End If
 
-                                If drVaccination.Table.Columns.Contains("covid19_non_local_recovered") Then
+                                If drVaccination.Item("covid19_non_local_recovered") IsNot Nothing Then
                                     strCovid19NonLocalRecovered = GetAttributeString(drVaccination, "covid19_non_local_recovered")
                                 End If
 
-                                udtHAPatient.VaccineList.Add(New HATransaction.HAVaccineModel(GetAttributeDate(drVaccination, "service_date"), _
+                                udtHAPatient.VaccineList.Add(New HATransaction.HAVaccineModel(strCreationDate, _
                                                                                              GetAttributeDate(drVaccination, "service_date"), _
                                                                                              GetAttributeString(drVaccination, "vaccine_code"), _
                                                                                              GetAttributeString(drVaccination, "vaccine_desc"), _
@@ -330,7 +337,7 @@ Public Class WebService1
                         For Each udtHAVaccine As HATransaction.HAVaccineModel In udtHAPatient.VaccineList
                             strXMLVaccinationRecord += "<vaccination_record>"
                             strXMLVaccinationRecord += "<record_creation_dtm>" + udtHAVaccine.CreateDtm.ToString("yyyy/MM/dd HH:mm:ss") + "</record_creation_dtm>"
-                            strXMLVaccinationRecord += "<injection_date>" + udtHAVaccine.CreateDtm.ToString("dd/MM/yyyy") + "</injection_date>"
+                            strXMLVaccinationRecord += "<injection_date>" + udtHAVaccine.InjectionDtm.ToString("dd/MM/yyyy") + "</injection_date>"
                             strXMLVaccinationRecord += "<vaccine_code>" + udtHAVaccine.VaccineCode + "</vaccine_code>"
                             strXMLVaccinationRecord += "<vaccine_desc>" + udtHAVaccine.VaccineDesc + "</vaccine_desc>"
                             strXMLVaccinationRecord += "<dose_seq_code>" + udtHAVaccine.DoseSeqCode + "</dose_seq_code>"

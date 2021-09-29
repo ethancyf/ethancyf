@@ -779,6 +779,78 @@ Partial Public Class EHSClaimV1
     Protected WithEvents btnRecipientConditionHelpClose As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''panOtherVaccinationRecordRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panOtherVaccinationRecordRemark As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panOtherVaccinationRecordRemarkHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panOtherVaccinationRecordRemarkHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblpanOtherVaccinationRecordRemarkHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblpanOtherVaccinationRecordRemarkHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panOtherVaccinationRecordRemarkContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panOtherVaccinationRecordRemarkContent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''divOtherVaccinationRecordRemarkTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divOtherVaccinationRecordRemarkTitle As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''divOtherVaccinationRecordRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divOtherVaccinationRecordRemark As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblpanOtherVaccinationRecordRemarkContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblpanOtherVaccinationRecordRemarkContent As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnOtherVaccinationRecordRemarkClose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnOtherVaccinationRecordRemarkClose As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''panConfirmSelectPractice control.
     '''</summary>
     '''<remarks>
@@ -1101,6 +1173,24 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnModalPopupRecipientConditionHelp As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExtenderOtherVaccinationRecordRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExtenderOtherVaccinationRecordRemark As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''btnModalPopupOtherVaccinationRecordRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupOtherVaccinationRecordRemark As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''ModalPopupExtenderConfirmSelectPractice control.
@@ -1436,31 +1526,103 @@ Partial Public Class EHSClaimV1
     Protected WithEvents udcStep2aReadOnlyDocumnetType As Global.HCSP.ucReadOnlyDocumnetType
 
     '''<summary>
-    '''panStep2aVaccinationRecord control.
+    '''panStep2aOtherVaccinationRecord control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents panStep2aVaccinationRecord As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents panStep2aOtherVaccinationRecord As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''lblCVaccinationRecordHeading control.
+    '''lblCOtherVaccinationRecordHeading control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblCVaccinationRecordHeading As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblCOtherVaccinationRecordHeading As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''panNoVaccinationRecord control.
+    '''imgCOtherVaccinationRecordInfo control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents panNoVaccinationRecord As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents imgCOtherVaccinationRecordInfo As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''panNoOtherVaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panNoOtherVaccinationRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCOtherInjectionDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCOtherInjectionDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCOtherVaccines control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCOtherVaccines As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCNoOtherRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCNoOtherRecord As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''gvCOtherVaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvCOtherVaccinationRecord As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''panStep2aC19VaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aC19VaccinationRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCC19VaccinationRecordHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCC19VaccinationRecordHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panNoC19VaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panNoC19VaccinationRecord As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
     '''lblCInjectionDate control.
@@ -1517,13 +1679,13 @@ Partial Public Class EHSClaimV1
     Protected WithEvents lblCNoRecord As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''gvCVaccinationRecord control.
+    '''gvCC19VaccinationRecord control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents gvCVaccinationRecord As Global.System.Web.UI.WebControls.GridView
+    Protected WithEvents gvCC19VaccinationRecord As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
     '''panStep2aDischargeRecord control.

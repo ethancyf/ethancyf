@@ -19,20 +19,24 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         <System.Diagnostics.DebuggerStepThrough()> _
         Private Sub InitializeComponent()
             Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Covid19VaccinationCard))
-            Me.detCovid19VaccinationCard = New GrapeCity.ActiveReports.SectionReportModel.Detail()
-            Me.srCovid19PatientName = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
             Me.srCovid19DoseTable = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
+            Me.detCovid19VaccinationCard = New GrapeCity.ActiveReports.SectionReportModel.Detail()
+            Me.srCovid19VaccinationCardFooter = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
+            Me.srCovid19PatientName = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
             Me.Label6 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Picture2 = New GrapeCity.ActiveReports.SectionReportModel.Picture()
             Me.Line1 = New GrapeCity.ActiveReports.SectionReportModel.Line()
             Me.Picture3 = New GrapeCity.ActiveReports.SectionReportModel.Picture()
-            Me.srCovid19VaccinationCardFooter = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
             Me.Label2 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label1 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label3 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.qrCode = New GrapeCity.ActiveReports.SectionReportModel.Barcode()
             Me.qrCodeLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label4 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.txtTransactionNumber = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.txtPrintDate = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label13 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label5 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.PageHeader1 = New GrapeCity.ActiveReports.SectionReportModel.PageHeader()
             Me.PageFooter1 = New GrapeCity.ActiveReports.SectionReportModel.PageFooter()
             CType(Me.Label6, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -43,14 +47,40 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.Label3, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.qrCodeLabel, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label4, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.txtTransactionNumber, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.txtPrintDate, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label13, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label5, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
+            '
+            'srCovid19DoseTable
+            '
+            Me.srCovid19DoseTable.CloseBorder = False
+            Me.srCovid19DoseTable.Height = 6.87!
+            Me.srCovid19DoseTable.Left = 0.0!
+            Me.srCovid19DoseTable.Name = "srCovid19DoseTable"
+            Me.srCovid19DoseTable.Report = Nothing
+            Me.srCovid19DoseTable.ReportName = "srCovid19DoseTable"
+            Me.srCovid19DoseTable.Top = 4.124!
+            Me.srCovid19DoseTable.Width = 8.0!
             '
             'detCovid19VaccinationCard
             '
             Me.detCovid19VaccinationCard.CanGrow = False
-            Me.detCovid19VaccinationCard.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.srCovid19PatientName, Me.srCovid19DoseTable, Me.Label6, Me.Picture2, Me.Line1, Me.Picture3, Me.srCovid19VaccinationCardFooter, Me.Label2, Me.Label1, Me.Label3, Me.qrCode, Me.qrCodeLabel, Me.Label4})
+            Me.detCovid19VaccinationCard.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.srCovid19DoseTable, Me.srCovid19VaccinationCardFooter, Me.srCovid19PatientName, Me.Label6, Me.Picture2, Me.Line1, Me.Picture3, Me.Label2, Me.Label1, Me.Label3, Me.qrCode, Me.qrCodeLabel, Me.Label4, Me.txtTransactionNumber, Me.txtPrintDate, Me.Label13, Me.Label5})
             Me.detCovid19VaccinationCard.Height = 11.447!
             Me.detCovid19VaccinationCard.Name = "detCovid19VaccinationCard"
+            '
+            'srCovid19VaccinationCardFooter
+            '
+            Me.srCovid19VaccinationCardFooter.CloseBorder = False
+            Me.srCovid19VaccinationCardFooter.Height = 2.008!
+            Me.srCovid19VaccinationCardFooter.Left = 0.0!
+            Me.srCovid19VaccinationCardFooter.Name = "srCovid19VaccinationCardFooter"
+            Me.srCovid19VaccinationCardFooter.Report = Nothing
+            Me.srCovid19VaccinationCardFooter.ReportName = "srCovid19VaccinationCardFooter"
+            Me.srCovid19VaccinationCardFooter.Top = 9.066!
+            Me.srCovid19VaccinationCardFooter.Width = 8.0!
             '
             'srCovid19PatientName
             '
@@ -62,17 +92,6 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.srCovid19PatientName.ReportName = "srCovid19PatientName"
             Me.srCovid19PatientName.Top = 2.53!
             Me.srCovid19PatientName.Width = 8.0!
-            '
-            'srCovid19DoseTable
-            '
-            Me.srCovid19DoseTable.CloseBorder = False
-            Me.srCovid19DoseTable.Height = 4.75!
-            Me.srCovid19DoseTable.Left = 0.0!
-            Me.srCovid19DoseTable.Name = "srCovid19DoseTable"
-            Me.srCovid19DoseTable.Report = Nothing
-            Me.srCovid19DoseTable.ReportName = "srCovid19DoseTable"
-            Me.srCovid19DoseTable.Top = 4.124!
-            Me.srCovid19DoseTable.Width = 8.0!
             '
             'Label6
             '
@@ -119,17 +138,6 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.Picture3.SizeMode = GrapeCity.ActiveReports.SectionReportModel.SizeModes.Stretch
             Me.Picture3.Top = 8.801!
             Me.Picture3.Width = 0.1870003!
-            '
-            'srCovid19VaccinationCardFooter
-            '
-            Me.srCovid19VaccinationCardFooter.CloseBorder = False
-            Me.srCovid19VaccinationCardFooter.Height = 2.237!
-            Me.srCovid19VaccinationCardFooter.Left = 0.0!
-            Me.srCovid19VaccinationCardFooter.Name = "srCovid19VaccinationCardFooter"
-            Me.srCovid19VaccinationCardFooter.Report = Nothing
-            Me.srCovid19VaccinationCardFooter.ReportName = "srCovid19VaccinationCardFooter"
-            Me.srCovid19VaccinationCardFooter.Top = 9.066!
-            Me.srCovid19VaccinationCardFooter.Width = 8.0!
             '
             'Label2
             '
@@ -208,6 +216,54 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.Label4.Top = 1.745!
             Me.Label4.Width = 7.811!
             '
+            'txtTransactionNumber
+            '
+            Me.txtTransactionNumber.Height = 0.25!
+            Me.txtTransactionNumber.HyperLink = Nothing
+            Me.txtTransactionNumber.Left = 0.01!
+            Me.txtTransactionNumber.Name = "txtTransactionNumber"
+            Me.txtTransactionNumber.Style = "font-family: Times New Roman; font-size: 13.75pt; text-align: left; ddo-char-set:" & _
+        " 1"
+            Me.txtTransactionNumber.Text = ""
+            Me.txtTransactionNumber.Top = 11.043!
+            Me.txtTransactionNumber.Width = 2.343!
+            '
+            'txtPrintDate
+            '
+            Me.txtPrintDate.Height = 0.25!
+            Me.txtPrintDate.HyperLink = Nothing
+            Me.txtPrintDate.Left = 4.635!
+            Me.txtPrintDate.Name = "txtPrintDate"
+            Me.txtPrintDate.Style = "font-family: Times New Roman; font-size: 13.75pt; font-weight: normal; text-align" & _
+        ": right; ddo-char-set: 1"
+            Me.txtPrintDate.Text = ""
+            Me.txtPrintDate.Top = 11.043!
+            Me.txtPrintDate.Width = 3.27!
+            '
+            'Label13
+            '
+            Me.Label13.Height = 0.25!
+            Me.Label13.HyperLink = Nothing
+            Me.Label13.Left = 3.27!
+            Me.Label13.Name = "Label13"
+            Me.Label13.Style = "font-family: Times New Roman; font-size: 13.75pt; font-weight: bold; text-align: " & _
+        "center; ddo-char-set: 1"
+            Me.Label13.Text = "Keep this record properly"
+            Me.Label13.Top = 11.043!
+            Me.Label13.Width = 2.201!
+            '
+            'Label5
+            '
+            Me.Label5.Height = 0.25!
+            Me.Label5.HyperLink = Nothing
+            Me.Label5.Left = 2.1!
+            Me.Label5.Name = "Label5"
+            Me.Label5.Style = "font-family: PMingLiU; font-size: 14.25pt; font-weight: bold; text-align: center;" & _
+        " ddo-char-set: 0"
+            Me.Label5.Text = "請妥善保存"
+            Me.Label5.Top = 11.043!
+            Me.Label5.Width = 1.17!
+            '
             'PageHeader1
             '
             Me.PageHeader1.Height = 0.03125!
@@ -247,6 +303,10 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.Label3, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.qrCodeLabel, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label4, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.txtTransactionNumber, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.txtPrintDate, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label13, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label5, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
         End Sub
@@ -265,5 +325,10 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private WithEvents qrCode As GrapeCity.ActiveReports.SectionReportModel.Barcode
         Private WithEvents qrCodeLabel As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label4 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents txtTransactionNumber As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents txtPrintDate As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label13 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label5 As GrapeCity.ActiveReports.SectionReportModel.Label
+
     End Class
 End Namespace

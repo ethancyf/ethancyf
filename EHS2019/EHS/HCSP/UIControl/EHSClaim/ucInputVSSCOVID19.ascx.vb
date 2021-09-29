@@ -1134,14 +1134,10 @@ Partial Public Class ucInputVSSCOVID19
                 Me.ddlCMainCategoryCovid19.Enabled = False
                 If MyBase.EHSTransactionLatestVaccineRecord IsNot Nothing Then
                     'EHS Transaction
-                    If (MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.VSS OrElse _
-                        MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.RVP OrElse _
-                        MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP OrElse _
-                        MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19OR) AndAlso _
-                        MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
+                    If MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
                         MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory IsNot Nothing AndAlso _
                         MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory <> String.Empty Then
-                        'VSS / RVP / COVID19RVP                 
+
                         'If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
                         Me.ddlCMainCategoryCovid19.Items.Clear()
                         Me.ddlCMainCategoryCovid19.SelectedIndex = -1
@@ -1305,14 +1301,9 @@ Partial Public Class ucInputVSSCOVID19
                     Me.ddlCSubCategoryCovid19.Enabled = False
                     If MyBase.EHSTransactionLatestVaccineRecord IsNot Nothing Then
                         'EHS Transaction
-                        If (MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.VSS OrElse _
-                            MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.RVP OrElse _
-                            MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP OrElse _
-                            MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19OR) AndAlso _
-                            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
+                        If MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
                             MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.SubCategory IsNot Nothing AndAlso _
                             MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory <> String.Empty Then
-                            'VSS / RVP / COVID19RVP
 
                             'If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
                             Me.ddlCSubCategoryCovid19.Items.Clear()
@@ -1609,7 +1600,7 @@ Partial Public Class ucInputVSSCOVID19
                         lstItem = New ListItem
                         'lstItem.Value = udtSubsidize.SubsidizeCode + "_" + udtEHSClaimSubidizeDetail.AvailableItemCode
                         lstItem.Value = udtEHSClaimSubidizeDetail.AvailableItemCode
-                        'lstItem.Text = udtEHSClaimSubidizeDetail.AvailableItemDesc(SessionHandler.Language) + " (" + udtSubsidize.Amount.ToString + ")"
+                        'lstItem.Text = udtEHSClaimSubidizeDetail.AvailableItemDesc(SessionHandler.Language) + " (" + udtSubsidize.Amount.ToString + ") - " + udtSubsidize.SubsidizeCode
                         lstItem.Text = udtEHSClaimSubidizeDetail.AvailableItemDesc(SessionHandler.Language)
 
                         ddlCDoseCovid19.Items.Add(lstItem)

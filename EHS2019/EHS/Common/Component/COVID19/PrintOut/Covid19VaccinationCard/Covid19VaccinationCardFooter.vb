@@ -99,11 +99,6 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             srCovid19FooterDoseTable.Report = New Covid19FooterDoseTableWithNoSignature(_udtEHSTransaction, _udtVaccinationRecordHistory, _blnIsSample, _
                                                                                         _blnDischarge, _blnNonLocalRecoveredHistory1stDose, _blnNonLocalRecoveredHistory2ndDose)
 
-            'Transaction No.
-            Me.txtTransactionNumber.Text = "Ref: " + _udtFormatter.formatSystemNumber(_udtEHSTransaction.TransactionID)
-
-            Me.txtPrintDate.Text = "Printed on " + _udtPrintTime.ToString(_udtFormatter.DisplayVaccinationRecordClockFormat())
-
             qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecordHistory, _udtEHSAccount, _udtPrintTime, _
                                                                      _blnDischarge, _blnNonLocalRecoveredHistory1stDose, _blnNonLocalRecoveredHistory2ndDose)
 
@@ -112,8 +107,6 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private Sub ChkIsSample()
             If (_blnIsSample) Then
                 qrCode.Visible = False
-                Me.txtPrintDate.Visible = False
-                Me.txtTransactionNumber.Visible = False
                 txtDocTypeChi.Visible = False
                 txtDocType.Visible = False
                 txtHKID.Visible = False

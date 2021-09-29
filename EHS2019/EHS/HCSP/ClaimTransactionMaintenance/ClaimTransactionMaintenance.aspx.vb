@@ -1966,7 +1966,7 @@ Partial Public Class ClaimTransactionMaintenance
         Select Case udtEHSTransaction.EHSAcct.AccountSource
             Case EHSAccount.EHSAccountModel.SysAccountSource.SpecialAccount
                 udcInfoMsgBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00002, _
-                    New String() {"%r", "%s"}, New Object() {udtFormatter.formatSystemNumber(udtEHSTransaction.EHSAcct.OriginalAccID.Trim), _
+                    New String() {"%r", "%s"}, New String() {udtFormatter.formatSystemNumber(udtEHSTransaction.EHSAcct.OriginalAccID.Trim), _
                     udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim)})
 
             Case Else
@@ -1977,7 +1977,7 @@ Partial Public Class ClaimTransactionMaintenance
                             "%s", udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim))
                     Else
                         udcInfoMsgBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00002, _
-                            New String() {"%r", "%s"}, New Object() {udtFormatter.formatSystemNumber(udtEHSTransaction.EHSAcct.VoucherAccID.Trim), _
+                            New String() {"%r", "%s"}, New String() {udtFormatter.formatSystemNumber(udtEHSTransaction.EHSAcct.VoucherAccID.Trim), _
                             udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim)})
                     End If
 

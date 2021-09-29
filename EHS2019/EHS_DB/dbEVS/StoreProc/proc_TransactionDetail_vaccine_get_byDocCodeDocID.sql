@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Chris YIM
+-- Modified date:	23 Sep 2021
+-- Description:		Add column [Main_Category] & [Sub_Category]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -606,7 +612,9 @@ EXEC [proc_SymmetricKey_open]
 		TAF.[AdditionalFieldValueCode] AS [Clinic_Type],
 		TAF_1.[AdditionalFieldValueCode] AS [Join_EHRSS],
 		TAF_2.[AdditionalFieldValueCode] AS [Contact_No],
-		TAF_3.[AdditionalFieldValueCode] AS [Non_Local_Recovered]
+		TAF_3.[AdditionalFieldValueCode] AS [Non_Local_Recovered],
+		TAF_4.[AdditionalFieldValueCode] AS [Main_Category],
+		TAF_5.[AdditionalFieldValueCode] AS [Sub_Category]
 	FROM 
 		@result R
 			INNER JOIN SubsidizeItem I
@@ -626,6 +634,12 @@ EXEC [proc_SymmetricKey_open]
 			LEFT OUTER JOIN TransactionAdditionalField TAF_3 WITH(NOLOCK)
 				ON R.[Transaction_ID] = TAF_3.[Transaction_ID]
 					AND TAF_3.[AdditionalFieldID] = 'NonLocalRecovered'
+			LEFT OUTER JOIN TransactionAdditionalField TAF_4 WITH(NOLOCK)
+				ON R.[Transaction_ID] = TAF_4.[Transaction_ID]
+					AND TAF_4.[AdditionalFieldID] = 'MainCategory'
+			LEFT OUTER JOIN TransactionAdditionalField TAF_5 WITH(NOLOCK)
+				ON R.[Transaction_ID] = TAF_5.[Transaction_ID]
+					AND TAF_5.[AdditionalFieldID] = 'SubCategory'
 			
 	ORDER BY R.[Service_Receive_Dtm]
 

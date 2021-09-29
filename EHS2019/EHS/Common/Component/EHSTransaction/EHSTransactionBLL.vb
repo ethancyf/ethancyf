@@ -4247,8 +4247,7 @@ Namespace Component.EHSTransaction
             Dim strClinicType As String = String.Empty
             If Not drSource.IsNull("Clinic_Type") Then strClinicType = drSource("Clinic_Type").ToString().Trim()
 
-            ' CRE20-0023 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
+
             Dim strJoinEHRSS As String = String.Empty
             If Not drSource.IsNull("Join_EHRSS") Then strJoinEHRSS = drSource("Join_EHRSS").ToString().Trim()
 
@@ -4257,6 +4256,14 @@ Namespace Component.EHSTransaction
 
             Dim strNonLocalRecovered As String = String.Empty
             If Not drSource.IsNull("Non_Local_Recovered") Then strNonLocalRecovered = drSource("Non_Local_Recovered").ToString().Trim()
+
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strMainCategory As String = String.Empty
+            If Not drSource.IsNull("Main_Category") Then strMainCategory = drSource("Main_Category").ToString().Trim()
+
+            Dim strSubCategory As String = String.Empty
+            If Not drSource.IsNull("Sub_Category") Then strSubCategory = drSource("Sub_Category").ToString().Trim()
 
             Dim udtTransactionDetailVaccineModel As New TransactionDetailVaccineModel( _
                 drSource("Transaction_ID").ToString(), _
@@ -4303,6 +4310,8 @@ Namespace Component.EHSTransaction
             udtTransactionDetailVaccineModel.JoinEHRSS = strJoinEHRSS.Trim
             udtTransactionDetailVaccineModel.ContactNo = strContactNo.Trim
             udtTransactionDetailVaccineModel.NonLocalRecovered = strNonLocalRecovered.Trim
+            udtTransactionDetailVaccineModel.MainCategory = strMainCategory.Trim
+            udtTransactionDetailVaccineModel.SubCategory = strSubCategory.Trim
 
             ' CRE20-0023 (Immu record) [End][Chris YIM]
 
