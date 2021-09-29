@@ -5,7 +5,20 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE21-010 (VSS 2021-2022)
+-- Modified by:		Martin Tang
+-- Modified date:	12 Aug 2021
+-- Description:		Display single "*" for LAIV and/or RIV only case
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -158,7 +171,10 @@ DECLARE @Symbol_ServiceFeeToBeProvided VARCHAR(15) = '{TBP}'
 DECLARE @Symbol_ServiceFeeNA VARCHAR(4) = '{NA}'
 
 DECLARE @Symbol_ServiceFeeSecondary table (Score int, Symbol VARCHAR(15))
-INSERT INTO @Symbol_ServiceFeeSecondary VALUES (1, '*'), (2, '**'), (3, '*/**')
+
+-- Updated on 13 Aug, only single * is shown for all no QIV case
+--INSERT INTO @Symbol_ServiceFeeSecondary VALUES (1, '*'), (2, '**'), (3, '*/**')
+INSERT INTO @Symbol_ServiceFeeSecondary VALUES (1, '*'), (2, '*'), (3, '*')
 
 
 -- =============================================

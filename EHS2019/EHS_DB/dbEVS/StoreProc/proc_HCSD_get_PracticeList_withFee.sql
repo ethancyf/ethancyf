@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE21-010 (VSS 2021-2022)
+-- Modified by:		Martin Tang
+-- Modified date:	12 Aug 2021
+-- Description:		Display single "*" for LAIV and/or RIV only case
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.			CRE20-008 (SDIR search non clinic)
@@ -212,14 +218,23 @@ BEGIN
 	DECLARE @SortAsteriskServiceFeeToLast bit
 	DECLARE @Service_fee_For_Sorting varchar(5)
 
-	DECLARE @Symbol_For_No_QIV_Service_Fee char(4)
-	SET @Symbol_For_No_QIV_Service_Fee = '*/**'
+	-- Updated on 13 Aug, only single * is shown for all no QIV case
+	--DECLARE @Symbol_For_No_QIV_Service_Fee char(4)
+	--SET @Symbol_For_No_QIV_Service_Fee = '*/**'
+
+	--DECLARE @Symbol_For_No_QIV_No_LAIV_Service_Fee char(1)
+	--SET @Symbol_For_No_QIV_No_LAIV_Service_Fee = '*'
+
+	--DECLARE @Symbol_For_No_QIV_No_TIV_Service_Fee char(2)
+	--SET @Symbol_For_No_QIV_No_TIV_Service_Fee = '**'
+	DECLARE @Symbol_For_No_QIV_Service_Fee char(1)
+	SET @Symbol_For_No_QIV_Service_Fee = '*'
 
 	DECLARE @Symbol_For_No_QIV_No_LAIV_Service_Fee char(1)
 	SET @Symbol_For_No_QIV_No_LAIV_Service_Fee = '*'
 
-	DECLARE @Symbol_For_No_QIV_No_TIV_Service_Fee char(2)
-	SET @Symbol_For_No_QIV_No_TIV_Service_Fee = '**'
+	DECLARE @Symbol_For_No_QIV_No_TIV_Service_Fee char(1)
+	SET @Symbol_For_No_QIV_No_TIV_Service_Fee = '*'
 	
 
 	DECLARE @Symbol_For_To_Be_Provide_Service_Fee char(5)
