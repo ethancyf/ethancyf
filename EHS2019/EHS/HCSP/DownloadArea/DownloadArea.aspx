@@ -56,7 +56,7 @@
                                                                     <td>
                                                                         <img alt="Health Care Voucher Scheme" src="../Images/others/page.png" border="0"
                                                                              style="vertical-align: middle" />
-                                                                        <a href="http://www.hcv.gov.hk/redirect/hcv0001_html_en.html" target="_blank">
+                                                                        <a href="http://www.hcv.gov.hk" target="_blank">
                                                                             Health
                                                                             Care Voucher Scheme
                                                                         </a>
@@ -158,7 +158,7 @@
                                                                     <td style="width: 10px"></td>
                                                                     <td>
                                                                         <img alt="醫療券計劃" src="../Images/others/page.png" border="0" style="vertical-align: middle" />
-                                                                        <a href="http://www.hcv.gov.hk/redirect/hcv0001_html_tc.html" target="_blank">醫療券計劃</a>
+                                                                        <a href="http://www.hcv.gov.hk" target="_blank">醫療券計劃</a>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
