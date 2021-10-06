@@ -8,6 +8,7 @@ Partial Public Class ucReadOnlyEHSClaim
 
     Private _udtEHSTransaction As EHSTransactionModel
     Private _intWidth As Integer = 200
+    Private _blnShowContactNoNotAbleToSMS As Boolean = False
     Private Const strSessionCollectionKey As String = "__ascx_ReadOnlyEHSClaim_Session"
     Public Const strForceRebuildEHSClaim As String = "__ascx_RebuildReadOnlyEHSClaim"
 
@@ -153,11 +154,12 @@ Partial Public Class ucReadOnlyEHSClaim
     Public Sub BuildVSS()
         setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
         setSessionValue("_intWidth", _intWidth)
+        setSessionValue("_blnShowContactNoNotAbleToSMS", _blnShowContactNoNotAbleToSMS)
         setSessionValue("EHSClaimBuild", "VSS")
 
         Dim udcReadOnlyVSS As ucReadOnlyVSS = Me.LoadControl(UserControlPath.VSS)
 
-        udcReadOnlyVSS.Build(_udtEHSTransaction, _intWidth)
+        udcReadOnlyVSS.Build(_udtEHSTransaction, _intWidth, _blnShowContactNoNotAbleToSMS)
 
         phReadOnlyEHSClaim.Controls.Add(udcReadOnlyVSS)
     End Sub
@@ -299,6 +301,13 @@ Partial Public Class ucReadOnlyEHSClaim
         End Set
     End Property
 
+    Public WriteOnly Property ShowContactNoNotAbleToSMS() As Boolean
+        Set(ByVal value As Boolean)
+            _blnShowContactNoNotAbleToSMS = value
+        End Set
+
+    End Property
+
 #End Region
 
 #Region "Internal Session Handling"
@@ -358,6 +367,7 @@ Partial Public Class ucReadOnlyEHSClaim
             'Retrieve all properties
             Me._udtEHSTransaction = getSession("_udtEHSTransaction")
             Me._intWidth = getSession("_intWidth")
+            Me._blnShowContactNoNotAbleToSMS = getSession("_blnShowContactNoNotAbleToSMS")
 
             Select Case getSession("EHSClaimBuild")
                 Case SchemeClaimModel.HCVS
@@ -390,7 +400,7 @@ Partial Public Class ucReadOnlyEHSClaim
                 Case SchemeClaimModel.COVID19RVP
                     Me.BuildCOVID19RVP()
                 Case SchemeClaimModel.COVID19OR
-                    Me.BuildCOVID19OR()                    
+                    Me.BuildCOVID19OR()
             End Select
 
             Session(ucReadOnlyEHSClaim.strForceRebuildEHSClaim) = Nothing

@@ -179,6 +179,7 @@ Namespace BLL
             Public Const SESS_ClaimCOVID19_SchemeSelected As String = "SESS_CLAIMCOVID19_SCHEMESELECTED"
             Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
             Public Const SESS_CLAIMCOVID19_CarryForward As String = "SESS_CLAIMCOVID19_CARRYFORWARD"
+            Public Const SESS_NORMALCLAIM_CarryForward As String = "SESS_NORMALCLAIM_CARRYFORWARD"
             ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         End Class
@@ -1718,6 +1719,21 @@ Namespace BLL
         Public Sub ClaimCOVID19DischargeOverrideReasonRemoveFromSession(ByVal strFunctionCode As String)
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeOverrideReason))
         End Sub
+#End Region
+
+#Region "Normal Claim - Carry Forword"
+        Public Sub NormalClaimCarryForwordSaveToSession(ByVal blnUsed As Boolean, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_NORMALCLAIM_CarryForward)) = blnUsed
+        End Sub
+
+        Public Function NormalClaimCarryForwordGetFromSession(ByVal strFunctionCode As String) As Boolean
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_NORMALCLAIM_CarryForward)), Boolean)
+        End Function
+
+        Public Sub NormalClaimCarryForwordRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_NORMALCLAIM_CarryForward))
+        End Sub
+
 #End Region
 
 #End Region

@@ -4,7 +4,7 @@
     <table style="border-collapse: collapse; border-spacing:0px">
           <tr id="trDocumentaryProof" runat="server" style="vertical-align:top;height:25px">
                 <td class="tableCellStyle" style="width: 205px">
-                    <asp:Label ID="lblDocumentaryProofTitle" runat="server" CssClass="tableTitle"></asp:Label>
+                    <asp:Label ID="lblDocumentaryProofTitle" runat="server" />
                 </td>
                 <td style="vertical-align:top;padding: 0px 0px 0px 0px;">
                       <asp:CheckBox ID="chkDocumentaryProof" runat="server" Width="430px" AutoPostBack="true" Visible="false" CssClass="tableText" Style="position:relative;left:-2px"></asp:CheckBox>
@@ -19,24 +19,22 @@
 </asp:Panel>
 
 <asp:Panel ID="panPIDInstitutionCode" runat="server" Visible="false">
-    <table border="0" cellpadding="0" cellspacing="0">
+    <table style="border-collapse: collapse; border-spacing:0px">
         <tr style="vertical-align:top;height:25px">
-            <td class="tableCellStyle" valign="middle" style="width: 205px">
-                <asp:Label ID="lblPIDInstitutionCodeText" runat="server" CssClass="tableTitle" Width="160px"
-                    Height="22px"></asp:Label>
+            <td class="tableCellStyle" style="width: 205px;vertical-align:middle">
+                <asp:Label ID="lblPIDInstitutionCodeText" runat="server" Width="160px" Height="22px"></asp:Label>
             </td>
             <td style="padding-bottom: 3px">
                 <asp:TextBox ID="txtPIDInstitutionCode" runat="server" Width="100" MaxLength="6" AutoPostBack="true" Style="position:relative;left:-4px"></asp:TextBox>
                 <asp:Image ID="imgPIDInstitutionCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                     ImageAlign="AbsMiddle" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
                 <asp:ImageButton ID="btnSearchPID" runat="server" ImageUrl="~/Images/button/icon_button/btn_search.png"
-                    ImageAlign="AbsMiddle" Style="position:relative;left:-2px"/>
+                    ImageAlign="AbsMiddle" style="position:relative;left:-2px"/>
                 <asp:Label ID="lblPIDInstitutionCode" runat="server" CssClass="tableText" Style="display: none;position:relative;left:-4px"></asp:Label></td>
         </tr>
         <tr style="vertical-align:top;height:25px">
-            <td class="tableCellStyle" valign="top" style="width: 205px">
-                <asp:Label ID="lblPIDInstitutionNameText" runat="server" CssClass="tableTitle" Width="160px"
-                    ></asp:Label>
+            <td class="tableCellStyle" style="width: 205px;vertical-align:top">
+                <asp:Label ID="lblPIDInstitutionNameText" runat="server" Width="160px" />
             </td>
             <td style="padding-bottom: 3px">
                 <asp:Label ID="lblPIDInstitutionName" runat="server" CssClass="tableText" Style="position:relative;left:-4px"></asp:Label>

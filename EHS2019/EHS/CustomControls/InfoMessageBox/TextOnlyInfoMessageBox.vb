@@ -17,7 +17,8 @@ Public Class TextOnlyInfoMessageBox
     Private tblInfoMessageBox As Table
     Private _type As InfoMessageBoxType = InfoMessageBoxType.Information
 
-    Private Const VS_TEXTONLYINFOMESSAGEBOX_CODE As String = "VS_TEXTONLYINFOMESSAGEBOX_CODE"
+    Private Const VS_TEXTONLYINFOMESSAGEBOX_CODETABLE As String = "VS_TEXTONLYINFOMESSAGEBOX_CODETABLE"
+    'Private Const VS_TEXTONLYINFOMESSAGEBOX_CODE As String = "VS_TEXTONLYINFOMESSAGEBOX_CODE"
     Private Const VS_TEXTONLYINFOMESSAGEBOX_TYPE As String = "VS_TEXTONLYINFOMESSAGEBOX_TYPE"
 
     Private Const VS_TEXTONLYINFOMESSAGEBOX_SHOWED As String = "VS_TEXTONLYINFOMESSAGEBOX_SHOWED"
@@ -124,78 +125,41 @@ Public Class TextOnlyInfoMessageBox
         DisplayMessageBox()
     End Sub
 
-    'Public Sub BuildMsg(Optional ByVal FunctionCode As String = "", Optional ByVal SeveritycodeCode As String = "", Optional ByVal StrMsgCode As String = "")
-    '    Dim code As String
-    '    If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) Is Nothing Then
-    '        code = CStr(ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE))
-    '    Else
-    '        If FunctionCode <> "" AndAlso SeveritycodeCode <> "" AndAlso StrMsgCode <> "" Then
-    '            code = FunctionCode & "-" & SeveritycodeCode & "-" & StrMsgCode
-    '        Else
-    '            code = ""
-    '        End If
-    '    End If
-    '    ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) = code
+    ''' <summary>
+    ''' Init code of message datatable
+    ''' </summary>
+    ''' <remarks>
+    ''' To build the structure of code of message datatable
+    ''' </remarks>
+    Private Function InitializeCodeTable() As DataTable
+        Dim dtCode As New DataTable
 
-    '    If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_TYPE) Is Nothing Then
-    '        If CInt(ViewState(VS_TEXTONLYINFOMESSAGEBOX_TYPE)) = 2 Then
-    '            tblInfoMessageBox.Attributes.Item("style") = "border-right: green 1px solid; padding-right: 2px; border-top: green 1px solid; padding-left: 2px; font-size: 18px; padding-bottom: 2px; border-left: green 1px solid; color: green; padding-top: 2px; border-bottom: green 1px solid; font-family: Arial;"
-    '        Else
-    '            tblInfoMessageBox.Attributes.Item("style") = "border-right: #4169e1 1px solid; padding-right: 2px; border-top: #4169e1 1px solid; padding-left: 2px; font-size: 18px; padding-bottom: 2px; border-left: #4169e1 1px solid; color: #0000ff; padding-top: 2px; border-bottom: #4169e1 1px solid; font-family: Arial;"
-    '        End If
-    '    End If
+        dtCode.Columns.Add(New DataColumn("msgCode", GetType(String)))
+        dtCode.Columns.Add(New DataColumn("oldCharList", GetType(String())))
+        dtCode.Columns.Add(New DataColumn("newCharList", GetType(String())))
 
-    '    If code <> "" Then
-    '        Me.Visible = True
-    '        Me.lblMsgDesc.Text = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", code))
-    '    End If
-    '    If FunctionCode <> "" Then
-    '        System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "TextOnlyInfoMessageBoxScript", "setTimeout('window.scrollBy(0, -(document.body.clientHeight));', 1); ", True)
-    '    End If
+        Return dtCode
 
-    'End Sub
+    End Function
 
-    'Public Sub BuildMsg(ByRef objSystemMessage As SystemMessage)
-    '    BuildMsg(objSystemMessage.FunctionCode, objSystemMessage.SeverityCode, objSystemMessage.MessageCode)
-    'End Sub
-
-    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeveritycodeCode As String, ByVal StrMsgCode As String)
-        Dim code As String
-        If FunctionCode <> "" AndAlso SeveritycodeCode <> "" AndAlso StrMsgCode <> "" Then
-            code = FunctionCode & "-" & SeveritycodeCode & "-" & StrMsgCode
-        Else
-            If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) Is Nothing Then
-                code = CStr(ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE))
-            Else
-                code = ""
+    ''' <summary>
+    ''' Return code of message datatable from ViewState
+    ''' </summary>
+    ''' <returns>DataTable of code of message</returns>
+    ''' <remarks></remarks>
+    Public Function GetCodeTable() As DataTable
+        Dim dtCode As DataTable
+        If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED) Is Nothing Then
+            If Not CBool(ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED)) Then
+                dtCode = CType(ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODETABLE), DataTable)
+                Return dtCode
             End If
         End If
-        ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) = code
-        ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED) = False
-    End Sub
-
-    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeveritycodeCode As String, ByVal StrMsgCode As String, ByRef strOldCharList() As String, ByRef objNewCharList() As Object)
-        Dim code As String
-        If FunctionCode <> "" AndAlso SeveritycodeCode <> "" AndAlso StrMsgCode <> "" Then
-            code = FunctionCode & "-" & SeveritycodeCode & "-" & StrMsgCode
-        Else
-            If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) Is Nothing Then
-                code = CStr(ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE))
-            Else
-                code = ""
-            End If
-        End If
-        ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) = code
-        ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED) = False
-
-        ViewState(VS_TEXTONLYINFOMESSAGEBOX_OLD_CHAR_LIST) = strOldCharList
-        ViewState(VS_TEXTONLYINFOMESSAGEBOX_NEW_CHAR_LIST) = objNewCharList
-
-    End Sub
+        dtCode = Me.InitializeCodeTable
+        Return dtCode
+    End Function
 
     Public Sub AddMessage(ByRef objSystemMessage As SystemMessage)
-        ' CRE19-003 (Opt voucher capping) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
         ' Handle Replace Message
         Dim lstIdx As New List(Of String)
         Dim lstReplaceMessage As New List(Of String)
@@ -207,22 +171,86 @@ Public Class TextOnlyInfoMessageBox
         Else
             AddMessage(objSystemMessage.FunctionCode, objSystemMessage.SeverityCode, objSystemMessage.MessageCode, lstIdx.ToArray, lstReplaceMessage.ToArray)
         End If
-        ' CRE19-003 (Opt voucher capping) [End][Winnie]
+
     End Sub
 
-    Public Sub AddMessage(ByRef objSystemMessage As SystemMessage, ByRef strOldCharList() As String, ByRef objNewCharList() As Object)
-        AddMessage(objSystemMessage.FunctionCode, objSystemMessage.SeverityCode, objSystemMessage.MessageCode, strOldCharList, objNewCharList)
+    Public Sub AddMessage(ByRef objSystemMessage As SystemMessage, ByRef strOldCharList() As String, ByRef strNewCharList() As String)
+        AddMessage(objSystemMessage.FunctionCode, objSystemMessage.SeverityCode, objSystemMessage.MessageCode, strOldCharList, strNewCharList)
+    End Sub
+
+    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String)
+        AddMessage(FunctionCode, SeverityCode, StrMsgCode, String.Empty, String.Empty)
+    End Sub
+
+    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByRef strOldChar As String, ByRef strNewChar As String)
+
+        Dim strOldCharList(0) As String
+        Dim strNewCharList(0) As String
+
+        strOldCharList(0) = strOldChar
+        strNewCharList(0) = strNewChar
+
+        AddMessage(FunctionCode, SeverityCode, StrMsgCode, strOldCharList, strNewCharList)
+
+    End Sub
+
+    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByRef strOldCharList() As String, ByRef strNewCharList() As String)
+        Dim dtCode As DataTable = Nothing
+
+        If ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODETABLE) Is Nothing OrElse Me.Visible OrElse _
+            (Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED) Is Nothing AndAlso CBool(ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED))) Then
+
+            dtCode = InitializeCodeTable()
+            Me.Visible = False
+        Else
+            dtCode = CType(ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODETABLE), DataTable)
+        End If
+
+        AddCodeTableRow(dtCode, FunctionCode, SeverityCode, StrMsgCode, strOldCharList, strNewCharList)
+
+        ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED) = False
+        ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODETABLE) = dtCode
+
+    End Sub
+
+    ''' <summary>
+    ''' Add row into code of message datatable
+    ''' </summary>
+    ''' <param name="dtCode">DataTable of code</param>
+    ''' <param name="FunctionCode">Function Code</param>
+    ''' <param name="SeverityCode">Severity</param>
+    ''' <param name="StrMsgCode">Message Code</param>
+    ''' <remarks>
+    ''' Code of messsage is combine of Function Code, Severity and Message Code
+    ''' </remarks>
+    Private Sub AddCodeTableRow(ByRef dtCode As DataTable, _
+                                ByVal FunctionCode As String, _
+                                ByVal SeverityCode As String, _
+                                ByVal StrMsgCode As String, _
+                                ByRef strOldCharList() As String, _
+                                ByRef strNewCharList() As String)
+
+        Dim drCode As DataRow = dtCode.NewRow
+
+        drCode("msgCode") = FunctionCode & "-" & SeverityCode & "-" & StrMsgCode
+        drCode("oldCharList") = strOldCharList
+        drCode("newCharList") = strNewCharList
+
+        dtCode.Rows.Add(drCode)
+
     End Sub
 
     Private Sub DisplayMessageBox()
-        Dim code As String
+        Dim dtCode As DataTable
+
+        'Default to hide the message box
         Me.Visible = False
 
-        If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) Is Nothing Then
+        If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODETABLE) Is Nothing Then
+            'Update flag
             ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED) = True
-            code = CStr(ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE))
 
-
+            'Apply style of message box
             If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_TYPE) Is Nothing Then
                 If CInt(ViewState(VS_TEXTONLYINFOMESSAGEBOX_TYPE)) = 2 Then
                     tblInfoMessageBox.Attributes.Item("style") = "border-right: green 1px solid; padding-right: 2px; border-top: green 1px solid; padding-left: 2px; font-size: 18px; padding-bottom: 2px; border-left: green 1px solid; color: green; padding-top: 2px; border-bottom: green 1px solid; font-family: Arial;"
@@ -231,46 +259,115 @@ Public Class TextOnlyInfoMessageBox
                 End If
             End If
 
-            If code <> "" Then
+            'Load system message into temp data table
+            dtCode = CType(ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODETABLE), DataTable)
+
+            If dtCode.Rows.Count > 0 Then
+                'Set to display the message box
                 Me.Visible = True
 
-                Dim strMsgDesc As String
-                strMsgDesc = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", code))
-                If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_OLD_CHAR_LIST) Is Nothing Then
+                For intCt As Integer = 0 To dtCode.Rows.Count - 1
+                    Dim strCode As String = CStr(dtCode.Rows(intCt).Item("msgCode"))
+                    Dim strMsgDesc As String = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", strCode))
                     Dim strOldCharList() As String
                     Dim objNewCharList() As Object
 
-                    strOldCharList = CType(ViewState(VS_TEXTONLYINFOMESSAGEBOX_OLD_CHAR_LIST), String())
-                    objNewCharList = CType(ViewState(VS_TEXTONLYINFOMESSAGEBOX_NEW_CHAR_LIST), Object())
+                    'If has variable e.g. "%s", replace it
+                    If dtCode.Rows(intCt).Item("oldCharList") IsNot DBNull.Value AndAlso CType(dtCode.Rows(intCt).Item("oldCharList"), String()).Length > 0 Then
+                        strOldCharList = CType(dtCode.Rows(intCt).Item("oldCharList"), String())
+                        objNewCharList = CType(dtCode.Rows(intCt).Item("newCharList"), Object())
 
-                    Dim i As Integer
-                    Dim strOldChar As String
-                    Dim objNewChar As Object
-                    For i = 0 To strOldCharList.Length - 1
-                        strOldChar = strOldCharList(i)
-                        If Not strOldChar Is Nothing Then
-                            Dim strNewChar As String = ""
-                            objNewChar = objNewCharList(i)
+                        For i As Integer = 0 To strOldCharList.Length - 1
+                            Dim strOldChar As String = strOldCharList(i)
+                            Dim objNewChar As Object = objNewCharList(i)
+                            Dim strNewChar As String = String.Empty
+
+                            If strOldChar Is Nothing OrElse strOldChar = String.Empty Then
+                                Continue For
+                            End If
+
                             If TypeOf objNewChar Is DateTime Then
                                 Dim udtFormatter As New Formatter
                                 Dim dtmNewChar As DateTime
                                 dtmNewChar = CType(objNewChar, DateTime)
                                 strNewChar = udtFormatter.convertDate(dtmNewChar)
+
                             ElseIf TypeOf objNewChar Is String Then
                                 strNewChar = CType(objNewChar, String)
+
                             ElseIf TypeOf objNewChar Is SystemMessage Then
                                 Dim udtSystemMessage As SystemMessage
                                 udtSystemMessage = CType(objNewChar, SystemMessage)
                                 strNewChar = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", udtSystemMessage.ConvertToResourceCode()))
                             End If
-                            strMsgDesc = strMsgDesc.Replace(strOldChar, strNewChar)
-                        End If
-                    Next
 
-                End If
-                Me.lblMsgDesc.Text = strMsgDesc
-                'Me.lblMsgDesc.Text = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", code))
+                            strMsgDesc = strMsgDesc.Replace(strOldChar, strNewChar)
+
+                        Next
+
+                    End If
+
+                    'Put system message into message box
+                    If intCt = 0 Then
+                        Me.lblMsgDesc.Text = strMsgDesc
+                    Else
+                        Me.lblMsgDesc.Text += "<div style='padding-top:8px'>" + strMsgDesc + "</div>"
+                    End If
+
+                Next
+
             End If
+
+            'code = CStr(ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE))
+
+            'If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_TYPE) Is Nothing Then
+            '    If CInt(ViewState(VS_TEXTONLYINFOMESSAGEBOX_TYPE)) = 2 Then
+            '        tblInfoMessageBox.Attributes.Item("style") = "border-right: green 1px solid; padding-right: 2px; border-top: green 1px solid; padding-left: 2px; font-size: 18px; padding-bottom: 2px; border-left: green 1px solid; color: green; padding-top: 2px; border-bottom: green 1px solid; font-family: Arial;"
+            '    Else
+            '        tblInfoMessageBox.Attributes.Item("style") = "border-right: #4169e1 1px solid; padding-right: 2px; border-top: #4169e1 1px solid; padding-left: 2px; font-size: 18px; padding-bottom: 2px; border-left: #4169e1 1px solid; color: #0000ff; padding-top: 2px; border-bottom: #4169e1 1px solid; font-family: Arial;"
+            '    End If
+            'End If
+
+            'If code <> "" Then
+            '    Me.Visible = True
+
+            '    Dim strMsgDesc As String
+            '    strMsgDesc = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", code))
+            '    If Not ViewState(VS_TEXTONLYINFOMESSAGEBOX_OLD_CHAR_LIST) Is Nothing Then
+            '        Dim strOldCharList() As String
+            '        Dim objNewCharList() As Object
+
+            '        strOldCharList = CType(ViewState(VS_TEXTONLYINFOMESSAGEBOX_OLD_CHAR_LIST), String())
+            '        objNewCharList = CType(ViewState(VS_TEXTONLYINFOMESSAGEBOX_NEW_CHAR_LIST), Object())
+
+            '        Dim i As Integer
+            '        Dim strOldChar As String
+            '        Dim objNewChar As Object
+            '        For i = 0 To strOldCharList.Length - 1
+            '            strOldChar = strOldCharList(i)
+            '            If Not strOldChar Is Nothing Then
+            '                Dim strNewChar As String = ""
+            '                objNewChar = objNewCharList(i)
+            '                If TypeOf objNewChar Is DateTime Then
+            '                    Dim udtFormatter As New Formatter
+            '                    Dim dtmNewChar As DateTime
+            '                    dtmNewChar = CType(objNewChar, DateTime)
+            '                    strNewChar = udtFormatter.convertDate(dtmNewChar)
+            '                ElseIf TypeOf objNewChar Is String Then
+            '                    strNewChar = CType(objNewChar, String)
+            '                ElseIf TypeOf objNewChar Is SystemMessage Then
+            '                    Dim udtSystemMessage As SystemMessage
+            '                    udtSystemMessage = CType(objNewChar, SystemMessage)
+            '                    strNewChar = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", udtSystemMessage.ConvertToResourceCode()))
+            '                End If
+            '                strMsgDesc = strMsgDesc.Replace(strOldChar, strNewChar)
+            '            End If
+            '        Next
+
+            '    End If
+            '    Me.lblMsgDesc.Text = strMsgDesc
+            '    'Me.lblMsgDesc.Text = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", code))
+            'End If
 
         End If
 
@@ -289,7 +386,8 @@ Public Class TextOnlyInfoMessageBox
 
 
     Public Sub Clear()
-        ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) = Nothing
+        ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODETABLE) = Nothing
+        'ViewState(VS_TEXTONLYINFOMESSAGEBOX_CODE) = Nothing
         ViewState(VS_TEXTONLYINFOMESSAGEBOX_TYPE) = Nothing
         ViewState(VS_TEXTONLYINFOMESSAGEBOX_SHOWED) = Nothing
         ViewState(VS_TEXTONLYINFOMESSAGEBOX_OLD_CHAR_LIST) = Nothing

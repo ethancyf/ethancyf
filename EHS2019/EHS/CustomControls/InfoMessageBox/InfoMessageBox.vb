@@ -20,11 +20,11 @@ Public Class InfoMessageBox
     Private lblMsgDesc As Label
     Private _type As InfoMessageBoxType
 
-    Private Const VS_INFO_MESSAGEBOX_CODE As String = "VS_INFO_MESSAGEBOX_CODE"
+    Private Const VS_INFO_MESSAGEBOX_CODETABLE As String = "VS_INFO_MESSAGEBOX_CODETABLE"
+    'Private Const VS_INFO_MESSAGEBOX_CODE As String = "VS_INFO_MESSAGEBOX_CODE"
     Private Const VS_INFO_MESSAGEBOX_TYPE As String = "VS_INFO_MESSAGEBOX_TYPE"
-    ' [CRE12-004] Statistic Enquiry [Start][Koala]
+
     Private Const VS_INFO_MESSAGEBOX_EXTRA_INFO As String = "VS_INFO_MESSAGEBOX_EXTRA_INFO"
-    ' [CRE12-004] Statistic Enquiry [End][Koala]
 
     Private Const VS_INFO_MESSAGEBOX_SHOWED As String = "VS_INFO_MESSAGEBOX_SHOWED"
     Private Const VS_INFO_MESSAGEBOX_OLD_CHAR_LIST As String = "VS_INFO_MESSAGEBOX_OLD_CHAR_LIST"
@@ -145,106 +145,157 @@ Public Class InfoMessageBox
         DisplayMessageBox()
     End Sub
 
-    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeveritycodeCode As String, ByVal StrMsgCode As String)
-        AddMessageWithExtraInfo(FunctionCode, SeveritycodeCode, StrMsgCode, String.Empty)
-        ' [CRE12-004] Statistic Enquiry [Start][Koala]
-        'Dim code As String
-        'If FunctionCode <> "" AndAlso SeveritycodeCode <> "" AndAlso StrMsgCode <> "" Then
-        '    code = FunctionCode & "-" & SeveritycodeCode & "-" & StrMsgCode
-        'Else
-        '    If Not ViewState(VS_INFO_MESSAGEBOX_CODE) Is Nothing Then
-        '        code = CStr(ViewState(VS_INFO_MESSAGEBOX_CODE))
-        '    Else
-        '        code = ""
-        '    End If
-        'End If
-        'ViewState(VS_INFO_MESSAGEBOX_CODE) = code
-        'ViewState(VS_INFO_MESSAGEBOX_SHOWED) = False
-        ' [CRE12-004] Statistic Enquiry [End][Koala]
-    End Sub
-
-    ' [CRE12-004] Statistic Enquiry [Start][Koala]
     ''' <summary>
-    ''' Add message with extra information
+    ''' Init code of message datatable
     ''' </summary>
-    ''' <param name="FunctionCode"></param>
-    ''' <param name="SeveritycodeCode"></param>
-    ''' <param name="StrMsgCode"></param>
-    ''' <param name="strExtraInfo">Extra information will show under the message (Support HTML format)</param>
+    ''' <remarks>
+    ''' To build the structure of code of message datatable
+    ''' </remarks>
+    Private Function InitializeCodeTable() As DataTable
+        Dim dtCode As New DataTable
+
+        dtCode.Columns.Add(New DataColumn("msgCode", GetType(String)))
+        dtCode.Columns.Add(New DataColumn("msgExtraInfo", GetType(String)))
+        dtCode.Columns.Add(New DataColumn("oldCharList", GetType(String())))
+        dtCode.Columns.Add(New DataColumn("newCharList", GetType(String())))
+
+        Return dtCode
+
+    End Function
+
+    ''' <summary>
+    ''' Return code of message datatable from ViewState
+    ''' </summary>
+    ''' <returns>DataTable of code of message</returns>
     ''' <remarks></remarks>
-    Public Sub AddMessageWithExtraInfo(ByVal FunctionCode As String, ByVal SeveritycodeCode As String, ByVal StrMsgCode As String, ByVal strExtraInfo As String)
-        Dim code As String
-        If FunctionCode <> "" AndAlso SeveritycodeCode <> "" AndAlso StrMsgCode <> "" Then
-            code = FunctionCode & "-" & SeveritycodeCode & "-" & StrMsgCode
-        Else
-            If Not ViewState(VS_INFO_MESSAGEBOX_CODE) Is Nothing Then
-                code = CStr(ViewState(VS_INFO_MESSAGEBOX_CODE))
-            Else
-                code = ""
+    Public Function GetCodeTable() As DataTable
+        Dim dtCode As DataTable
+        If Not ViewState(VS_INFO_MESSAGEBOX_SHOWED) Is Nothing Then
+            If Not CBool(ViewState(VS_INFO_MESSAGEBOX_SHOWED)) Then
+                dtCode = CType(ViewState(VS_INFO_MESSAGEBOX_CODETABLE), DataTable)
+                Return dtCode
             End If
         End If
-        ViewState(VS_INFO_MESSAGEBOX_CODE) = code
-        ' [CRE12-004] Statistic Enquiry [Start][Koala]
-        ViewState(VS_INFO_MESSAGEBOX_EXTRA_INFO) = strExtraInfo
-        ' [CRE12-004] Statistic Enquiry [End][Koala]
-        ViewState(VS_INFO_MESSAGEBOX_SHOWED) = False
-    End Sub
-    ' [CRE12-004] Statistic Enquiry [End][Koala]
-
+        dtCode = Me.InitializeCodeTable
+        Return dtCode
+    End Function
 
     Public Sub AddMessage(ByRef objSystemMessage As SystemMessage)
         AddMessage(objSystemMessage.FunctionCode, objSystemMessage.SeverityCode, objSystemMessage.MessageCode)
     End Sub
 
-    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByRef strOldChar As String, ByRef objNewChar As Object)
+    Public Sub AddMessage(ByRef objSystemMessage As SystemMessage, ByRef strOldCharList() As String, ByRef strNewCharList() As String)
+        AddMessage(objSystemMessage.FunctionCode, objSystemMessage.SeverityCode, objSystemMessage.MessageCode, strOldCharList, strNewCharList)
+    End Sub
+
+    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String)
+        'AddMessageWithExtraInfo(FunctionCode, SeverityCode, StrMsgCode, String.Empty)
+        AddMessage(FunctionCode, SeverityCode, StrMsgCode, String.Empty, String.Empty)
+    End Sub
+
+    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByRef strOldChar As String, ByRef strNewChar As String)
 
         Dim strOldCharList(0) As String
-        Dim objNewCharList(0) As Object
+        Dim strNewCharList(0) As String
 
         strOldCharList(0) = strOldChar
-        objNewCharList(0) = objNewChar
+        strNewCharList(0) = strNewChar
 
-        AddMessage(FunctionCode, SeverityCode, StrMsgCode, strOldCharList, objNewCharList)
+        AddMessage(FunctionCode, SeverityCode, StrMsgCode, strOldCharList, strNewCharList)
 
     End Sub
 
-    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByRef strOldCharList() As String, ByRef objNewCharList() As Object)
-        Dim code As String
-        If FunctionCode <> "" AndAlso SeverityCode <> "" AndAlso StrMsgCode <> "" Then
-            code = FunctionCode & "-" & SeverityCode & "-" & StrMsgCode
+    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByRef strOldCharList() As String, ByRef strNewCharList() As String)
+        Dim dtCode As DataTable = Nothing
+
+        If ViewState(VS_INFO_MESSAGEBOX_CODETABLE) Is Nothing OrElse Me.Visible OrElse (Not ViewState(VS_INFO_MESSAGEBOX_SHOWED) Is Nothing AndAlso CBool(ViewState(VS_INFO_MESSAGEBOX_SHOWED))) Then
+            dtCode = InitializeCodeTable()
+            Me.Visible = False
         Else
-            If Not ViewState(VS_INFO_MESSAGEBOX_CODE) Is Nothing Then
-                code = CStr(ViewState(VS_INFO_MESSAGEBOX_CODE))
-            Else
-                code = ""
-            End If
+            dtCode = CType(ViewState(VS_INFO_MESSAGEBOX_CODETABLE), DataTable)
         End If
-        ViewState(VS_INFO_MESSAGEBOX_CODE) = code
-        ' [CRE12-004] Statistic Enquiry [Start][Koala]
-        ViewState(VS_INFO_MESSAGEBOX_EXTRA_INFO) = String.Empty
-        ' [CRE12-004] Statistic Enquiry [End][Koala]
-        ViewState(VS_INFO_MESSAGEBOX_SHOWED) = False
 
-        ViewState(VS_INFO_MESSAGEBOX_OLD_CHAR_LIST) = strOldCharList
-        ViewState(VS_INFO_MESSAGEBOX_NEW_CHAR_LIST) = objNewCharList
+        AddCodeTableRow(dtCode, FunctionCode, SeverityCode, StrMsgCode, strOldCharList, strNewCharList, String.Empty)
+
+        ViewState(VS_INFO_MESSAGEBOX_SHOWED) = False
+        ViewState(VS_INFO_MESSAGEBOX_CODETABLE) = dtCode
 
     End Sub
 
-    Public Sub AddMessage(ByRef objSystemMessage As SystemMessage, ByRef strOldCharList() As String, ByRef objNewCharList() As Object)
-        AddMessage(objSystemMessage.FunctionCode, objSystemMessage.SeverityCode, objSystemMessage.MessageCode, strOldCharList, objNewCharList)
+    ''' <summary>
+    ''' Add message with extra information
+    ''' </summary>
+    ''' <param name="strFunctionCode"></param>
+    ''' <param name="strSeverityCode"></param>
+    ''' <param name="strMsgCode"></param>
+    ''' <param name="strExtraInfo">Extra information will show under the message (Support HTML format)</param>
+    ''' <remarks></remarks>
+    Public Sub AddMessageWithExtraInfo(ByVal strFunctionCode As String, ByVal strSeverityCode As String, ByVal strMsgCode As String, ByVal strExtraInfo As String)
+        Dim strOldCharList() As String = {""}
+        Dim strNewCharList() As String = {""}
+
+        Dim dtCode As DataTable = Nothing
+
+        If ViewState(VS_INFO_MESSAGEBOX_CODETABLE) Is Nothing OrElse Me.Visible OrElse (Not ViewState(VS_INFO_MESSAGEBOX_SHOWED) Is Nothing AndAlso CBool(ViewState(VS_INFO_MESSAGEBOX_SHOWED))) Then
+            dtCode = InitializeCodeTable()
+            Me.Visible = False
+        Else
+            dtCode = CType(ViewState(VS_INFO_MESSAGEBOX_CODETABLE), DataTable)
+        End If
+
+        AddCodeTableRow(dtCode, strFunctionCode, strSeverityCode, strMsgCode, strOldCharList, strNewCharList, strExtraInfo)
+
+        ViewState(VS_INFO_MESSAGEBOX_SHOWED) = False
+        ViewState(VS_INFO_MESSAGEBOX_CODETABLE) = dtCode
+
+    End Sub
+
+    ''' <summary>
+    ''' Add row into code of message datatable
+    ''' </summary>
+    ''' <param name="dtCode">DataTable of code</param>
+    ''' <param name="FunctionCode">Function Code</param>
+    ''' <param name="SeverityCode">Severity</param>
+    ''' <param name="StrMsgCode">Message Code</param>
+    ''' <remarks>
+    ''' Code of messsage is combine of Function Code, Severity and Message Code
+    ''' </remarks>
+    Private Sub AddCodeTableRow(ByRef dtCode As DataTable, _
+                                ByVal FunctionCode As String, _
+                                ByVal SeverityCode As String, _
+                                ByVal StrMsgCode As String, _
+                                ByRef strOldCharList() As String, _
+                                ByRef strNewCharList() As String, _
+                                ByVal strExtraInfo As String)
+
+        Dim drCode As DataRow = dtCode.NewRow
+
+        drCode("msgCode") = FunctionCode & "-" & SeverityCode & "-" & StrMsgCode
+        drCode("msgExtraInfo") = strExtraInfo
+        drCode("oldCharList") = strOldCharList
+        drCode("newCharList") = strNewCharList
+
+        dtCode.Rows.Add(drCode)
+
     End Sub
 
     Private Sub DisplayMessageBox()
-        Dim code As String
-        Dim strExtraInfo As String
-        Me.Visible = False
-        If Not ViewState(VS_INFO_MESSAGEBOX_CODE) Is Nothing Then
-            ViewState(VS_INFO_MESSAGEBOX_SHOWED) = True
-            code = CStr(ViewState(VS_INFO_MESSAGEBOX_CODE))
-            ' [CRE12-004] Statistic Enquiry [Start][Koala]
-            strExtraInfo = CStr(ViewState(VS_INFO_MESSAGEBOX_EXTRA_INFO))
-            ' [CRE12-004] Statistic Enquiry [End][Koala]
+        Dim dtCode As DataTable
 
+        ''Create message table
+        'Dim dtMessage As New DataTable
+        'dtMessage.Columns.Add(New DataColumn("msgDesc", GetType(String)))
+        'dtMessage.Columns.Add(New DataColumn("msgCode", GetType(String)))
+        'dtMessage.Columns.Add(New DataColumn("msgExtraInfo", GetType(String)))
+
+        'Default to hide the message box
+        Me.Visible = False
+
+        If Not ViewState(VS_INFO_MESSAGEBOX_CODETABLE) Is Nothing Then
+            'Update flag
+            ViewState(VS_INFO_MESSAGEBOX_SHOWED) = True
+
+            'Apply style of message box
             If Not ViewState(VS_INFO_MESSAGEBOX_TYPE) Is Nothing Then
                 If CInt(ViewState(VS_INFO_MESSAGEBOX_TYPE)) = 2 Then
                     tblInfoMessageBox.Attributes.Item("style") = "font-family: Arial; border-right: green 1px solid; padding-right: 2px; border-top: green 1px solid; padding-left: 2px; font-size: 18px; padding-bottom: 2px; border-left: green 1px solid; color: green; padding-top: 2px; border-bottom: green 1px solid; font-family: Arial; background-color: #f4ffff"
@@ -255,54 +306,135 @@ Public Class InfoMessageBox
                 End If
             End If
 
-            If code <> "" Then
+            'Load system message into temp data table
+            dtCode = CType(ViewState(VS_INFO_MESSAGEBOX_CODETABLE), DataTable)
+
+            If dtCode.Rows.Count > 0 Then
+                'Set to display the message box
                 Me.Visible = True
 
-                Dim strMsgDesc As String
-                strMsgDesc = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", code))
-
-                If Not ViewState(VS_INFO_MESSAGEBOX_OLD_CHAR_LIST) Is Nothing Then
+                For intCt As Integer = 0 To dtCode.Rows.Count - 1
+                    Dim strCode As String = CStr(dtCode.Rows(intCt).Item("msgCode"))
+                    Dim strMsgDesc As String = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", strCode))
                     Dim strOldCharList() As String
                     Dim objNewCharList() As Object
 
-                    strOldCharList = CType(ViewState(VS_INFO_MESSAGEBOX_OLD_CHAR_LIST), String())
-                    objNewCharList = CType(ViewState(VS_INFO_MESSAGEBOX_NEW_CHAR_LIST), Object())
+                    'Dim drMessage As DataRow = dtMessage.NewRow
 
-                    Dim i As Integer
-                    Dim strOldChar As String
-                    Dim objNewChar As Object
-                    For i = 0 To strOldCharList.Length - 1
-                        strOldChar = strOldCharList(i)
-                        If Not strOldChar Is Nothing Then
-                            Dim strNewChar As String = ""
-                            objNewChar = objNewCharList(i)
+                    'If has variable e.g. "%s", replace it
+                    If dtCode.Rows(intCt).Item("oldCharList") IsNot DBNull.Value AndAlso CType(dtCode.Rows(intCt).Item("oldCharList"), String()).Length > 0 Then
+                        strOldCharList = CType(dtCode.Rows(intCt).Item("oldCharList"), String())
+                        objNewCharList = CType(dtCode.Rows(intCt).Item("newCharList"), Object())
+
+                        For i As Integer = 0 To strOldCharList.Length - 1
+                            Dim strOldChar As String = strOldCharList(i)
+                            Dim objNewChar As Object = objNewCharList(i)
+                            Dim strNewChar As String = String.Empty
+
+                            If strOldChar Is Nothing OrElse strOldChar = String.Empty Then
+                                Continue For
+                            End If
+
                             If TypeOf objNewChar Is DateTime Then
                                 Dim udtFormatter As New Formatter
                                 Dim dtmNewChar As DateTime
                                 dtmNewChar = CType(objNewChar, DateTime)
                                 strNewChar = udtFormatter.convertDate(dtmNewChar)
+
                             ElseIf TypeOf objNewChar Is String Then
                                 strNewChar = CType(objNewChar, String)
+
                             ElseIf TypeOf objNewChar Is SystemMessage Then
                                 Dim udtSystemMessage As SystemMessage
                                 udtSystemMessage = CType(objNewChar, SystemMessage)
                                 strNewChar = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", udtSystemMessage.ConvertToResourceCode()))
                             End If
+
                             strMsgDesc = strMsgDesc.Replace(strOldChar, strNewChar)
-                        End If
-                    Next
 
-                End If
+                        Next
 
-                Me.lblMsgDesc.Text = strMsgDesc
+                    End If
 
-                ' [CRE12-004] Statistic Enquiry [Start][Koala]
-                ' Show extra information under information message
-                If Not String.IsNullOrEmpty(strExtraInfo) Then
-                    Me.lblMsgDesc.Text += "<br/>" + strExtraInfo
-                End If
-                ' [CRE12-004] Statistic Enquiry [End][Koala]
+                    'Put system message into message box
+                    If intCt = 0 Then
+                        Me.lblMsgDesc.Text = strMsgDesc
+                    Else
+                        Me.lblMsgDesc.Text += "<div style='padding-top:8px'>" + strMsgDesc + "</div>"
+                    End If
+
+                    'if has extra info, append it 
+                    If Not String.IsNullOrEmpty(dtCode.Rows(intCt).Item("msgExtraInfo").ToString) Then
+                        Me.lblMsgDesc.Text += "<div style='paddint-top:0px'>" + dtCode.Rows(intCt).Item("msgExtraInfo").ToString + "</div>"
+                    End If
+
+                Next
+
             End If
+
+            'code = CStr(ViewState(VS_INFO_MESSAGEBOX_CODE))
+
+            'strExtraInfo = CStr(ViewState(VS_INFO_MESSAGEBOX_EXTRA_INFO))
+
+            'If Not ViewState(VS_INFO_MESSAGEBOX_TYPE) Is Nothing Then
+            '    If CInt(ViewState(VS_INFO_MESSAGEBOX_TYPE)) = 2 Then
+            '        tblInfoMessageBox.Attributes.Item("style") = "font-family: Arial; border-right: green 1px solid; padding-right: 2px; border-top: green 1px solid; padding-left: 2px; font-size: 18px; padding-bottom: 2px; border-left: green 1px solid; color: green; padding-top: 2px; border-bottom: green 1px solid; font-family: Arial; background-color: #f4ffff"
+            '        imgInfoMessageBox.ImageUrl = "~/Images/others/tick.png"
+            '    Else
+            '        tblInfoMessageBox.Attributes.Item("style") = "font-family: Arial; border-right: #4169e1 1px solid; padding-right: 2px; border-top: #4169e1 1px solid; padding-left: 2px; font-size: 18px; padding-bottom: 2px; border-left: #4169e1 1px solid; color: #0000ff; padding-top: 2px; border-bottom: #4169e1 1px solid; font-family: Arial; background-color: #d7f2ff"
+            '        imgInfoMessageBox.ImageUrl = "~/Images/others/information.png"
+            '    End If
+            'End If
+
+            'If code <> "" Then
+            '    Me.Visible = True
+
+            '    Dim strMsgDesc As String
+            '    strMsgDesc = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", code))
+
+            '    If Not ViewState(VS_INFO_MESSAGEBOX_OLD_CHAR_LIST) Is Nothing Then
+            '        Dim strOldCharList() As String
+            '        Dim objNewCharList() As Object
+
+            '        strOldCharList = CType(ViewState(VS_INFO_MESSAGEBOX_OLD_CHAR_LIST), String())
+            '        objNewCharList = CType(ViewState(VS_INFO_MESSAGEBOX_NEW_CHAR_LIST), Object())
+
+            '        Dim i As Integer
+            '        Dim strOldChar As String
+            '        Dim objNewChar As Object
+            '        For i = 0 To strOldCharList.Length - 1
+            '            strOldChar = strOldCharList(i)
+            '            If Not strOldChar Is Nothing Then
+            '                Dim strNewChar As String = ""
+            '                objNewChar = objNewCharList(i)
+            '                If TypeOf objNewChar Is DateTime Then
+            '                    Dim udtFormatter As New Formatter
+            '                    Dim dtmNewChar As DateTime
+            '                    dtmNewChar = CType(objNewChar, DateTime)
+            '                    strNewChar = udtFormatter.convertDate(dtmNewChar)
+            '                ElseIf TypeOf objNewChar Is String Then
+            '                    strNewChar = CType(objNewChar, String)
+            '                ElseIf TypeOf objNewChar Is SystemMessage Then
+            '                    Dim udtSystemMessage As SystemMessage
+            '                    udtSystemMessage = CType(objNewChar, SystemMessage)
+            '                    strNewChar = CStr(HttpContext.GetGlobalResourceObject("SystemMessage", udtSystemMessage.ConvertToResourceCode()))
+            '                End If
+            '                strMsgDesc = strMsgDesc.Replace(strOldChar, strNewChar)
+            '            End If
+            '        Next
+
+            '    End If
+
+            '    Me.lblMsgDesc.Text = strMsgDesc
+
+            '    ' [CRE12-004] Statistic Enquiry [Start][Koala]
+            '    ' Show extra information under information message
+            '    If Not String.IsNullOrEmpty(strExtraInfo) Then
+            '        Me.lblMsgDesc.Text += "<br/>" + strExtraInfo
+            '    End If
+            '    ' [CRE12-004] Statistic Enquiry [End][Koala]
+            'End If
+
         End If
 
     End Sub
@@ -337,11 +469,10 @@ Public Class InfoMessageBox
     End Sub
 
     Public Sub Clear()
-        ViewState(VS_INFO_MESSAGEBOX_CODE) = Nothing
+        ViewState(VS_INFO_MESSAGEBOX_CODETABLE) = Nothing
+        'ViewState(VS_INFO_MESSAGEBOX_CODE) = Nothing
         ViewState(VS_INFO_MESSAGEBOX_TYPE) = Nothing
-        ' [CRE12-004] Statistic Enquiry [Start][Koala]
         ViewState(VS_INFO_MESSAGEBOX_EXTRA_INFO) = Nothing
-        ' [CRE12-004] Statistic Enquiry [End][Koala]
         ViewState(VS_INFO_MESSAGEBOX_SHOWED) = Nothing
         ViewState(VS_INFO_MESSAGEBOX_OLD_CHAR_LIST) = Nothing
         ViewState(VS_INFO_MESSAGEBOX_NEW_CHAR_LIST) = Nothing

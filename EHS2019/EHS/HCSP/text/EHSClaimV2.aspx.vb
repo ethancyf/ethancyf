@@ -145,6 +145,7 @@ Partial Public Class EHSClaimV2
     Protected Enum ConfirmationStyle
         NotSet
         Normal
+        NormalUnderline
         Bordered
         BorderedUnderline
         BorderedUnderlineHighlight
@@ -357,10 +358,14 @@ Partial Public Class EHSClaimV2
                 Me.ClearWarningRules(MyBase.SessionHandler.EligibleResultGetFromSession())
                 Me.SetupEnterClaimDetail()
                 Me.SetupVaccine(True)
-                'CRE15-003 System-generated Form [Start][Philip Chau]
+
                 MyBase.SessionHandler.EHSClaimTempTransactionIDRemoveFromSession()
                 MyBase.SessionHandler.EHSClaimStep3ShowLastestTransactionIDSaveToSession(False)
-                'CRE15-003 System-generated Form [End][Philip Chau]
+
+                'Carry Forword (Use): once times only
+                If SessionHandler.NormalClaimCarryForwordGetFromSession(FunctionCode) = False Then
+                    SessionHandler.NormalClaimCarryForwordSaveToSession(True, FunctionCode)
+                End If
 
             Case ActiveViewIndex.InternalError
                 Me.SetupInternalError()
@@ -2294,8 +2299,6 @@ Partial Public Class EHSClaimV2
         If Not udtEHSClaimVaccine Is Nothing AndAlso udtEHSClaimVaccine.SubsidizeList.Count > 0 Then
             AddHandler Me.udcVaccineClaimVaccineInputText.SubsidizeDisabledRemarkClicked, AddressOf udcClaimVaccineInputText_SubsidizeDisabledRemarkClicked
 
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             Select Case udtSchemeClaim.ControlType
                 Case SchemeClaimModel.EnumControlType.VSS, SchemeClaimModel.EnumControlType.RVP
                     'If turned on high risk option, the high risk option is shown.
@@ -2320,10 +2323,39 @@ Partial Public Class EHSClaimV2
                     panVSSRecipientCondition.Visible = False
 
             End Select
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+            Select Case udtSchemeClaim.ControlType
+                Case SchemeClaimModel.EnumControlType.VSS
+
+                    ' CRE21-010-03 (VSS 2021/22 - Claim) [Start][Winnie SUEN]
+                    ' -------------------------------------------------------------
+                    Dim udtVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
+
+                    'Contact No
+                    Dim blnShowContactNo As Boolean = False
+                    Dim blnShowRemarks As Boolean = False
+
+                    If ContactNoShown(udtEHSTransaction) = True Then
+                        panVSSContactNo.Visible = True
+
+                        'Carry Forward: Contact no.
+                        If SessionHandler.NormalClaimCarryForwordGetFromSession(FunctionCode) = False Then
+                            txtContactNo.Text = udtVaccineList.FilterFindNearestContactNo
+                        End If
+                    Else
+                        panVSSContactNo.Visible = False
+                    End If
+
+                    'Remarks
+                    If RemarksShown(udtEHSTransaction, udtVaccineList) = True Then
+                        panVSSRemark.Visible = True
+                    Else
+                        panVSSRemark.Visible = False
+                    End If
+                    ' CRE21-010-03 (VSS 2021/22 - Claim) [End][Winnie SUEN]
+
+            End Select
         End If
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
     End Sub
 
@@ -2332,12 +2364,15 @@ Partial Public Class EHSClaimV2
         ClearVaccineError()
 
         udcVaccineClaimVaccineInputText.Clear()
+        txtContactNo.Text = String.Empty
+        txtRemarks.Text = String.Empty
 
     End Sub
 
     Private Sub ClearVaccineError()
         Me.udcVaccineClaimVaccineInputText.SetDoseErrorImage(False)
         lblRecipientConditionError.Visible = False
+        lblContactNoError.Visible = False
     End Sub
 
     Private Sub ConfirmVaccineSubmit(ByVal blnIsConfirmed As Boolean)
@@ -2932,13 +2967,23 @@ Partial Public Class EHSClaimV2
         ShowConfirmation(ConfirmationStyle.NotSet, obj)
     End Sub
 
-    Protected Sub ShowConfirmation(ByVal udtConfirmationStyle As ConfirmationStyle, ByVal objDisplayMessage As Object)
+    Protected Sub ShowConfirmation(ByVal udtConfirmationStyle As ConfirmationStyle, _
+                                   ByVal objDisplayMessage As Object)
 
+        Dim udtWarningMessage As WarningMessageModel = Nothing
+
+        If TypeOf objDisplayMessage Is WarningMessageModel Then
+            udtWarningMessage = DirectCast(objDisplayMessage, WarningMessageModel)
+        End If
 
         ' Update CSS Class
         Select Case udtConfirmationStyle
             Case ConfirmationStyle.Normal
                 lblConfirmOnlyBoxTitle.CssClass = ConfirmationTitleCSSClass
+                tblConfirmBoxContainer.Attributes("class") = ConfirmationNormalCSSClass
+
+            Case ConfirmationStyle.NormalUnderline
+                lblConfirmOnlyBoxTitle.CssClass = ConfirmationUnderlineCSSClass
                 tblConfirmBoxContainer.Attributes("class") = ConfirmationNormalCSSClass
 
             Case ConfirmationStyle.Bordered
@@ -2955,9 +3000,8 @@ Partial Public Class EHSClaimV2
 
         End Select
 
-
         ' Set Confirmation Message        
-        If TypeOf objDisplayMessage Is String Then
+        If objDisplayMessage IsNot Nothing AndAlso TypeOf objDisplayMessage Is String Then
             If objDisplayMessage.Equals("ProvidedInfoTrueClaimSP") Then
                 Me.lblConfirmOnlyBoxTitle.Text = Me.GetGlobalResourceObject("Text", "Declaration")
             Else
@@ -2966,16 +3010,27 @@ Partial Public Class EHSClaimV2
 
             Me.lblConfirmBoxMessage.Text = Me.GetGlobalResourceObject("Text", CType(objDisplayMessage, String))
 
-        ElseIf TypeOf objDisplayMessage Is ClaimRuleResult Then
-            Me.lblConfirmOnlyBoxTitle.Text = Me.GetGlobalResourceObject("Text", "ConfirmBoxText")
+        ElseIf udtWarningMessage IsNot Nothing AndAlso TypeOf udtWarningMessage.DisplayMessage Is ClaimRuleResult Then
+            If udtWarningMessage.CustomTitleResource <> String.Empty Then
+                Me.lblConfirmOnlyBoxTitle.Text = Me.GetGlobalResourceObject("Text", udtWarningMessage.CustomTitleResource)
+            Else
+                Me.lblConfirmOnlyBoxTitle.Text = Me.GetGlobalResourceObject("Text", "ConfirmBoxTitle")
+            End If
 
-            Me.lblConfirmBoxMessage.Text = Me.Step2aPromptClaimRule(CType(objDisplayMessage, ClaimRuleResult))
+            Me.lblConfirmBoxMessage.Text = Me.Step2aPromptClaimRule(CType(udtWarningMessage.DisplayMessage, ClaimRuleResult))
         End If
 
+        ' Set Button Display Name
+        If udtWarningMessage IsNot Nothing AndAlso udtWarningMessage.CustomButtonResource <> String.Empty Then
+            btnConfirmBoxConfirm.Text = Me.GetGlobalResourceObject("AlternateText", udtWarningMessage.CustomButtonResource)
+        Else
+            btnConfirmBoxConfirm.Text = Me.GetGlobalResourceObject("AlternateText", "ConfirmBtn")
+        End If
+
+        MyBase.SessionHandler.EHSClaimConfirmMessageSaveToSession(Me.FunctionCode, objDisplayMessage)
 
         ' Update Session Index if the value is different
         If Me.mvEHSClaim.ActiveViewIndex <> ActiveViewIndex.ConfirmBox Then
-            MyBase.SessionHandler.EHSClaimConfirmMessageSaveToSession(Me.FunctionCode, objDisplayMessage)
             MyBase.SessionHandler.EHSClaimStepsSaveToSession(FunctionCode, Me.mvEHSClaim.ActiveViewIndex)
             Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.ConfirmBox
         End If
@@ -4369,8 +4424,13 @@ Partial Public Class EHSClaimV2
 
                     'not Popup prompt defore
                     If strText.Equals(String.Empty) AndAlso isValid Then
+                        Dim udtWarningMessageModel As New WarningMessageModel
+                        udtWarningMessageModel.DisplayMessage = udtClaimRuleResult
+                        udtWarningMessageModel.CustomTitleResource = "ExclamationMarkIcon"
+                        udtWarningMessageModel.CustomButtonResource = "ProceedBtn"
+
                         'Get the prompt message from ClaimRule
-                        Me.ShowConfirmation(ConfirmationStyle.Bordered, udtClaimRuleResult)
+                        Me.ShowConfirmation(ConfirmationStyle.NormalUnderline, udtWarningMessageModel)
                     End If
 
                     isValid = False
@@ -4379,13 +4439,10 @@ Partial Public Class EHSClaimV2
                 MyBase.SessionHandler.EligibleResultSaveToSession(udtRuleResults)
             End If
         Else
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-            isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False)
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+            isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False, ConfirmationStyle.NormalUnderline, "ExclamationMarkIcon", "ProceedBtn")
+
         End If
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         'Save the High Risk Value
         If isValid Then
             Select Case HighRiskOptionShown(udtEHSTransaction, udtEHSClaimVaccine)
@@ -4403,7 +4460,6 @@ Partial Public Class EHSClaimV2
                     udtEHSTransaction.HighRisk = String.Empty
             End Select
         End If
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
         Return isValid
     End Function
@@ -4621,6 +4677,8 @@ Partial Public Class EHSClaimV2
         Dim udtValidator As Validator = New Validator()
         Dim udtSchemeDetailBLL As New Common.Component.SchemeDetails.SchemeDetailBLL()
 
+        Dim udtVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
+
         Dim strDOB As String
         Dim udtEligibleResult As EligibleResult
         Dim udtClaimRuleResult As ClaimRuleResult
@@ -4649,8 +4707,6 @@ Partial Public Class EHSClaimV2
             ' -----------------------------------------------
             ' UI Input Validation
             '------------------------------------------------
-            'CRE16-026 (Add PCV13) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             'Check High Risk option if turned on 
             If HighRiskOptionShown(udtEHSTransaction, udtEHSClaimVaccine) = SubsidizeGroupClaimModel.HighRiskOptionClass.ShowForInput Then
                 'Check Recipient Condition whether it is contained invalid setting
@@ -4674,7 +4730,6 @@ Partial Public Class EHSClaimV2
                     isValid = ValidateRecipientCondition(Me.udcMsgBoxErr)
                 End If
             End If
-            'CRE16-026 (Add PCV13) [End][Chris YIM]
 
             'Select Vaccine Part
             If isValid Then
@@ -4685,6 +4740,12 @@ Partial Public Class EHSClaimV2
                 End If
             End If
 
+            'Check Contact Number
+            If isValid Then
+                If panVSSContactNo.Visible = True Then
+                    isValid = ValidateContactNo(Me.udcMsgBoxErr)
+                End If
+            End If
 
             ' ------------------------------------------------------------------
             ' Check Last Service Date of SubsidizeGroupClaim
@@ -4808,8 +4869,13 @@ Partial Public Class EHSClaimV2
 
                     'not Popup prompt defore
                     If strText.Equals(String.Empty) AndAlso isValid Then
+                        Dim udtWarningMessageModel As New WarningMessageModel
+                        udtWarningMessageModel.DisplayMessage = udtClaimRuleResult
+                        udtWarningMessageModel.CustomTitleResource = "ExclamationMarkIcon"
+                        udtWarningMessageModel.CustomButtonResource = "ProceedBtn"
+
                         'Get the prompt message from ClaimRule
-                        Me.ShowConfirmation(ConfirmationStyle.Bordered, udtClaimRuleResult)
+                        Me.ShowConfirmation(ConfirmationStyle.NormalUnderline, udtWarningMessageModel)
                     End If
 
                     isValid = False
@@ -4830,13 +4896,11 @@ Partial Public Class EHSClaimV2
                     udtEHSTransaction.PreSchool = "Y"
                 End If
             End If
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-            isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False)
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+
+            isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False, ConfirmationStyle.NormalUnderline, "ExclamationMarkIcon", "ProceedBtn")
+
         End If
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         'Save the High Risk Value
         If isValid Then
             Select Case HighRiskOptionShown(udtEHSTransaction, udtEHSClaimVaccine)
@@ -4853,12 +4917,49 @@ Partial Public Class EHSClaimV2
                 Case Else
                     udtEHSTransaction.HighRisk = String.Empty
             End Select
+
+            Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
+
+            If Not udtEHSTransaction.TransactionAdditionFields Is Nothing Then
+                udtTransactAdditionfield = udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo)
+                If Not udtTransactAdditionfield Is Nothing Then
+                    udtEHSTransaction.TransactionAdditionFields.Remove(udtTransactAdditionfield)
+                End If
+            End If
+
+            If Not udtEHSTransaction.TransactionAdditionFields Is Nothing Then
+                udtTransactAdditionfield = udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.Remarks)
+                If Not udtTransactAdditionfield Is Nothing Then
+                    udtEHSTransaction.TransactionAdditionFields.Remove(udtTransactAdditionfield)
+                End If
+            End If
+
+            'Contact No.
+            If ContactNoShown(udtEHSTransaction) Then
+                udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
+                udtTransactAdditionfield.AdditionalFieldValueCode = txtContactNo.Text.Trim
+                udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                udtTransactAdditionfield.SchemeCode = udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                udtTransactAdditionfield.SchemeSeq = udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                udtTransactAdditionfield.SubsidizeCode = udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+            End If
+
+            'Remarks
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Remarks
+            udtTransactAdditionfield.AdditionalFieldValueCode = String.Empty
+            udtTransactAdditionfield.AdditionalFieldValueDesc = IIf(RemarksShown(udtEHSTransaction, udtVaccineList) = True, txtRemarks.Text.Trim, Nothing)
+            udtTransactAdditionfield.SchemeCode = udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
         End If
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
         Return isValid
     End Function
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
     ' --------------------------------------------------------------------------------------
@@ -5597,6 +5698,8 @@ Partial Public Class EHSClaimV2
         btnConfirmDetailConfirm.Text = Me.GetGlobalResourceObject("AlternateText", "ConfirmBtn")
         btnConfirmDetailAdhocPrintConsentForm.Text = Me.GetGlobalResourceObject("AlternateText", "VRAPrintClaimConsentFormBtn")
         lblConfirmDetailRecipientConditionText.Text = Me.GetGlobalResourceObject("Text", "RecipientCondition")
+        lblConfirmDetailContactNoText.Text = Me.GetGlobalResourceObject("Text", "ContactNo2")
+        lblConfirmDetailRemarksText.Text = Me.GetGlobalResourceObject("Text", "Remarks")
 
         ' --- Setup Page's Info --- 
         ' Doc Info
@@ -5673,10 +5776,48 @@ Partial Public Class EHSClaimV2
         Me.udcConfirmDetailReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
         Me.udcConfirmDetailReadOnlyEHSClaim.SchemeCode = udtSchemeClaim.SchemeCode
         Me.udcConfirmDetailReadOnlyEHSClaim.Mode = ucReadOnlyEHSClaim.ReadOnlyEHSClaimMode.Normal
+        Me.udcConfirmDetailReadOnlyEHSClaim.ShowSMSWarning = True
         Me.udcConfirmDetailReadOnlyEHSClaim.Built()
 
         ' Recipient Condition
         setupDisplayRecipientCondition(udtEHSTransaction, panConfirmDetailRecipientCondition, lblConfirmDetailRecipientCondition)
+
+
+        'ContactNo
+        Dim strContactNo As String = udtEHSTransaction.TransactionAdditionFields.ContactNo
+        If strContactNo IsNot Nothing AndAlso strContactNo <> String.Empty Then
+            lblConfirmDetailContactNoText.Visible = True
+            lblConfirmDetailContactNo.Visible = True
+            lblConfirmDetailContactNo.Text = strContactNo
+
+            Select Case Left(strContactNo, 1)
+                Case "2", "3"
+                    lblContactNoNotAbleSMS.Visible = True
+                Case Else
+                    lblContactNoNotAbleSMS.Visible = False
+            End Select
+
+        Else
+            lblConfirmDetailContactNoText.Visible = False
+            lblConfirmDetailContactNo.Visible = False
+            lblContactNoNotAbleSMS.Visible = False
+        End If
+
+        'Remarks
+        Dim strRemarks As String = udtEHSTransaction.TransactionAdditionFields.Remarks
+        If strRemarks Is Nothing Then
+            lblConfirmDetailRemarksText.Visible = False
+            lblConfirmDetailRemarks.Visible = False
+        Else
+            lblConfirmDetailRemarksText.Visible = True
+            lblConfirmDetailRemarks.Visible = True
+            If strRemarks <> String.Empty Then
+                lblConfirmDetailRemarks.Text = strRemarks
+            ElseIf strRemarks = String.Empty Then
+                lblConfirmDetailRemarks.Text = GetGlobalResourceObject("Text", "NotProvided")
+            End If
+        End If
+
 
         ' Update Printout Control
         RefreshConfirmDetailPrintOptionControl()
@@ -6189,6 +6330,12 @@ Partial Public Class EHSClaimV2
             MyBase.SessionHandler.EHSAccountSaveToSession(udtEHSAccount, Me.FunctionCode)
             MyBase.SessionHandler.ClaimCategoryRemoveFromSession(Me.FunctionCode)
 
+            _udtEHSTransactionBLL.ClearSessionTransactionDetailBenefit()
+            _udtEHSTransactionBLL.ClearSessionTransactionDetailVaccine()
+
+            'Carry Forword (Set): once times only
+            MyBase.SessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctionCode)
+
             ' Move to Select Scheme
             Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.SelectScheme
 
@@ -6263,6 +6410,8 @@ Partial Public Class EHSClaimV2
         Me.btnCompleteClaimNextClaim.Text = Me.GetGlobalResourceObject("AlternateText", "NextClaimBtn")
         Me.btnCompleteClaimClaimForSamePatient.Text = Me.GetGlobalResourceObject("AlternateText", "ClaimForSamePatientBtn")
         lblCompleteRecipientConditionText.Text = Me.GetGlobalResourceObject("Text", "RecipientCondition")
+        Me.lblCompleteVSSContactNoText.Text = Me.GetGlobalResourceObject("Text", "ContactNo2")
+        Me.lblCompleteVSSRemarksText.Text = Me.GetGlobalResourceObject("Text", "Remarks")
 
         ' Doc Info
         Me.udcCompleteClaimReadOnlyDocumnetType.TextOnlyVersion = True
@@ -6338,6 +6487,35 @@ Partial Public Class EHSClaimV2
 
         ' Recipient Condition
         setupDisplayRecipientCondition(udtEHSTransaction, panCompleteRecipientCondition, lblCompleteRecipientCondition)
+
+        'ContactNo
+        Dim strContactNo As String = udtEHSTransaction.TransactionAdditionFields.ContactNo
+        If strContactNo IsNot Nothing AndAlso strContactNo <> String.Empty Then
+            panCompleteVSS.Visible = True
+            lblCompleteVSSContactNoText.Visible = True
+            lblCompleteVSSContactNo.Visible = True
+            lblCompleteVSSContactNo.Text = strContactNo
+        Else
+            lblCompleteVSSContactNoText.Visible = False
+            lblCompleteVSSContactNo.Visible = False
+        End If
+
+        'Remarks
+        Dim strRemarks As String = udtEHSTransaction.TransactionAdditionFields.Remarks
+        If strRemarks Is Nothing Then
+            lblCompleteVSSRemarksText.Visible = False
+            lblCompleteVSSRemarks.Visible = False
+        Else
+            panCompleteVSS.Visible = True
+            lblCompleteVSSRemarksText.Visible = True
+            lblCompleteVSSRemarks.Visible = True
+            If strRemarks <> String.Empty Then
+                lblCompleteVSSRemarks.Text = strRemarks
+            ElseIf strRemarks = String.Empty Then
+                lblCompleteVSSRemarks.Text = GetGlobalResourceObject("Text", "NotProvided")
+            End If
+        End If
+
 
     End Sub
 
@@ -6488,10 +6666,12 @@ Partial Public Class EHSClaimV2
         Return String.Format("{0}_{1}", strActiveViewIndex, enumRuleType)
     End Function
 
-    ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-    ' Remove input parameter - strSchemeCode
-    'Private Function RemoveRulesAfterConfirm(ByVal strSchemeCode As String, ByRef udtRuleResults As RuleResultCollection, ByVal isValid As Boolean) As Boolean
-    Private Function RemoveRulesAfterConfirm(ByRef udtRuleResults As RuleResultCollection, ByVal isValid As Boolean) As Boolean
+    Private Function RemoveRulesAfterConfirm(ByRef udtRuleResults As RuleResultCollection, _
+                                             ByVal isValid As Boolean, _
+                                             Optional ByVal udtConfirmationStyle As ConfirmationStyle = ConfirmationStyle.Bordered, _
+                                             Optional ByVal strCustomTitleResource As String = "", _
+                                             Optional ByVal strCustomButtonResource As String = "") As Boolean
+
         ' --------------------------------------------------------------
         ' Eligibility rule
         ' --------------------------------------------------------------
@@ -6516,7 +6696,13 @@ Partial Public Class EHSClaimV2
         udtRuleResult = udtRuleResults.Item(strKey)
         If isValid Then
             If Not udtRuleResult Is Nothing Then
-                Me.ShowConfirmation(ConfirmationStyle.Bordered, udtRuleResult)
+                Dim udtWarningMessageModel As New WarningMessageModel
+                udtWarningMessageModel.DisplayMessage = udtRuleResult
+                udtWarningMessageModel.CustomTitleResource = strCustomTitleResource
+                udtWarningMessageModel.CustomButtonResource = strCustomButtonResource
+
+                Me.ShowConfirmation(udtConfirmationStyle, udtWarningMessageModel)
+
                 isValid = False
             End If
         Else
@@ -6531,7 +6717,6 @@ Partial Public Class EHSClaimV2
         Return isValid
 
     End Function
-    ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
 
     Private Sub SetupEnterClaimDetail()
         Dim strAccInfoText As String = Me.GetGlobalResourceObject("Text", "AccountInfo")
@@ -7216,7 +7401,18 @@ Partial Public Class EHSClaimV2
             udtDHVaccineResultSession = SessionHandler.CIMSVaccineResultGetFromSession(FunctionCode)
         End If
 
-        Dim udtSystemMessageList As List(Of SystemMessage) = udcVaccinationRecord.Build(udtEHSAccount, udtHAVaccineResultSession, udtDHVaccineResultSession, _udtAuditLogEntry, True)
+        Dim dicSystemMessageList As New Dictionary(Of Integer, SystemMessage)
+        Dim dicFindList As New Dictionary(Of Integer, String)
+        Dim dicReplaceList As New Dictionary(Of Integer, String)
+
+        udcVaccinationRecord.Build(udtEHSAccount, _
+                                   udtHAVaccineResultSession, _
+                                   udtDHVaccineResultSession, _
+                                   _udtAuditLogEntry, _
+                                   True, _
+                                   dicSystemMessageList, _
+                                   dicFindList, _
+                                   dicReplaceList)
 
         If blnRecall Then ' If Force re-enquiry then cache the reason for futher use
             SessionHandler.CMSVaccineResultSaveToSession(udcVaccinationRecord.HAVaccineResult, FunctionCode)
@@ -7226,18 +7422,8 @@ Partial Public Class EHSClaimV2
         btnVRContinue.Visible = Not blnRecall
         btnVRReturn.Visible = blnRecall
 
-        ' Build system message
-        For Each udtSystemMessage As SystemMessage In udtSystemMessageList
-            If Not IsNothing(udtSystemMessage) Then
-                If udtSystemMessage.SeverityCode = SeverityCode.SEVI Then
-                    udcMsgBoxInfo.AddMessage(udtSystemMessage)
-                    udcMsgBoxInfo.BuildMessageBox()
-                Else
-                    udcMsgBoxErr.AddMessage(udtSystemMessage)
-                    udcMsgBoxErr.BuildMessageBox("ConnectionFail")
-                End If
-            End If
-        Next
+        'Apply system message to message box
+        udcVaccinationRecord.BuildSystemMessageBox(dicSystemMessageList, dicFindList, dicReplaceList, udcMsgBoxInfo, udcMsgBoxErr)
 
     End Sub
     ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
@@ -7730,6 +7916,106 @@ Partial Public Class EHSClaimV2
 
     End Sub
     'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+    ' CRE21-010-03 (VSS 2021/22 - Claim) [Start][Winnie SUEN]
+    ' -------------------------------------------------------------
+    Public ReadOnly Property ContactNoShown(ByVal udtEHSTransaction As EHSTransactionModel) As Boolean
+        Get
+            Dim blnShowInput As Boolean = False
+
+            'Check MinDate
+            Dim strMinDate As String = String.Empty
+            Dim dtmMinDate As Date
+            Me._udtCommfunct.getSystemParameter("202122ClaimDate", strMinDate, String.Empty, udtEHSTransaction.SchemeCode)
+
+            dtmMinDate = Convert.ToDateTime(strMinDate)
+
+            If udtEHSTransaction.ServiceDate < dtmMinDate Then
+                blnShowInput = False
+            Else
+                blnShowInput = True
+            End If
+
+            Return blnShowInput
+        End Get
+
+    End Property
+
+    Public ReadOnly Property RemarksShown(ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtVaccineList As TransactionDetailVaccineModelCollection) As Boolean
+        Get
+            Dim blnShowInput As Boolean = False
+
+            'Check MinDate
+            'Dim strMinDate As String = String.Empty
+            'Dim dtmMinDate As Date
+            'Me._udtCommfunct.getSystemParameter("202122ClaimDate", strMinDate, String.Empty, udtEHSTransaction.SchemeCode)
+
+            'dtmMinDate = Convert.ToDateTime(strMinDate)
+
+            'If udtEHSTransaction.ServiceDate < dtmMinDate Then
+            '    blnShowInput = False
+            'Else
+            'If received COVID19 within 14 days, shows the remarks
+            If udtVaccineList IsNot Nothing Then
+                Dim udtTranDetailVaccineC19List As TransactionDetailVaccineModelCollection = udtVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+                Dim strInterval As String = (New Common.ComFunction.GeneralFunction).GetSystemParameterParmValue1("COVID19_Received_Warning_Interval")
+                Dim intInterval As Integer
+
+                If Not Integer.TryParse(strInterval, intInterval) Then
+                    Throw New Exception(String.Format("Invalid value({0}) of [COVID19_Received_Warning_Interval] in DB SystemParameters.", strInterval))
+                End If
+
+                For Each udtTranDetailVaccineC19Latest As TransactionDetailVaccineModel In udtTranDetailVaccineC19List
+                    If Math.Abs(DateDiff(DateInterval.Day, udtTranDetailVaccineC19Latest.ServiceReceiveDtm, udtEHSTransaction.ServiceDate)) < intInterval Then
+                        blnShowInput = True
+                        Exit For
+                    End If
+                Next
+
+            End If
+            'End If
+
+            Return blnShowInput
+        End Get
+
+    End Property
+    ' CRE21-010-03 (VSS 2021/22 - Claim) [End][Winnie SUEN]
+
+    'CRE21-010 (VSS 2021-2022) [Start][Martin Tang]
+    Public Function ValidateContactNo(ByVal objMsgBox As CustomControls.TextOnlyMessageBox) As Boolean
+        Dim blnResult As Boolean = True
+
+        Me.lblContactNoError.Visible = False
+
+        If String.IsNullOrEmpty(Me.txtContactNo.Text) = True Then
+            blnResult = False
+            Me.lblContactNoError.Visible = True
+            Dim udtMsg As ComObject.SystemMessage = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00463)
+            objMsgBox.AddMessage(udtMsg, _
+                                 New String() {"%en", "%tc", "%sc"}, _
+                                 New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                               HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                               HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
+        End If
+
+        If Not String.IsNullOrEmpty(Me.txtContactNo.Text) Then
+            If Not Regex.IsMatch(Me.txtContactNo.Text, "^[2-9]\d{7}$") Then
+                blnResult = False
+                Me.lblContactNoError.Visible = True
+
+                Dim udtMsg As ComObject.SystemMessage = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00466)
+                objMsgBox.AddMessage(udtMsg, _
+                                     New String() {"%en", "%tc", "%sc"}, _
+                                     New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                   HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                   HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
+            End If
+        End If
+
+        Return blnResult
+    End Function
+    'CRE21-010 (VSS 2021-2022) [End][Martin Tang]
+
 #End Region
 
 #Region "Implement IWorkingData (CRE11-004)"
@@ -8069,6 +8355,7 @@ Partial Public Class EHSClaimV2
                 End If
             End If
 
+
             '-------------------------------------------------
             'Set up Addition Fields : PlaceVaccination
             '-------------------------------------------------
@@ -8288,4 +8575,49 @@ Partial Public Class EHSClaimV2
 
         'CRE20-009 The CSSA and Annex checkbox and label setting [End][Nichole]
     End Sub
+
+    <Serializable()> Private Class WarningMessageModel
+#Region "Private Members"
+        Private _objDisplayMessage As Object = Nothing
+        Private _strCustomTitleResource As String = String.Empty
+        Private _strCustomButtonResource As String = String.Empty
+#End Region
+
+#Region "Properties"
+        Public Property DisplayMessage() As Object
+            Get
+                Return _objDisplayMessage
+            End Get
+            Set(ByVal value As Object)
+                _objDisplayMessage = value
+            End Set
+        End Property
+
+        Public Property CustomTitleResource() As String
+            Get
+                Return _strCustomTitleResource
+            End Get
+            Set(ByVal value As String)
+                _strCustomTitleResource = value
+            End Set
+        End Property
+
+        Public Property CustomButtonResource() As String
+            Get
+                Return _strCustomButtonResource
+            End Get
+            Set(ByVal value As String)
+                _strCustomButtonResource = value
+            End Set
+        End Property
+#End Region
+
+#Region "Constructors"
+        Public Sub New()
+
+        End Sub
+#End Region
+
+    End Class
+
 End Class

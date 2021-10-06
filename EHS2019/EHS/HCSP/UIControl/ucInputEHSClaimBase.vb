@@ -24,10 +24,8 @@ Public MustInherit Class ucInputEHSClaimBase
     Private _dtmServiceDate As DateTime
     Private _udtClaimCategorys As ClaimCategoryModelCollection
     Private _btnIsModifyMode As Boolean = False
-    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
     Private _blnNonClinic As Boolean
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
+    Private _udtVaccineList As TransactionDetailVaccineModelCollection
 
     'CRE16-026 (Add PCV13) [Start][Chris YIM]
     '-----------------------------------------------------------------------------------------
@@ -237,8 +235,6 @@ Public MustInherit Class ucInputEHSClaimBase
         End Set
     End Property
 
-    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
     Public Property NonClinic() As Boolean
         Get
             Return _blnNonClinic
@@ -247,6 +243,15 @@ Public MustInherit Class ucInputEHSClaimBase
             _blnNonClinic = value
         End Set
     End Property
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
+    Public Property VaccineList() As TransactionDetailVaccineModelCollection
+        Get
+            Return _udtVaccineList
+        End Get
+        Set(ByVal value As TransactionDetailVaccineModelCollection)
+            _udtVaccineList = value
+        End Set
+    End Property
+
 #End Region
 End Class

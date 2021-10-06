@@ -15,6 +15,8 @@
 <%@ Register Src="../PrintFormOptionSelection.ascx" TagName="PrintFormOptionSelection"
     TagPrefix="uc1" %>
 <%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc1" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc3" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder" runat="server">
     <table border="0" cellpadding="0" cellspacing="0">
         <tr>
@@ -257,6 +259,31 @@
                     </td>
                 </tr>
                 </asp:panel>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblConfirmDetailContactNoText" runat="server" CssClass="tableTitle"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblConfirmDetailContactNo" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">                        
+                        <asp:Label ID="lblContactNoNotAbleSMS" runat="server" CssClass="tableText" Text="<%$ Resources:Text, NotAbleToReceiveSMS%>" style="color:red!important" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblConfirmDetailRemarksText" runat="server" CssClass="tableTitle"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblConfirmDetailRemarks" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
+                </tr>
             </table>
             <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
@@ -457,6 +484,30 @@
                 <tr>
                     <td style="vertical-align: top;padding:0px">
                         <asp:Label ID="lblCompleteRecipientCondition" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+            </asp:panel>
+            <asp:panel ID="panCompleteVSS" runat="server" Visible="false">
+            <table style="border-collapse: collapse; border-spacing:0px">
+                <tr>
+                    <td style="vertical-align: top;width:205px;padding:0px">
+                        <asp:Label ID="lblCompleteVSSContactNoText" runat="server" CssClass="tableTitle"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblCompleteVSSContactNo" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;width:205px;padding:0px">
+                        <asp:Label ID="lblCompleteVSSRemarksText" runat="server" CssClass="tableTitle"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblCompleteVSSRemarks" runat="server" CssClass="tableText"></asp:Label>
                     </td>
                 </tr>
             </table>
@@ -738,6 +789,44 @@
                     </td>
                 </tr>
                 </asp:Panel>
+                <asp:Panel ID="panVSSContactNo" runat="server" Visible="false">
+                <tr>
+                    <td style="width: 100%; height: 19px; padding-top:5px">
+                        <asp:Label ID="lblContactNoText" runat="server" CssClass="tableHeader" Text="<%$ Resources:Text, ContactNo2 %>" />                        
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%">
+                        <asp:TextBox ID="txtContactNo" runat="server" MaxLength="8" Style="position: relative; left: -1px" Width="100px" />
+                        <asp:Label ID="lblContactNoError" runat="server" ForeColor="Red" Text="*" Visible="False"></asp:Label>                        
+                        <cc3:FilteredTextBoxExtender ID="fteContactNo" runat="server" TargetControlID="txtContactNo"
+                            FilterType="Numbers" />                       
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%">
+                        <asp:Label ID="lblContactNoRecommendation" runat="server" Text="<%$ Resources:Text, ProvideContactNoWithSMS%>" Style="font-size: 14px;"></asp:Label>
+                    </td>
+                </tr>
+                </asp:Panel>
+                <asp:Panel ID="panVSSRemark" runat="server" Visible="false">
+                    <tr>
+                    <td style="width: 100%; height: 19px; padding-top:5px">
+                        <asp:Label ID="lblRemarksText" runat="server" CssClass="tableHeader" Text="<%$ Resources:Text, Remarks %>" />                        
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%">
+                        <asp:TextBox ID="txtRemarks" runat="server" MaxLength="100" Style="position: relative; left: -1px" Width="230px" />
+                        <asp:Label ID="lblRemarksError" runat="server" ForeColor="Red" Text="*" Visible="False"></asp:Label>                        
+                        <cc3:FilteredTextBoxExtender ID="fteRemarks" runat="server" TargetControlID="txtRemarks"
+                                      FilterMode="InvalidChars"  InvalidChars="|\" />                       
+                    </td>
+                </tr>
+                </asp:Panel>
+                <tr>
+                    <td style="padding-top:10px"></td>
+                </tr>
             </table>
             <asp:Button ID="btnVaccineBack" runat="server" Text="<%$ Resources: AlternateText, BackBtn %>" />
             <asp:Button ID="btnVaccineCancel" runat="server" Text="<%$ Resources:AlternateText, CancelBtn %>" />

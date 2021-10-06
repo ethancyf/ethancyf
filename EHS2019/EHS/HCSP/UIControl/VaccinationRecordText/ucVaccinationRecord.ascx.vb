@@ -7,10 +7,12 @@ Imports Common.Component.EHSAccount
 Imports Common.Component.EHSAccount.EHSAccountModel
 Imports Common.Component.EHSTransaction
 Imports Common.Component.HATransaction
+Imports Common.Component.Scheme
 Imports Common.Component.SortedGridviewHeader
 Imports Common.Format
 Imports Common.WebService.Interface
 Imports HCSP.BLL
+
 
 Partial Public Class ucVaccinationRecord1
     Inherits System.Web.UI.UserControl
@@ -49,11 +51,14 @@ Partial Public Class ucVaccinationRecord1
         End Set
     End Property
 
-    Public Function Build(ByVal udtEHSAccount As EHSAccountModel, _
+    Public Sub Build(ByVal udtEHSAccount As EHSAccountModel, _
                           ByVal udtCachedHAVaccineResult As HAVaccineResult, _
                           ByVal udtCachedDHVaccineResult As DHVaccineResult, _
                           ByVal udtAuditLogEntry As AuditLogEntry, _
-                          ByVal blnSupportDevice As Boolean) As List(Of SystemMessage)
+                          ByVal blnSupportDevice As Boolean, _
+                          ByRef dicSystemMessageList As Dictionary(Of Integer, SystemMessage), _
+                          ByRef dicFindList As Dictionary(Of Integer, String), _
+                          ByRef dicReplaceList As Dictionary(Of Integer, String))
 
         Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = Nothing
         Dim htRecordSummary As Hashtable = Nothing
@@ -70,20 +75,22 @@ Partial Public Class ucVaccinationRecord1
         udtVaccineResultBagSession.DHVaccineResult = udtCachedDHVaccineResult
         udtVaccineResultBagSession.HAVaccineResult = udtCachedHAVaccineResult
 
-        udtVaccinationBLL.GetVaccinationRecord(udtEHSAccount, udtTranDetailVaccineList, udtVaccineResultBag, htRecordSummary, udtAuditLogEntry, String.Empty, udtVaccineResultBagSession)
+        udtVaccinationBLL.GetVaccinationRecord(udtEHSAccount, _
+                                               udtTranDetailVaccineList, _
+                                               udtVaccineResultBag, _
+                                               htRecordSummary, _
+                                               udtAuditLogEntry, _
+                                               String.Empty, _
+                                               udtVaccineResultBagSession)
 
         _udtDHVaccineResult = udtVaccineResultBag.DHVaccineResult
         _udtHAVaccineResult = udtVaccineResultBag.HAVaccineResult
 
-        Dim udtSystemMessageList As List(Of SystemMessage)
+        ' Build system message
+        BuildSystemMessage(htRecordSummary, udtVaccineResultBag, udtTranDetailVaccineList, dicSystemMessageList, dicFindList, dicReplaceList)
 
-        udtSystemMessageList = BuildSystemMessage(udtVaccineResultBag)
-
-        ' CRE19-007 (DH CIMS Sub return code) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         ' Build record summary
         BuildRecordSummary(htRecordSummary, udtVaccineResultBag)
-        ' CRE19-007 (DH CIMS Sub return code) [End][Chris YIM]
 
         ' Default as no header
         mvVaccinationRecordView.ActiveViewIndex = ViewIndex.HeaderHide
@@ -130,20 +137,13 @@ Partial Public Class ucVaccinationRecord1
         ' Total N records
         lblNoOfRecord.Text = Me.GetGlobalResourceObject("Text", "NoOfRecord")
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-        ' ----------------------------------------------------------
         ' Save the external status to session
         Dim udtSessionHandler As New SessionHandler
         Dim udtHAVaccineRefStatus As EHSTransactionModel.ExtRefStatusClass = Nothing
         Dim udtDHVaccineRefStatus As EHSTransactionModel.ExtRefStatusClass = Nothing
 
-        ' INT13-0021 - Fix use HKBC on smart IC claim incorrectly [Start][Koala]
-        ' -------------------------------------------------------------------------------------
         If (New DocTypeBLL).CheckVaccinationRecordAvailable(udtEHSAccount.SearchDocCode, "HA") Then
             udtHAVaccineRefStatus = New EHSTransactionModel.ExtRefStatusClass(udtVaccineResultBag.HAVaccineResult, udtEHSAccount.SearchDocCode)
-            'If (New DocTypeBLL).getAllDocType.Filter(udtEHSAccount.EHSPersonalInformationList(0).DocCode).VaccinationRecordAvailable Then
-            '    udtExtRefStatus = New EHSTransactionModel.ExtRefStatusClass(_udtHAVaccineResult, udtEHSAccount.EHSPersonalInformationList(0).DocCode)
-            ' INT13-0021 - Fix use HKBC on smart IC claim incorrectly [End][Koala]
         Else
             udtHAVaccineRefStatus = New EHSTransactionModel.ExtRefStatusClass(EHSTransactionModel.ExtRefStatusClass.ResultShownEnum.Yes, _
                                                         EHSTransactionModel.ExtRefStatusClass.ExtSourceMatchEnum.DocumentNotAvailable, _
@@ -161,20 +161,7 @@ Partial Public Class ucVaccinationRecord1
         udtSessionHandler.ExtRefStatusSaveToSession(udtHAVaccineRefStatus)
         udtSessionHandler.DHExtRefStatusSaveToSession(udtDHVaccineRefStatus)
 
-        ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
-
-
-
-
-
-        Return udtSystemMessageList
-
-    End Function
-
-    Public Function Build(ByVal udtEHSAccount As EHSAccountModel, ByVal udtAuditLogEntry As AuditLogEntry, ByVal blnSupportDevice As Boolean) As List(Of SystemMessage)
-        'Return Build(udtEHSAccount, Nothing, udtAuditLogEntry, blnSupportDevice)
-        Return Build(udtEHSAccount, Nothing, Nothing, udtAuditLogEntry, blnSupportDevice)
-    End Function
+    End Sub
 
     Public Sub RebuildVaccinationRecordGrid()
         Dim dtVaccineRecord As DataTable = Session(SESS.TranDetailList)
@@ -347,57 +334,203 @@ Partial Public Class ucVaccinationRecord1
     End Sub
     ' CRE19-007 (DH CIMS Sub return code) [End][Chris YIM]
 
-    ' CRE19-007 (DH CIMS Sub return code) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
-    Private Function BuildSystemMessage(ByVal udtVaccineResultBag As VaccineResultCollection) As List(Of SystemMessage)
+    Private Sub BuildSystemMessage(ByVal htRecordSummary As Hashtable, _
+                                   ByVal udtVaccineResultBag As VaccineResultCollection, _
+                                   ByVal udtTranDetailVaccineList As TransactionDetailVaccineModelCollection, _
+                                   ByRef dicSystemMessageList As Dictionary(Of Integer, SystemMessage), _
+                                   ByRef dicFindList As Dictionary(Of Integer, String), _
+                                   ByRef dicReplaceList As Dictionary(Of Integer, String))
+
         Dim udtSystemMessage As SystemMessage = Nothing
-        Dim udtSystemMessageList As New List(Of SystemMessage)
+        Dim strFind As String = String.Empty
+        Dim strReplace As String = String.Empty
+
+        Dim blnShowInfo As Boolean = False
+        Dim blnShowError As Boolean = False
+
+        '1. CMS / CIMS system message
+        Build_CMS_CIMS_SystemMessage(htRecordSummary, udtVaccineResultBag, dicSystemMessageList, dicFindList, dicReplaceList)
+
+        '2. COVID19 system message
+        Build_COVID19_SystemMessage(udtTranDetailVaccineList, dicSystemMessageList, dicFindList, dicReplaceList)
+
+    End Sub
+
+    Private Sub Build_CMS_CIMS_SystemMessage(ByVal htRecordSummary As Hashtable, _
+                                             ByVal udtVaccineResultBag As VaccineResultCollection, _
+                                             ByRef dicSystemMessageList As Dictionary(Of Integer, SystemMessage), _
+                                             ByRef dicFindList As Dictionary(Of Integer, String), _
+                                             ByRef dicReplaceList As Dictionary(Of Integer, String))
+
         Dim blnHAError As Boolean = False
         Dim blnHANotMatch As Boolean = False
         Dim blnDHError As Boolean = False
         Dim blnDHNotMatch As Boolean = False
+        Dim intCount As Integer
 
         If VaccinationBLL.CheckTurnOnVaccinationRecord(VaccinationBLL.VaccineRecordSystem.CMS) <> VaccinationBLL.EnumTurnOnVaccinationRecord.N Then
             Select Case udtVaccineResultBag.HAReturnStatus
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.DemographicNotMatch
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00026))
+                    intCount = dicSystemMessageList.Count + 1
+                    dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00026))
+                    dicFindList.Add(intCount, String.Empty)
+                    dicReplaceList.Add(intCount, String.Empty)
                     blnHANotMatch = True
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.ConnectionFail
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00254))
+                    intCount = dicSystemMessageList.Count + 1
+                    dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00254))
+                    dicFindList.Add(intCount, String.Empty)
+                    dicReplaceList.Add(intCount, String.Empty)
                     blnHAError = True
             End Select
         End If
-
 
         If VaccinationBLL.CheckTurnOnVaccinationRecord(VaccinationBLL.VaccineRecordSystem.CIMS) <> VaccinationBLL.EnumTurnOnVaccinationRecord.N Then
             Select Case udtVaccineResultBag.DHReturnStatus
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.OK
                     If udtVaccineResultBag.DHVaccineResult.SingleClient.ReturnClientCIMSCode = DHTransaction.DHClientModel.ReturnCIMSCode.AllDemographicMatch_PartialRecord Then
-                        udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00048))
+                        If CInt(htRecordSummary(VaccinationBLL.VaccineRecordProvider.DH)) > 0 Then
+                            intCount = dicSystemMessageList.Count + 1
+                            dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00048))
+                            dicFindList.Add(intCount, String.Empty)
+                            dicReplaceList.Add(intCount, String.Empty)
+                        End If
                     End If
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.DemographicNotMatch
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00041))
+                    intCount = dicSystemMessageList.Count + 1
+                    dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00041))
+                    dicFindList.Add(intCount, String.Empty)
+                    dicReplaceList.Add(intCount, String.Empty)
                     blnDHNotMatch = True
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.ConnectionFail
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00409))
+                    intCount = dicSystemMessageList.Count + 1
+                    dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00409))
+                    dicFindList.Add(intCount, String.Empty)
+                    dicReplaceList.Add(intCount, String.Empty)
                     blnDHError = True
             End Select
         End If
 
         If blnHANotMatch And blnDHNotMatch Then
-            udtSystemMessageList.Clear()
-            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00042))
+            dicSystemMessageList.Clear()
+            dicFindList.Clear()
+            dicReplaceList.Clear()
+
+            intCount = dicSystemMessageList.Count + 1
+            dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00042))
+            dicFindList.Add(intCount, String.Empty)
+            dicReplaceList.Add(intCount, String.Empty)
+
         End If
 
         If blnHAError And blnDHError Then
-            udtSystemMessageList.Clear()
-            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00410))
+            dicSystemMessageList.Clear()
+            dicFindList.Clear()
+            dicReplaceList.Clear()
+
+            intCount = dicSystemMessageList.Count + 1
+            dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00410))
+            dicFindList.Add(intCount, String.Empty)
+            dicReplaceList.Add(intCount, String.Empty)
+
         End If
 
-        Return udtSystemMessageList
+    End Sub
 
-    End Function
-    ' CRE19-007 (DH CIMS Sub return code) [End][Chris YIM]
+    Private Sub Build_COVID19_SystemMessage(ByVal udtTranDetailVaccineList As TransactionDetailVaccineModelCollection, _
+                                            ByRef dicSystemMessageList As Dictionary(Of Integer, SystemMessage), _
+                                            ByRef dicFindList As Dictionary(Of Integer, String), _
+                                            ByRef dicReplaceList As Dictionary(Of Integer, String))
+
+        Dim dtmNow As DateTime = (New GeneralFunction).GetSystemDateTime.Date()
+
+        Dim intCount As Integer
+
+        Dim udtTranDetailVaccineC19List As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+        Dim strInterval As String = (New Common.ComFunction.GeneralFunction).GetSystemParameterParmValue1("COVID19_Received_Warning_Interval")
+        Dim intInterval As Integer
+
+        If Not Integer.TryParse(strInterval, intInterval) Then
+            Throw New Exception(String.Format("Invalid value({0}) of [COVID19_Received_Warning_Interval] in DB SystemParameters.", strInterval))
+        End If
+
+        If udtTranDetailVaccineC19List.Count > 0 Then
+            Dim udtTranDetailVaccineC19Latest As TransactionDetailVaccineModel = udtTranDetailVaccineC19List.FilterFindNearestRecord()
+
+            If udtTranDetailVaccineC19Latest IsNot Nothing AndAlso _
+                Math.Abs(DateDiff(DateInterval.Day, udtTranDetailVaccineC19Latest.ServiceReceiveDtm, dtmNow)) < intInterval Then
+
+                intCount = dicSystemMessageList.Count + 1
+
+                'If _strFunctionCode = FunctCode.FUNT020801 Then
+                '    dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00056))
+                'Else
+                dicSystemMessageList.Add(intCount, New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00055))
+                'End If
+
+                dicFindList.Add(intCount, "%s")
+                dicReplaceList.Add(intCount, intInterval.ToString)
+            End If
+
+        End If
+
+    End Sub
+
+    Public Sub BuildSystemMessageBox(ByVal dicSystemMessageList As Dictionary(Of Integer, SystemMessage), _
+                                     ByVal dicFindList As Dictionary(Of Integer, String), _
+                                     ByVal dicReplaceList As Dictionary(Of Integer, String), _
+                                     ByRef udcMsgBoxInfo As CustomControls.TextOnlyInfoMessageBox, _
+                                     ByRef udcMsgBoxErr As CustomControls.TextOnlyMessageBox)
+
+        Dim udtSystemMessage As SystemMessage = Nothing
+        Dim strFind As String = String.Empty
+        Dim strReplace As String = String.Empty
+
+        Dim blnShowInfo As Boolean = False
+        Dim blnShowError As Boolean = False
+
+        'Apply system message to message box
+        For intCount As Integer = 1 To dicSystemMessageList.Count
+            udtSystemMessage = dicSystemMessageList.Item(intCount)
+            strFind = dicFindList.Item(intCount)
+            strReplace = dicReplaceList.Item(intCount)
+
+            If Not udtSystemMessage Is Nothing Then
+                Select Case udtSystemMessage.SeverityCode
+                    Case SeverityCode.SEVI
+                        If strFind <> String.Empty Then
+                            udcMsgBoxInfo.AddMessage(udtSystemMessage.FunctionCode, udtSystemMessage.SeverityCode, udtSystemMessage.MessageCode, strFind, strReplace)
+                        Else
+                            udcMsgBoxInfo.AddMessage(udtSystemMessage)
+                        End If
+
+                        blnShowInfo = True
+
+                    Case SeverityCode.SEVE
+                        If strFind <> String.Empty Then
+                            udcMsgBoxErr.AddMessage(udtSystemMessage.FunctionCode, udtSystemMessage.SeverityCode, udtSystemMessage.MessageCode, strFind, strReplace)
+                        Else
+                            udcMsgBoxErr.AddMessage(udtSystemMessage)
+                        End If
+
+                        blnShowError = True
+
+                    Case Else
+                        'Not to show MessageBox
+                End Select
+            End If
+        Next
+
+        If blnShowInfo Then
+            udcMsgBoxInfo.BuildMessageBox()
+        End If
+
+        If blnShowError Then
+            udcMsgBoxErr.BuildMessageBox("ConnectionFail")
+        End If
+
+    End Sub
 
     Private Sub BuildHeader()
         Dim dt As New DataTable
@@ -408,8 +541,6 @@ Partial Public Class ucVaccinationRecord1
         gvVaccinationRecordHeader.DataBind()
 
     End Sub
-
-    '
 
     Private Function TransactionDetailListToDataTable(ByVal udtTranDetailVaccineList As TransactionDetailVaccineModelCollection) As DataTable
         Dim dtVaccineRecord As New DataTable

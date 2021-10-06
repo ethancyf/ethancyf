@@ -3,6 +3,7 @@
 
 <%@ Register Src="~/UIControl/EHSClaim/ucInputVSSDA.ascx" TagName="ucInputVSSDA" TagPrefix="uc1" %>
 <%@ Register Src="~/UIControl/EHSClaim/ucInputVSSPID.ascx" TagName="ucInputVSSPID" TagPrefix="uc2" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
     <asp:Panel ID="panVSSCategory" runat="server">
         <table border="0" cellpadding="0" cellspacing="0">
@@ -121,7 +122,7 @@
     <asp:Panel ID="panVSSRecipientCondition" runat="server" Visible="false">
         <table style="border-collapse: collapse; border-spacing:0px">
             <tr id="trRecipientCondition" runat="server">
-                <td class="tableCellStyle" style="vertical-align:top ; width: 204px; height: 22px;padding: 5px 0px 0px 0px">
+                <td class="tableCellStyle" style="vertical-align:top ; width: 204px; height: 25px;padding: 5px 0px 5px 0px">
                     <asp:Label ID="lblRecipientConditionTitle" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, RecipientCondition%>" />
                     <asp:ImageButton ID="ImgBtnRecipientConditionHelp" runat="server" EnableViewState="true" AlternateText="<%$ Resources:AlternateText, HelpBtn%>"
                                 ImageUrl="<%$ Resources:ImageUrl, HelpIconBtn %>" Visible="true" Style="position:relative;top:2px"/>
@@ -137,3 +138,36 @@
             </tr>
         </table>
     </asp:Panel>
+    <asp:Panel ID="panContactNo" runat="server">
+        <table style="border-collapse: collapse; border-spacing:0px">
+            <tr>
+                <td height="25" class="tableCellStyle" style="width: 204px">
+                    <asp:Label ID="lblContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" CssClass="tableTitle" Width="160px" />
+                </td>
+                <td height="25" >
+                    <asp:TextBox ID="txtContactNo" runat="server" MaxLength="8" Style="position: relative; left: -1px" Width="100px" />
+                    <asp:ImageButton ID="imgContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" Visible="false" />
+                    <asp:Label ID="lblContactNoRecommendation" runat="server" Text="<%$ Resources:Text, ProvideContactNoWithSMS%>" Style="font-size: 14px"></asp:Label>
+                    <cc1:FilteredTextBoxExtender ID="fteContactNo" runat="server" TargetControlID="txtContactNo"
+                        FilterType="Numbers" />
+            </tr>
+        </table>
+    </asp:Panel>
+    <asp:Panel ID="panRemarks" runat="server">
+        <table style="border-collapse: collapse; border-spacing:0px">
+            <tr>
+                <td height="25" class="tableCellStyle" style="width: 204px">
+                    <asp:Label ID="lblRemarksText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
+                </td>
+                <td height="25" >
+                    <asp:TextBox ID="txtRemarks" runat="server" MaxLength="100" Style="position: relative; left: -1px" Width="660px" />
+                    <asp:ImageButton ID="imgRemarksError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" Visible="false" /> 
+                    <cc1:FilteredTextBoxExtender ID="fteRemarks" runat="server" TargetControlID="txtRemarks"
+                                      FilterMode="InvalidChars"  InvalidChars="|\"></cc1:FilteredTextBoxExtender>                                       
+            </tr>
+        </table>
+    </asp:Panel>
+
+

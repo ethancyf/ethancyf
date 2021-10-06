@@ -288,6 +288,18 @@ Public Class TextOnlyMessageBox
         End If
     End Sub
 
+    Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByRef strOldChar As String, ByRef strNewChar As String, Optional ByVal blnReplaceByMsg As Boolean = True)
+
+        Dim strOldCharList(0) As String
+        Dim strNewCharList(0) As String
+
+        strOldCharList(0) = strOldChar
+        strNewCharList(0) = strNewChar
+
+        AddMessage(FunctionCode, SeverityCode, StrMsgCode, strOldCharList, strNewCharList, blnReplaceByMsg)
+
+    End Sub
+
     Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByRef strOldCharList() As String, ByRef strNewCharList() As String, Optional ByVal blnReplaceByMsg As Boolean = True)
         Dim dtCode As DataTable
         If ViewState(VS_TEXTONLYMESSAGEBOX_CODETABLE) Is Nothing OrElse Me.Visible OrElse (Not ViewState(VS_TEXTONLYMESSAGEBOX_SHOWED) Is Nothing AndAlso CBool(ViewState(VS_TEXTONLYMESSAGEBOX_SHOWED))) Then
@@ -300,18 +312,6 @@ Public Class TextOnlyMessageBox
         ViewState(VS_TEXTONLYMESSAGEBOX_SHOWED) = False
         ViewState(VS_TEXTONLYMESSAGEBOX_CODETABLE) = dtCode
     End Sub
-
-    'Public Sub AddMessage(ByVal FunctionCode As String, ByVal SeverityCode As String, ByVal StrMsgCode As String, ByVal strOldChar As String, ByVal strNewChar As String, Optional ByVal blnReplaceByMsg As Boolean = True)
-
-    '    Dim strOldCharList(0) As String
-    '    Dim strNewCharList(0) As String
-
-    '    strOldCharList(0) = strOldChar
-    '    strNewCharList(0) = strNewChar
-
-    '    AddMessage(FunctionCode, SeverityCode, StrMsgCode, strOldCharList, strNewCharList, blnReplaceByMsg)
-
-    'End Sub
 
     Public Sub AddMessage(ByRef objSystemMessage As SystemMessage, ByRef strOldCharList() As String, ByRef strNewCharList() As String, Optional ByVal blnReplaceByMsg As Boolean = True)
         If Not objSystemMessage Is Nothing Then

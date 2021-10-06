@@ -582,6 +582,12 @@ Partial Public Class VoidClaimConfirmDetail
         ' Recipient Condition
         setupDisplayRecipientCondition(udtEHSTransaction, panEnterVoidReasonRecipientCondition, lblEnterVoidReasonRecipientCondition)
 
+        'Contact
+        setupDisplayContactNo(udtEHSTransaction, panEnterVoidReasonContactNo, lblEnterVoidReasonContactNo)
+
+        'Remarks
+        setupDisplayRemarks(udtEHSTransaction, panEnterVoidReasonRemarks, lblEnterVoidReasonRemarks)
+
     End Sub
 
 #End Region
@@ -727,6 +733,12 @@ Partial Public Class VoidClaimConfirmDetail
         ' Recipient Condition
         setupDisplayRecipientCondition(udtEHSTransaction, panConfirmVoidReasonRecipientCondition, lblConfirmVoidReasonRecipientCondition)
 
+        'Contact
+        setupDisplayContactNo(udtEHSTransaction, panConfirmVoidReasonContactNo, lblConfirmVoidReasonContactNo)
+
+        'Remarks
+        setupDisplayRemarks(udtEHSTransaction, panConfirmVoidReasonRemarks, lblConfirmVoidReasonRemarks)
+
     End Sub
 
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
@@ -814,6 +826,12 @@ Partial Public Class VoidClaimConfirmDetail
 
         ' Recipient Condition
         setupDisplayRecipientCondition(udtEHSTransaction, panDetailRecipientCondition, lblDetailRecipientCondition)
+
+        'Contact
+        setupDisplayContactNo(udtEHSTransaction, panDetailContactNo, lblDetailContactNo)
+
+        'Remarks
+        setupDisplayRemarks(udtEHSTransaction, panDetailRemarks, lblDetailRemarks)
 
     End Sub
 
@@ -1341,12 +1359,12 @@ Partial Public Class VoidClaimConfirmDetail
         'show complete message
         If udtEHSTransaction.EHSAcct.RecordStatus = Common.Component.EHSAccount.EHSAccountModel.TempAccountRecordStatusClass.Removed Then
             If Not udtEHSTransaction.EHSAcct.OriginalAccID Is Nothing AndAlso Not udtEHSTransaction.EHSAcct.OriginalAccID.Equals(String.Empty) Then
-                Me.udcMsgBoxInfo.AddMessage(New Common.ComObject.SystemMessage("020302", "I", "00001"), New String() {"%s"}, New Object() {udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim())})
+                Me.udcMsgBoxInfo.AddMessage(New Common.ComObject.SystemMessage("020302", "I", "00001"), New String() {"%s"}, New String() {udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim())})
             Else
-                Me.udcMsgBoxInfo.AddMessage(New Common.ComObject.SystemMessage("020302", "I", "00002"), New String() {"%r", "%s"}, New Object() {udtFormatter.formatSystemNumber(udtEHSTransaction.EHSAcct.VoucherAccID.Trim()), udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim())})
+                Me.udcMsgBoxInfo.AddMessage(New Common.ComObject.SystemMessage("020302", "I", "00002"), New String() {"%r", "%s"}, New String() {udtFormatter.formatSystemNumber(udtEHSTransaction.EHSAcct.VoucherAccID.Trim()), udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim())})
             End If
         Else
-            Me.udcMsgBoxInfo.AddMessage(New Common.ComObject.SystemMessage("020302", "I", "00001"), New String() {"%s"}, New Object() {udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim())})
+            Me.udcMsgBoxInfo.AddMessage(New Common.ComObject.SystemMessage("020302", "I", "00001"), New String() {"%s"}, New String() {udtFormatter.formatSystemNumber(udtEHSTransaction.VoidTranNo.Trim())})
         End If
 
         Me.udcMsgBoxInfo.BuildMessageBox()
@@ -1665,6 +1683,38 @@ Partial Public Class VoidClaimConfirmDetail
 
     End Sub
     'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+    Sub setupDisplayContactNo(ByVal udtEHSTransaction As EHSTransactionModel, ByRef panContact As Panel, ByRef lblContact As Label)
+        panContact.Visible = False
+
+        'ContactNo
+        Dim strContactNo As String = udtEHSTransaction.TransactionAdditionFields.ContactNo
+        If strContactNo IsNot Nothing AndAlso strContactNo <> String.Empty Then
+            panContact.Visible = True
+            lblContact.Text = strContactNo
+        Else
+            panContact.Visible = False
+        End If
+    End Sub
+
+    Sub setupDisplayRemarks(ByVal udtEHSTransaction As EHSTransactionModel, ByRef panRemarks As Panel, ByRef lblRemarks As Label)
+        panRemarks.Visible = False
+
+        'Remarks
+        Dim strRemarks As String = udtEHSTransaction.TransactionAdditionFields.Remarks
+        If strRemarks Is Nothing Then
+            panRemarks.Visible = False
+        Else
+            panRemarks.Visible = True
+            If strRemarks <> String.Empty Then
+                lblRemarks.Text = strRemarks
+            ElseIf strRemarks = String.Empty Then
+                lblRemarks.Text = GetGlobalResourceObject("Text", "NotProvided")
+            End If
+        End If
+
+    End Sub
+
 
 #End Region
 

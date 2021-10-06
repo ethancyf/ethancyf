@@ -1846,6 +1846,40 @@ Partial Public Class ClaimCreation
             'Me.udtSessionHandlerBLL.ClaimCategoryRemoveFromSession(FunctionCode)
             Me.SetUpEnterClaimDetails(False)
 
+            If Not IsNothing(udtSchemeClaimList.Filter(strSelectedScheme)) Then
+                'The session ClaimCategory has been removed as before when trigger dropdownlist of scheme
+                Dim udtSchemeClaim As SchemeClaimModel = udtSchemeClaimList.Filter(strSelectedScheme)
+                Dim strCategory As String = String.Empty
+
+                Select Case udtSchemeClaim.ControlType
+                    Case SchemeClaimModel.EnumControlType.VSS
+                        Dim udcInputVSS As ucInputVSS = Me.udInputEHSClaim.GetVSSControl()
+                        strCategory = udcInputVSS.Category
+
+                        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If strCategory = CategoryCode.VSS_COVID19 OrElse strCategory = CategoryCode.VSS_COVID19_Outreach Then
+                            panHKICSymbol.Visible = False
+                            rblHKICSymbol.ClearSelection()
+
+                            udcInputVSS.BuildVSSCOVID19()
+                            udcInputVSS.SetJoinEHRSS(udtEHSAccount)
+
+                            If strCategory = CategoryCode.VSS_COVID19_Outreach Then
+                                udcInputVSS.DisplayOutreachInput(True)
+                            Else
+                                udcInputVSS.DisplayOutreachInput(False)
+                            End If
+                        Else
+                            panHKICSymbol.Visible = True
+
+                        End If
+                        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+                End Select
+
+            End If
+
             'check exchange rate 
             Call CheckExchangeRateAbsence(dtmServiceDate)
 
@@ -3772,6 +3806,9 @@ Partial Public Class ClaimCreation
                         udcInputVSS.SetCategoryError(False)
                         udcInputVSS.SetDoseErrorImage(False)
                         udcInputVSS.SetCOVID19DetailError(False)
+                        udcInputVSS.SetPlaceOfVaccinationError(False)
+                        udcInputVSS.SetRecipientConditionError(False)
+                        udcInputVSS.SetContactNoError(False)
                     End If
 
                 Case SchemeClaimModel.EnumControlType.ENHVSSO

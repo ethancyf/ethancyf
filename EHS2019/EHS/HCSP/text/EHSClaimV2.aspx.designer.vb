@@ -527,6 +527,51 @@ Partial Public Class EHSClaimV2
     Protected WithEvents lblConfirmDetailRecipientCondition As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblConfirmDetailContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmDetailContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConfirmDetailContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmDetailContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblContactNoNotAbleSMS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoNotAbleSMS As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConfirmDetailRemarksText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmDetailRemarksText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConfirmDetailRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmDetailRemarks As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''panConfirmDetailPrintClaimConsentForm control.
     '''</summary>
     '''<remarks>
@@ -939,6 +984,51 @@ Partial Public Class EHSClaimV2
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCompleteRecipientCondition As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panCompleteVSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCompleteVSS As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCompleteVSSContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCompleteVSSContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCompleteVSSContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCompleteVSSContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCompleteVSSRemarksText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCompleteVSSRemarksText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCompleteVSSRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCompleteVSSRemarks As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''btnCompleteClaimNextClaim control.
@@ -1551,6 +1641,105 @@ Partial Public Class EHSClaimV2
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRecipientConditionError As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panVSSContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panVSSContactNo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtContactNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lblContactNoError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoError As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''fteContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteContactNo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''lblContactNoRecommendation control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoRecommendation As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panVSSRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panVSSRemark As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblRemarksText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemarksText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtRemarks As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lblRemarksError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemarksError As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''fteRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteRemarks As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
     '''btnVaccineBack control.

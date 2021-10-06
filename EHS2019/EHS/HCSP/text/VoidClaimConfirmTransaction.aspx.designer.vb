@@ -266,6 +266,60 @@ Partial Public Class VoidClaimConfirmDetail
     Protected WithEvents lblEnterVoidReasonRecipientCondition As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panEnterVoidReasonContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panEnterVoidReasonContactNo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblEnterVoidReasonContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEnterVoidReasonContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEnterVoidReasonContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEnterVoidReasonContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panEnterVoidReasonRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panEnterVoidReasonRemarks As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblEnterVoidReasonRemarksText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEnterVoidReasonRemarksText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEnterVoidReasonRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEnterVoidReasonRemarks As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''Table1 control.
     '''</summary>
     '''<remarks>
@@ -498,6 +552,60 @@ Partial Public Class VoidClaimConfirmDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblConfirmVoidReasonRecipientCondition As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panConfirmVoidReasonContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panConfirmVoidReasonContactNo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblConfirmVoidReasonContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmVoidReasonContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConfirmVoidReasonContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmVoidReasonContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panConfirmVoidReasonRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panConfirmVoidReasonRemarks As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblConfirmVoidReasonRemarksText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmVoidReasonRemarksText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConfirmVoidReasonRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmVoidReasonRemarks As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''Table3 control.
@@ -948,6 +1056,60 @@ Partial Public Class VoidClaimConfirmDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDetailRecipientCondition As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panDetailContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDetailContactNo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblDetailContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDetailContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDetailContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDetailContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panDetailRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDetailRemarks As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblDetailRemarksText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDetailRemarksText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDetailRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDetailRemarks As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''btnClaimTransactionDetailBack control.

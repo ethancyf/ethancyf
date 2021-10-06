@@ -632,6 +632,7 @@ Partial Public Class ClaimTransDetail
                     FillNonLocalRecoveredHistory(udtEHSTransaction)
 
                 Else
+                    udcReadOnlyEHSClaim.ShowContactNoNotAbleToSMS = _blnShowContactNoNotAbleToSMS
                     udcReadOnlyEHSClaim.BuildVSS()
 
                     DisplayContactNo(False)

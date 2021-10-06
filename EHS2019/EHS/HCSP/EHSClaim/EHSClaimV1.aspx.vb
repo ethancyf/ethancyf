@@ -1,4 +1,4 @@
-Imports AjaxControlToolkit
+ï»¿Imports AjaxControlToolkit
 Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
@@ -108,6 +108,12 @@ Partial Public Class EHSClaimV1
         Public Const VaccinationRecordPopupStatus As String = "VaccinationRecordPopupStatus"
         Public Const VaccinationRecordProviderPopupStatus As String = "VaccinationRecordProviderPopupStatus"
     End Class
+
+    Private Enum WarningPopupMode
+        None = 0
+        Serial = 1
+        Parallel = 2
+    End Enum
 
 #End Region
 
@@ -1046,6 +1052,7 @@ Partial Public Class EHSClaimV1
 
             'Init Carry Forward
             _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(False, FunctCode)
+            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctCode)
 
             'this session for always show select practice popup.
             _udtSessionHandler.ConfirmedPracticePopUpSaveToSession(False)
@@ -1549,6 +1556,11 @@ Partial Public Class EHSClaimV1
                         End If
 
                         ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_Vaccine_LotNo_Mapping", strVaccineLotNoMappingJavaScript, True)
+                    Else
+                        'Carry Forword: once times only
+                        If _udtSessionHandler.NormalClaimCarryForwordGetFromSession(FunctCode) = False Then
+                            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(True, FunctCode)
+                        End If
 
                     End If
             End Select
@@ -2327,6 +2339,8 @@ Partial Public Class EHSClaimV1
             _udtSessionHandler.ClaimCOVID19DischargeRecordRemoveFromSession(FunctCode)
             _udtSessionHandler.ClaimCOVID19DischargeReminderSaveToSession(False, FunctionCode)
             _udtSessionHandler.ClaimCOVID19DischargeDemographicReminderSaveToSession(False, FunctionCode)
+        Else
+            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctCode)
         End If
 
         Me.RedirectToIdeas(False, IdeasBLL.EnumIdeasVersion.Two)
@@ -2334,6 +2348,11 @@ Partial Public Class EHSClaimV1
         'Carry Forword: once times only
         If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
             _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
+        End If
+
+        'Carry Forword: once times only
+        If _udtSessionHandler.NormalClaimCarryForwordGetFromSession(FunctCode) = False Then
+            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(True, FunctCode)
         End If
 
     End Sub
@@ -2352,6 +2371,8 @@ Partial Public Class EHSClaimV1
             _udtSessionHandler.ClaimCOVID19DischargeRecordRemoveFromSession(FunctCode)
             _udtSessionHandler.ClaimCOVID19DischargeReminderSaveToSession(False, FunctionCode)
             _udtSessionHandler.ClaimCOVID19DischargeDemographicReminderSaveToSession(False, FunctionCode)
+        Else
+            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctCode)
         End If
 
         Me.RedirectToIdeas(False, IdeasBLL.EnumIdeasVersion.One)
@@ -2359,6 +2380,11 @@ Partial Public Class EHSClaimV1
         'Carry Forword: once times only
         If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
             _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
+        End If
+
+        'Carry Forword: once times only
+        If _udtSessionHandler.NormalClaimCarryForwordGetFromSession(FunctCode) = False Then
+            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(True, FunctCode)
         End If
 
     End Sub
@@ -2377,6 +2403,8 @@ Partial Public Class EHSClaimV1
             _udtSessionHandler.ClaimCOVID19DischargeRecordRemoveFromSession(FunctCode)
             _udtSessionHandler.ClaimCOVID19DischargeReminderSaveToSession(False, FunctionCode)
             _udtSessionHandler.ClaimCOVID19DischargeDemographicReminderSaveToSession(False, FunctionCode)
+        Else
+            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctCode)
         End If
 
         Me.RedirectToIdeasCombo(IdeasBLL.EnumIdeasVersion.Combo)
@@ -2384,6 +2412,11 @@ Partial Public Class EHSClaimV1
         'Carry Forword: once times only
         If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
             _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
+        End If
+
+        'Carry Forword: once times only
+        If _udtSessionHandler.NormalClaimCarryForwordGetFromSession(FunctCode) = False Then
+            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(True, FunctCode)
         End If
 
     End Sub
@@ -2767,6 +2800,8 @@ Partial Public Class EHSClaimV1
                 _udtSessionHandler.ClaimCOVID19DischargeRecordRemoveFromSession(FunctCode)
                 _udtSessionHandler.ClaimCOVID19DischargeReminderSaveToSession(False, FunctionCode)
                 _udtSessionHandler.ClaimCOVID19DischargeDemographicReminderSaveToSession(False, FunctionCode)
+            Else
+                _udtSessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctCode)
             End If
 
             ' ===========================================================================================
@@ -2819,6 +2854,11 @@ Partial Public Class EHSClaimV1
                 'Carry Forword: once times only
                 If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
                     _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
+                End If
+
+                'Carry Forword: once times only
+                If _udtSessionHandler.NormalClaimCarryForwordGetFromSession(FunctCode) = False Then
+                    _udtSessionHandler.NormalClaimCarryForwordSaveToSession(True, FunctCode)
                 End If
 
             End If
@@ -3896,6 +3936,7 @@ Partial Public Class EHSClaimV1
 
         'Init Carry Forward
         _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(False, FunctCode)
+        _udtSessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctCode)
 
         Me.udcMsgBoxErr.Clear()
         Me.udcMsgBoxInfo.Clear()
@@ -4188,6 +4229,12 @@ Partial Public Class EHSClaimV1
             End Select
 
             ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_Vaccine_LotNo_Mapping", strVaccineLotNoMappingJavaScript, True)
+
+        Else
+            'Carry Forword: once times only
+            If _udtSessionHandler.NormalClaimCarryForwordGetFromSession(FunctCode) = False Then
+                _udtSessionHandler.NormalClaimCarryForwordSaveToSession(True, FunctCode)
+            End If
 
         End If
 
@@ -6107,7 +6154,9 @@ Partial Public Class EHSClaimV1
             '----------------------------------------------------------
             Dim udtEHSTransactionLatestVaccine As EHSTransactionModel = Nothing
             Dim udtTranDetailLatestVaccine As TransactionDetailVaccineModel = Nothing
+            Dim udtVaccineHistoryList As TransactionDetailVaccineModelCollection = Nothing
 
+            'COVID19
             If (udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS OrElse _
                 udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP OrElse _
                 udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19 OrElse _
@@ -6124,6 +6173,14 @@ Partial Public Class EHSClaimV1
                 End If
             End If
 
+            'VSS, RVP
+            If (udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS OrElse _
+                udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP) Then
+
+                udtVaccineHistoryList = GetVaccinationRecordFromSession(Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode), udtSchemeClaim.SchemeCode.Trim())
+
+            End If
+
             '----------------------------------------------------------
             ' Build input control
             '----------------------------------------------------------
@@ -6138,7 +6195,7 @@ Partial Public Class EHSClaimV1
             Me.udcStep2aInputEHSClaim.ServiceDate = dtmServiceDate
             Me.udcStep2aInputEHSClaim.NonClinic = Me._udtSessionHandler.NonClinicSettingGetFromSession(FunctCode)
             Me.udcStep2aInputEHSClaim.ClaimMode = Me.ClaimMode
-            'Me.udcStep2aInputEHSClaim.VaccineList = GetVaccinationRecordFromSession(udcStep2aInputEHSClaim.EHSAccount, udtSchemeClaim.SchemeCode.Trim())
+            Me.udcStep2aInputEHSClaim.VaccineList = udtVaccineHistoryList
             '-----------------------------------------------------------------------------------------
 
             'CRE20-006 DHC Claim Form disabled the dropdownlist and checked the checkbox of DHC service and fill-in the Claim amount [Start][Nichole]
@@ -7081,6 +7138,7 @@ Partial Public Class EHSClaimV1
             udcInputVSS.SetPlaceOfVaccinationError(False)
             udcInputVSS.SetDoseErrorImage(False)
             udcInputVSS.SetRecipientConditionError(False)
+            udcInputVSS.SetContactNoError(False)
         End If
     End Sub
 
@@ -8141,47 +8199,48 @@ Partial Public Class EHSClaimV1
         ' ---------------------------------------------
         ' Init
         '----------------------------------------------
-        Dim isValid As Boolean = True
+        Dim isValid As Boolean = False
         Dim noVaccineSelected As Boolean = True
         Dim noDoseSelected As Boolean = True
         Dim dtmServiceDate As Date = udtEHSTransaction.ServiceDate
         Dim strDOB As String
 
         Dim udtSchemeDetailBLL As New Common.Component.SchemeDetails.SchemeDetailBLL()
+        Dim udtValidator As Validator = New Validator()
+
         Dim udcInputRVP As ucInputRVP = Me.udcStep2aInputEHSClaim.GetRVPControl()
         Dim udtEHSClaimVaccine As EHSClaimVaccineModel = Me._udtSessionHandler.EHSClaimVaccineGetFromSession()
         Dim udtGeneralFunction As Common.ComFunction.GeneralFunction = New Common.ComFunction.GeneralFunction
         udtEHSClaimVaccine = udcInputRVP.SetEHSVaccineModelDoseSelectedFromUIInput(udtEHSClaimVaccine)
 
-        Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
         Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
         Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
-
-        Dim udtValidator As Validator = New Validator()
-
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
-        Dim udtInputPicker As New InputPickerModel()
-        udtInputPicker.RCHCode = udcInputRVP.RCHCode
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
+        Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
 
         ' For Eligible & Claim Rule Warning Checking
         Dim udtEligibleResult As EligibleResult = Nothing
-        Dim udtClaimRuleResult As ClaimRuleResult = Nothing
+        'Dim udtClaimRuleResult As ClaimRuleResult = Nothing
+        Dim udtClaimRuleResultList As New List(Of ClaimRuleResult)
         Dim udtRuleResults As RuleResultCollection = Nothing
         Dim strText As String = String.Empty
         Dim strKey As String = String.Empty
-        Dim strEnableClaimCategory As String = Nothing
+        Dim udtRuleResult As RuleResult = Nothing
+        Dim enumWarningPopupMode As WarningPopupMode = WarningPopupMode.Parallel
 
+        Dim strEnableClaimCategory As String = Nothing
         udtGeneralFunction.getSytemParameterByParameterNameSchemeCode("RVPEnableClaimCategory", strEnableClaimCategory, String.Empty, SchemeClaimModel.RVP)
 
-        Dim udtRuleResult As RuleResult = Nothing
-        udtRuleResults = Me._udtSessionHandler.EligibleResultGetFromSession()
+        Dim udtInputPicker As New InputPickerModel()
+        udtInputPicker.RCHCode = udcInputRVP.RCHCode
 
         'Init Controls
         udcInputRVP.SetRCHCodeError(False)
         udcInputRVP.SetCategoryError(False)
         udcInputRVP.SetDoseErrorImage(False)
+
+        Me.udcMsgBoxErr.Clear()
+
+        udtRuleResults = Me._udtSessionHandler.EligibleResultGetFromSession()
 
         If Not checkByConfirmationBox Then
 
@@ -8192,8 +8251,6 @@ Partial Public Class EHSClaimV1
             '------------------------------------------------
 
             'Claim Detial Part & Vaccine Part
-            'CRE16-026 (Add PCV13) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             isValid = udcInputRVP.Validate(True, Me.udcMsgBoxErr, strEnableClaimCategory)
 
             If isValid Then
@@ -8213,38 +8270,15 @@ Partial Public Class EHSClaimV1
 
                 udtInputPicker.HighRisk = strHighRisk
             End If
-            'CRE16-026 (Add PCV13) [End][Chris YIM]
 
             ' ------------------------------------------------------------------
             ' Check Last Service Date of SubsidizeGroupClaim
             ' ------------------------------------------------------------------
             If isValid Then
-                isValid = Me.CheckLastServiceDate(dtmServiceDate, udtSchemeClaim, udtEHSClaimVaccine)
+                isValid = Me.CheckLastServiceDate(udtEHSTransaction.ServiceDate, udtSchemeClaim, udtEHSClaimVaccine)
             End If
 
-            '' ------------------------------------------------------------------
-            '' Check Dose Period
-            '' ------------------------------------------------------------------
-            'If isValid Then
-            '    For Each udtEHSClaimVaccineSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
-            '        If isValid AndAlso udtEHSClaimVaccineSubsidize.Selected Then
-
-            '            For Each udtEHSClaimSubidizeDetailModel As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimVaccineSubsidize.SubsidizeDetailList
-            '                If isValid AndAlso udtEHSClaimSubidizeDetailModel.Selected Then
-            '                    Me._udtSystemMessage = udtValidator.chkServiceDateSubsidizeDoseLastServiceDate(dtmServiceDate, udtSchemeDetailBLL.getAllSchemeDosePeriod.Filter(udtSchemeClaim.SchemeCode, udtSchemeClaim.SchemeSeq, udtEHSClaimVaccineSubsidize.SubsidizeCode, udtEHSClaimSubidizeDetailModel.AvailableItemCode))
-            '                    If Not Me._udtSystemMessage Is Nothing Then
-            '                        isValid = False
-            '                        Me.imgStep2aServiceDateError.Visible = True
-            '                        Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
-            '                    End If
-            '                End If
-            '            Next
-            '        End If
-            '    Next
-            'End If
-
             If isValid Then
-
                 ' --------------------------------------------------------------
                 ' Check Eligibility:
                 ' --------------------------------------------------------------
@@ -8254,7 +8288,7 @@ Partial Public Class EHSClaimV1
                     strDOB = _udtFormatter.formatDOB(udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode).DOB, udtEHSPersonalInfo.ExactDOB, Nothing, Nothing)
                 End If
 
-                Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckEligibilityForEnterClaim(udtSchemeClaim, dtmServiceDate, udtEHSPersonalInfo, GetVaccinationRecord(udtEHSAccount, udtSchemeClaim.SchemeCode), udtEligibleResult)
+                Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckEligibilityForEnterClaim(udtSchemeClaim, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo, GetVaccinationRecord(udtEHSAccount, udtSchemeClaim.SchemeCode), udtEligibleResult)
 
                 If Not Me._udtSystemMessage Is Nothing Then
                     ' If Check Eligibility Block Show Error
@@ -8266,7 +8300,7 @@ Partial Public Class EHSClaimV1
                 ' Check Document Limit:
                 ' --------------------------------------------------------------
                 If isValid Then
-                    Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckExceedDocumentLimitForEnterClaim(udtSchemeClaim.SchemeCode, dtmServiceDate, udtEHSPersonalInfo)
+                    Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckExceedDocumentLimitForEnterClaim(udtSchemeClaim.SchemeCode, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo)
                     If Not Me._udtSystemMessage Is Nothing Then
                         isValid = False
                         Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
@@ -8277,21 +8311,78 @@ Partial Public Class EHSClaimV1
                 ' Check Claim Rules:
                 ' --------------------------------------------------------------
                 If isValid Then
-                    ' CRE14-021 IV for Southern Hemsiphere Vaccine under RVP [Start][Lawrence]
-                    Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckClaimRuleForEnterClaim(dtmServiceDate, udtEHSAccount, udtEHSPersonalInfo, Me._udtSessionHandler.EHSClaimVaccineGetFromSession(), GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), udtClaimRuleResult, udtInputPicker)
-                    ' CRE14-021 IV for Southern Hemsiphere Vaccine under RVP [End][Lawrence]
+                    'Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckClaimRuleForEnterClaim(udtEHSTransaction.ServiceDate, udtEHSAccount, udtEHSPersonalInfo, Me._udtSessionHandler.EHSClaimVaccineGetFromSession(), GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), udtClaimRuleResult, udtInputPicker)
+                    'If Not Me._udtSystemMessage Is Nothing Then
+                    '    ' If Check Claim Rules Block Show Error
+                    '    isValid = False
 
+                    '    HandleSystemMessage(Me._udtSystemMessage, udtClaimRuleResult)
+                    '    udcInputRVP.SetDoseErrorImage(True)
+
+                    'End If
+
+                    Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckClaimRuleForEnterClaimCOVID19(udtEHSTransaction.ServiceDate, _
+                                                                                                 udtEHSAccount, _
+                                                                                                 udtEHSPersonalInfo, _
+                                                                                                 Me._udtSessionHandler.EHSClaimVaccineGetFromSession(), _
+                                                                                                 GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), _
+                                                                                                 udtClaimRuleResultList, _
+                                                                                                 udtInputPicker)
                     If Not Me._udtSystemMessage Is Nothing Then
                         ' If Check Claim Rules Block Show Error
                         isValid = False
 
-                        HandleSystemMessage(Me._udtSystemMessage, udtClaimRuleResult)
-                        udcInputRVP.SetDoseErrorImage(True)
+                        Dim blnError As Boolean = False
+                        Dim blnErrorPopup As Boolean = False
+
+                        For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                            If udtClaimRuleResult.IsBlock Then
+                                Select Case udtClaimRuleResult.HandleMethod
+                                    Case HandleMethodENum.Block
+                                        blnError = True
+                                    Case HandleMethodENum.BlockPopup
+                                        blnErrorPopup = True
+                                End Select
+                            End If
+                        Next
+
+                        If blnErrorPopup Then
+                            'Popup Error
+                            Dim strHTMLList As String = "<span style='font-weight:bold'>" & Me._udtSystemMessage.GetMessage & "</span>"
+
+                            Me.ucNoticePopUpExclamationError.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+
+                            Me.ucNoticePopUpExclamationError.MessageText = strHTMLList
+
+                            Me.ucNoticePopUpExclamationError.ShowEnquiryDesc = True
+
+                            Me.ucNoticePopUpExclamationError.EnquiryDescText = "<span style='font-weight:bold'>" & GetGlobalResourceObject("Text", "RecoveredPatientEnquiry") & "</span>"
+
+                            Me.ModalPopupExclamationErrorBox.Show()
+
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                        Else
+                            'Default Error - show red alert box
+                            If udtClaimRuleResultList.Count > 0 Then
+                                For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                                    HandleSystemMessage(Me._udtSystemMessage, udtClaimRuleResult)
+                                Next
+                            Else
+                                HandleSystemMessage(Me._udtSystemMessage, Nothing)
+                            End If
+
+                            udcInputRVP.SetDoseErrorImage(True)
+
+                        End If
 
                     End If
+
                 End If
             End If
 
+            'Handle Warning Message
             If isValid Then
                 udtRuleResults = Me._udtSessionHandler.EligibleResultGetFromSession()
 
@@ -8299,13 +8390,21 @@ Partial Public Class EHSClaimV1
                     udtRuleResults = New RuleResultCollection()
                 End If
 
+                Dim blnError As Boolean = False
+                Dim blnWarning As Boolean = False
+                Dim blnWarningReason As Boolean = False
+                Dim dicWarningReason As New Dictionary(Of RuleTypeENum, String)
+
                 ' --------------------------------------------------------------
                 ' Eligibility Warning / Declaration
                 ' --------------------------------------------------------------
                 If udtEligibleResult.IsEligible AndAlso _
                     (udtEligibleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtEligibleResult.HandleMethod = HandleMethodENum.Warning) Then
+                    Dim intEligibleRuleCount As Integer = 1
 
-                    udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtEligibleResult.RuleType), udtEligibleResult)
+                    blnWarning = True
+
+                    udtRuleResults.Add(Me.RuleResultKey(intEligibleRuleCount, udtEligibleResult.RuleType), udtEligibleResult)
 
                     'strText = Me.GetGlobalResourceObject("Text", "DeclaraChildOverSixYearsOldPromptMessage")
                     If Not udtEligibleResult.RelatedEligibleRule Is Nothing Then
@@ -8316,28 +8415,158 @@ Partial Public Class EHSClaimV1
                         strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedClaimCategoryEligibilityModel.ObjectName.Trim())
                     End If
 
-                    Me.ucNoticePopUpExclamationConfirm.MessageText = strText
-                    Me.ModalPopupExclamationConfirmationBox.Show()
+                    If enumWarningPopupMode = WarningPopupMode.Parallel Then
+                        'Prompt all warning messages (Parallel)
+                        dicWarningReason.Add(RuleTypeENum.EligibleResult, strText)
 
-                    _udtAuditLogEntry.AddDescripton("Message", strText)
-                    EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+                    Else
+                        'Default: Prompt warning message (Serial)
+                        Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                        Me.ucNoticePopUpExclamationConfirm.MessageText = strText
+                        Me.ucNoticePopUpExclamationConfirm.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
 
-                    isValid = False
+                        Me.ModalPopupExclamationConfirmationBox.Show()
+
+                        _udtAuditLogEntry.AddDescripton("Message", strText)
+                        EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                        isValid = False
+                    End If
+
                 End If
 
                 ' --------------------------------------------------------------
                 ' Claim Rules Warning / Declaration
                 ' --------------------------------------------------------------
-                If Not udtClaimRuleResult Is Nothing AndAlso Not udtClaimRuleResult.IsBlock AndAlso _
-                    (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
+                If udtClaimRuleResultList IsNot Nothing AndAlso udtClaimRuleResultList.Count > 0 Then
+                    Dim intClaimRuleCount As Integer = 1
+                    For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                        If (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
+                            blnWarning = True
+                        End If
 
-                    udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResult.RuleType), udtClaimRuleResult)
+                        If udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
+                            blnWarningReason = True
+                        End If
+                    Next
 
-                    'not Popup prompt before
-                    If strText.Equals(String.Empty) AndAlso isValid Then
-                        'Get the prompt message from ClaimRule
-                        strText = Me.Step2aPromptClaimRule(udtClaimRuleResult)
-                        Me.ucNoticePopUpExclamationConfirm.MessageText = strText
+                    'If Not blnError AndAlso blnWarningReason Then
+                    If blnWarningReason Then
+                        '1st Priority: Warring with Reason
+                        For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                            udtRuleResults.Add(Me.RuleResultKey(intClaimRuleCount, udtClaimRuleResult.RuleType), udtClaimRuleResult)
+                            intClaimRuleCount = intClaimRuleCount + 1
+                        Next
+
+                        'not Popup prompt before
+                        If isValid Then
+                            Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
+                            Dim strContentList As String = Me.Step2aWarningContent(udtClaimRuleResultList)
+
+                            If enumWarningPopupMode = WarningPopupMode.Parallel Then
+                                'Prompt all warning messages (Parallel)
+                                dicWarningReason.Add(RuleTypeENum.ClaimRuleResult, strHTMLList)
+                                strText = strText + "|" + strContentList
+
+                            Else
+                                'Default: Prompt warning message (Serial)
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
+
+                                Me.ModalPopupExclamationImportantReminderWithReason.Show()
+
+                                _udtAuditLogEntry.AddDescripton("Message", strContentList)
+                                EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                                isValid = False
+
+                            End If
+
+                        End If
+
+                        'ElseIf Not blnError AndAlso blnWarning Then
+                    ElseIf blnWarning Then
+                        '2nd Priority: Warring only
+                        For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                            udtRuleResults.Add(Me.RuleResultKey(intClaimRuleCount, udtClaimRuleResult.RuleType), udtClaimRuleResult)
+                            intClaimRuleCount = intClaimRuleCount + 1
+                        Next
+
+                        'not Popup prompt before
+                        If isValid Then
+                            'Get the prompt message from ClaimRuleResult
+                            Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
+                            Dim strContentList As String = Me.Step2aWarningContent(udtClaimRuleResultList)
+
+                            If enumWarningPopupMode = WarningPopupMode.Parallel Then
+                                'Prompt all warning messages (Parallel)
+                                dicWarningReason.Add(RuleTypeENum.ClaimRuleResult, strHTMLList)
+                                strText = strText + "|" + strContentList
+
+                            Else
+                                'Default: Prompt warning message (Serial)
+                                Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                                Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+                                Me.ucNoticePopUpExclamationConfirm.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
+                                Me.ModalPopupExclamationConfirmationBox.Show()
+
+                                _udtAuditLogEntry.AddDescripton("Message", strContentList)
+                                EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                                isValid = False
+
+                            End If
+
+                        End If
+
+                    End If
+
+                End If
+
+                If enumWarningPopupMode = WarningPopupMode.Parallel AndAlso isValid AndAlso _
+                    (blnWarningReason OrElse blnWarning) Then
+
+                    Dim strHTMLList As String = String.Empty
+                    Dim strStartHTML As String = "<ul style='padding-left:15px;margin-top:5px;margin-bottom:0px'><li style='padding-bottom:0px'>"
+                    Dim strEndHTML As String = "</li></ul>"
+
+                    For Each kvp As KeyValuePair(Of RuleTypeENum, String) In dicWarningReason
+                        If dicWarningReason.Count > 1 AndAlso kvp.Key = RuleTypeENum.EligibleResult Then
+                            strHTMLList = strHTMLList + strStartHTML + kvp.Value + strEndHTML
+                        Else
+                            strHTMLList = strHTMLList + kvp.Value
+                        End If
+                    Next
+
+                    If blnWarningReason Then
+                        '1st Priority: Warring with Reason
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
+                        Me.ModalPopupExclamationImportantReminderWithReason.Show()
+
+                        _udtAuditLogEntry.AddDescripton("Message", strText)
+                        EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                    Else
+                        '2nd Priority: Warring only
+
+                        Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                        Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+                        Me.ucNoticePopUpExclamationConfirm.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
                         Me.ModalPopupExclamationConfirmationBox.Show()
 
                         _udtAuditLogEntry.AddDescripton("Message", strText)
@@ -8346,23 +8575,25 @@ Partial Public Class EHSClaimV1
                     End If
 
                     isValid = False
+
                 End If
 
                 Me._udtSessionHandler.EligibleResultSaveToSession(udtRuleResults)
             End If
         Else
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-            'isValid = Me.RemoveRulesAfterConfirm(SchemeClaimModel.RVP, udtRuleResults, False)
-            isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False)
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+            If enumWarningPopupMode = WarningPopupMode.Parallel Then
+                'Prompt all warning messages (Parallel)
+                isValid = True
+            Else
+                'Default: Prompt warning message (Serial)
+                isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False, ucNoticePopUp.enumButtonMode.ProceedNotProceed)
+            End If
+
         End If
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         If isValid Then
             udcInputRVP.Save(udtEHSTransaction, udtEHSClaimVaccine, strEnableClaimCategory)
         End If
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
         Return isValid
 
@@ -9187,6 +9418,7 @@ Partial Public Class EHSClaimV1
         Dim strText As String = String.Empty
         Dim strKey As String = String.Empty
         Dim udtRuleResult As RuleResult = Nothing
+        Dim enumWarningPopupMode As WarningPopupMode = WarningPopupMode.Parallel
 
         Dim udtInputPicker As New InputPickerModel()
         udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
@@ -9237,34 +9469,12 @@ Partial Public Class EHSClaimV1
                 isValid = Me.CheckLastServiceDate(udtEHSTransaction.ServiceDate, udtSchemeClaim, udtEHSClaimVaccine)
             End If
 
-            '' ------------------------------------------------------------------
-            '' Check Dose Period
-            '' ------------------------------------------------------------------
-            'If isValid Then
-            '    For Each udtEHSClaimVaccineSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
-            '        If isValid AndAlso udtEHSClaimVaccineSubsidize.Selected Then
-
-            '            For Each udtEHSClaimSubidizeDetailModel As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimVaccineSubsidize.SubsidizeDetailList
-            '                If isValid AndAlso udtEHSClaimSubidizeDetailModel.Selected Then
-            '                    Me._udtSystemMessage = udtValidator.chkServiceDateSubsidizeDoseLastServiceDate(udtEHSTransaction.ServiceDate, udtSchemeDetailBLL.getAllSchemeDosePeriod.Filter(udtSchemeClaim.SchemeCode, udtSchemeClaim.SchemeSeq, udtEHSClaimVaccineSubsidize.SubsidizeCode, udtEHSClaimSubidizeDetailModel.AvailableItemCode))
-            '                    If Not Me._udtSystemMessage Is Nothing Then
-            '                        isValid = False
-            '                        Me.imgStep2aServiceDateError.Visible = True
-            '                        Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
-            '                    End If
-            '                End If
-            '            Next
-            '        End If
-            '    Next
-            'End If
-
             ' To Do:
             ' Generic CheckClaimRulesFunction:
             ' will return ClaimResult with appropriate Status for Popup
             ' According to GroupCode / ClaimRulesCode -> Show different Popup
 
             'Check is Eligible for claim -> Child is 6 years old+ and the first does is avaliable = not Eligible
-
             If isValid Then
                 ' --------------------------------------------------------------
                 ' Check Eligibility:
@@ -9352,9 +9562,13 @@ Partial Public Class EHSClaimV1
 
                         Else
                             'Default Error - show red alert box
-                            For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
-                                HandleSystemMessage(Me._udtSystemMessage, udtClaimRuleResult)
-                            Next
+                            If udtClaimRuleResultList.Count > 0 Then
+                                For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                                    HandleSystemMessage(Me._udtSystemMessage, udtClaimRuleResult)
+                                Next
+                            Else
+                                HandleSystemMessage(Me._udtSystemMessage, Nothing)
+                            End If
 
                             udcInputVSS.SetDoseErrorImage(True)
 
@@ -9362,10 +9576,10 @@ Partial Public Class EHSClaimV1
 
                     End If
 
-
                 End If
             End If
 
+            'Handle Warning Message
             If isValid Then
                 udtRuleResults = Me._udtSessionHandler.EligibleResultGetFromSession()
 
@@ -9373,11 +9587,19 @@ Partial Public Class EHSClaimV1
                     udtRuleResults = New RuleResultCollection()
                 End If
 
+                Dim blnError As Boolean = False
+                Dim blnWarning As Boolean = False
+                Dim blnWarningReason As Boolean = False
+                Dim dicWarningReason As New Dictionary(Of RuleTypeENum, String)
+
                 ' --------------------------------------------------------------
                 ' Eligibility Warning / Declaration
                 ' --------------------------------------------------------------
                 If udtEligibleResult.IsEligible AndAlso _
                     (udtEligibleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtEligibleResult.HandleMethod = HandleMethodENum.Warning) Then
+                    Dim intEligibleRuleCount As Integer = 1
+
+                    blnWarning = True
 
                     'Dim drClaimCategory As DataRow = (New ClaimCategoryBLL).getCategoryDesc(MyBase.EHSTransaction.CategoryCode)
                     Dim strCategoryCode As String = String.Empty
@@ -9415,7 +9637,7 @@ Partial Public Class EHSClaimV1
                     End If
 
                     If strCategoryCode = udcInputVSS.Category Then
-                        udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtEligibleResult.RuleType), udtEligibleResult)
+                        udtRuleResults.Add(Me.RuleResultKey(intEligibleRuleCount, udtEligibleResult.RuleType), udtEligibleResult)
 
                         If Not udtEligibleResult.RelatedEligibleRule Is Nothing Then
                             strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedEligibleRule.ObjectName.Trim())
@@ -9423,14 +9645,24 @@ Partial Public Class EHSClaimV1
                             strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedEligibleExceptionRule.ObjectName.Trim())
                         End If
 
-                        Me.ucNoticePopUpExclamationConfirm.MessageText = strText
+                        If enumWarningPopupMode = WarningPopupMode.Parallel Then
+                            'Prompt all warning messages (Parallel)
+                            dicWarningReason.Add(RuleTypeENum.EligibleResult, strText)
 
-                        Me.ModalPopupExclamationConfirmationBox.Show()
+                        Else
+                            'Default: Prompt warning message (Serial)
+                            Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                            Me.ucNoticePopUpExclamationConfirm.MessageText = strText
+                            Me.ucNoticePopUpExclamationConfirm.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
 
-                        _udtAuditLogEntry.AddDescripton("Message", strText)
-                        EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+                            Me.ModalPopupExclamationConfirmationBox.Show()
 
-                        isValid = False
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                            isValid = False
+                        End If
+
                     End If
 
                 End If
@@ -9438,88 +9670,156 @@ Partial Public Class EHSClaimV1
                 ' --------------------------------------------------------------
                 ' Claim Rules Warning / Declaration
                 ' --------------------------------------------------------------
-
                 If udtClaimRuleResultList IsNot Nothing AndAlso udtClaimRuleResultList.Count > 0 Then
-                    Dim blnError As Boolean = False
-                    Dim blnWarning As Boolean = False
-                    Dim blnWarningReason As Boolean = False
-
+                    Dim intClaimRuleCount As Integer = 1
                     For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
-                        If udtClaimRuleResult.IsBlock Then
-                            blnError = True
-                        End If
+                        'If udtClaimRuleResult.IsBlock Then
+                        '    blnError = True
+                        'End If
 
-                        If Not udtClaimRuleResult.IsBlock AndAlso _
-                            (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
+                        'If Not udtClaimRuleResult.IsBlock AndAlso _
+                        '    (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
+                        '    blnWarning = True
+                        'End If
+
+                        'If Not udtClaimRuleResult.IsBlock AndAlso udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
+                        '    blnWarningReason = True
+                        'End If
+
+                        If (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
                             blnWarning = True
                         End If
 
-                        If Not udtClaimRuleResult.IsBlock AndAlso udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
+                        If udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
                             blnWarningReason = True
                         End If
                     Next
 
-                    'If Not udtClaimRuleResult Is Nothing AndAlso Not udtClaimRuleResult.IsBlock AndAlso _
-                    '    (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
-
-                    If Not blnError AndAlso blnWarningReason Then
+                    'If Not blnError AndAlso blnWarningReason Then
+                    If blnWarningReason Then
                         '1st Priority: Warring with Reason
-                        udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
+                        For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                            udtRuleResults.Add(Me.RuleResultKey(intClaimRuleCount, udtClaimRuleResult.RuleType), udtClaimRuleResult)
+                            intClaimRuleCount = intClaimRuleCount + 1
+                        Next
 
                         'not Popup prompt before
-                        If strText.Equals(String.Empty) AndAlso isValid Then
+                        If isValid Then
                             Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
+                            Dim strContentList As String = Me.Step2aWarningContent(udtClaimRuleResultList)
 
-                            Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                            If enumWarningPopupMode = WarningPopupMode.Parallel Then
+                                'Prompt all warning messages (Parallel)
+                                dicWarningReason.Add(RuleTypeENum.ClaimRuleResult, strHTMLList)
+                                strText = strText + "|" + strContentList
 
-                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+                            Else
+                                'Default: Prompt warning message (Serial)
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
+                                Me.ucNoticePopUpExclamationImportantReminderWithReason.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
 
-                            Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+                                Me.ModalPopupExclamationImportantReminderWithReason.Show()
 
-                            Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+                                _udtAuditLogEntry.AddDescripton("Message", strContentList)
+                                EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
 
-                            Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+                                isValid = False
 
-                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
-
-                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
-
-                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
-
-                            Me.ModalPopupExclamationImportantReminderWithReason.Show()
-
-                            _udtAuditLogEntry.AddDescripton("Message", strText)
-                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+                            End If
 
                         End If
 
-                        isValid = False
-
-                    ElseIf Not blnError AndAlso blnWarning Then
+                        'ElseIf Not blnError AndAlso blnWarning Then
+                    ElseIf blnWarning Then
                         '2nd Priority: Warring only
-                        udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
+                        For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                            udtRuleResults.Add(Me.RuleResultKey(intClaimRuleCount, udtClaimRuleResult.RuleType), udtClaimRuleResult)
+                            intClaimRuleCount = intClaimRuleCount + 1
+                        Next
 
                         'not Popup prompt before
-                        If strText.Equals(String.Empty) AndAlso isValid Then
+                        If isValid Then
                             'Get the prompt message from ClaimRuleResult
                             Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
+                            Dim strContentList As String = Me.Step2aWarningContent(udtClaimRuleResultList)
 
-                            Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                            If enumWarningPopupMode = WarningPopupMode.Parallel Then
+                                'Prompt all warning messages (Parallel)
+                                dicWarningReason.Add(RuleTypeENum.ClaimRuleResult, strHTMLList)
+                                strText = strText + "|" + strContentList
 
-                            Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+                            Else
+                                'Default: Prompt warning message (Serial)
+                                Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                                Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+                                Me.ucNoticePopUpExclamationConfirm.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
+                                Me.ModalPopupExclamationConfirmationBox.Show()
 
-                            Me.ucNoticePopUpExclamationConfirm.ButtonMode = ucNoticePopUp.enumButtonMode.ConfirmCancel
+                                _udtAuditLogEntry.AddDescripton("Message", strContentList)
+                                EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
 
-                            Me.ModalPopupExclamationConfirmationBox.Show()
+                                isValid = False
 
-                            _udtAuditLogEntry.AddDescripton("Message", strText)
-                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+                            End If
 
                         End If
 
-                        isValid = False
+                    End If
+
+                End If
+
+                If enumWarningPopupMode = WarningPopupMode.Parallel AndAlso isValid AndAlso _
+                    (blnWarningReason OrElse blnWarning) Then
+
+                    Dim strHTMLList As String = String.Empty
+                    Dim strStartHTML As String = "<ul style='padding-left:15px;margin-top:5px;margin-bottom:0px'><li style='padding-bottom:0px'>"
+                    Dim strEndHTML As String = "</li></ul>"
+
+                    For Each kvp As KeyValuePair(Of RuleTypeENum, String) In dicWarningReason
+                        If dicWarningReason.Count > 1 AndAlso kvp.Key = RuleTypeENum.EligibleResult Then
+                            strHTMLList = strHTMLList + strStartHTML + kvp.Value + strEndHTML
+                        Else
+                            strHTMLList = strHTMLList + kvp.Value
+                        End If
+                    Next
+
+                    If blnWarningReason Then
+                        '1st Priority: Warring with Reason
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
+                        Me.ucNoticePopUpExclamationImportantReminderWithReason.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
+                        Me.ModalPopupExclamationImportantReminderWithReason.Show()
+
+                        _udtAuditLogEntry.AddDescripton("Message", strText)
+                        EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                    Else
+                        '2nd Priority: Warring only
+
+                        Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+                        Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+                        Me.ucNoticePopUpExclamationConfirm.ButtonMode = ucNoticePopUp.enumButtonMode.ProceedNotProceed
+                        Me.ModalPopupExclamationConfirmationBox.Show()
+
+                        _udtAuditLogEntry.AddDescripton("Message", strText)
+                        EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
 
                     End If
+
+                    isValid = False
 
                 End If
 
@@ -9539,10 +9839,14 @@ Partial Public Class EHSClaimV1
                 End If
             End If
 
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-            'isValid = Me.RemoveRulesAfterConfirm(SchemeClaimModel.CIVSS, udtRuleResults, False)
-            isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False)
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+            If enumWarningPopupMode = WarningPopupMode.Parallel Then
+                'Prompt all warning messages (Parallel)
+                isValid = True
+            Else
+                'Default: Prompt warning message (Serial)
+                isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False, ucNoticePopUp.enumButtonMode.ProceedNotProceed)
+            End If
+
         End If
 
         If isValid Then
@@ -12224,11 +12528,128 @@ Partial Public Class EHSClaimV1
 
     End Function
 
+    Private Function Step2aWarningContent(ByVal udtClaimRuleResultList As List(Of ClaimRuleResult)) As String
+        Dim strText As String = String.Empty
+        Dim strRemark As String = String.Empty
+        Dim strFormattedText As String = String.Empty
+        Dim lstRemark As New List(Of String)
+        Dim strRes As String = String.Empty
+
+        'Get the prompt message from ClaimRule
+        If udtClaimRuleResultList.Count > 1 Then
+            Dim intCt As Integer = 1
+
+            'Message Content
+            For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
+                Dim strTempText As String = Me.Step2aPromptClaimRule(udtClaimRuleResult, lstRemark, udtClaimRuleResult.HandleMethod)
+
+                If udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
+                    Dim strTextArr() As String = Split(strTempText, "|||")
+
+                    strFormattedText = String.Empty
+
+                    For intTextArr As Integer = 0 To strTextArr.Length - 1
+                        If Not strText.Contains(strTextArr(intTextArr)) Then
+                            If strFormattedText = String.Empty Then
+                                strFormattedText = strTextArr(intTextArr)
+                            Else
+                                strFormattedText = strFormattedText + "|" + strTextArr(intTextArr)
+                            End If
+                        End If
+                    Next
+
+                    strTempText = strFormattedText
+
+                    If strTempText <> String.Empty Then
+                        If strText = String.Empty Then
+                            strText = strTempText
+                        Else
+                            strText = strText + "|" + strTempText
+                        End If
+                    End If
+
+                Else
+                    If Not strText.Contains(strTempText) Then
+                        If strText = String.Empty Then
+                            strText = strTempText
+                        Else
+                            strText = strText + "|" + strTempText
+                        End If
+                    End If
+
+                End If
+
+                intCt = intCt + 1
+
+            Next
+
+            'Remarks
+            For intRemark As Integer = 0 To lstRemark.Count - 1
+                'If strRemark = String.Empty Then
+                '    strRemark = lstRemark(intRemark)
+                'Else
+                strRemark = strRemark + "|" + lstRemark(intRemark)
+                'End If
+
+                intRemark = intRemark + 1
+            Next
+
+            'Final string result
+            If strRemark <> String.Empty Then
+                strRes = strText + strRemark
+            Else
+                strRes = strText
+            End If
+
+        Else
+            strText = Me.Step2aPromptClaimRule(udtClaimRuleResultList(0), lstRemark, udtClaimRuleResultList(0).HandleMethod)
+
+            If udtClaimRuleResultList(0).HandleMethod = HandleMethodENum.WarningReason Then
+
+                Dim strTextArr() As String = Split(strText, "|||")
+
+                strFormattedText = String.Empty
+
+                For intTextArr As Integer = 0 To strTextArr.Length - 1
+                    If strFormattedText = String.Empty Then
+                        strFormattedText = strTextArr(intTextArr)
+                    Else
+                        strFormattedText = strFormattedText + "|" + strTextArr(intTextArr)
+                    End If
+
+                Next
+
+                strText = strFormattedText
+            End If
+
+            For intRemark As Integer = 0 To lstRemark.Count - 1
+                'If strRemark = String.Empty Then
+                '    strRemark = lstRemark(intRemark)
+                'Else
+                strRemark = strRemark + "|" + lstRemark(intRemark)
+                'End If
+
+                intRemark = intRemark + 1
+            Next
+
+            If strRemark <> String.Empty Then
+                strRes = strText + strRemark
+            Else
+                strRes = strText
+            End If
+        End If
+
+        Return strRes
+
+    End Function
 
     ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
     ' Remove input parameter: strSchemeCode
     'Private Function RemoveRulesAfterConfirm(ByVal strSchemeCode As String, ByRef udtRuleResults As RuleResultCollection, ByVal isValid As Boolean) As Boolean
-    Private Function RemoveRulesAfterConfirm(ByRef udtRuleResults As RuleResultCollection, ByVal isValid As Boolean) As Boolean
+    Private Function RemoveRulesAfterConfirm(ByRef udtRuleResults As RuleResultCollection, _
+                                             ByVal isValid As Boolean, _
+                                             Optional ByVal enumPopupButtonMode As ucNoticePopUp.enumButtonMode = ucNoticePopUp.enumButtonMode.ConfirmCancel) As Boolean
+
         ' --------------------------------------------------------------
         ' Eligibility rule
         ' --------------------------------------------------------------
@@ -12253,7 +12674,9 @@ Partial Public Class EHSClaimV1
         udtRuleResult = udtRuleResults.Item(strKey)
         If isValid Then
             If Not udtRuleResult Is Nothing Then
+                Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
                 Me.ucNoticePopUpExclamationConfirm.MessageText = Me.Step2aPromptClaimRule(udtRuleResult)
+                Me.ucNoticePopUpExclamationConfirm.ButtonMode = enumPopupButtonMode
                 Me.ModalPopupExclamationConfirmationBox.Show()
                 EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
                 isValid = False
@@ -12830,7 +13253,7 @@ Partial Public Class EHSClaimV1
         Me.udcStep2bReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
         Me.udcStep2bReadOnlyEHSClaim.SchemeCode = udtSchemeClaim.SchemeCode
         Me.udcStep2bReadOnlyEHSClaim.Mode = ucReadOnlyEHSClaim.ReadOnlyEHSClaimMode.Normal
-        'Me.udcStep2bReadOnlyEHSClaim.ShowSMSWarning = True
+        Me.udcStep2bReadOnlyEHSClaim.ShowSMSWarning = True
         Me.udcStep2bReadOnlyEHSClaim.TableTitleWidth = 205
         Me.udcStep2bReadOnlyEHSClaim.ClaimMode = IIf(blnCOVID19, Common.Component.ClaimMode.COVID19, Common.Component.ClaimMode.All)
         Me.udcStep2bReadOnlyEHSClaim.Built()
@@ -13524,6 +13947,9 @@ Partial Public Class EHSClaimV1
             Me._udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctCode)
             Me._udtSessionHandler.ClaimForSamePatientSaveToSession(True, FunctCode)
 
+            'Carry Forword (Set): once times only
+            Me._udtSessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctCode)
+
             Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step2a
 
             EHSClaimBasePage.AuditLogClaimForSamePatient(New AuditLogEntry(FunctionCode, Me))
@@ -14164,7 +14590,7 @@ Partial Public Class EHSClaimV1
 
         Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
 
-        'udcVaccinationRecord.FunctionCode = FunctCode
+        udcVaccinationRecord.FunctionCode = FunctCode
 
         If blnForceRefresh Then
             udcVaccinationRecord.Build(udtEHSAccount, _
@@ -15508,6 +15934,11 @@ Partial Public Class EHSClaimV1
             _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
         End If
 
+        'Carry Forword: once times only
+        If _udtSessionHandler.NormalClaimCarryForwordGetFromSession(FunctCode) = False Then
+            _udtSessionHandler.NormalClaimCarryForwordSaveToSession(True, FunctCode)
+        End If
+
         Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
 
         Me.udcStep2aInputEHSClaim.CurrentPractice = Me._udtSessionHandler.PracticeDisplayGetFromSession(FunctCode)
@@ -15674,7 +16105,7 @@ Partial Public Class EHSClaimV1
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = "d MMMM, yyyy"
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case TradChinese, SimpChinese
-                chineseTodayDateFormat = CStr(Today.Year) + "¦~" + CStr(Today.Month) + "¤ë" + CStr(Today.Day) & "¤é"
+                chineseTodayDateFormat = CStr(Today.Year) + "å¹´" + CStr(Today.Month) + "æœˆ" + CStr(Today.Day) & "æ—¥"
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = chineseTodayDateFormat
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case Else

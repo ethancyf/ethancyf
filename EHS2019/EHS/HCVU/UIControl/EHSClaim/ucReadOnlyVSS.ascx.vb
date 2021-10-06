@@ -15,7 +15,7 @@ Partial Public Class ucReadOnlyVSS
         Public Const NOHIGHRISK As String = "NOHIGHRISK"
     End Class
 
-    Public Sub Build(ByVal udtEHSTransaction As EHSTransactionModel, ByVal intWidth As Integer)
+    Public Sub Build(ByVal udtEHSTransaction As EHSTransactionModel, ByVal intWidth As Integer, ByVal blnShowContactNoNotAbleToSMS As Boolean)
         trDocumentaryProof.Visible = False
         trPIDInstitutionCode.Visible = False
         trPIDInstitutionName.Visible = False
@@ -104,6 +104,41 @@ Partial Public Class ucReadOnlyVSS
             Dim udtStaticDataModel As StaticDataModel = (New StaticDataBLL).GetStaticDataByColumnNameItemNo("VSS_RECIPIENTCONDITION", strRecipientCondition)
             lblRecipientCondition.Text = udtStaticDataModel.DataValue
 
+        End If
+
+        'ContactNo
+        Dim strContactNo As String = udtEHSTransaction.TransactionAdditionFields.ContactNo
+        If strContactNo IsNot Nothing AndAlso strContactNo <> String.Empty Then
+            trContactNo.Visible = True
+            lblContactNo.Text = strContactNo
+
+            If blnShowContactNoNotAbleToSMS = True Then
+                Select Case Left(strContactNo, 1)
+                    Case "2", "3"
+                        lblContactNoNotAbleSMS.Visible = True
+                    Case Else
+                        lblContactNoNotAbleSMS.Visible = False
+                End Select
+            Else
+                lblContactNoNotAbleSMS.Visible = False
+            End If
+
+        Else
+            trContactNo.Visible = False
+        End If
+
+        'Remarks
+        Dim strRemarks As String = udtEHSTransaction.TransactionAdditionFields.Remarks
+        If strRemarks Is Nothing Then
+            trRemarks.Visible = True
+            lblRemarks.Text = GetGlobalResourceObject("Text", "NA")
+        Else
+            trRemarks.Visible = True
+            If strRemarks <> String.Empty Then
+                lblRemarks.Text = strRemarks
+            ElseIf strRemarks = String.Empty Then
+                lblRemarks.Text = GetGlobalResourceObject("Text", "NotProvided")
+            End If
         End If
 
         ' Control the width of the first column

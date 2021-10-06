@@ -327,4 +327,103 @@ Partial Public Class ucInputVSS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgRecipientConditionError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''panContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panContactNo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtContactNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgContactNoError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgContactNoError As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''lblContactNoRecommendation control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoRecommendation As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''fteContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteContactNo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''panRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panRemarks As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblRemarksText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemarksText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtRemarks As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgRemarksError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgRemarksError As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''fteRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteRemarks As Global.AjaxControlToolkit.FilteredTextBoxExtender
 End Class

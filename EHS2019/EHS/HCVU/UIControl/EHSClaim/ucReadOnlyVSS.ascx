@@ -100,7 +100,7 @@
 <table style="border-collapse:collapse">
     <tr id="trRecipientCondition" runat="server" visible="false">
         <td style="vertical-align: top;width:205px;padding:0px">
-            <asp:Label ID="lblRecipientConditionText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, RecipientCondition %>">></asp:Label>
+            <asp:Label ID="lblRecipientConditionText" runat="server" Text="<%$ Resources:Text, RecipientCondition %>">></asp:Label>
         </td>
         <td style="vertical-align: top;padding:0px">
             <asp:Label ID="lblRecipientCondition" runat="server" CssClass="tableText"></asp:Label>
@@ -108,5 +108,25 @@
     </tr>
     <tr>
         <td colspan ="2" style="height:2px;padding:0px" />
+    </tr>
+</table>
+
+<table style="border-collapse:collapse">
+    <tr id="trContactNo"  runat="server" visible="false">
+        <td id="tdContactNo" runat="server" class="tableCellStyle" style="vertical-align: top;width:205px;padding:0px">
+            <asp:Label ID="lblContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2 %>"></asp:Label>
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top;padding:0px; height:23px;">
+            <asp:Label ID="lblContactNo" runat="server" CssClass="tableText"></asp:Label>
+            <asp:Label ID="lblContactNoNotAbleSMS" runat="server" CssClass="tableText" Text="<%$ Resources:Text, NotAbleToReceiveSMS%>" style="color:red!important" visible="false" />
+        </td>
+    </tr>
+     <tr id="trRemarks" runat="server" visible="false">
+        <td id="tdRemarks" runat="server" class="tableCellStyle" style="vertical-align: top;width:205px;padding:0px">
+            <asp:Label ID="lblRemarksText" runat="server" Text="<%$ Resources:Text, Remarks %>"></asp:Label>
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top;padding:0px; height:23px;">
+            <asp:Label ID="lblRemarks" runat="server" CssClass="tableText"></asp:Label>            
+        </td>
     </tr>
 </table>

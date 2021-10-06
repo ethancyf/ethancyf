@@ -3930,7 +3930,7 @@ Namespace Component.ClaimRules
                         'CRE16-026 (Add PCV13) [Start][Chris YIM]
                         '-----------------------------------------------------------------------------------------
                         Select Case udtClaimRule.Type
-                            Case ClaimRuleModel.RuleTypeClass.INNERSUBSIDIZE, ClaimRuleModel.RuleTypeClass.SUBSIDIZEMUTEX
+                            Case ClaimRuleModel.RuleTypeClass.INNERSUBSIDIZE, ClaimRuleModel.RuleTypeClass.SUBSIDIZEMUTEX, ClaimRuleModel.RuleTypeClass.VACCINE_DETECT
                                 'Nothing to do
                             Case Else
                                 udtTranDetail = udtTranDetailBenefitForSubsidize.FilterByAvailableCode(udtClaimRule.Dependence)
@@ -4713,6 +4713,14 @@ Namespace Component.ClaimRules
                     End If
 
                     Return False
+
+                Case ClaimRuleModel.RuleTypeClass.VACCINE_DETECT
+                    If udtTransactionDetailsBenifit Is Nothing Then Return False
+
+                    Dim blnResult As Boolean = CompareVaccineRecordServiceDate(dtmServiceDate, udtTransactionDetailsBenifit, _
+                                                udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, udtClaimRule.Dependence, _
+                                                udtClaimRule.CompareUnit, udtClaimRule.Operator, udtClaimRule.CompareValue, dicResultParam)
+                    Return blnResult
 
                 Case Else
                     Throw New Exception(String.Format("ClaimRulesBLL.CheckClaimRuleSingleEntry: Invalid Claim Rule type ({0}).", udtClaimRule.Type.Trim()))
@@ -6215,6 +6223,107 @@ Namespace Component.ClaimRules
                             dtmExpectedServiceDate = udtLatestTransactionDetail.ServiceReceiveDtm.AddDays(Int(strCompareValue))
                         Case "M1D"
                             dtmExpectedServiceDate = udtLatestTransactionDetail.ServiceReceiveDtm.AddMonths(Int(strCompareValue)).AddDays(1)
+                    End Select
+
+                    ' 1. Assign the expected service date of 1st dose (e.g. PV + 11 Months)
+                    dicResultParam.Add("%ExpectedDate", dtmExpectedServiceDate)
+
+                    ' 2. Assign the apart days (e.g. 0 - 13 days), for display need to add 1 days
+                    dicResultParam.Add("%DaysApart", Math.Abs(Int(strCompareValue)) + 1)
+                End If
+            End If
+
+            Return blnRes
+        End Function
+
+        Private Function CompareVaccineRecordServiceDate(ByVal dtmServiceDate As Date, _
+                                                        ByVal udtTransactionDetailList As TransactionDetailModelCollection, _
+                                                        ByVal strSchemeCode As String, ByVal intSchemeSeq As Integer, ByVal strDependence As String, _
+                                                        ByVal strCompareUnit As String, ByVal strOperator As String, ByVal strCompareValue As String, _
+                                                        ByRef dicResultParam As Dictionary(Of String, Object)) As Boolean
+
+            Dim blnRes As Boolean = False
+            Dim lstSubsidizeItem As New List(Of String)
+
+            Dim udtSubsidizeTransactionDetailList As TransactionDetailModelCollection = Nothing
+
+            If strDependence.Contains("Non_C19") Then
+                udtSubsidizeTransactionDetailList = New TransactionDetailModelCollection
+
+                For Each udtTranDetail As TransactionDetailModel In udtTransactionDetailList
+                    If udtTranDetail.SubsidizeItemCode.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                        'Nothing to do
+                    Else
+                        udtSubsidizeTransactionDetailList.Add(New TransactionDetailModel(udtTranDetail))
+                    End If
+                Next
+
+            Else
+                If strDependence.Contains("|") Then
+                    Dim strSubsidizeItem() As String = Split(strDependence, "|")
+
+                    For i As Integer = 0 To strSubsidizeItem.Length - 1
+                        lstSubsidizeItem.Add(strSubsidizeItem(i))
+                    Next
+                Else
+                    lstSubsidizeItem.Add(strDependence)
+                End If
+
+                For intCt As Integer = 0 To lstSubsidizeItem.Count - 1
+                    If udtSubsidizeTransactionDetailList Is Nothing Then
+                        udtSubsidizeTransactionDetailList = udtTransactionDetailList.FilterBySubsidizeItemDetail(lstSubsidizeItem(intCt))
+                    Else
+                        udtSubsidizeTransactionDetailList.AddRange(udtTransactionDetailList.FilterBySubsidizeItemDetail(lstSubsidizeItem(intCt)))
+                    End If
+                Next
+            End If
+
+            '-------------------------------------------------------------------
+            ' Check with Equivalent subsidize related Transaction (equivalent subsidize from EqvSubsidizeMap)
+            '-------------------------------------------------------------------
+            ' Merge Transaction 
+            Dim udtFilteredTransactionDetailList As TransactionDetailModelCollection = FilterTransactionDetailListByEqvSubsidizeMap( _
+                strSchemeCode, intSchemeSeq, strDependence, udtTransactionDetailList)
+
+            For Each udtTransactionDetail As TransactionDetailModel In udtFilteredTransactionDetailList
+                If Not udtSubsidizeTransactionDetailList.Contains(udtTransactionDetail) Then
+                    udtSubsidizeTransactionDetailList.Add(New TransactionDetailModel(udtTransactionDetail))
+                End If
+            Next
+
+            Dim udtMatchedTransactionDetail As TransactionDetailModel = Nothing
+
+            For Each udtTransactionDetailModel As TransactionDetailModel In udtSubsidizeTransactionDetailList
+
+                Dim dblPassValue As Double = ConvertPassValueByCalUnitDouble(strCompareUnit, udtTransactionDetailModel.ServiceReceiveDtm, dtmServiceDate)
+
+                Select Case strOperator.Trim()
+                    Case ">", ">="
+                        blnRes = RuleComparator("<=", 0.0, dblPassValue + 0.0)
+                    Case "<", "<="
+                        blnRes = RuleComparator(">=", 0.0, dblPassValue + 0.0)
+                    Case Else
+                        Return False
+                End Select
+
+                blnRes = blnRes AndAlso RuleComparator(strOperator, CDbl(strCompareValue.Trim) + 0.0, dblPassValue + 0.0)
+
+                If blnRes Then
+                    udtMatchedTransactionDetail = udtTransactionDetailModel
+                    Exit For
+                End If
+            Next
+
+            If dicResultParam IsNot Nothing AndAlso udtMatchedTransactionDetail IsNot Nothing Then ' Nothing if checking SubsidizeItemDetailRule
+                Dim dtmExpectedServiceDate As Date = Nothing
+
+                ' INNERDOSE: Compare_Value must integer
+                If (Int(strCompareValue) > 0 AndAlso strOperator = "<=") OrElse (Int(strCompareValue) < 0 AndAlso strOperator = ">=") Then
+                    Select Case strCompareUnit
+                        Case "D"
+                            dtmExpectedServiceDate = udtMatchedTransactionDetail.ServiceReceiveDtm.AddDays(Int(strCompareValue))
+                        Case "M1D"
+                            dtmExpectedServiceDate = udtMatchedTransactionDetail.ServiceReceiveDtm.AddMonths(Int(strCompareValue)).AddDays(1)
                     End Select
 
                     ' 1. Assign the expected service date of 1st dose (e.g. PV + 11 Months)

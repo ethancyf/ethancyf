@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
- 
+ -- =============================================
+-- Modification History
+-- Modified by:		Martin Tang
+-- Modified date:	08 Sep 2021
+-- CR. No			CRE21-010
+-- Description:		Add new document type OW, CCIC , ROP140, PASS to accounts created report
+-- ============================================= 
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -91,7 +97,15 @@ BEGIN
 		_result_value9 VARCHAR(100) DEFAULT '',
 		_result_value10 VARCHAR(100) DEFAULT '',
 		_result_value11 VARCHAR(100) DEFAULT '',
-		_result_value12 VARCHAR(100) DEFAULT ''
+		_result_value12 VARCHAR(100) DEFAULT '',
+		_result_value13 VARCHAR(100) DEFAULT '',
+		_result_value14 VARCHAR(100) DEFAULT '',
+		_result_value15 VARCHAR(100) DEFAULT '',
+		_result_value16 VARCHAR(100) DEFAULT '',
+		_result_value17 VARCHAR(100) DEFAULT '',
+		_result_value18 VARCHAR(100) DEFAULT '',
+		_result_value19 VARCHAR(100) DEFAULT '',
+		_result_value20 VARCHAR(100) DEFAULT ''
 		)
 
 	-- insert record for the final output format  
@@ -118,8 +132,8 @@ BEGIN
 	VALUES (12)
 	
 	INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5,
-		_result_value6, _result_value7, _result_value8, _result_value9, _result_value10, _result_value11, _result_value12)
-	VALUES (13, '','HKIC/HKBC', 'Doc/I', 'REPMT', 'ID235B', 'VISA', 'ADOPC', 'EC', 'Total', '', 'HKIC', 'HKBC')
+		_result_value6, _result_value7, _result_value8, _result_value9, _result_value10, _result_value11, _result_value12, _result_value13, _result_value14, _result_value15, _result_value16)
+	VALUES (13, '','HKIC/HKBC', 'Doc/I', 'REPMT', 'ID235B', 'VISA', 'ADOPC', 'EC', 'OW', 'CCIC', 'ROP140', 'PASS', 'Total', '', 'HKIC', 'HKBC')
 	
 	INSERT INTO #result_table (_display_seq, _result_value1)
 	VALUES (14 ,'Alive')
@@ -229,12 +243,28 @@ BEGIN
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
 			WHERE _doc_code = 'EC' AND _Deceased ='N'),
-		_result_value10 = '',
+		_result_value9 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'OW' AND _Deceased ='N'),
+		_result_value10 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'CCIC' AND _Deceased ='N'),
 		_result_value11 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
-			WHERE _doc_code = 'HKIC' AND _Deceased ='N'),
+			WHERE _doc_code = 'ROP140' AND _Deceased ='N'),
 		_result_value12 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'PASS' AND _Deceased ='N'),
+		_result_value14 = '',
+		_result_value15 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'HKIC' AND _Deceased ='N'),
+		_result_value16 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
 			WHERE _doc_code = 'HKBC' AND _Deceased ='N')
@@ -269,12 +299,28 @@ BEGIN
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
 			WHERE _doc_code = 'EC' AND _Deceased ='Y'),
-		_result_value10 = '',
+		_result_value9 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'OW' AND _Deceased ='Y'),
+		_result_value10 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'CCIC' AND _Deceased ='Y'),
 		_result_value11 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
-			WHERE _doc_code = 'HKIC' AND _Deceased ='Y'),
+			WHERE _doc_code = 'ROP140' AND _Deceased ='Y'),
 		_result_value12 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'PASS' AND _Deceased ='Y'),
+		_result_value14 = '',
+		_result_value15 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'HKIC' AND _Deceased ='Y'),
+		_result_value16 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
 			WHERE _doc_code = 'HKBC' AND _Deceased ='Y')
@@ -309,25 +355,41 @@ BEGIN
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
 			WHERE _doc_code = 'EC'),
-		_result_value10 = '',
+		_result_value9 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'OW'),
+		_result_value10 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'CCIC'),
 		_result_value11 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
-			WHERE _doc_code = 'HKIC'),
+			WHERE _doc_code = 'ROP140'),
 		_result_value12 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'PASS'),
+		_result_value14 = '',
+		_result_value15 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_byDoc
+			WHERE _doc_code = 'HKIC'),
+		_result_value16 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_byDoc
 			WHERE _doc_code = 'HKBC')
 	WHERE _display_seq = 16
 
 	UPDATE #result_table
-	SET _result_value9 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8))
+	SET _result_value13 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8) + CONVERT(INT, _result_value9)+ CONVERT(INT, _result_value10)+ CONVERT(INT, _result_value11)+ CONVERT(INT, _result_value12))
 	WHERE _display_seq = 14
 	UPDATE #result_table
-	SET _result_value9 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8))
+	SET _result_value13 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8) + CONVERT(INT, _result_value9)+ CONVERT(INT, _result_value10)+ CONVERT(INT, _result_value11)+ CONVERT(INT, _result_value12))
 	WHERE _display_seq = 15
 	UPDATE #result_table
-	SET _result_value9 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8))
+	SET _result_value13 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8) + CONVERT(INT, _result_value9)+ CONVERT(INT, _result_value10)+ CONVERT(INT, _result_value11)+ CONVERT(INT, _result_value12))
 	WHERE _display_seq = 16
 	
   
@@ -349,8 +411,8 @@ BEGIN
 	VALUES (22)
 	
 	INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5,
-		_result_value6, _result_value7, _result_value8, _result_value9, _result_value10, _result_value11, _result_value12)
-	VALUES (23, '', 'HKIC/HKBC', 'Doc/I', 'REPMT', 'ID235B', 'VISA', 'ADOPC', 'EC', 'Total', '', 'HKIC', 'HKBC')
+		_result_value6, _result_value7, _result_value8, _result_value9, _result_value10, _result_value11, _result_value12, _result_value13, _result_value14, _result_value15, _result_value16)
+	VALUES (23, '', 'HKIC/HKBC', 'Doc/I', 'REPMT', 'ID235B', 'VISA', 'ADOPC', 'EC', 'OW', 'CCIC', 'ROP140', 'PASS', 'Total', '', 'HKIC', 'HKBC')
 
 	INSERT INTO #result_table (_display_seq, _result_value1)
 	VALUES (24 ,'Alive')
@@ -510,12 +572,28 @@ BEGIN
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
 			WHERE _doc_code = 'EC' AND _Deceased ='N'),
-		_result_value10 = '',
+		_result_value9 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'OW' AND _Deceased ='N'),
+		_result_value10 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'CCIC' AND _Deceased ='N'),
 		_result_value11 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
-			WHERE _doc_code = 'HKIC' AND _Deceased ='N'),
+			WHERE _doc_code = 'ROP140' AND _Deceased ='N'),
 		_result_value12 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'PASS' AND _Deceased ='N'),
+		_result_value14 = '',
+		_result_value15 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'HKIC' AND _Deceased ='N'),
+		_result_value16 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
 			WHERE _doc_code = 'HKBC' AND _Deceased ='N')
@@ -550,12 +628,28 @@ BEGIN
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
 			WHERE _doc_code = 'EC' AND _Deceased ='Y'),
-		_result_value10 = '',
+		_result_value9 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'OW' AND _Deceased ='Y'),
+		_result_value10 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'CCIC' AND _Deceased ='Y'),
 		_result_value11 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
-			WHERE _doc_code = 'HKIC' AND _Deceased ='Y'),
+			WHERE _doc_code = 'ROP140' AND _Deceased ='Y'),
 		_result_value12 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'PASS' AND _Deceased ='Y'),
+		_result_value14 = '',
+		_result_value15 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'HKIC' AND _Deceased ='Y'),
+		_result_value16 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
 			WHERE _doc_code = 'HKBC' AND _Deceased ='Y')
@@ -590,25 +684,41 @@ BEGIN
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
 			WHERE _doc_code = 'EC'),
-		_result_value10 = '',
+		_result_value9 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'OW'),
+		_result_value10 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'CCIC'),
 		_result_value11 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
-			WHERE _doc_code = 'HKIC'),
+			WHERE _doc_code = 'ROP140'),
 		_result_value12 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'PASS'),
+		_result_value14 = '',
+		_result_value15 = (
+			SELECT count(DISTINCT _doc_ID)
+			FROM #statNoOfAcc_withClaim_byDoc_distinct
+			WHERE _doc_code = 'HKIC'),
+		_result_value16 = (
 			SELECT count(DISTINCT _doc_ID)
 			FROM #statNoOfAcc_withClaim_byDoc_distinct
 			WHERE _doc_code = 'HKBC')
 	WHERE _display_seq = 26
 
 	UPDATE #result_table
-	SET _result_value9 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8))
+	SET _result_value13 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8) + CONVERT(INT, _result_value9)+ CONVERT(INT, _result_value10)+ CONVERT(INT, _result_value11)+ CONVERT(INT, _result_value12))
 	WHERE _display_seq = 24
 	UPDATE #result_table
-	SET _result_value9 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8))
+	SET _result_value13 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8) + CONVERT(INT, _result_value9)+ CONVERT(INT, _result_value10)+ CONVERT(INT, _result_value11)+ CONVERT(INT, _result_value12))
 	WHERE _display_seq = 25
 	UPDATE #result_table
-	SET _result_value9 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8))
+	SET _result_value13 = (CONVERT(INT, _result_value2) + CONVERT(INT, _result_value3) + CONVERT(INT, _result_value4) + CONVERT(INT, _result_value5) + CONVERT(INT, _result_value6) + CONVERT(INT, _result_value7) + CONVERT(INT, _result_value8) + CONVERT(INT, _result_value9)+ CONVERT(INT, _result_value10)+ CONVERT(INT, _result_value11)+ CONVERT(INT, _result_value12))
 	WHERE _display_seq = 26
 		
 	--===================================
@@ -629,7 +739,11 @@ BEGIN
 		Col9,
 		Col10,
 		Col11,
-		Col12
+		Col12,
+		Col13,
+		Col14,
+		Col15,
+		Col16
 		)
 	SELECT _display_Seq,
 		_result_value1,
@@ -643,7 +757,11 @@ BEGIN
 		_result_value9,
 		_result_value10,
 		_result_value11,
-		_result_value12
+		_result_value12,
+		_result_value13,
+		_result_value14,
+		_result_value15,
+		_result_value16
 	FROM #result_table
 	ORDER BY _display_seq
 
@@ -662,5 +780,3 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSD0028_01_PrepareData] TO HCVU
 GO
-
-

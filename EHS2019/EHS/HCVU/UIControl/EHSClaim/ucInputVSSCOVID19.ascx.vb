@@ -76,6 +76,16 @@ Partial Public Class ucInputVSSCOVID19
             panOutreachCode.Visible = False
         End If
 
+        'Set outreach code input by temp save
+        If MyBase.EHSTransaction IsNot Nothing AndAlso MyBase.EHSTransaction.CategoryCode IsNot Nothing Then
+            If MyBase.EHSTransaction.CategoryCode.Trim = Common.Component.CategoryCode.VSS_COVID19_Outreach Then
+                panOutreachCode.Visible = True
+            Else
+                panOutreachCode.Visible = False
+            End If
+
+        End If
+
         'Bind DropDownList Main Category
         BindMainCategory()
 
@@ -206,6 +216,11 @@ Partial Public Class ucInputVSSCOVID19
                 chkCJoinEHRSS.Checked = IIf(udtTAFList.JoinEHRSS = YesNo.Yes, True, False)
             End If
 
+            'Non Local Recovered History
+            If udtTAFList.NonLocalRecoveredHistory IsNot Nothing Then
+                chkCNonLocalRecoveredHistory.Checked = IIf(udtTAFList.NonLocalRecoveredHistory = YesNo.Yes, True, False)
+            End If
+
         End If
 
     End Sub
@@ -266,6 +281,8 @@ Partial Public Class ucInputVSSCOVID19
         Me.txtCRemark.Text = String.Empty
 
         Me.chkCJoinEHRSS.Checked = False
+
+        Me.chkCNonLocalRecoveredHistory.Checked = False
 
     End Sub
 

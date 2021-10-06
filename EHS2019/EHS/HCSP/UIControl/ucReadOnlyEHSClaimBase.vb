@@ -8,6 +8,7 @@ Public MustInherit Class ucReadOnlyEHSClaimBase
     Private _udtEHSClaimVaccine As EHSClaimVaccineModel
     Private _udtEHSTransaction As EHSTransactionModel
     Private _udtSessionHandler As BLL.SessionHandler
+    Private _ShowSMSWarning As Boolean
 
     'CRE16-026 (Add PCV13) [Start][Chris YIM]
     '-----------------------------------------------------------------------------------------
@@ -60,6 +61,15 @@ Public MustInherit Class ucReadOnlyEHSClaimBase
         Get
             Return Me._udtSessionHandler
         End Get
+    End Property
+
+    Public Property ShowSMSWarning() As Boolean
+        Get
+            Return Me._ShowSMSWarning
+        End Get
+        Set(ByVal value As Boolean)
+            Me._ShowSMSWarning = value
+        End Set
     End Property
 
 #End Region

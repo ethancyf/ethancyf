@@ -128,6 +128,11 @@ Namespace Component.ClaimRules
             ''' </summary>
             Public Const EXTRA_DOSE = "EXTRADOSE"
 
+            ''' <summary>
+            ''' Detected other vaccine record
+            ''' </summary>
+            Public Const VACCINE_DETECT = "VACCINEDETECT"
+
         End Class
 
 

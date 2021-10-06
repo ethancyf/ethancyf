@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR# :			CRE21-010
+-- Modified by:		Martin Tang
+-- Modified date:	08 Sep 2021
+-- Description:		VSS(2021 - 2022) Remove TIV and Add RIV
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR# :			I-CRE20-005
@@ -106,8 +112,9 @@ SET NOCOUNT ON;
 	DECLARE @Category_Code	VARCHAR(10)
 	DECLARE @Category_Seq	INT		
 	DECLARE @QIV_Subsidize_Code		VARCHAR(10)
-	DECLARE @TIV_Subsidize_Code		VARCHAR(10)
+	--DECLARE @TIV_Subsidize_Code		VARCHAR(10)
 	DECLARE @LAIV_Subsidize_Code	VARCHAR(10)
+	DECLARE @RIV_Subsidize_Code		VARCHAR(10)
 
 	-- For Age Cursor
 	DECLARE @Age VARCHAR(100)
@@ -857,9 +864,9 @@ EXEC [proc_SymmetricKey_open]
 	INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5)  
 	VALUES (7, '', 'Sub-total', '', '', 'No. of SP involved')    
 	INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5)
-	VALUES (8, '23vPPV*', '', '', '', '')    
+	VALUES (8, '23vPPV', '', '', '', '')    
 	INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5)
-	VALUES (9, 'PCV13*', '', '', '', '') 
+	VALUES (9, 'PCV13', '', '', '', '') 
 	INSERT INTO #result_table (_display_seq) VALUES (10)
 
 	UPDATE #result_table    
@@ -916,20 +923,25 @@ EXEC [proc_SymmetricKey_open]
 		WHILE @@FETCH_STATUS  = 0 
 		BEGIN  		
 			SET @QIV_Subsidize_Code = ''
-			SET @TIV_Subsidize_Code = ''
+			--SET @TIV_Subsidize_Code = ''
 			SET @LAIV_Subsidize_Code = ''
+			SET @RIV_Subsidize_Code = ''
 
 			SELECT @QIV_Subsidize_Code = Subsidize_Code
 			FROM @SIV_ByCategory 
 			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%QIV'
 
-			SELECT @TIV_Subsidize_Code = Subsidize_Code
-			FROM @SIV_ByCategory 
-			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%TIV'			
+			--SELECT @TIV_Subsidize_Code = Subsidize_Code
+			--FROM @SIV_ByCategory 
+			--WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%TIV'			
 
 			SELECT @LAIV_Subsidize_Code = Subsidize_Code
 			FROM @SIV_ByCategory 
-			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%LAIV'		
+			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%LAIV'
+			
+			SELECT @RIV_Subsidize_Code = Subsidize_Code
+			FROM @SIV_ByCategory 
+			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%RIV'	
 			
 			-- Header --				
 			INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4)
@@ -941,16 +953,22 @@ EXEC [proc_SymmetricKey_open]
 									WHERE Subsidize_Code = @QIV_Subsidize_Code)
 			WHERE _display_seq = @Row
 		
+			--UPDATE #result_table
+			--SET _result_value2 = (	SELECT Display_Code_For_claim 
+			--						FROM @SIV_ByCategory 
+			--						WHERE Subsidize_Code = @TIV_Subsidize_Code)
+			--WHERE _display_seq = @Row
+
 			UPDATE #result_table
-			SET _result_value2 = (	SELECT Display_Code_For_claim 
+			SET _result_value2 = (	SELECT ISNULL(Display_Code_For_claim,'')
 									FROM @SIV_ByCategory 
-									WHERE Subsidize_Code = @TIV_Subsidize_Code)
+									WHERE Subsidize_Code = @LAIV_Subsidize_Code)
 			WHERE _display_seq = @Row
 
 			UPDATE #result_table
-			SET _result_value3 = (	SELECT ISNULL(Display_Code_For_claim,'')
+			SET _result_value3 = (	SELECT Display_Code_For_claim 
 									FROM @SIV_ByCategory 
-									WHERE Subsidize_Code = @LAIV_Subsidize_Code)
+									WHERE Subsidize_Code = @RIV_Subsidize_Code)
 			WHERE _display_seq = @Row
 	
 			SET @Row = @Row + 1
@@ -958,19 +976,25 @@ EXEC [proc_SymmetricKey_open]
 			-- QIV --		
 			SET @result1 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = @QIV_Subsidize_Code)		
 			-- TIV --
-			SET @result2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = @TIV_Subsidize_Code)			
+			--SET @result2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = @TIV_Subsidize_Code)			
 			-- LAIV --
-			SET @result3 = CASE 
+			SET @result2 = CASE 
 								WHEN (SELECT Display_Code_For_claim FROM @SIV_ByCategory WHERE Subsidize_Code = @LAIV_Subsidize_Code) IS NULL THEN NULL
 								ELSE (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = @LAIV_Subsidize_Code)	 
-						   END					
+						   END				
+			-- RIV --
+			SET @result3 = CASE 
+								WHEN (SELECT Display_Code_For_claim FROM @SIV_ByCategory WHERE Subsidize_Code = @RIV_Subsidize_Code) IS NULL THEN NULL
+								ELSE (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = @RIV_Subsidize_Code)	 
+						   END	
+
 			-- Sub-total
 			SET @result4 = @result1 + @result2 + ISNULL(@result3,0)		
 			-- No. of SP Involved
 			SET @result5 = (SELECT COUNT(DISTINCT SP_ID) 
 							FROM #temp_VSS 
 							WHERE IsSIV = 1 AND IsCurrentSeason = 1
-							AND (Subsidize_Code IN (@QIV_Subsidize_Code, @TIV_Subsidize_Code, @LAIV_Subsidize_Code))
+							AND (Subsidize_Code IN (@QIV_Subsidize_Code, @RIV_Subsidize_Code, @LAIV_Subsidize_Code))
 								OR
 								(@LAIV_Subsidize_Code IS NULL OR Subsidize_Code = @LAIV_Subsidize_Code))
 
@@ -1005,7 +1029,7 @@ EXEC [proc_SymmetricKey_open]
 	-- Total
 	-- start from display_seq = 46
 	INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5)
-	VALUES (46, 'QIV Total', 'TIV Total', 'LAIV Total', 'Total', 'Total No. of SP involved')
+	VALUES (46, 'QIV Total', 'LAIV Total', 'RIV Total', 'Total', 'Total No. of SP involved')
 			    
 	INSERT INTO #result_table (_display_seq) VALUES (47)
 			    
@@ -1013,16 +1037,20 @@ EXEC [proc_SymmetricKey_open]
 	SET _result_value1 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code LIKE '%QIV')
 	WHERE _display_seq = 47
 
-	UPDATE #result_table 
-	SET _result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code LIKE '%TIV')
-	WHERE _display_seq = 47
+	--UPDATE #result_table 
+	--SET _result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code LIKE '%TIV')
+	--WHERE _display_seq = 47
 				
 	UPDATE #result_table 
-	SET _result_value3 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code LIKE '%LAIV')
+	SET _result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code LIKE '%LAIV')
 	WHERE _display_seq = 47
 
 	UPDATE #result_table 
-	SET _result_value4 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND (Subsidize_Code LIKE '%QIV' OR Subsidize_Code LIKE '%TIV' OR Subsidize_Code LIKE '%LAIV'))
+	SET _result_value3 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND Subsidize_Code LIKE '%RIV')
+	WHERE _display_seq = 47
+
+	UPDATE #result_table 
+	SET _result_value4 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsSIV = 1 AND IsCurrentSeason = 1 AND (Subsidize_Code LIKE '%QIV' OR Subsidize_Code LIKE '%RIV' OR Subsidize_Code LIKE '%LAIV'))
 	WHERE _display_seq = 47
 
 	UPDATE #result_table 
@@ -1036,7 +1064,7 @@ EXEC [proc_SymmetricKey_open]
 	-- (iv) By age group  
 	----------------------------------------- 
 	INSERT INTO #result_table (_display_seq, _result_value1)     
-	VALUES (50, REPLACE('(iii) By age group ([DATE])', '[DATE]',@current_scheme_desc))  
+	VALUES (50, REPLACE('(iv) By age group ([DATE])', '[DATE]',@current_scheme_desc))  
 
 	-- SIV --	
 	SET @Row = 60  -- Start from display_seq 60	
@@ -1296,9 +1324,9 @@ EXEC [proc_SymmetricKey_open]
 	DEALLOCATE SIV_Cursor  
 	
 		
-	-- Total of QIV + TIV
+	-- Total of QIV + LAIV + RIV
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
-				'SELECT 91, ''Total of QIV + TIV + LAIV'', ' + @pivot_table_column_sum + ' FROM #result_table_age WHERE Display_Seq>= 60 AND Display_Seq < 90'
+				'SELECT 91, ''Total of QIV + LAIV + RIV'', ' + @pivot_table_column_sum + ' FROM #result_table_age WHERE Display_Seq>= 60 AND Display_Seq < 90'
 
 	EXEC (@sql)
 
@@ -1414,7 +1442,7 @@ EXEC [proc_SymmetricKey_open]
 					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
 					 
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
-				'VALUES (100 , ''' + '23vPPV*' + ''', ' +  
+				'VALUES (100 , ''' + '23vPPV' + ''', ' +  
 				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
 				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
 				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
@@ -1553,7 +1581,7 @@ EXEC [proc_SymmetricKey_open]
 					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
 					 
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
-				'VALUES (101 , ''' + '23vPPV (' + @Str_HighRisk + ')*'', ' +  
+				'VALUES (101 , ''' + '23vPPV (' + @Str_HighRisk + ')'', ' +  
 				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
 				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
 				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
@@ -1692,7 +1720,7 @@ EXEC [proc_SymmetricKey_open]
 					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
 					 
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
-				'VALUES (102 , ''' + 'PCV13 (' + @Str_HighRisk + ')*'', ' +  
+				'VALUES (102 , ''' + 'PCV13 (' + @Str_HighRisk + ')'', ' +  
 				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
 				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
 				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
@@ -2206,7 +2234,7 @@ EXEC [proc_SymmetricKey_open]
 	INSERT INTO #result_table (_display_seq, _result_value1)  
 	VALUES (205, '    - Age at year = year of the specific date - year of DOB')	
 	INSERT INTO #result_table (_display_seq, _result_value1)  
-	VALUES (206, '* ' + @current_scheme_desc + ': start date on ' + FORMAT(@Current_Season_Start_Dtm, 'dd MMM yyyy'))	
+	VALUES (206, 'Service date since ' + FORMAT(@Current_Season_Start_Dtm, 'dd MMM yyyy'))	
 	INSERT INTO #result_table (_display_seq, _result_value1)  
 	VALUES (207, '** Claim healthcare voucher by same service provider on the same service date with PCV13 vaccination with principal reason for visit selected as "Preventive: Immunisation and chemoprophylaxis"')
 	
@@ -2240,9 +2268,9 @@ EXEC [proc_SymmetricKey_open]
 	INSERT INTO #Subresult_table (_display_seq, _result_value1, _result_value2, _result_value3)  
 	VALUES (7, '', 'Sub-total', 'No. of SP involved')    
 	INSERT INTO #Subresult_table (_display_seq, _result_value1, _result_value2, _result_value3)
-	VALUES (8, '23vPPV*', '', '')    
+	VALUES (8, '23vPPV', '', '')    
 	INSERT INTO #Subresult_table (_display_seq, _result_value1, _result_value2, _result_value3)
-	VALUES (9, 'PCV13**', '', '') 
+	VALUES (9, 'PCV13', '', '') 
 	INSERT INTO #Subresult_table (_display_seq) VALUES (10)
 
 	UPDATE #Subresult_table    
@@ -2386,7 +2414,7 @@ EXEC [proc_SymmetricKey_open]
 					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
 					 
 	SET @sql = 'INSERT INTO #result_table_age2 (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
-				'VALUES (100 , ''' + '23vPPV*#' + ''', ' +  
+				'VALUES (100 , ''' + '23vPPV#' + ''', ' +  
 				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +	CONVERT(VARCHAR, @result4) + ', ' + 
 				CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' + CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + 
 				CONVERT(VARCHAR, @result9) + ', ' + CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
@@ -2461,7 +2489,7 @@ EXEC [proc_SymmetricKey_open]
 					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
 					 
 	SET @sql = 'INSERT INTO #result_table_age2 (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
-				'VALUES (101 , ''' + '23vPPV (' + @Str_HighRisk + ')*'', ' +  
+				'VALUES (101 , ''' + '23vPPV (' + @Str_HighRisk + ')'', ' +  
 				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +	CONVERT(VARCHAR, @result4) + ', ' + 
 				CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' + CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + 
 				CONVERT(VARCHAR, @result9) + ', ' + CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +

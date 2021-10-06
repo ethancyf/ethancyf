@@ -139,6 +139,36 @@
                 </table>
                 </asp:panel>
 
+                <asp:panel ID="panEnterVoidReasonContactNo" runat="server" Visible="false">
+                <table style="border-collapse: collapse; border-spacing:0px">
+                    <tr>
+                        <td style="vertical-align: top;width:205px;padding:0px">
+                            <asp:Label ID="lblEnterVoidReasonContactNoText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ContactNo2 %>"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top;padding:0px">
+                            <asp:Label ID="lblEnterVoidReasonContactNo" runat="server" CssClass="tableText"></asp:Label>
+                        </td>
+                    </tr>
+                </table>
+                </asp:panel>
+
+                 <asp:panel ID="panEnterVoidReasonRemarks" runat="server" Visible="false">
+                <table style="border-collapse: collapse; border-spacing:0px">
+                    <tr>
+                        <td style="vertical-align: top;width:205px;padding:0px">
+                            <asp:Label ID="lblEnterVoidReasonRemarksText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Remarks %>"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top;padding:0px">
+                            <asp:Label ID="lblEnterVoidReasonRemarks" runat="server" CssClass="tableText"></asp:Label>
+                        </td>
+                    </tr>
+                </table>
+                </asp:panel>
+
                 <table cellpadding="0" cellspacing="0" style="width: 100%" runat="server" visible="true"
                     id="Table1">
                     <tr>
@@ -248,6 +278,36 @@
                 <tr>
                     <td style="vertical-align: top;padding:0px">
                         <asp:Label ID="lblConfirmVoidReasonRecipientCondition" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+            </asp:panel>
+
+            <asp:panel ID="panConfirmVoidReasonContactNo" runat="server" Visible="false">
+            <table style="border-collapse: collapse; border-spacing:0px">
+                <tr>
+                    <td style="vertical-align: top;width:205px;padding:0px">
+                        <asp:Label ID="lblConfirmVoidReasonContactNoText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ContactNo2 %>"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblConfirmVoidReasonContactNo" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+            </asp:panel>
+
+             <asp:panel ID="panConfirmVoidReasonRemarks" runat="server" Visible="false">
+            <table style="border-collapse: collapse; border-spacing:0px">
+                <tr>
+                    <td style="vertical-align: top;width:205px;padding:0px">
+                        <asp:Label ID="lblConfirmVoidReasonRemarksText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Remarks %>"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblConfirmVoidReasonRemarks" runat="server" CssClass="tableText"></asp:Label>
                     </td>
                 </tr>
             </table>
@@ -469,6 +529,38 @@
                 </tr>
             </table>
             </asp:panel>
+
+            <asp:panel ID="panDetailContactNo" runat="server" Visible="false">
+            <table style="border-collapse: collapse; border-spacing:0px">
+                <tr>
+                    <td style="vertical-align: top;width:205px;padding:0px">
+                        <asp:Label ID="lblDetailContactNoText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ContactNo2 %>"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblDetailContactNo" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+            </asp:panel>
+
+             <asp:panel ID="panDetailRemarks" runat="server" Visible="false">
+            <table style="border-collapse: collapse; border-spacing:0px">
+                <tr>
+                    <td style="vertical-align: top;width:205px;padding:0px">
+                        <asp:Label ID="lblDetailRemarksText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Remarks %>"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;padding:0px">
+                        <asp:Label ID="lblDetailRemarks" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+            </asp:panel>
+
+
 
             <asp:Button ID="btnClaimTransactionDetailBack" runat="server" Text="<%$ Resources:AlternateText, BackBtn %>" />
             <asp:Button ID="btnClaimTransactionDetailVoid" runat="server" Text="<%$ Resources:AlternateText, VoidBtn %>" />

@@ -112,16 +112,20 @@ Public MustInherit Class EHSClaimBasePageV2
 
         If Not udtClaimRuleResult.RelatedClaimRule Is Nothing Then
             strText = Me.GetGlobalResourceObject("Text", udtClaimRuleResult.RelatedClaimRule.ObjectName)
+
             If udtClaimRuleResult.dtmDoseDate.HasValue Then
-                'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 Dim udtSubPlatformBLL As New SubPlatformBLL
-                'strText = strText.Replace("%date", udtFormatter.formatDate(udtClaimRuleResult.dtmDoseDate.Value))
                 strText = strText.Replace("%date", udtFormatter.formatDisplayDate(udtClaimRuleResult.dtmDoseDate.Value, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform)))
-                'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
             Else
                 strText = strText.Replace("%date", String.Empty)
             End If
+
+            If udtClaimRuleResult.ResultParam.Count > 0 Then
+                For Each kvp As KeyValuePair(Of String, Object) In udtClaimRuleResult.ResultParam
+                    strText = strText.Replace(kvp.Key, kvp.Value)
+                Next
+            End If
+
         End If
         Return strText
     End Function

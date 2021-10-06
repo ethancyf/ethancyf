@@ -1,5 +1,6 @@
 <%@ Control Language="vb" AutoEventWireup="false" CodeBehind="ucInputVSS.ascx.vb" Inherits="HCVU.ucInputVSS" %>
 <%@ Register Assembly="HCVU" Namespace="HCVU" TagPrefix="cc1" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc2" %>
 <%@ Register Src="~/UIControl/EHSClaim/ucInputVSSDA.ascx" TagName="ucInputVSSDA" TagPrefix="uc1" %>
 <%@ Register Src="~/UIControl/EHSClaim/ucInputVSSPID.ascx" TagName="ucInputVSSPID" TagPrefix="uc2" %>
 <%@ Register Src="~/UIControl/EHSClaim/ucInputVSSCOVID19.ascx" TagName="ucInputVSSCOVID19" TagPrefix="uc3" %>
@@ -120,24 +121,57 @@
         </table>
     </asp:Panel>
 
-    <cc1:ClaimVaccineInput ID="udcClaimVaccineInputVSS" runat="server" CssTableText ="tableText" CssTableTitle ="tableTitle"/>
+    <cc1:ClaimVaccineInput ID="udcClaimVaccineInputVSS" runat="server" CssTableText ="tableText" CssTableTitle ="tableTitle" />
+
+    <div style="padding-bottom:5px"></div>
 
     <asp:Panel ID="panVSSRecipientCondition" runat="server" Visible="false">
         <table style="border-collapse: collapse; border-spacing:0px">
             <tr id="trRecipientCondition" runat="server">
-                <td class="tableCellStyle" style="vertical-align:top ; width: 204px; height: 22px;padding: 5px 0px 0px 5px">
-                    <asp:Label ID="lblRecipientConditionTitle" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, RecipientCondition%>" />
+                <td class="tableCellStyle" style="vertical-align:top ; width: 204px; height: 25px;padding: 5px 0px 0px 0px">
+                    <asp:Label ID="lblRecipientConditionTitle" runat="server" Text="<%$ Resources:Text, RecipientCondition%>" />
 <%--                    <asp:ImageButton ID="ImgBtnRecipientConditionHelp" runat="server" EnableViewState="true" AlternateText="<%$ Resources:AlternateText, HelpBtn%>"
                                 ImageUrl="<%$ Resources:ImageUrl, HelpIconBtn %>" Visible="true" Style="position:relative;top:2px"/>--%>
                 </td>
                 <td style="vertical-align:top;padding: 5px 0px 0px 0px;">
-                      <asp:CheckBox ID="chkRecipientCondition" runat="server" AutoPostBack="true" Visible="false" Enabled="false" CssClass="tableText" Style="position:relative;left:-2px"></asp:CheckBox>
-                      <asp:RadioButtonList ID="rblRecipientCondition" runat="server" AutoPostBack="true" Visible="false" Enabled="false" CssClass="inline-list" RepeatColumns="2"></asp:RadioButtonList>
+                      <asp:CheckBox ID="chkRecipientCondition" runat="server" AutoPostBack="true" Visible="false" Enabled="false" CssClass="tableText" Style="position:relative;left:-3px" />
+                      <asp:RadioButtonList ID="rblRecipientCondition" runat="server" AutoPostBack="true" Visible="false" Enabled="false" CssClass="inline-list" RepeatColumns="2" style="position: relative; left: -3px" />
                 </td>   
                 <td style="vertical-align:top; padding-left: 4px;">
                     <asp:Image ID="imgRecipientConditionError" runat="server" EnableViewState="true" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                                 ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="false" Style="position:relative;left:-7px;top:3px"/>
                 </td>
+            </tr>
+        </table>
+    </asp:Panel>
+    <asp:Panel ID="panVSSContactNo" runat="server" Visible="false">
+        <table style="border-collapse: collapse; border-spacing:0px">
+            <tr>
+                <td class="tableCellStyle" style="width: 204px;height:25px">
+                    <asp:Label ID="lblContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" Width="160px" />
+                </td>
+                <td style="height:25px" >
+                    <asp:TextBox ID="txtContactNo" runat="server" MaxLength="8" style="position: relative; left: -2px" Width="100px" />
+                    <asp:ImageButton ID="imgContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" Visible="false" />
+                    <asp:Label ID="lblContactNoRecommendation" runat="server" Text="<%$ Resources:Text, ProvideContactNoWithSMS%>" Style="font-size: 14px"></asp:Label>
+                    <cc2:FilteredTextBoxExtender ID="fteContactNo" runat="server" TargetControlID="txtContactNo"
+                        FilterType="Numbers" />
+            </tr>
+        </table>
+    </asp:Panel>
+    <asp:Panel ID="panVSSRemarks" runat="server" Visible="false">
+        <table style="border-collapse: collapse; border-spacing:0px">
+            <tr>
+                <td class="tableCellStyle" style="width: 204px;height:25px">
+                    <asp:Label ID="lblRemarksText" runat="server" Text="<%$ Resources:Text, Remarks%>" Width="160px" />
+                </td>
+                <td style="height:25px">
+                    <asp:TextBox ID="txtRemarks" runat="server" MaxLength="100" style="position: relative; left: -2px" Width="660px" />
+                    <asp:ImageButton ID="imgRemarksError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" Visible="false" /> 
+                    <cc2:FilteredTextBoxExtender ID="fteRemarks" runat="server" TargetControlID="txtRemarks"
+                                      FilterMode="InvalidChars"  InvalidChars="|\"></cc2:FilteredTextBoxExtender>                                       
             </tr>
         </table>
     </asp:Panel>

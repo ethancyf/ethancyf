@@ -1262,6 +1262,9 @@ Namespace Text
                 udtEHSAccount.SetSearchDocCode(strSearchDocCode)
                 SessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctionCode)
 
+                'Carry Forword (Set): once times only
+                SessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctionCode)
+
                 'Only one case go to Claim directly -> Account validated && Search DocCode = PersonalInfo DocCode 
                 If udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
                     udtEHSAccountPersonalInfo = udtEHSAccount.EHSPersonalInformationList.Filter(strSearchDocCode)
@@ -1545,6 +1548,8 @@ Namespace Text
         Private Sub btnStep1ReadSmartID_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnStep1ReadNewSmartID.Click
             SessionHandler.UIDisplayHKICSymbolSaveToSession(FunctionCode, Me.udcStep1ClaimSearch.UIDisplayHKICSymbol)
             SessionHandler.OCSSSRefStatusRemoveFromSession(FunctionCode)
+            'Carry Forword (Set): once times only
+            SessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctionCode)
 
             Me.RedirectToIdeas(IdeasBLL.EnumIdeasVersion.Two)
 
@@ -1556,6 +1561,8 @@ Namespace Text
         Private Sub btnStep1ReadOldSmartID_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnStep1ReadOldSmartID.Click
             SessionHandler.UIDisplayHKICSymbolSaveToSession(FunctionCode, Me.udcStep1ClaimSearch.UIDisplayHKICSymbol)
             SessionHandler.OCSSSRefStatusRemoveFromSession(FunctionCode)
+            'Carry Forword (Set): once times only
+            SessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctionCode)
 
             Me.RedirectToIdeas(IdeasBLL.EnumIdeasVersion.One)
         End Sub
@@ -1566,6 +1573,8 @@ Namespace Text
         Private Sub btnStep1ReadOldSmartIDCombo_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnStep1ReadNewSmartIDCombo.Click
             SessionHandler.UIDisplayHKICSymbolSaveToSession(FunctionCode, Me.udcStep1ClaimSearch.UIDisplayHKICSymbol)
             SessionHandler.OCSSSRefStatusRemoveFromSession(FunctionCode)
+            'Carry Forword (Set): once times only
+            SessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctionCode)
 
             Me.RedirectToIdeasCombo(IdeasBLL.EnumIdeasVersion.Combo)
         End Sub
@@ -3460,6 +3469,7 @@ Namespace Text
             Me.udcStep2bReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
             Me.udcStep2bReadOnlyEHSClaim.SchemeCode = udtSchemeClaim.SchemeCode
             Me.udcStep2bReadOnlyEHSClaim.Mode = ucReadOnlyEHSClaim.ReadOnlyEHSClaimMode.Normal
+            Me.udcStep2bReadOnlyEHSClaim.ShowSMSWarning = True
             Me.udcStep2bReadOnlyEHSClaim.Built()
         End Sub
 
@@ -3971,6 +3981,9 @@ Namespace Text
 
                 ' Save step for hidding the cancel button in "select scheme" page
                 MyBase.SessionHandler.EHSClaimStepsSaveToSession(FunctionCode, Me.mvEHSClaim.ActiveViewIndex)
+
+                'Carry Forword (Set): once times only
+                MyBase.SessionHandler.NormalClaimCarryForwordSaveToSession(False, FunctionCode)
 
                 ' Move to Select Scheme
                 Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.SelectScheme
@@ -5575,20 +5588,25 @@ Namespace Text
         Private Sub ShowVaccinationRecord(ByVal blnRecall As Boolean)
             mvEHSClaim.ActiveViewIndex = ActiveViewIndex.VaccinationRecord
 
+            Dim dicSystemMessageList As New Dictionary(Of Integer, SystemMessage)
+            Dim dicFindList As New Dictionary(Of Integer, String)
+            Dim dicReplaceList As New Dictionary(Of Integer, String)
+
             Dim udtEHSAccount As EHSAccountModel = SessionHandler.EHSAccountGetFromSession(FunctionCode)
-            ' INT13-0022 - Fix some special handling on HCSP text only version [Start][Koala]
-            ' -------------------------------------------------------------------------------------
-            Dim udtSystemMessageList As List(Of SystemMessage) = udcVaccinationRecord.Build(udtEHSAccount, _udtAuditLogEntry, True)
-            ' INT13-0022 - Fix some special handling on HCSP text only version [End][Koala]
+
+            udcVaccinationRecord.Build(udtEHSAccount, _
+                                       Nothing, _
+                                       Nothing, _
+                                       _udtAuditLogEntry, _
+                                       True, _
+                                       dicSystemMessageList, _
+                                       dicFindList, _
+                                       dicReplaceList)
 
             Me.udcVaccinationRecordReadOnlyDocumnetType.Clear()
 
             Me.udcVaccinationRecordReadOnlyDocumnetType.TextOnlyVersion = True
-            ' INT13-0021 - Fix use HKBC on smart IC claim incorrectly [Start][Koala]
-            ' -------------------------------------------------------------------------------------
             Me.udcVaccinationRecordReadOnlyDocumnetType.DocumentType = udtEHSAccount.SearchDocCode
-            'Me.udcVaccinationRecordReadOnlyDocumnetType.DocumentType = udtEHSAccount.EHSPersonalInformationList(0).DocCode.Trim()
-            ' INT13-0021 - Fix use HKBC on smart IC claim incorrectly [End][Koala]
             Me.udcVaccinationRecordReadOnlyDocumnetType.EHSAccount = udtEHSAccount
             Me.udcVaccinationRecordReadOnlyDocumnetType.Vertical = False
             Me.udcVaccinationRecordReadOnlyDocumnetType.MaskIdentityNo = True
@@ -5613,25 +5631,25 @@ Namespace Text
             btnVRContinue.Visible = Not blnRecall
             btnVRReturn.Visible = blnRecall
 
-            ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-            ' ----------------------------------------------------------
-            ' Build system message
-            For Each udtSystemMessage As SystemMessage In udtSystemMessageList
-                If Not IsNothing(udtSystemMessage) Then
-                    If udtSystemMessage.SeverityCode = SeverityCode.SEVI Then
-                        udcMsgBoxInfo.AddMessage(udtSystemMessage)
-                        udcMsgBoxInfo.BuildMessageBox()
-                    Else
-                        Dim lstIdx As New List(Of String)
-                        Dim lstReplaceMessage As New List(Of String)
-                        udtSystemMessage.GetReplaceMessage(String.Empty, lstIdx, lstReplaceMessage)
+            'Apply system message to message box
+            udcVaccinationRecord.BuildSystemMessageBox(dicSystemMessageList, dicFindList, dicReplaceList, udcMsgBoxInfo, udcMsgBoxErr)
 
-                        udcMsgBoxErr.AddMessage(udtSystemMessage, New String() {lstIdx(0), lstIdx(1), lstIdx(2), lstIdx(3)}, New String() {lstReplaceMessage(0), lstReplaceMessage(1), lstReplaceMessage(2), lstReplaceMessage(3)})
-                        udcMsgBoxErr.BuildMessageBox("ConnectionFail")
-                    End If
-                End If
-            Next
-            ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
+            '' Build system message
+            'For Each udtSystemMessage As SystemMessage In udtSystemMessageList
+            '    If Not IsNothing(udtSystemMessage) Then
+            '        If udtSystemMessage.SeverityCode = SeverityCode.SEVI Then
+            '            udcMsgBoxInfo.AddMessage(udtSystemMessage)
+            '            udcMsgBoxInfo.BuildMessageBox()
+            '        Else
+            '            Dim lstIdx As New List(Of String)
+            '            Dim lstReplaceMessage As New List(Of String)
+            '            udtSystemMessage.GetReplaceMessage(String.Empty, lstIdx, lstReplaceMessage)
+
+            '            udcMsgBoxErr.AddMessage(udtSystemMessage, New String() {lstIdx(0), lstIdx(1), lstIdx(2), lstIdx(3)}, New String() {lstReplaceMessage(0), lstReplaceMessage(1), lstReplaceMessage(2), lstReplaceMessage(3)})
+            '            udcMsgBoxErr.BuildMessageBox("ConnectionFail")
+            '        End If
+            '    End If
+            'Next
 
         End Sub
 

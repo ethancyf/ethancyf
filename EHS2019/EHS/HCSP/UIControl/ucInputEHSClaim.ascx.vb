@@ -33,7 +33,6 @@ Partial Public Class ucInputEHSClaim
     Private _btnIsModifyMode As Boolean = False
     Private _udtSessionHandler As New SessionHandler
     Private _blnNonClinic As Boolean
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
     'CRE20-006 DHC Claim service [Start][Nichole]
     '-----------------------------------------------------------------------------------------
@@ -42,11 +41,10 @@ Partial Public Class ucInputEHSClaim
     Private _strDHCClaimAmt As String
     'CRE20-006 DHC Claim service [End][Nichole]
 
-    ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
-    ' -----------------------------------------------------------------------------------------
-
     Private _mode As EHSClaimMode
     Private _enumClaimMode As ClaimMode
+    Private _udtVaccineList As TransactionDetailVaccineModelCollection
+
 #End Region
 
 #Region "Raise Event"
@@ -212,6 +210,7 @@ Partial Public Class ucInputEHSClaim
         _udcInputEHSClaim.SetupTableTitle(Me._intTableTitleWidth)
         _udcInputEHSClaim.IsModifyMode = Me.IsModifyMode
         _udcInputEHSClaim.NonClinic = Me._blnNonClinic
+        _udcInputEHSClaim.VaccineList = Me._udtVaccineList
 
         _udcInputEHSClaim.SetupContent()
         _blnIsControlBuilt = True
@@ -480,6 +479,7 @@ Partial Public Class ucInputEHSClaim
         _udcInputEHSClaim.ClaimCategorys = Me._udtClaimCategorys
         _udcInputEHSClaim.SetupTableTitle(Me._intTableTitleWidth)
         _udcInputEHSClaim.NonClinic = Me._blnNonClinic
+        _udcInputEHSClaim.VaccineList = Me._udtVaccineList
 
         _udcInputEHSClaim.SetupContent()
 
@@ -1152,8 +1152,6 @@ Partial Public Class ucInputEHSClaim
         End Set
     End Property
 
-    ' CRE20-0022 (Immu record) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public Property ClaimMode() As ClaimMode
         Get
             Return _enumClaimMode
@@ -1162,7 +1160,15 @@ Partial Public Class ucInputEHSClaim
             _enumClaimMode = value
         End Set
     End Property
-    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+    Public Property VaccineList() As TransactionDetailVaccineModelCollection
+        Get
+            Return _udtVaccineList
+        End Get
+        Set(ByVal value As TransactionDetailVaccineModelCollection)
+            _udtVaccineList = value
+        End Set
+    End Property
 
     'CRE20-006 DHC Claim service [Start][Nichole]
     '-----------------------------------------------------------------------------------------

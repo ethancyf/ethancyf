@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Martin Tang
+-- Modified date:	08 Sep 2021
+-- CR. No			CRE21-010
+-- Description:		Add select column in sheet 1
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	16 Jul 2020
 -- CR. No			INT20-0025
@@ -118,7 +125,11 @@ ORDER BY
   isnull(Col9,''),  
   isnull(Col10,''),
   isnull(Col11,''),
-  isnull(Col12,'')   
+  isnull(Col12,''),
+  isnull(Col13,''),
+  isnull(Col14,''),
+  isnull(Col15,''),
+  isnull(Col16,'')
  FROM         
   RpteHSD0028_01_eHA_ByDocType WITH (NOLOCK)    
  ORDER BY    

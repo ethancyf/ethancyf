@@ -14,6 +14,7 @@ Partial Public Class ucReadOnlyEHSClaim
     Private _udtEHSClaimVaccine As EHSClaimVaccineModel
     Private _udtEHSTransaction As EHSTransactionModel
     Private _textOnlyVersion As Boolean
+    Private _showSMSWarning As Boolean
     Private _intTableTitleWidth As Integer = 0
     Private _enumClaimMode As Common.Component.ClaimMode = Common.Component.ClaimMode.All
 
@@ -176,6 +177,7 @@ Partial Public Class ucReadOnlyEHSClaim
         udcReadOnlyEHSClaim.EHSClaimVaccine = Me._udtEHSClaimVaccine
         udcReadOnlyEHSClaim.EHSTransaction = Me._udtEHSTransaction
         udcReadOnlyEHSClaim.Mode = Me._mode
+        udcReadOnlyEHSClaim.ShowSMSWarning = Me._showSMSWarning
         udcReadOnlyEHSClaim.SetupTableTitle(Me._intTableTitleWidth)
         Me.Built(udcReadOnlyEHSClaim)
     End Sub
@@ -268,6 +270,15 @@ Partial Public Class ucReadOnlyEHSClaim
         End Get
         Set(ByVal value As Common.Component.ClaimMode)
             _enumClaimMode = value
+        End Set
+    End Property
+
+    Public Property ShowSMSWarning() As Boolean
+        Get
+            Return Me._showSMSWarning
+        End Get
+        Set(ByVal value As Boolean)
+            Me._showSMSWarning = value
         End Set
     End Property
 

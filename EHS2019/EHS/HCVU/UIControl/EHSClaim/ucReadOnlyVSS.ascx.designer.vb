@@ -246,4 +246,85 @@ Partial Public Class ucReadOnlyVSS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRecipientCondition As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trContactNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''tdContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdContactNo As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblContactNoNotAbleSMS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoNotAbleSMS As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRemarks As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''tdRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdRemarks As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblRemarksText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemarksText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemarks As Global.System.Web.UI.WebControls.Label
 End Class

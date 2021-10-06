@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			CRE21-010
+-- Modified by:		Martin Tang
+-- Modified date:	08 Step 2021
+-- Description:		Add contact No.
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE21-004-03
 -- Modified by:		Koala CHENG
 -- Modified date:	16 Jun 2021
@@ -296,18 +303,19 @@ BEGIN
 		Col13 VARCHAR(1000) DEFAULT '',    
 		Col14 VARCHAR(1000) DEFAULT '',    
 		Col15 VARCHAR(1000) DEFAULT '',    
-		Col16 NVARCHAR(1000) DEFAULT '',    
-		Co117 VARCHAR(1000) DEFAULT '',    
+		Col16 VARCHAR(1000) DEFAULT '',    
+		Co117 NVARCHAR(1000) DEFAULT '',    
 		Col18 VARCHAR(1000) DEFAULT '',    
-		Col19 NVARCHAR(1000) DEFAULT '',    
-		Col20 VARCHAR(1000) DEFAULT '',
+		Col19 VARCHAR(1000) DEFAULT '',    
+		Col20 NVARCHAR(1000) DEFAULT '',
 		Col21 VARCHAR(1000) DEFAULT '',    
 		Col22 VARCHAR(1000) DEFAULT '',    
 		Col23 VARCHAR(1000) DEFAULT '',    
 		Col24 VARCHAR(1000) DEFAULT '',    
 		Col25 VARCHAR(1000) DEFAULT '',    
 		Col26 VARCHAR(1000) DEFAULT '',    
-		Col27 VARCHAR(1000) DEFAULT ''
+		Col27 VARCHAR(1000) DEFAULT '',
+		Col28 VARCHAR(1000) DEFAULT ''
 	)  
 
 	CREATE TABLE #Remarks (
@@ -1475,12 +1483,13 @@ BEGIN
 						Col11, Col12, Col13, Col14, Col15, 
 						Col16, Co117, Col18, Col19, Col20, 
 						Col21, Col22, Col23, Col24, Col25,
-						Col26, Col27)
+						Col26, Col27, Col28)
 					VALUES (
 						'Order of Selection', 
 						'Gender', 
 						'eHealth (Subsidies) Account Name (In English)', 
 						'eHealth (Subsidies) Account Name (In Chinese)', 
+						'Contact No.', 
 						'eHealth (Subsidies) Account ID / Reference No.',
 						'Identity Document Type', 
 						'Identity Document No.', 
@@ -1511,7 +1520,7 @@ BEGIN
 						Col11, Col12, Col13, Col14, Col15, 
 						Col16, Co117, Col18, Col19, Col20, 
 						Col21, Col22, Col23, Col24, Col25,
-						Col26, Col27)
+						Col26, Col27, Col28)
 					SELECT
 						'OrderOfSelection' = RT.RefNo,
 						'Gender' = 
@@ -1529,6 +1538,11 @@ BEGIN
 								WHEN PInfo.Encrypt_Field3 IS NULL THEN CONVERT(NVARCHAR(MAX), DecryptByKey(TPInfo.Encrypt_Field3))
 								ELSE CONVERT(NVARCHAR(MAX), DecryptByKey(PInfo.Encrypt_Field3))
 							END,
+						'Contact No.' = 
+							CASE 
+								WHEN TAF_ContactNo.AdditionalFieldValueCode IS NOT NULL AND TAF_ContactNo.AdditionalFieldValueCode <> '' THEN TAF_ContactNo.AdditionalFieldValueCode
+								ELSE 'N/A'
+							END,							
 						'eHealth (Subsidies) Account ID / Reference No.' = 
 							CASE
 								WHEN PInfo.Voucher_Acc_ID IS NULL THEN [dbo].func_format_voucher_account_number('', TPInfo.Voucher_Acc_ID)
@@ -1693,6 +1707,8 @@ BEGIN
 								ON VT.Record_Status = SD.Status_Value  AND Enum_Class = 'ClaimTransStatus'
 							LEFT JOIN StatusData SD1
 								ON VT.HKIC_Symbol = SD1.Status_Value AND SD1.Enum_Class = 'HKICSymbol'
+							LEFT JOIN TransactionAdditionalField TAF_ContactNo
+								ON VT.Transaction_ID = TAF_ContactNo.Transaction_ID AND TAF_ContactNo.AdditionalFieldID = 'ContactNo'
 							--LEFT JOIN DeathRecordMatchResult DRMR
 							--	ON (DRMR.EHA_Acc_ID = PInfo.Voucher_Acc_ID AND PInfo.Voucher_Acc_ID IS NOT NULL)
 							--		OR (DRMR.EHA_Acc_ID = TPInfo.Voucher_Acc_ID AND TPInfo.Voucher_Acc_ID IS NOT NULL)
@@ -1713,7 +1729,7 @@ BEGIN
 						Col11, Col12, Col13, Col14, Col15, 
 						Col16, Co117, Col18, Col19, Col20, 
 						Col21, Col22, Col23, Col24, Col25,
-						Col26, Col27
+						Col26, Col27, Col28
 					FROM #03_PostPaymentCheck_ResultTableForEachSP ORDER BY DisplaySeq
 
 					TRUNCATE TABLE #03_PostPaymentCheck_ResultTableForEachSP

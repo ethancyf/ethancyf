@@ -148,6 +148,66 @@ Partial Public Class ucInputVSS
             End If
         End Get
     End Property
+
+    ' CRE21-010-03 (VSS 2021/22 - Claim) [Start][Winnie SUEN]
+    ' -------------------------------------------------------------
+    Public ReadOnly Property ContactNoShown() As Boolean
+        Get
+            Dim blnShowInput As Boolean = False
+
+            If mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_COVID19 Then
+                Return False
+            End If
+
+            'Check MinDate
+            Dim strMinDate As String = String.Empty
+            Dim dtmMinDate As Date
+            Me._udtGeneralFunction.getSystemParameter("202122ClaimDate", strMinDate, String.Empty, MyBase.SchemeClaim.SchemeCode)
+
+            dtmMinDate = Convert.ToDateTime(strMinDate)
+
+            If MyBase.ServiceDate < dtmMinDate Then
+                blnShowInput = False
+            Else
+                blnShowInput = True
+            End If
+
+            Return blnShowInput
+        End Get
+
+    End Property
+
+    Public ReadOnly Property RemarksShown() As Boolean
+        Get
+            Dim blnShowInput As Boolean = False
+
+            If mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_COVID19 Then
+                Return False
+            End If
+
+            ''Check MinDate
+            'Dim strMinDate As String = String.Empty
+            'Dim dtmMinDate As Date
+            'Me._udtGeneralFunction.getSystemParameter("202122ClaimDate", strMinDate, String.Empty, MyBase.SchemeClaim.SchemeCode)
+
+            'dtmMinDate = Convert.ToDateTime(strMinDate)
+
+            'If MyBase.ServiceDate < dtmMinDate Then
+            '    blnShowInput = False
+            'Else
+            blnShowInput = True
+            'End If
+
+            Return blnShowInput
+        End Get
+
+    End Property
+    ' CRE21-010-03 (VSS 2021/22 - Claim) [End][Winnie SUEN]
+
+    Public Sub BuildVSSCOVID19()
+        Me.ucInputVSSCOVID19.SetupContent(True)
+    End Sub
+
 #End Region
 
 #Region "Event handlers"
@@ -248,7 +308,6 @@ Partial Public Class ucInputVSS
                 Else
                     panVSSRecipientCondition.Visible = False
                 End If
-
             End If
 
             'Load selected options from model if saved
@@ -307,6 +366,19 @@ Partial Public Class ucInputVSS
                     '    Me.udcClaimVaccineInputVSS.Build(MyBase.EHSClaimVaccine, MyBase.FunctionCode)
                     'End If
                     udcClaimVaccineInputVSS.Visible = True
+
+                    'Contact Number
+                    If panVSSContactNo.Visible Then
+                        Dim strContactNo As String = Me.EHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo).AdditionalFieldValueCode
+                        txtContactNo.Text = strContactNo
+                    End If
+
+                    'Remarks
+                    If panVSSRemarks.Visible Then
+                        Dim strRemarks As String = Me.EHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.Remarks).AdditionalFieldValueDesc.Trim
+                        txtRemarks.Text = strRemarks
+                    End If
+
                 End If
             End If
 
@@ -327,6 +399,24 @@ Partial Public Class ucInputVSS
                 If Me.lblCategory.Visible Then
                     strSelectedCategoryCode = lblCategory.Attributes("SelectedValue")
                 End If
+
+                ' CRE21-010-03 (VSS 2021/22 - Claim) [Start][Winnie SUEN]
+                ' -------------------------------------------------------------
+                'Contact No
+                If ContactNoShown = True Then
+                    Me.panVSSContactNo.Visible = True
+                Else
+                    Me.panVSSContactNo.Visible = False
+                End If
+
+                'Remarks
+                If RemarksShown = True Then
+                    Me.panVSSRemarks.Visible = True
+                Else
+                    Me.panVSSRemarks.Visible = False
+                End If
+                ' CRE21-010-03 (VSS 2021/22 - Claim) [End][Winnie SUEN]
+
 
                 If Me.panVSSRecipientCondition.Visible Then
                     'Category is selected and High risk option is shown
@@ -367,7 +457,6 @@ Partial Public Class ucInputVSS
 
                     AddHandler Me.udcClaimVaccineInputVSS.SubsidizeCheckboxClickedEnableRecipientCondition, AddressOf udcClaimVaccineInputVSS_SubsidizeCheckboxClickedEnableRecipientCondition
                     'End If
-
                 Else
                     'Category is selected but no High risk option and so show claim detail 
                     showCategoryDetail(strSelectedCategoryCode)
@@ -397,6 +486,8 @@ Partial Public Class ucInputVSS
                 Me.panVSSPlaceOfVaccination.Visible = False
                 Me.udcClaimVaccineInputVSS.Visible = False
                 Me.panVSSRecipientCondition.Visible = False
+                Me.panVSSContactNo.Visible = False
+                Me.panVSSRemarks.Visible = False
             End If
 
         End If
@@ -421,21 +512,25 @@ Partial Public Class ucInputVSS
 
 #Region "Set Up Error Image"
 
-    Public Sub SetPlaceOfVaccinationError(ByVal visible As Boolean)
-        Me.imgPlaceOfVaccinationError.Visible = visible
-        Me.imgPlaceOfVaccinationErrorOther.Visible = visible
+    Public Sub SetPlaceOfVaccinationError(ByVal blnVisible As Boolean)
+        Me.imgPlaceOfVaccinationError.Visible = blnVisible
+        Me.imgPlaceOfVaccinationErrorOther.Visible = blnVisible
     End Sub
 
-    Public Sub SetCategoryError(ByVal visible As Boolean)
-        Me.imgCategoryError.Visible = visible
+    Public Sub SetCategoryError(ByVal blnVisible As Boolean)
+        Me.imgCategoryError.Visible = blnVisible
     End Sub
 
-    Public Sub SetRecipientConditionError(ByVal visible As Boolean)
-        Me.imgRecipientConditionError.Visible = visible
+    Public Sub SetRecipientConditionError(ByVal blnVisible As Boolean)
+        Me.imgRecipientConditionError.Visible = blnVisible
     End Sub
 
     Public Sub SetCOVID19DetailError(ByVal blnVisible As Boolean)
         ucInputVSSCOVID19.SetDetailError(blnVisible)
+    End Sub
+
+    Public Sub SetContactNoError(ByVal blnVisible As Boolean)
+        Me.imgContactNoError.Visible = blnVisible
     End Sub
 
 #End Region
@@ -564,6 +659,8 @@ Partial Public Class ucInputVSS
         Me.rblRecipientCondition.SelectedIndex = -1
         Me.rblRecipientCondition.SelectedValue = Nothing
         Me.rblRecipientCondition.ClearSelection()
+        Me.txtContactNo.Text = String.Empty
+        Me.txtRemarks.Text = String.Empty
 
     End Sub
 
@@ -605,6 +702,9 @@ Partial Public Class ucInputVSS
 
     Private Sub rbCategory_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles rbCategorySelection.SelectedIndexChanged
         SetPlaceOfVaccinationError(False)
+        SetRecipientConditionError(False)
+        SetContactNoError(False)
+
         ucInputVSSPID.SetDocumentaryProofError(False)
         ucInputVSSPID.SetPIDCodeError(False)
         ucInputVSSDA.SetDocumentaryProofError(False)
@@ -692,7 +792,7 @@ Partial Public Class ucInputVSS
             Case CategoryCode.VSS_COVID19_Outreach
                 Me.ucInputVSSCOVID19.NonClinic = MyBase.NonClinic
                 Me.ucInputVSSCOVID19.CategoryCode = Category.Trim
-                Me.ucInputVSSCOVID19.DisplayOutreachInput(MyBase.NonClinic)
+                Me.ucInputVSSCOVID19.DisplayOutreachInput(True)
                 mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_COVID19
                 ' CRE20-0023 (Immu record) [End][Chris YIM]
             Case Else
@@ -914,6 +1014,13 @@ Partial Public Class ucInputVSS
             End If
         End If
 
+
+        'check Contact No
+        If panVSSContactNo.Visible = True Then
+            blnResult = blnResult And ValidateContactNo(blnShowErrorImage, objMsgBox)
+        End If
+
+
         'Select Vaccine Part
         Dim udtSMList As Dictionary(Of SystemMessage, List(Of String())) = Nothing
 
@@ -965,6 +1072,38 @@ Partial Public Class ucInputVSS
             objMsgBox.AddMessage(New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00397)) ' Please select "Recipient Condition"
         End If
 
+        Return blnResult
+    End Function
+
+    Public Function ValidateContactNo(ByVal blnShowErrorImage As Boolean, ByVal objMsgBox As CustomControls.MessageBox) As Boolean
+        Dim blnResult As Boolean = True
+
+        If String.IsNullOrEmpty(Me.txtContactNo.Text) Then
+            blnResult = False
+            imgContactNoError.Visible = blnShowErrorImage
+
+            Dim udtMsg As ComObject.SystemMessage = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00463)
+            objMsgBox.AddMessage(udtMsg, _
+                                 New String() {"%en", "%tc", "%sc"}, _
+                                 New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                               HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                               HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
+        End If
+
+        If Not String.IsNullOrEmpty(Me.txtContactNo.Text) Then
+            If Not Regex.IsMatch(Me.txtContactNo.Text, "^[2-9]\d{7}$") Then
+                blnResult = False
+
+                imgContactNoError.Visible = blnShowErrorImage
+
+                Dim udtMsg As ComObject.SystemMessage = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00466)
+                objMsgBox.AddMessage(udtMsg, _
+                                     New String() {"%en", "%tc", "%sc"}, _
+                                     New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                   HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                   HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
+            End If
+        End If
         Return blnResult
     End Function
 
@@ -1054,7 +1193,29 @@ Partial Public Class ucInputVSS
             End If
         End If
 
+        'ContactNo
+        If ContactNoShown() Then
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
+            udtTransactAdditionfield.AdditionalFieldValueCode = txtContactNo.Text.Trim
+            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+            udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+        End If
 
+        'Remarks
+        If RemarksShown() Then
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Remarks
+            udtTransactAdditionfield.AdditionalFieldValueCode = String.Empty
+            udtTransactAdditionfield.AdditionalFieldValueDesc = IIf(panVSSRemarks.Visible, txtRemarks.Text.Trim, Nothing)
+            udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+        End If
 
     End Sub
 
