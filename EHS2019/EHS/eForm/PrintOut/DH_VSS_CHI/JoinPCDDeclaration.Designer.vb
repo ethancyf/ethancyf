@@ -23,6 +23,8 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtJoinPCD = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtJoinPCDStatement2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtJoinPCDStatement3 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             CType(Me.txtJoinPCDStatement4, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtSchemeJoinPCDCompulsory, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtJoinPCDStatement1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -30,11 +32,13 @@ Namespace PrintOut.DH_VSS_CHI
             CType(Me.txtJoinPCD, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtJoinPCDStatement2, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtJoinPCDStatement3, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
             '
             'detJoinPCD
             '
-            Me.detJoinPCD.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.txtJoinPCDStatement4, Me.txtSchemeJoinPCDCompulsory, Me.txtJoinPCDStatement1, Me.chkJoinPCD, Me.txtJoinPCD, Me.txtJoinPCDStatement2, Me.txtJoinPCDStatement3})
+            Me.detJoinPCD.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.txtJoinPCDStatement4, Me.txtSchemeJoinPCDCompulsory, Me.txtJoinPCDStatement1, Me.chkJoinPCD, Me.txtJoinPCD, Me.txtJoinPCDStatement2, Me.txtJoinPCDStatement3, Me.TextBox1, Me.TextBox2})
             Me.detJoinPCD.Height = 0.9894166!
             Me.detJoinPCD.Name = "detJoinPCD"
             '
@@ -99,13 +103,13 @@ Namespace PrintOut.DH_VSS_CHI
             'txtJoinPCDStatement2
             '
             Me.txtJoinPCDStatement2.Height = 0.1875!
-            Me.txtJoinPCDStatement2.Left = 2.657!
+            Me.txtJoinPCDStatement2.Left = 4.21!
             Me.txtJoinPCDStatement2.Name = "txtJoinPCDStatement2"
             Me.txtJoinPCDStatement2.Style = "font-family: 新細明體; font-size: 11.25pt; font-weight: normal; text-align: justify; " & _
         "text-decoration: none; ddo-char-set: 136"
-            Me.txtJoinPCDStatement2.Text = "，必須參加基層醫療指南。如申請人並未參加基層醫療指南，"
+            Me.txtJoinPCDStatement2.Text = "，必須參加基層醫療指南。"
             Me.txtJoinPCDStatement2.Top = 0.01!
-            Me.txtJoinPCDStatement2.Width = 4.51!
+            Me.txtJoinPCDStatement2.Width = 2.823!
             '
             'txtJoinPCDStatement3
             '
@@ -114,9 +118,32 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtJoinPCDStatement3.Name = "txtJoinPCDStatement3"
             Me.txtJoinPCDStatement3.Style = "font-family: 新細明體; font-size: 11.25pt; font-weight: normal; text-align: justify; " & _
         "text-decoration: none; ddo-char-set: 136"
-            Me.txtJoinPCDStatement3.Text = "申請人需要在本申請表格同時申請登記參加基層醫療指南。"
+            Me.txtJoinPCDStatement3.Text = "如申請人並未參加基層醫療指南，申請人需要在本申請表格同時申請登記參加基層醫療指南。"
             Me.txtJoinPCDStatement3.Top = 0.207!
             Me.txtJoinPCDStatement3.Width = 7.167!
+            '
+            'TextBox1
+            '
+            Me.TextBox1.Height = 0.1875!
+            Me.TextBox1.Left = 2.657!
+            Me.TextBox1.Name = "TextBox1"
+            Me.TextBox1.Style = "font-family: 新細明體; font-size: 11.25pt; font-weight: normal; text-align: justify; " & _
+        "text-decoration: none; ddo-char-set: 136"
+            Me.TextBox1.Text = "或"
+            Me.TextBox1.Top = 0.0!
+            Me.TextBox1.Width = 0.1970001!
+            '
+            'TextBox2
+            '
+            Me.TextBox2.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.TextBox2.Height = 0.177!
+            Me.TextBox2.Left = 2.854!
+            Me.TextBox2.Name = "TextBox2"
+            Me.TextBox2.Style = "font-family: 新細明體; font-size: 12pt; font-weight: normal; text-align: center; ddo-" & _
+        "char-set: 136"
+            Me.TextBox2.Text = "院舍防疫注射計劃"
+            Me.TextBox2.Top = 0.0!
+            Me.TextBox2.Width = 1.376!
             '
             'JoinPCDDeclaration
             '
@@ -138,6 +165,8 @@ Namespace PrintOut.DH_VSS_CHI
             CType(Me.txtJoinPCD, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtJoinPCDStatement2, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtJoinPCDStatement3, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
         End Sub
@@ -149,6 +178,8 @@ Namespace PrintOut.DH_VSS_CHI
         Private WithEvents txtJoinPCDStatement2 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Private WithEvents txtJoinPCDStatement3 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtSchemeJoinPCDCompulsory As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox2 As GrapeCity.ActiveReports.SectionReportModel.TextBox
     End Class
 
 End Namespace

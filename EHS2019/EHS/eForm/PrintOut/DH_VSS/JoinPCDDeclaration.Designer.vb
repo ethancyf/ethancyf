@@ -50,7 +50,7 @@ Namespace PrintOut.DH_VSS
             Me.txtJoinPCDStatement2.Style = "font-family: Arial; font-size: 10pt; font-weight: normal; text-align: justify; te" & _
         "xt-decoration: none; ddo-char-set: 1"
             Me.txtJoinPCDStatement2.Text = "If the applicant has not enrolled PCD, he/she is required to enroll PCD together " & _
-        "with VSS in this enrolment application."
+        "with VSS and/or RVP in this enrolment application."
             Me.txtJoinPCDStatement2.Top = 0.198!
             Me.txtJoinPCDStatement2.Width = 7.125!
             '
@@ -63,8 +63,8 @@ Namespace PrintOut.DH_VSS
             Me.txtJoinPCDStatement1.Style = "font-family: Arial; font-size: 10pt; font-weight: normal; text-align: justify; te" & _
         "xt-decoration: none; ddo-char-set: 1"
             Me.txtJoinPCDStatement1.Text = "For application for enrolment in                                                 " & _
-        ", he/she has to be  enrolled in the PCD."
-            Me.txtJoinPCDStatement1.Top = 0.0004166365!
+        "                   , he/she has to be  enrolled in the PCD."
+            Me.txtJoinPCDStatement1.Top = 0.0!
             Me.txtJoinPCDStatement1.Width = 7.125!
             '
             'txtJoinPCDStatement3
@@ -83,13 +83,13 @@ Namespace PrintOut.DH_VSS
             '
             Me.txtSchemeJoinPCDCompulsory.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
             Me.txtSchemeJoinPCDCompulsory.Height = 0.1875!
-            Me.txtSchemeJoinPCDCompulsory.Left = 1.994!
+            Me.txtSchemeJoinPCDCompulsory.Left = 1.934!
             Me.txtSchemeJoinPCDCompulsory.Name = "txtSchemeJoinPCDCompulsory"
-            Me.txtSchemeJoinPCDCompulsory.Style = "font-family: Arial; font-size: 9.75pt; font-weight: bold; text-align: left; ddo-c" & _
-        "har-set: 0"
-            Me.txtSchemeJoinPCDCompulsory.Text = "VSS by medical practitioner"
+            Me.txtSchemeJoinPCDCompulsory.Style = "font-family: Arial; font-size: 9.75pt; font-weight: bold; text-align: center; ddo" & _
+        "-char-set: 0"
+            Me.txtSchemeJoinPCDCompulsory.Text = "VSS and/or RVP by medical practitioner"
             Me.txtSchemeJoinPCDCompulsory.Top = 0.0!
-            Me.txtSchemeJoinPCDCompulsory.Width = 1.824!
+            Me.txtSchemeJoinPCDCompulsory.Width = 2.595!
             '
             'chkJoinPCD
             '
