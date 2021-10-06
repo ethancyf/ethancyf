@@ -76,6 +76,8 @@ Public Class PracticeRadioButtonGroup
     Private _enumMode As ClaimMode = ClaimMode.All
     ' CRE20-0022 (Immu record) [End][Chris YIM]
 
+    Private _udtSessionHandler As New SessionHandler 'CRE20-006 DHC integration 
+
     'Events
     Public Event PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeqas As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event SchemeSelected()
@@ -501,6 +503,20 @@ Public Class PracticeRadioButtonGroup
             Dim alSchemeListForSelectPracticePopup As ArrayList = New ArrayList(strSchemeListForSelectPracticePopup.Split(";"))
             ' CRE20-023  (Immu record) [End][Raiman]
 
+            'CRE20-006-2 Filter the HCVS practice by professional code [Start][Nichole]
+            Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+            Dim udtFilteredDHCPracticeDisplayList As New PracticeDisplayModelCollection
+            If udtDHCClient IsNot Nothing Then
+                For Each udtpracticeDisplay As BLL.PracticeDisplayModel In practiceDisplays
+                    If udtpracticeDisplay.ServiceCategoryCode = udtDHCClient.ProfCode And udtpracticeDisplay.RegistrationCode = udtDHCClient.Prof_RegNo Then
+                        udtFilteredDHCPracticeDisplayList.Add(udtpracticeDisplay)
+                    End If
+                Next
+                practiceDisplays = udtFilteredDHCPracticeDisplayList
+            End If
+
+            'CRE20-006-2 Filter the HCVS practice by professional code [End][Nichole]
+
             For Each practiceDisplay As BLL.PracticeDisplayModel In practiceDisplays
                 ' CRE11-024-01 HCVS Pilot Extension Part 1 [Start]
                 ' -----------------------------------------------------------------------------------------
@@ -581,6 +597,20 @@ Public Class PracticeRadioButtonGroup
                 ' ---------------------------------------------------------------------------------------------------------
                 ' Practice Scheme Info List Filter by COVID-19
                 Dim udtFilterPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Nothing
+                'CRE20-006-2 DHC integration [Start][Nichole]
+                 Dim udtFilteredDHCPracticeList As New PracticeModelCollection
+
+                If udtDHCClient IsNot Nothing Then
+                    For Each udtPracticeModel As PracticeModel In practices.Values
+                        If udtPracticeModel.Professional.RegistrationCode = udtDHCClient.Prof_RegNo AndAlso udtPracticeModel.Professional.ServiceCategoryCode = udtDHCClient.ProfCode Then
+                            udtFilteredDHCPracticeList.Add(udtPracticeModel)
+                        End If
+
+                    Next
+                    practices = udtFilteredDHCPracticeList
+                End If
+
+                'CRE20-006-2 DHC integration [End][Nichole]
 
                 udtFilterPracticeSchemeInfoList = udtSchemeClaimBLL.FilterPracticeSchemeInfo(practices, practiceDisplay.PracticeID, _enumMode)
 
@@ -601,6 +631,7 @@ Public Class PracticeRadioButtonGroup
                 blnIsContainCovid19Scheme = alSchemeListForSelectPracticePopup.Contains("ALL")
                 ' CRE20-023  (Immu record) [End][Raiman]
 
+               
                 For Each udtSchemeClaimModel As SchemeClaimModel In udtSchemeClaimModelCollection
                     'Add Space label
                     label = New Label()

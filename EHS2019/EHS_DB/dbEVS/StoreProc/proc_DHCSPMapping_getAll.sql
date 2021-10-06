@@ -1,4 +1,3 @@
-
 IF EXISTS
 (
     SELECT *
@@ -18,16 +17,16 @@ GO
 
 -- =============================================
 -- Modification History
--- CR No.:			 
--- Modified by:		
--- Modified date:	
--- Description:		
+-- CR No.:			CRE20-006-2 
+-- Modified by:		Nichole Ip
+-- Modified date:	25 Aug 2021
+-- Description:		1. Add with(nolock) on table
 -- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-006 
--- Modified by:		Nichole Ip
--- Modified date:	03 May 2021
+-- Created by:		Nichole Ip
+-- Created date:	03 May 2021
 -- Description:		1. Retrieve DHC Mapping informaion 
 -- =============================================
 
@@ -35,6 +34,7 @@ CREATE PROCEDURE [dbo].[proc_DHCSPMapping_getAll]
 
 AS
     BEGIN
+		 SET NOCOUNT ON;
   		-- ============================================================
         -- Declaration
         -- ============================================================
@@ -50,7 +50,7 @@ AS
         SELECT	Service_Category_Code,
 				Registration_Code ,
 				District_Code  
-        FROM	DHCSPMapping
+        FROM	DHCSPMapping WITH(NOLOCK)
 
     END;
 GO

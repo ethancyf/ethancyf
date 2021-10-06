@@ -1,4 +1,4 @@
-ï»¿Imports AjaxControlToolkit
+Imports AjaxControlToolkit
 Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
@@ -309,8 +309,8 @@ Partial Public Class EHSClaimV1
             Me.Master.FindControl("ibtnHome").Visible = False
             Me.Master.FindControl("btnInbox").Visible = False
             Me.Master.FindControl("ibtnLogout").Visible = False
-            'btnStep3ClaimClose.Visible = True
-            btnStep3ClaimClose.Visible = False
+            btnStep3ClaimClose.Visible = True
+            'btnStep3ClaimClose.Visible = False
             btnStep3NextClaim.Visible = False
             'remove the cancel button
             btnStep2aCancel.Visible = False
@@ -425,8 +425,6 @@ Partial Public Class EHSClaimV1
                     Me.SetupStep1(True, True)
 
 
-                    'fill the HKID, DOB & HKIC Symbol into the claim form
-                    Me.udcClaimSearch.SetDHCInfo(udtDHCClient.HKID, udtDHCClient.DOB, udtDHCClient.HKIC_Symbol)
                     _udtSessionHandler.HKICSymbolSaveToSession(FunctCode, IIf(udtDHCClient.HKIC_Symbol Is String.Empty, udcClaimSearch.HKICSymbolSelectedValue, udtDHCClient.HKIC_Symbol))
 
                     'check the HKIC symbol 
@@ -866,6 +864,21 @@ Partial Public Class EHSClaimV1
                 udtDataEntry.DataEntryAccount, udtFilterPracticeList, udtDataEntry.ServiceProvider.SchemeInfoList)
         Else
             'Service Provider
+            'CRE20-006 Fix the practice selectio of DHC [Start][Nichole]
+            Dim udtFilteredDHCPracticeList As New PracticeModelCollection
+            Dim udtFilteredDHCPracticeDisplayList As New PracticeDisplayModelCollection
+            Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+
+            If udtDHCClient IsNot Nothing Then
+                For Each udtPracticeModel As PracticeModel In udtSP.PracticeList.Values
+                    If udtPracticeModel.Professional.RegistrationCode = udtDHCClient.Prof_RegNo AndAlso udtPracticeModel.Professional.ServiceCategoryCode = udtDHCClient.ProfCode Then
+                        udtFilteredDHCPracticeList.Add(udtPracticeModel)
+                    End If
+                Next
+                udtSP.PracticeList = udtFilteredDHCPracticeList
+
+            End If
+            'CRE20-006 Fix the practice selectio of DHC  [End][Nichole]
             For Each udtPractice As PracticeModel In udtSP.PracticeList.Values
                 ' Practice Scheme Info List Filter by COVID-19
                 Dim udtFilterPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = _udtSchemeClaimBLL.FilterPracticeSchemeInfo(udtSP.PracticeList, udtPractice.DisplaySeq, Me.ClaimMode())
@@ -1096,17 +1109,21 @@ Partial Public Class EHSClaimV1
 
                         If Not udtSchemeClaim Is Nothing Then
                             Select Case udtSchemeClaim.ControlType
-                                'INT21-0010 DHC district selection issue - Clear the dropdownlist [Start][Nichole]
+                                'CRE20-006-2 DHC district selection issue - Clear the dropdownlist [Start][Nichole]
                                 Case SchemeClaimModel.EnumControlType.VOUCHER
+                                    Dim strFromOutsider As String = _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
+
                                     Dim udcInputHCVS As ucInputHCVS = Me.udcStep2aInputEHSClaim.GetHCVSControl()
-                                    If Not udcInputHCVS Is Nothing Then
-                                        udcInputHCVS.DHCDistrictDDL.Items.Clear()
-                                        udcInputHCVS.DHCDistrictDDL.SelectedValue = Nothing
-                                        udcInputHCVS.DHCDistrictDDL.SelectedIndex = -1
-                                        udcInputHCVS.DHCDistrictDDL.ClearSelection()
-                                        udcInputHCVS.DHCDistrictCHK.Checked = Nothing
+                                    If strFromOutsider Is Nothing Then
+                                        If Not udcInputHCVS Is Nothing Then
+                                            udcInputHCVS.DHCDistrictDDL.Items.Clear()
+                                            udcInputHCVS.DHCDistrictDDL.SelectedValue = Nothing
+                                            udcInputHCVS.DHCDistrictDDL.SelectedIndex = -1
+                                            udcInputHCVS.DHCDistrictDDL.ClearSelection()
+                                            udcInputHCVS.DHCDistrictCHK.Checked = Nothing
+                                        End If
                                     End If
-                                    'INT21-0010 DHC district selection issue - Clear the dropdownlist [End][Nichole]
+                                    'CRE20-006-2 DHC district selection issue - Clear the dropdownlist [End][Nichole]
                                 Case SchemeClaimModel.EnumControlType.RVP
                                     If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
                                         _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
@@ -13281,15 +13298,21 @@ Partial Public Class EHSClaimV1
             Return
         End If
 
+        ' Log: Click - Close Windows
+        EHSClaimBasePage.AuditLogCloseWindow(New AuditLogEntry(FunctionCode, Me))
+
         _udtSessionHandler.ClearVREClaim()
         Me.Clear()
         Me._udtSessionHandler.HKICSymbolRemoveFromSession(FunctCode)
         Me._udtSessionHandler.OCSSSRefStatusRemoveFromSession(FunctCode)
         Me._udtSessionHandler.ArtifactRemoveFromSession(Common.Component.FunctCode.FUNT021201)
 
+        Response.Redirect("~/login.aspx")
+
         Session.RemoveAll()
 
-        ScriptManager.RegisterStartupScript(Me, Page.GetType, "VoucherCloseBrowswerScript", "javascript:window.close();", True)
+        'ScriptManager.RegisterStartupScript(Me, Page.GetType, "VoucherCloseBrowswerScript", "javascript:window.close();", True)
+
     End Sub
     'CRE20-006 DHC Claim Close button (popup)[End][Nichole]
     
@@ -15651,7 +15674,7 @@ Partial Public Class EHSClaimV1
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = "d MMMM, yyyy"
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case TradChinese, SimpChinese
-                chineseTodayDateFormat = CStr(Today.Year) + "å¹´" + CStr(Today.Month) + "æœˆ" + CStr(Today.Day) & "æ—¥"
+                chineseTodayDateFormat = CStr(Today.Year) + "¦~" + CStr(Today.Month) + "¤ë" + CStr(Today.Day) & "¤é"
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = chineseTodayDateFormat
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case Else

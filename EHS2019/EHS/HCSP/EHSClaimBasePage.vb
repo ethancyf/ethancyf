@@ -990,6 +990,11 @@ Public MustInherit Class EHSClaimBasePage
         udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00044, "Next Claim")
     End Sub
 
+    'Complete Claim : Close Window (DHC) : LOG00095
+    Public Shared Sub AuditLogCloseWindow(ByVal udtAuditLogEntry As AuditLogEntry)
+        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00095, "Complete Claim - Close Window Click")
+    End Sub
+
 #End Region
 
 #Region "Selected Practice"

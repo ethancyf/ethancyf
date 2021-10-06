@@ -805,6 +805,15 @@ Partial Public Class ucClaimSearch
 
         EnableSearchButton()
 
+        'CRE20-006 Fill the scheme, doc type, hkic no and dob from DHC [Start][Nichole]
+        Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+
+        If udtDHCClient IsNot Nothing Then
+            'fill the HKID, DOB & HKIC Symbol into the claim form
+            Me.SetDHCInfo(udtDHCClient.HKID, udtDHCClient.DOB, udtDHCClient.HKIC_Symbol)
+        End If
+        'CRE20-006 Fill the scheme, doc type, hkic no and dob from DHC [End][Nichole]
+
     End Sub
 
     Private Sub EnableSearchButton()
@@ -987,37 +996,46 @@ Partial Public Class ucClaimSearch
 #Region "Property"
     'CRE20-006 To fill in the value into the HKIC, DOB and symbol [Start][Nichole]
     Public Sub SetDHCInfo(ByVal strHKICNO As String, ByVal strHKICDOB As String, ByVal strHKICSymbol As String)
+
+        'Fill DHC Patient Info
         Me.txtSearchHKICNo.Text = strHKICNO
         Me.txtSearchHKICDOB.Text = strHKICDOB
 
         Me.rblHKICSymbol.Text = strHKICSymbol
         Me.rblHKICSymbol.SelectedValue = strHKICSymbol
 
-
-
-        Me.txtSearchHKICNo.Enabled = False
-        If Me.txtSearchHKICDOB.Text.Trim IsNot String.Empty Then
-            Me.txtSearchHKICDOB.Enabled = False
-        Else
-            Me.txtSearchHKICDOB.Enabled = True
-        End If
+        'If strHKICDOB.Trim IsNot String.Empty Then
+        '    Me.txtSearchHKICDOB.Enabled = False
+        'Else
+        '    Me.txtSearchHKICDOB.Enabled = True
+        'End If
 
         Me._strDocumentIdentityNo = Me.txtSearchHKICNo.Text
         Me._strDOB = Me.txtSearchHKICDOB.Text
-        Me._strHKICSymbol = strHKICSymbol
+        Me._strHKICSymbol = Me.rblHKICSymbol.SelectedValue
 
-        '_udtSessionHandler.HKICSymbolSaveToSession(Common.Component.FunctCode.FUNT020201, strHKICSymbol)
-        'rblHKICSymbol_SelectedIndexChanged(Nothing, Nothing)
+        'If strHKICSymbol IsNot Nothing Then
+        '    ibtnSearchHKIC.Enabled = True
+        '    ibtnSearchHKIC.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "SearchBtn")
+        '    btnShortIdentityNoNewSmartIDCombo.Enabled = True
+        '    btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
 
-        If Me._strHKICSymbol IsNot Nothing Then
-            ibtnSearchHKIC.Enabled = True
-            ibtnSearchHKIC.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "SearchBtn")
-            btnShortIdentityNoNewSmartIDCombo.Enabled = True
-            btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
-            EnableHKICSearchOption(True, SearchHKICOption.ManualInput)
-            EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartICCombo)
-        End If
+        '    EnableHKICSearchOption(True, SearchHKICOption.ManualInput)
+        '    EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartICCombo)
+        'End If
 
+        ' Disable input and Search button
+        Me.txtSearchHKICNo.Enabled = False
+        Me.txtSearchHKICDOB.Enabled = False
+        Me.rblHKICSymbol.Enabled = False
+
+        ibtnSearchHKIC.Enabled = False
+        ibtnSearchHKIC.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "SearchBtnDisabled")
+        btnShortIdentityNoNewSmartIDCombo.Enabled = False
+        btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchDisableBtn")
+
+        EnableHKICSearchOption(False, SearchHKICOption.ManualInput)
+        EnableHKICSearchOption(False, SearchHKICOption.ReadNewSmartICCombo)
     End Sub
     'CRE20-006 To fill in the value into the HKIC, DOB and symbol [End][Nichole]
 

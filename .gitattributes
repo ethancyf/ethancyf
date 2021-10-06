@@ -1292,6 +1292,9 @@ EHS2019/EHS/HCSP/Images/button/btn_C.JPG -text
 EHS2019/EHS/HCSP/Images/button/btn_ClaimForSamePatient.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ClaimForSamePatient_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ClaimForSamePatient_tw.png -text
+EHS2019/EHS/HCSP/Images/button/btn_CloseWindow.png -text
+EHS2019/EHS/HCSP/Images/button/btn_CloseWindow_cn.png -text
+EHS2019/EHS/HCSP/Images/button/btn_CloseWindow_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ConfirmClaim.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ConfirmClaim_D.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ConfirmClaim_D_cn.png -text
@@ -9652,6 +9655,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_ServiceProviderVerification_upd_SPConfirmed.
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ServiceProviderVerification_upd_SchemeConfirmed.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ServiceProviderVerification_upd_VettingConfirmed.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ServiceProvider_NSP_byProfRegNo.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_ServiceProvider_ProfNotFound_byProfRegNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ServiceProvider_Valid_byProfRegNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ServiceProvider_delisted_byProfRegNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ServiceProvider_get_ActiveBySPID.sql -text

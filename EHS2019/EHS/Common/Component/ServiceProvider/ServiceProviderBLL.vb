@@ -194,23 +194,6 @@ Namespace Component.ServiceProvider
             Return dt
         End Function
 
-        Public Function GetDHCProfessionbyProfCode(ByVal strDistrictCode As String) As DataTable
-            Dim dt As New DataTable
-            Dim udtDB As Database = New Database()
-            Try
-                Dim prams() As SqlParameter = {udtDB.MakeInParam("@ProfCode", SqlDbType.Char, 3, IIf(strDistrictCode.Trim.Equals(String.Empty), DBNull.Value, strDistrictCode.Trim))}
-                udtDB.RunProc("proc_DHCProfession_byProfCode", prams, dt)
-
-                If dt.Rows.Count = 0 Then
-                    dt = Nothing
-                End If
-            Catch ex As Exception
-                Throw
-            End Try
-
-            Return dt
-        End Function
-
         Public Function AddNSPToClaimAccess(ByVal valid As Boolean, ByVal _strUploadDistrictCode As String, _strProfDistrictCode As String, ByVal _strProfCode As String, ByVal _strProgRegNo As String) As String
             Dim dt As New DataTable
             Dim dtAdd As New DataTable
@@ -2722,7 +2705,7 @@ Namespace Component.ServiceProvider
         End Function
         'CRE20-006 DHC integration [End][Nichole]
 
-         
+      
     End Class
 End Namespace
 

@@ -456,7 +456,13 @@ Partial Public Class login
             Return
         End If
 
-        If RedirectHandler.IsTurnOnConcurrentBrowserHandling AndAlso KeyGenerator.IsConcurrentAccessDetected Then
+        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
+        Dim blnOutsider As Boolean = False
+        If strFromOutsider IsNot Nothing AndAlso strFromOutsider <> String.Empty Then
+            blnOutsider = True
+        End If
+
+        If RedirectHandler.IsTurnOnConcurrentBrowserHandling AndAlso KeyGenerator.IsConcurrentAccessDetected AndAlso Not blnOutsider Then
 
             Dim udtAuditLogEntry As New AuditLogEntry(Me.FunctionCode, Me)
             udtAuditLogEntry.WriteLog(LogID.LOG00029, "Concurrent login detected, Prompt to confirm login")

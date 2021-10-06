@@ -15,16 +15,16 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
--- CR No.:			 
--- Modified by:		
--- Modified date:	
--- Description:		
+-- CR No.:			CRE20-006-2 
+-- Modified by:		Nichole Ip
+-- Modified date:	25 Aug 2021
+-- Description:		1. Add with(nolock) on table
 -- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-006 
--- Modified by:		Nichole Ip
--- Modified date:	17 JUL 2020
+-- Created by:		Nichole Ip
+-- Created date:	17 JUL 2020
 -- Description:		1. Retrieve Service Provider informaion by Registration code + service category code
 -- =============================================
  
@@ -33,6 +33,7 @@ CREATE PROCEDURE [dbo].[proc_ServiceProvider_get_byProfRegNo]
 	@RegNo    VARCHAR(20)
 AS
     BEGIN
+		SET NOCOUNT ON;
         -- ============================================================
         -- Declaration
         -- ============================================================
@@ -127,7 +128,7 @@ AS
                      @ProfCode AS Registration_Code, 
                      @RegNo AS Registration_Code, 
                      'N' AS EnrolledInEHS
-        FROM Professional
+        FROM Professional  WITH(NOLOCK) 
         WHERE NOT EXISTS
         (
             SELECT *

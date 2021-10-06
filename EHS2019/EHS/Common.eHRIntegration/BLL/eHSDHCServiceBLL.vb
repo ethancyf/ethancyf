@@ -968,29 +968,21 @@ Namespace BLL
             '----------------------------------------------
             '-- Check the validation on districtcode + prof code + prof regno
             '----------------------------------------------
-
-            ' Dim udtCodeMapList As CodeMappingCollection
-            ' Dim udtCodeMap As CodeMappingModel
-            'udtCodeMapList = CodeMappingBLL.GetAllCodeMapping
-
+            Dim strDistrictList As String = String.Empty
             For y As Integer = 0 To udtInXml.ProfList.Prof.Count - 1
                 If udtInXml.ProfList.Prof(y).ProfDistrictCode = String.Empty Then
                     strStackTrace = strStackTrace + "Prof District Code is empty. "
                     blnValid = False
                 End If
 
-                'check the district code is valid
-                'dt= udtSPBLL.GetServiceProviderDistrictbyDistrictCode(udtInXml.ProfList.Prof(y).ProfDistrictCode)
-                'If dt Is Nothing Then
-                '    strStackTrace = strStackTrace + String.Format("Prof District Code ({0}) is invalid. ", udtInXml.ProfList.Prof(y).ProfDistrictCode)
-                '    blnValid = False
-                'End If
-
                 'Check the district code
-                'udtCodeMap = udtCodeMapList.GetMappingByCode(CodeMappingModel.EnumSourceSystem.EHRSS, CodeMappingModel.EnumTargetSystem.EHS, CodeMappingModel.EnumCodeType.DHC_DistrictCode.ToString, udtInXml.ProfList.Prof(y).ProfDistrictCode)
                 If udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtInXml.ProfList.Prof(y).ProfDistrictCode) Is Nothing Then
-                    strStackTrace = strStackTrace + String.Format("Prof District Code ({0}) is invalid. ", udtInXml.ProfList.Prof(y).ProfDistrictCode)
-                    blnValid = False
+                    'strStackTrace = strStackTrace + String.Format("Prof District Code ({0}) is invalid. ", udtInXml.ProfList.Prof(y).ProfDistrictCode)
+                    'blnValid = False
+                    If strDistrictList IsNot String.Empty Then
+                        strDistrictList += ","
+                    End If
+                    strDistrictList += udtInXml.ProfList.Prof(y).ProfDistrictCode
                 End If
 
                 'check the Professional code is empty or not
@@ -1005,6 +997,12 @@ Namespace BLL
                     blnValid = False
                 End If
             Next
+
+            If strDistrictList IsNot String.Empty Then
+                strStackTrace = strStackTrace + String.Format("Prof District Code ({0}) is invalid. ", strDistrictList)
+                blnValid = False
+            End If
+
             'check the districtcode + prof code + prof regno
 
 
@@ -1017,16 +1015,38 @@ Namespace BLL
             '----------------------------------------------
             '-- Check the Professional code is valid or not
             '----------------------------------------------
+            Dim udtGeneralFunction As New GeneralFunction
+            Dim strProfession() As String = Split((New GeneralFunction).getSystemParameter("DHC_Profession"), ";")
+            Dim strProfList As String = String.Empty
+            Dim btnMatch As Boolean = False
 
-            For y As Integer = 0 To udtInXml.ProfList.Prof.Count - 1
+            'CRE20-006-2 Enhance the profcode from system para [Start][Nichole]
+            For intListCt As Integer = 0 To udtInXml.ProfList.Prof.Count - 1
+                btnMatch = False
+
                 'check the Prof code is valid
-                dt = udtSPBLL.GetDHCProfessionbyProfCode(udtInXml.ProfList.Prof(y).ProfCode)
-                If CInt(dt.Rows(0).Item("isProf")) < 1 Then
-                    strStackTrace = strStackTrace + String.Format("Prof Code({0}) is invalid. ", dt.Rows(0).Item("isProf"))
-                    blnValid = False
+                For intCt As Integer = 0 To strProfession.Length - 1
+                    If udtInXml.ProfList.Prof(intListCt).ProfCode = strProfession(intCt) Then
+                        btnMatch = True
+                        Exit For
+                    Else
+                        btnMatch = False
+                    End If
+                Next
+
+                If btnMatch = False Then
+                    If strProfList IsNot String.Empty Then
+                        strProfList += ","
+                    End If
+                    strProfList += udtInXml.ProfList.Prof(intListCt).ProfCode
                 End If
             Next
 
+            If strProfList IsNot String.Empty Then
+                strStackTrace = strStackTrace + String.Format("Prof Code({0}) is invalid. ", strProfList)
+                blnValid = False
+            End If
+            'CRE20-006-2 Enhance the profcode from system para [End][Nichole]
 
             If Not blnValid Then
                 udtOutXml = New OutSeteHSSDHCNSPXmlModel(eHSDHCNSPResultCode.R1001_ProfessionalNotFound, udtInXml.Timestamp)
@@ -1048,25 +1068,6 @@ Namespace BLL
                 End If
             Next
 
-
-
-            'Check the delisted professional
-            'For y As Integer = 0 To udtInXml.ProfList.Prof.Count - 1
-            '    dtCLAIM = udtSPBLL.GetServiceProviderDelistedbyProfRegNo(udtInXml.ProfList.Prof(y).ProfCode, udtInXml.ProfList.Prof(y).ProfRegNo)
-            '    If Not dtCLAIM Is Nothing Then
-            '        strStackTrace = strStackTrace + "Professional has been delisted "
-            '        blnValid = False
-            '        Exit For
-            '    End If
-            'Next
-            'If Not blnValid Then
-            '    udtOutXml = New OutSeteHSSDHCNSPXmlModel(eHSDHCNSPResultCode.R1002_ProfessionalDelisted, udtInXml.Timestamp)
-            '    Return udtOutXml
-            'End If
-
-
-
-
             ' ---------------------------------------
             ' Insert the XML data into table 
             ' ---------------------------------------
@@ -1082,7 +1083,6 @@ Namespace BLL
             End If
 
             For y As Integer = 0 To udtInXml.ProfList.Prof.Count - 1
-                'tCLAIM = udtSPBLL.GetServiceProviderDelistedbyProfRegNo(udtInXml.ProfList.Prof(y).ProfCode, udtInXml.ProfList.Prof(y).ProfRegNo)
                 strResult = udtSPBLL.AddNSPToClaimAccess(blnRemoveValid, udtInXml.UploadDistrictCode, udtInXml.ProfList.Prof(y).ProfDistrictCode, udtInXml.ProfList.Prof(y).ProfCode, udtInXml.ProfList.Prof(y).ProfRegNo)
                 If y < 1 Then
                     blnRemoveValid = False
@@ -1142,12 +1142,8 @@ Namespace BLL
             Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime
             Dim dt As DataTable = New DataTable
             Dim udtSPBLL As New ServiceProviderBLL
-            'Dim udtCodeMapList As CodeMappingCollection
-            'Dim udtCodeMap As CodeMappingModel
             Dim udtDistrictBoardBLL As New DistrictBoard.DistrictBoardBLL
             Dim dv As DataView = Nothing
-
-            'udtCodeMapList = CodeMappingBLL.GetAllCodeMapping
 
             ' ---------------------------------------
             ' Validation In Xml
@@ -1166,13 +1162,6 @@ Namespace BLL
                 strStackTrace = strStackTrace + "Prof Code is empty. "
                 blnValid = False
             End If
-
-            'Dim Profession = New List(Of String)({"RMP", "RCM", "RMT", "ROT", "RPT", "ROP"})
-
-            'If Not Profession.Contains(udtInXml.ServiceProvider.ProfCode) Then
-            '    strStackTrace = strStackTrace + "Prof Code is invalid. "
-            '    blnValid = False
-            'End If
 
             If udtInXml.ServiceProvider.ProfRegNo = String.Empty Then
                 strStackTrace = strStackTrace + "Prof Reg No. is empty. "
@@ -1201,12 +1190,26 @@ Namespace BLL
             ' ---------------------------------------
             ' Validation In Prof Code
             ' ---------------------------------------
-            dt = udtSPBLL.GetDHCProfessionbyProfCode(udtInXml.ServiceProvider.ProfCode)
-            If CInt(dt.Rows(0).Item("isProf")) < 1 Then
-                strStackTrace = strStackTrace + String.Format("Prof Code({0}) is invalid. ", dt.Rows(0).Item("isProf"))
-                blnValid = False
-            End If
+            Dim udtGeneralFunction As New GeneralFunction
+            Dim strProfession() As String = Split((New GeneralFunction).getSystemParameter("DHC_Profession"), ";")
 
+			'CRE20-006-2 Enhance the profcode from system para [Start][Nichole]
+            'check the Prof code is valid
+            For intCt As Integer = 0 To strProfession.Length - 1
+                If udtInXml.ServiceProvider.ProfCode <> strProfession(intCt) Then
+                    If intCt = strProfession.Length - 1 Then
+                        strStackTrace = strStackTrace + String.Format("Prof Code({0}) is invalid. ", udtInXml.ServiceProvider.ProfCode)
+                        blnValid = False
+                    Else
+                        Continue For
+                    End If
+                Else
+                    blnValid = True
+                    Exit For
+                End If
+            Next
+			'CRE20-006-2 Enhance the profcode from system para [End][Nichole]
+			
             If Not blnValid Then
                 udtOutXml = New OutgeteHSSDHCClaimAccessXmlModel(eHSDHCClaimAccessResultCode.R1001_ProfessionalNotFound, udtInXml.Timestamp)
                 Return udtOutXml
@@ -1336,7 +1339,6 @@ Namespace BLL
             ' ---------------------------------------
             '  check District Code
             ' ---------------------------------------
-            'udtCodeMap = udtCodeMapList.GetMappingByCode(CodeMappingModel.EnumSourceSystem.EHRSS, CodeMappingModel.EnumTargetSystem.EHS, CodeMappingModel.EnumCodeType.DHC_DistrictCode.ToString, udtInXml.Patient.DHCDistrictCode)
             If udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtInXml.Patient.DHCDistrictCode) Is Nothing Then
                 strStackTrace = strStackTrace + String.Format("District Code ({0}) is invalid. ", udtInXml.Patient.DHCDistrictCode)
                 blnValid = False
@@ -1351,7 +1353,7 @@ Namespace BLL
             dv.RowFilter = "[Service_Category_Code] ='" + udtInXml.ServiceProvider.ProfCode + "' AND [Registration_Code] ='" + udtInXml.ServiceProvider.ProfRegNo + "' AND [District_Code]='" + udtInXml.Patient.DHCDistrictCode + "'"
 
             If dv.Count < 1 Then
-                strStackTrace = strStackTrace + String.Format("District Code ({0}) is not same as Service Provider District Code ({1}). ", udtInXml.Patient.DHCDistrictCode, dv.Item("District_code"))
+                strStackTrace = strStackTrace + String.Format("District Code ({0}) is not same as Service Provider District Code . ", udtInXml.Patient.DHCDistrictCode)
                 blnValid = False
             End If
 
@@ -1394,7 +1396,7 @@ Namespace BLL
                 ' Insert into table DHCClaimAccess
                 '---------------------------------------
                 Dim strResult As String = String.Empty
-                Dim udtGeneralFunction As New GeneralFunction
+
                 Dim strActivationCode As String = udtGeneralFunction.generateAccountActivationCode()
                 Dim strAppLink As String = String.Empty
                 udtGeneralFunction.getSystemParameter("AppLink", strAppLink, String.Empty)

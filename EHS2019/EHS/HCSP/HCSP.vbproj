@@ -146,6 +146,9 @@
     <Content Include="Images\banner\banner_VaccinationFileManagement_tw.png" />
     <Content Include="Images\button\btn_cancel_cn.png" />
     <Content Include="Images\button\btn_checkAvailability_cn.png" />
+    <Content Include="Images\button\btn_CloseWindow.png" />
+    <Content Include="Images\button\btn_CloseWindow_cn.png" />
+    <Content Include="Images\button\btn_CloseWindow_tw.png" />
     <Content Include="Images\button\btn_ConfirmClaim.png" />
     <Content Include="Images\button\btn_ConfirmClaim_cn.png" />
     <Content Include="Images\button\btn_ConfirmClaim_D.png" />
@@ -5575,7 +5578,6 @@
     <Content Include="Doc\User Guide for Smart HKID Card Reading Software.pdf" />
     <None Include="Doc\voucheracccreation.pdf" />
     <None Include="Doc\voucherconsent.pdf" />
-    <Content Include="JS\bootstrap.bundle.min.js.map" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

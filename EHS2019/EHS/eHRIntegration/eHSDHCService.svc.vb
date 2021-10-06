@@ -60,7 +60,8 @@ Public Class eHSDHCService
                 Dim strResponseXmlError As String = XmlFunction.SerializeXml(udtOutXMLError)
 
                 udtAuditLog.WriteLogData(LogID.LOG00009, "[EHRSS>EHS] Response body", strResponseXmlError)
-                udtAuditLog.WriteEndLog(LogID.LOG00013, String.Concat(strEndLogDesc, " - Error"))
+                udtAuditLog.WriteLog(LogID.LOG00014, "[EHRSS>EHS] Raise alert")
+                udtAuditLog.WriteEndLog(LogID.LOG00013, String.Concat(strEndLogDesc, " (Error)"))
 
                 Return New getExternalWebSResponse(New getExternalWebSResponseBody(strResponseXmlError))
 
@@ -98,7 +99,8 @@ Public Class eHSDHCService
                 Dim strResponseXmlError As String = XmlFunction.SerializeXml(udtOutXMLError)
 
                 udtAuditLog.WriteLogData(LogID.LOG00009, "[EHRSS>EHS] Response body", strResponseXmlError)
-                udtAuditLog.WriteEndLog(LogID.LOG00013, String.Concat(strEndLogDesc, " - Error"))
+                udtAuditLog.WriteLog(LogID.LOG00014, "[EHRSS>EHS] Raise alert")
+                udtAuditLog.WriteEndLog(LogID.LOG00013, String.Concat(strEndLogDesc, " (Error)"))
 
                 Return New getExternalWebSResponse(New getExternalWebSResponseBody(strResponseXmlError))
 
@@ -138,9 +140,11 @@ Public Class eHSDHCService
 
                         If strStackTrace <> String.Empty Then
                             udtAuditLog.AddDescripton("StackTrace", strStackTrace)
+                            udtAuditLog.WriteLog(LogID.LOG00008, "[EHRSS>EHS] Process function fail")
+                        Else
+                            udtAuditLog.WriteLog(LogID.LOG00007, "[EHRSS>EHS] Process function complete")
                         End If
-
-                        udtAuditLog.WriteLog(LogID.LOG00007, "[EHRSS>EHS] Process function success")
+ 
 
                     Catch ex As Exception
                         udtOutFunctionXML = New OutSeteHSSDHCNSPXmlModel(eHSResultCode.R9999_UnexpectedFailure, udtInFunctionXML.Timestamp)
@@ -161,9 +165,12 @@ Public Class eHSDHCService
 
                         If strStackTrace <> String.Empty Then
                             udtAuditLog.AddDescripton("StackTrace", strStackTrace)
+                            udtAuditLog.WriteLog(LogID.LOG00008, "[EHRSS>EHS] Process function fail")
+                        Else
+                            udtAuditLog.WriteLog(LogID.LOG00007, "[EHRSS>EHS] Process function complete")
                         End If
 
-                        udtAuditLog.WriteLog(LogID.LOG00007, "[EHRSS>EHS] Process function success")
+
 
                     Catch ex As Exception
                         udtOutFunctionXML = New OutgeteHSSDHCClaimAccessXmlModel(eHSResultCode.R9999_UnexpectedFailure, udtInFunctionXML.Timestamp)

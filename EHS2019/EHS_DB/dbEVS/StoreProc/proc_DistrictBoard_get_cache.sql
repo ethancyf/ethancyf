@@ -12,6 +12,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			CRE20-006-2 
+-- Modified by:		Nichole Ip
+-- Modified date:	25 Aug 2021
+-- Description:		1. Add with(nolock) on table
+-- =============================================
+-- =============================================
 -- CR No.:		CRE20-006 
 -- Author:		Nichole IP
 -- Create date:	06 May 2021
@@ -28,6 +35,7 @@ GO
 CREATE PROCEDURE [dbo].[proc_DistrictBoard_get_cache]
 AS
 BEGIN
+   SET NOCOUNT ON;
 -- ============================================================
 -- Declaration
 -- ============================================================
@@ -52,8 +60,8 @@ SELECT
 	DA.SD_Input_Avail,
 	DB.DHC_District_Code 
 FROM
-	DistrictBoard DB
-	JOIN District_Area DA ON DB.Area_Code = DA.Area_Code
+	DistrictBoard DB WITH (NOLOCK)
+	JOIN District_Area DA  WITH (NOLOCK) ON DB.Area_Code = DA.Area_Code
 ORDER BY
 	DB.Display_Seq
 	

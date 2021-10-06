@@ -10,17 +10,14 @@ IF EXISTS
         DROP PROCEDURE [dbo].[proc_DHCProfession_byProfCode];
     END;
 GO
-SET ANSI_NULLS ON;
-GO
-SET QUOTED_IDENTIFIER ON;
-GO
+ 
 
 -- =============================================
 -- Modification History
--- CR No.:			 
--- Modified by:		
--- Modified date:	
--- Description:		
+-- CR No.:	CRE20-006-2		 
+-- Modified by:		Nichole Ip
+-- Modified date:	25 Aug 2021
+-- Description:		1. proc_DHCProfession_byProfCode is Obsolete
 -- =============================================
 -- =============================================
 -- Modification History
@@ -30,29 +27,29 @@ GO
 -- Description:		1. Check the profession from the DHC 
 -- =============================================
 
-CREATE PROCEDURE [dbo].[proc_DHCProfession_byProfCode]  
-	@ProfCode CHAR(3)
+--CREATE PROCEDURE [dbo].[proc_DHCProfession_byProfCode]  
+--	@ProfCode CHAR(3)
 
-AS
-    BEGIN
-		-- ============================================================
-        -- Declaration
-        -- ============================================================
-		 -- ============================================================
-        -- Validation
-        -- ============================================================
-        -- ============================================================
-        -- Initialization
-        -- ============================================================ 
-        -- ============================================================
-        -- Return results
-        -- ============================================================
+--AS
+--    BEGIN
+--		-- ============================================================
+--        -- Declaration
+--        -- ============================================================
+--		 -- ============================================================
+--        -- Validation
+--        -- ============================================================
+--        -- ============================================================
+--        -- Initialization
+--        -- ============================================================ 
+--        -- ============================================================
+--        -- Return results
+--        -- ============================================================
 
-        SELECT CHARINDEX(@ProfCode, Parm_Value1) AS isProf
-        FROM SystemParameters
-        WHERE Parameter_Name = 'DHC_Profession';
-    END;  
-GO
+--        SELECT CHARINDEX(@ProfCode, Parm_Value1) AS isProf
+--        FROM SystemParameters
+--        WHERE Parameter_Name = 'DHC_Profession';
+--    END;  
+--GO
  
-GRANT EXECUTE ON [dbo].[proc_DHCProfession_byProfCode] TO WSEXT; 
-GO
+--GRANT EXECUTE ON [dbo].[proc_DHCProfession_byProfCode] TO WSEXT; 
+--GO
