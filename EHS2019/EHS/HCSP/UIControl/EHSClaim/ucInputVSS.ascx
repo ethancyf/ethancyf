@@ -165,7 +165,7 @@
                     <asp:ImageButton ID="imgRemarksError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" Visible="false" /> 
                     <cc1:FilteredTextBoxExtender ID="fteRemarks" runat="server" TargetControlID="txtRemarks"
-                                      FilterMode="InvalidChars"  InvalidChars="|\"></cc1:FilteredTextBoxExtender>                                       
+                                      FilterMode="InvalidChars"  InvalidChars="|\&quot;"></cc1:FilteredTextBoxExtender>                                       
             </tr>
         </table>
     </asp:Panel>

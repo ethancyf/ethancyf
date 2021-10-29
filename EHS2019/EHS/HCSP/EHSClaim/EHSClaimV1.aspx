@@ -1107,7 +1107,7 @@
                                     <asp:ImageButton ID="imgStep2aRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
                                     <cc1:FilteredTextBoxExtender ID="fteStep2aRemark" runat="server" TargetControlID="txtStep2aRemark"
-                                      FilterMode="InvalidChars"  InvalidChars="|\"></cc1:FilteredTextBoxExtender>
+                                      FilterMode="InvalidChars"  InvalidChars="|\&quot;"></cc1:FilteredTextBoxExtender>
                                 </td>
                             </tr>
                         </table>

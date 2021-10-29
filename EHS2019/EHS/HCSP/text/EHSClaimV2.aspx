@@ -820,7 +820,7 @@
                         <asp:TextBox ID="txtRemarks" runat="server" MaxLength="100" Style="position: relative; left: -1px" Width="230px" />
                         <asp:Label ID="lblRemarksError" runat="server" ForeColor="Red" Text="*" Visible="False"></asp:Label>                        
                         <cc3:FilteredTextBoxExtender ID="fteRemarks" runat="server" TargetControlID="txtRemarks"
-                                      FilterMode="InvalidChars"  InvalidChars="|\" />                       
+                                      FilterMode="InvalidChars"  InvalidChars="|\&quot;" />                       
                     </td>
                 </tr>
                 </asp:Panel>

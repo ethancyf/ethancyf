@@ -92,7 +92,7 @@
                                     <asp:Textbox ID="txtORReason" runat="server" style="width:400px" MaxLength="100" />
 
                              <cc1:FilteredTextBoxExtender ID="fteORReasonBlockVerticalBarAndBackslash" runat="server" TargetControlID="txtORReason"
-                                      FilterMode="InvalidChars"  InvalidChars="|\" Enabled="False"></cc1:FilteredTextBoxExtender>
+                                      FilterMode="InvalidChars"  InvalidChars="|\&quot;" Enabled="False"></cc1:FilteredTextBoxExtender>
                                 </td>
                             </tr>
                             </asp:Panel>

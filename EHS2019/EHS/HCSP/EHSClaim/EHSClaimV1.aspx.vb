@@ -1729,7 +1729,12 @@ Partial Public Class EHSClaimV1
     Private Sub ucNoticePopUpExclamationImportantReminderWithReason_ButtonClick(ByVal e As ucNoticePopUp.enumButtonClick) Handles ucNoticePopUpExclamationImportantReminderWithReason.ButtonClick
         Select Case e
             Case ucNoticePopUp.enumButtonClick.OK
-                If ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty Then
+
+                Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(FunctCode, Me)
+                udtAuditLogEntry.AddDescripton("OverrideReason", ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason.Trim)
+                EHSClaimBasePage.AuditLogClaimRulePopupBoxConfirm(udtAuditLogEntry)
+
+                If ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason.Trim = String.Empty Then
                     ModalPopupExclamationImportantReminderWithReason.Show()
 
                     Dim udcReasonMsgBoxErr As CustomControls.MessageBox = ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr
@@ -1738,7 +1743,7 @@ Partial Public Class EHSClaimV1
                     udcReasonMsgBoxErr.BuildMessageBox(Me._strValidationFail, New AuditLogEntry(FunctCode, Me), Common.Component.LogID.LOG00201, "Popup Warning - Enter Override Reason Fail")
 
                 Else
-                    _udtSessionHandler.ClaimCOVID19DischargeOverrideReasonSaveToSession(ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason, FunctionCode)
+                    _udtSessionHandler.ClaimCOVID19DischargeOverrideReasonSaveToSession(ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason.Trim, FunctionCode)
                     ModalPopupExclamationImportantReminderWithReason.Hide()
 
                     Me.Step2aClaimSubmit(True)

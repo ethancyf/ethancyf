@@ -995,6 +995,11 @@ Public MustInherit Class EHSClaimBasePage
         udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00095, "Complete Claim - Close Window Click")
     End Sub
 
+    'Show Claim Rule/Eligibility Popup Box - Confirm Click : LOG00096
+    Public Shared Sub AuditLogClaimRulePopupBoxConfirm(ByVal udtAuditLogEntry As AuditLogEntry)
+        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00096, "Show Claim Rule/Eligibility Popup Box - Confirm Click")
+    End Sub
+
 #End Region
 
 #Region "Selected Practice"
