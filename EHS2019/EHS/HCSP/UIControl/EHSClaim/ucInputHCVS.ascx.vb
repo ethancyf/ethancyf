@@ -142,7 +142,7 @@ Partial Public Class ucInputHCVS
         ' ----------------------------------------------------------------------------------------
         ' DHC Related Services
         BindDHCDistrictCode() 'CRE20-006 DHC integration [Nichole]
-        Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+        Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession()
 
         If Not MyBase.EHSTransaction Is Nothing Then
             If Me.AvaliableForClaim Then
@@ -644,7 +644,7 @@ Partial Public Class ucInputHCVS
         Dim udtDataEntry As Common.Component.DataEntryUser.DataEntryUserModel = Nothing
         Me.udtSessionHandler.CurrentUserGetFromSession(udtSP, udtDataEntry)
 
-        Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+        Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession()
 
         'find the SP ID
         If EHSTransaction IsNot Nothing Then
@@ -696,7 +696,7 @@ Partial Public Class ucInputHCVS
     End Sub
 
     Public Sub ShowDistrictCode(ByVal dt As DataTable)
-        Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+        Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession()
         Dim strDistrictCode As String = String.Empty
 
         If dt IsNot Nothing Then
@@ -1044,15 +1044,6 @@ Partial Public Class ucInputHCVS
             Return Me.ddlDHCDistrictCode
         End Get
     End Property
-    ' ----------------------------------------------------------------------------------------
-    'Public Property DHC_DDLDistrictCodeEnable() As Boolean
-    '    Get
-    '        Return Me.ddlDHCDistrictCode.Visible
-    '    End Get
-    '    Set(value As Boolean)
-    '        Me.ddlDHCDistrictCode.Visible = value
-    '    End Set
-    'End Property
 
     ' ----------------------------------------------------------------------------------------
     Public Property DHCClaimAmount() As String
@@ -1088,7 +1079,7 @@ Partial Public Class ucInputHCVS
 
             'CRE20-006 DHC integration [Start][Nichole]
             ' DHC District Code
-            Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+            Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession()
 
             If udtDHCClient IsNot Nothing Then
                 If udtDHCClient.DHCDistrictCode <> String.Empty Then

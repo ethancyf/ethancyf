@@ -155,6 +155,8 @@ Partial Public Class login
             ' CRE20-0022 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             udcSessionHandler.IDEASComboClientRemoveFormSession()
+            udcSessionHandler.ArtifactRemoveFromSession()
+            udcSessionHandler.DHCInfoForLoginRemoveFromSession()
 
             If SmartIDHandler.EnableSmartID Then
                 System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboClient", "checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);", True)
@@ -305,28 +307,26 @@ Partial Public Class login
             'change the artifact para from activation code into the hashed value
             strFromOutsider = Hash(strFromOutsider).HashedValue
 
-            'save the artifact para to session
-            'If Not IsPostBack Then
-            udcSessionHandler.ArtifactRemoveFromSession(FunctCode.FUNT021201)
-            udcSessionHandler.ArtifactSaveToSession(FunctCode.FUNT021201, strFromOutsider)
-            hylCantAccessAccount.Visible = False
-            'imgToken.Visible = False
-            'End If
-
             ' Use the parameter artifact from DHC to get the profCode + ProfRegNo from table DHCClaimAccess and put info into model
             If Not IsPostBack Then
                 udtGeneralFunction.getSystemParameter("DHC_to_eHS_LoginURL_Timeout", strArtifactTimeout, String.Empty)
                 udtDHCClient = udtSPBLL.GetServiceProviderArtifact(strFromOutsider, strArtifactTimeout)
 
                 If udtDHCClient IsNot Nothing Then
-                    'save the model into the session
-                    udcSessionHandler.DHCInfoSaveToSession(FunctCode.FUNT021201, udtDHCClient)
+                    'save the artifact into session
+                    udcSessionHandler.ArtifactSaveToSession(strFromOutsider)
+                    'save the DHCInfo model into session
+                    udcSessionHandler.DHCInfoForLoginSaveToSession(udtDHCClient)
 
                     txtUserName.Text = udtDHCClient.SPID
                     txtUserName.Enabled = False
                     rbLoginRole.Enabled = False
                 Else
-                    udcSessionHandler.ArtifactRemoveFromSession(FunctCode.FUNT021201)
+                    'Remove the artifact from session
+                    udcSessionHandler.ArtifactRemoveFromSession()
+                    'Remove the DHCInfo model from session
+                    udcSessionHandler.DHCInfoForLoginRemoveFromSession()
+
                     Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT020001, Me)
                     udtAuditLogEntry.WriteLog(LogID.LOG00001, "Login Session for claim creation of DHC is expired or invalid")
                     Me.udcMessageBox.AddMessage("020001", "E", "00007")
@@ -340,20 +340,29 @@ Partial Public Class login
                     txtPassword.Enabled = False
                     txtPinNo.Enabled = False
 
-                    ibtnLogin.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "LoginDisableBtn").ToString 'INT21-0010 (Fix DHC district selection issue) 
+                    ibtnLogin.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "LoginDisableBtn").ToString
                   
                 End If
-                ' lnkbtnTextOnlyVersion.Visible = False
+
             Else
                
                 If txtUserName.Text Is String.Empty Then
                     ibtnLogin.Enabled = False
                     ibtnLogin.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "LoginDisableBtn").ToString
                 End If
+
             End If
-            lnkbtnTextOnlyVersion.Visible = False 'INT21-0010 DHC district selection issue
+
+            'Hide the link of Text-only version
+            lnkbtnTextOnlyVersion.Visible = False
+
+            'Hide the link of "Cant Access Account"
+            hylCantAccessAccount.Visible = False
+
         Else
-            udcSessionHandler.ArtifactRemoveFromSession(FunctCode.FUNT021201)
+            udcSessionHandler.ArtifactRemoveFromSession()
+            udcSessionHandler.DHCInfoForLoginRemoveFromSession()
+
         End If
         'CRE20-006 Handle the artifact para from DHC [End][Nichole]
 
@@ -456,8 +465,9 @@ Partial Public Class login
             Return
         End If
 
-        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
+        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession()
         Dim blnOutsider As Boolean = False
+
         If strFromOutsider IsNot Nothing AndAlso strFromOutsider <> String.Empty Then
             blnOutsider = True
         End If
@@ -1282,13 +1292,19 @@ Partial Public Class login
                                 LoadUserDefaultLanguage(udtUserAC.DefaultLanguage)
 
                                 ' CRE20-006 DHC claim response [Start][Nichole]
-                                Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(FunctCode.FUNT021201)
+                                Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession()
 
-                                If strFromOutsider Is Nothing Then
-                                    RedirectHandler.ToURL(ClaimVoucherMaster.FullVersionPage.Home)
-                                Else
-                                    LoadUserDefaultLanguage(udtUserAC.DefaultLanguage)
+                                If strFromOutsider IsNot Nothing AndAlso strFromOutsider <> String.Empty Then
+                                    'DHC Call from outside, go to claim page directly
+                                    Dim udtDHCClient As DHCPersonalInformationModel = udcSessionHandler.DHCInfoForLoginGetFromSession()
+                                    udcSessionHandler.DHCInfoSaveToSession(udtDHCClient)
+
                                     RedirectHandler.ToURL("~/EHSClaim/EHSClaimV1.aspx")
+
+                                Else
+                                    'Default: go to home
+                                    RedirectHandler.ToURL(ClaimVoucherMaster.FullVersionPage.Home)
+
                                 End If
                                 ' CRE20-006 DHC claim response [End][Nichole]
 
@@ -2161,10 +2177,10 @@ Partial Public Class login
 
         'CRE20-006 DHC Integration [Start][Nichole]
 		'7. DHC parameters Artifact bypass function
-        Cache7 = udcSessionHandler.ArtifactGetFromSession(FunctCode.FUNT021201)
+        Cache7 = udcSessionHandler.ArtifactGetFromSession()
 
         '8 DHCCLAIM model information
-        Cache8 = udcSessionHandler.DHCInfoGetFromSession(FunctCode.FUNT021201)
+        Cache8 = udcSessionHandler.DHCInfoForLoginGetFromSession()
         'CRE20-006 DHC Integration [End][Nichole]
 
         'Clear
@@ -2195,10 +2211,10 @@ Partial Public Class login
 		
         'CRE20-006 DHC Integration [Start][Nichole]
 		'7. DHC parameters Artifact bypass function
-        udcSessionHandler.ArtifactSaveToSession(FunctCode.FUNT021201, Cache7)
+        udcSessionHandler.ArtifactSaveToSession(Cache7)
 
         '8. DHC Claim model
-        udcSessionHandler.DHCInfoSaveToSession(FunctCode.FUNT021201, Cache8)
+        udcSessionHandler.DHCInfoForLoginSaveToSession(Cache8)
         'CRE20-006 DHC Integration [End][Nichole]
     End Sub
     ' CRE17-015 (Disallow public using WinXP) [End][Chris YIM]

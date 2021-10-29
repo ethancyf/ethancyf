@@ -90,8 +90,9 @@ Partial Public Class MasterPage
             End If
 
             'CRE20-006 DHC Integration [Start][Nichole]
-            Dim strFromOutsider As String = (New SessionHandler).ArtifactGetFromSession(FunctCode.FUNT021201)
-            If strFromOutsider IsNot Nothing Then
+            Dim udtDHCInfo As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = (New SessionHandler).DHCInfoGetFromSession()
+
+            If udtDHCInfo IsNot Nothing Then
                 enumClaimMode = Common.Component.ClaimMode.DHC
             End If
             'CRE20-006 DHC Integration [End][Nichole]
@@ -178,28 +179,14 @@ Partial Public Class MasterPage
             ibtnMenu.AlternateText = Me.GetGlobalResourceObject("ToolTip", "CollapsedMenuImage")
         End If
 
-        ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
         ' Hide Inbox in China Platform
-        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(FunctCode.FUNT021201)
         Dim udtUserAC As UserACModel = UserACBLL.GetUserAC()
 
         If DirectCast(Me.Page, BasePage).SubPlatform = EnumHCSPSubPlatform.CN Then
             btnInbox.Visible = False
             lnkbtnTradChinese.Visible = False
             lnkbtnEnglish.Visible = False
-            'Else
-            '    If udtUserAC.UserType = SPAcctType.ServiceProvider Then
-            '        If strFromOutsider IsNot Nothing Then
-            '            panMenu.Visible = False
-            '            ibtnMenu.Visible = False
-            '        Else
-            '            btnInbox.Visible = True
-            '            ibtnLogout.Visible = True
-            '        End If
-            '    End If
-
         End If
-        ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
     End Sub
 
@@ -276,8 +263,7 @@ Partial Public Class MasterPage
             Me.btnInbox.Visible = True
 
             'CRE20-006 Hidden the inbox button [Start][Nichole]
-            Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
-            If strFromOutsider IsNot Nothing Then
+            If Me.ClaimMode = Common.Component.ClaimMode.DHC Then
                 Me.btnInbox.Visible = False
                 Me.ibtnLogout.Visible = False
                 Me.ibtnHome.Visible = False

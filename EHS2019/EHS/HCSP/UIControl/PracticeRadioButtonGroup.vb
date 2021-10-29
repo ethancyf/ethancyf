@@ -504,7 +504,7 @@ Public Class PracticeRadioButtonGroup
             ' CRE20-023  (Immu record) [End][Raiman]
 
             'CRE20-006-2 Filter the HCVS practice by professional code [Start][Nichole]
-            Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+            Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
             Dim udtFilteredDHCPracticeDisplayList As New PracticeDisplayModelCollection
             If udtDHCClient IsNot Nothing Then
                 For Each udtpracticeDisplay As BLL.PracticeDisplayModel In practiceDisplays

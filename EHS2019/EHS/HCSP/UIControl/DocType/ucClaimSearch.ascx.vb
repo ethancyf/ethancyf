@@ -806,7 +806,7 @@ Partial Public Class ucClaimSearch
         EnableSearchButton()
 
         'CRE20-006 Fill the scheme, doc type, hkic no and dob from DHC [Start][Nichole]
-        Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+        Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
 
         If udtDHCClient IsNot Nothing Then
             'fill the HKID, DOB & HKIC Symbol into the claim form

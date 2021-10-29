@@ -137,7 +137,8 @@ Namespace BLL
             'CRE20-006 DHC integration [Start][Nichole]
             'declare the session for store the artifact parameter value
             Public Const SESS_DHCArtifact As String = "SESS_DHCARTIFACT"
-            Public Const SESS_DHCClientInfo As String = "SESS_DHCClientINFO"
+            Public Const SESS_DHCClientInfoForClaim As String = "SESS_DHCClientINFOFORCLAIM"
+            Public Const SESS_DHCClientInfoForLogin As String = "SESS_DHCClientINFOFORLOGIN"
             'CRE20-006 DHC integration [End][Nichole]
             '------------------------------------------------------------------------------------------
             ' OCSSS - HKIC Symbol
@@ -1195,25 +1196,45 @@ Namespace BLL
 #Region "DHC service"
         'CRE20-006 DHC Claim service [Start][Nichole]
 
-        Public Sub ArtifactSaveToSession(ByVal strFunctionCode As String, ByVal strArtifact As String)
-            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact)) = strArtifact
+        Public Sub ArtifactSaveToSession(ByVal strArtifact As String)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_DHCArtifact)) = strArtifact
         End Sub
-        Public Sub ArtifactRemoveFromSession(ByVal strFunctionCode As String)
-            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact))
+        Public Sub ArtifactRemoveFromSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_DHCArtifact))
         End Sub
 
-        Public Function ArtifactGetFromSession(ByVal strFunctionCode As String) As String
-            Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact))
+        Public Function ArtifactGetFromSession() As String
+            Return HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_DHCArtifact))
         End Function
 
-        Public Sub DHCInfoSaveToSession(ByVal strFunctionCode As String, ByVal udtDHCInfo As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel)
-            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCClientInfo)) = udtDHCInfo
+        Public Sub DHCInfoSaveToSession(ByVal udtDHCInfo As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_DHCClientInfoForClaim)) = udtDHCInfo
         End Sub
 
-        Public Function DHCInfoGetFromSession(ByVal strFunctionCode As String) As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel
-            Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCClientInfo))
+        ' INT21-0025 (Fix DHC missing clear session) [Start][Winnie SUEN]
+        ' --------------------------------------------------------------
+        Public Sub DHCInfoRemoveFromSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_DHCClientInfoForClaim))
+        End Sub
+        ' INT21-0025 (Fix DHC missing clear session) [End][Winnie SUEN]
+
+        Public Function DHCInfoGetFromSession() As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel
+            Return HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_DHCClientInfoForClaim))
         End Function
         'CRE20-006 DHC Claim Service [End][Nichole]
+
+        Public Sub DHCInfoForLoginSaveToSession(ByVal udtDHCInfo As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_DHCClientInfoForLogin)) = udtDHCInfo
+        End Sub
+
+        Public Sub DHCInfoForLoginRemoveFromSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_DHCClientInfoForLogin))
+        End Sub
+
+        Public Function DHCInfoForLoginGetFromSession() As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel
+            Return HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_DHCClientInfoForLogin))
+        End Function
+
 #End Region
 #Region "Vaccination Record Enquiry"
 

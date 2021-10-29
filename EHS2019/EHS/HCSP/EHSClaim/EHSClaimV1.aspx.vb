@@ -308,20 +308,22 @@ Partial Public Class EHSClaimV1
         Me.ModalPopupExclamationImportantReminderWithReason.PopupDragHandleControlID = Me.ucNoticePopUpExclamationImportantReminderWithReason.Header.ClientID
 
         ' CRE20-006 Hidden the home, inbox and logout button [Start][Nichole]
-        Dim strFromOutsider As String = _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
-        If strFromOutsider IsNot Nothing Then
-
-            'Hide "Home" "Inbox" "Logout" button 
-            Me.Master.FindControl("ibtnHome").Visible = False
-            Me.Master.FindControl("btnInbox").Visible = False
-            Me.Master.FindControl("ibtnLogout").Visible = False
-            btnStep3ClaimClose.Visible = True
-            'btnStep3ClaimClose.Visible = False
-            btnStep3NextClaim.Visible = False
-            'remove the cancel button
+        If Me.ClaimMode = Common.Component.ClaimMode.DHC Then
+            'Hide Button
             btnStep2aCancel.Visible = False
+            btnStep3NextClaim.Visible = False
+
+            'Show Button
+            btnStep3ClaimClose.Visible = True
+
         Else
+            'Show Button
+            btnStep2aCancel.Visible = True
+            btnStep3NextClaim.Visible = True
+
+            'Hide Button
             btnStep3ClaimClose.Visible = False
+
         End If
         ' CRE20-006 Hidden the home, inbox and logout button [End][Nichole]
     End Sub
@@ -405,9 +407,8 @@ Partial Public Class EHSClaimV1
                 Me.panClaimValidatedTimelineStep1.CssClass = strHightLight
                 Me.EHSClaimTokenNumAssign()
 
-
                 'CRE20-006 Fill the scheme, doc type, hkic no and dob from DHS [Start][Nichole]
-                Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+                Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
 
                 If udtDHCClient Is Nothing Then
                     'normal situation
@@ -424,8 +425,8 @@ Partial Public Class EHSClaimV1
                     'Get the DHC info from model and fill into the claim form
                     Me.ddlStep1Scheme.SelectedValue = SchemeClaimModel.HCVS
 
-                    Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocType.DocTypeModel.DocTypeCode.HKIC
-                    Me.udcStep1DocumentTypeRadioButtonGroup.Enabled = False
+                    'Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocType.DocTypeModel.DocTypeCode.HKIC
+                    'Me.udcStep1DocumentTypeRadioButtonGroup.Enabled = False
                     'initial the claim form
                     Me.Step1Reset(False)
                     Me.SetupStep1(True, True)
@@ -744,7 +745,7 @@ Partial Public Class EHSClaimV1
                 End If
 
                 'CRE20-006 DHC Claim access - check the HKID no with DHC [Start][Nichole]
-                Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+                Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
                 Dim blnValidReadFromDHC As Boolean = True
 
                 If udtDHCClient IsNot Nothing Then
@@ -873,7 +874,7 @@ Partial Public Class EHSClaimV1
             'CRE20-006 Fix the practice selectio of DHC [Start][Nichole]
             Dim udtFilteredDHCPracticeList As New PracticeModelCollection
             Dim udtFilteredDHCPracticeDisplayList As New PracticeDisplayModelCollection
-            Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+            Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
 
             If udtDHCClient IsNot Nothing Then
                 For Each udtPracticeModel As PracticeModel In udtSP.PracticeList.Values
@@ -1118,11 +1119,9 @@ Partial Public Class EHSClaimV1
                             Select Case udtSchemeClaim.ControlType
                                 'CRE20-006-2 DHC district selection issue - Clear the dropdownlist [Start][Nichole]
                                 Case SchemeClaimModel.EnumControlType.VOUCHER
-                                    Dim strFromOutsider As String = _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
-
                                     Dim udcInputHCVS As ucInputHCVS = Me.udcStep2aInputEHSClaim.GetHCVSControl()
-                                    If strFromOutsider Is Nothing Then
-                                        If Not udcInputHCVS Is Nothing Then
+                                    If Not udcInputHCVS Is Nothing Then
+                                        If Me.ClaimMode = Common.Component.ClaimMode.DHC Then
                                             udcInputHCVS.DHCDistrictDDL.Items.Clear()
                                             udcInputHCVS.DHCDistrictDDL.SelectedValue = Nothing
                                             udcInputHCVS.DHCDistrictDDL.SelectedIndex = -1
@@ -2437,7 +2436,7 @@ Partial Public Class EHSClaimV1
 
         Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
         'CRe20-006 DHC Integration [Start][Nichole]
-        Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+        Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
         If udtDHCClient IsNot Nothing Then
             _udtSessionHandler.HKICSymbolSaveToSession(FunctCode, IIf(udtDHCClient.HKIC_Symbol Is Nothing, udcClaimSearch.HKICSymbolSelectedValue, udtDHCClient.HKIC_Symbol))
         End If
@@ -3315,7 +3314,6 @@ Partial Public Class EHSClaimV1
 
     Private Sub SetupStep1(ByVal blnCreatePopupPractice As Boolean, ByVal blnSetScheme As Boolean)
         Dim blnFromVaccinationRecordEnquiry As Boolean = CheckFromVaccinationRecordEnquiry()
-        Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
 
         ' Handle concurrent browser
         If Not EHSClaimTokenNumValidation() Then Return
@@ -3523,33 +3521,40 @@ Partial Public Class EHSClaimV1
                 udcStep1DocumentTypeRadioButtonGroup.ShowLegend = False
             End If
 
-            ' CRE20-0022 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             If udtSelectedSchemeClaim Is Nothing Then
                 udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VaccinationRecordEnquriySearch)
             Else
-                Select Case udtSelectedSchemeClaim.SchemeCode
-                    Case SchemeClaimModel.VSS, SchemeClaimModel.RVP
-                        If ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                            udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_COVID19)
-                        Else
-                            udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS)
-                        End If
-                    Case SchemeClaimModel.COVID19OR
-                        Dim udtCOVID19BLL As New COVID19.COVID19BLL
+                If Me.ClaimMode = Common.Component.ClaimMode.DHC Then
+                    ' INT21-0025 (Fix DHC Document Selection) [Start][Winnie SUEN]
+                    ' --------------------------------------------------------------
+                    ' Fix Document from DHC
+                    udcStep1DocumentTypeRadioButtonGroup.BuildWithFixedDocumentByScheme(DocType.DocTypeModel.DocTypeCode.HKIC)
+                    ' INT21-0025 (Fix DHC Document Selection) [End][Winnie SUEN]
+                Else
+                    ' Normal Claim
+                    Select Case udtSelectedSchemeClaim.SchemeCode
+                        Case SchemeClaimModel.VSS, SchemeClaimModel.RVP
+                            If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                                udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_COVID19)
+                            Else
+                                udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS)
+                            End If
+                        Case SchemeClaimModel.COVID19OR
+                            Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
-                        If Not udtCOVID19BLL.DisplaySpecificDocTypeByCentreID(_udtSP.SPID, udtSelectedPracticeDisplay.PracticeID) Then
-                            udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.COVID19OR)
-                        Else
+                            If Not udtCOVID19BLL.DisplaySpecificDocTypeByCentreID(_udtSP.SPID, udtSelectedPracticeDisplay.PracticeID) Then
+                                udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.COVID19OR)
+                            Else
+                                udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+                            End If
+
+                        Case Else
                             udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
-                        End If
 
-                    Case Else
-                        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
-                End Select
+                    End Select
+                End If
 
             End If
-            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             ' --- Build Search ---
 
@@ -6204,7 +6209,7 @@ Partial Public Class EHSClaimV1
             '-----------------------------------------------------------------------------------------
 
             'CRE20-006 DHC Claim Form disabled the dropdownlist and checked the checkbox of DHC service and fill-in the Claim amount [Start][Nichole]
-            Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+            Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
 
             If udtDHCClient IsNot Nothing Then
                 'DHC Claim disabled the dropdownlist and checked the  checkbox of DHC service and fill-in the Claim amount
@@ -13733,7 +13738,7 @@ Partial Public Class EHSClaimV1
         Me.Clear()
         Me._udtSessionHandler.HKICSymbolRemoveFromSession(FunctCode)
         Me._udtSessionHandler.OCSSSRefStatusRemoveFromSession(FunctCode)
-        Me._udtSessionHandler.ArtifactRemoveFromSession(Common.Component.FunctCode.FUNT021201)
+        Me._udtSessionHandler.DHCInfoRemoveFromSession()
 
         Response.Redirect("~/login.aspx")
 
@@ -16315,7 +16320,7 @@ Partial Public Class EHSClaimV1
             End If
 
             'CRE20-006 DHC Integration [Start][Nichole]
-            Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+            Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
             Dim blnValidReadFromDHC As Boolean = True
 
             If udtDHCClient IsNot Nothing Then

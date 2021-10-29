@@ -78,16 +78,6 @@ Partial Public Class Inbox
 
             Me.GridView1.PageSize = intPageSize
 
-            'CRE20-006 DHC integeration [Start][Nichole]
-            Dim strFromOutsider As String = _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
-            If strFromOutsider IsNot Nothing Then
- 
-                'Hide "Home" "Inbox" "Logout" button 
-                Me.Master.FindControl("ibtnHome").Visible = False
-                Me.Master.FindControl("ibtnLogout").Visible = False
-
-            End If
-            'CRE20-006 DHC integeration [End][Nichole]
         End If
 
     End Sub

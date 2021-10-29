@@ -437,6 +437,55 @@ Public Class DocumentTypeRadioButtonGroup
 
     End Sub
 
+    ' INT21-0025 (Fix DHC Document Selection) [Start][Winnie SUEN]
+    ' --------------------------------------------------------------
+    ''' <summary>
+    ''' Build DocType When Selected Scheme and fixed document
+    ''' Only show Document for selected Scheme
+    ''' Auto select fixed value and disable other option
+    ''' </summary>
+    ''' <param name="strDocCode"></param>
+    ''' <remarks></remarks>
+    Public Sub BuildWithFixedDocumentByScheme(ByVal strDocCode As String)
+        Me._strDocumentTypes = New Dictionary(Of String, DocumentInfo)
+        Dim documentInfo As DocumentInfo = Nothing
+        Dim udtDocTypeBLL As New DocTypeBLL()
+
+        Dim udtDocTypeModelList As DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
+
+        If Me.HCSPSubPlatform <> EnumHCSPSubPlatform.NA Then
+            udtDocTypeModelList = udtDocTypeModelList.FilterByHCSPSubPlatform(Me.HCSPSubPlatform)
+        End If
+
+        ' Scheme Selected
+        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+
+        udtDocTypeModelList = udtDocTypeModelList.FilterBySchemeDocTypeList(udtSchemeDocTypeList)
+
+        udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
+
+
+        For Each udtDocType As DocTypeModel In udtDocTypeModelList
+            documentInfo = New DocumentInfo(udtDocType)
+            Me._strDocumentTypes.Add(documentInfo.DocCode, documentInfo)
+        Next
+
+        For Each udtDocumentInfo As DocumentInfo In Me._strDocumentTypes.Values
+            If udtDocumentInfo.DocCode.Trim = strDocCode.Trim Then
+                udtDocumentInfo.IsEnable = True
+                Me._strPopularDocType = udtDocumentInfo.DocCode
+                Exit For
+            End If
+        Next
+
+        ' Auto select the only value
+        Me.SelectedValue = strDocCode
+
+        Me.BuildRadioButtonGroup()
+
+    End Sub
+    ' INT21-0025(Fix DHC Document Selection) [End][Winnie SUEN]
+
 #End Region
 
 #Region "Render UI"

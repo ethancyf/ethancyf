@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+ -- =============================================
+-- Modification History
+-- CR# :			INT21-0025
+-- Modified by:		Koala CHENG
+-- Modified date:	07 Oct 2021
+-- Description:		Remove QIV and LAIV (Govt) sub-report
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -193,45 +200,45 @@ FROM
 ORDER BY  
 	Display_Seq  
 
--- --------------------------------------------------  
--- From stored procedure: proc_EHS_eHSD0033_02_03_PrepareData
--- To Excel sheet:   eHSD0033-03: Report on yearly PPPKG claim transaction by school code (current season) (QIV Govt)
--- --------------------------------------------------  
-SELECT    
-	isnull(Col1,''),  
-	isnull(Col2,''),  
-	isnull(Col3,''),  
-	isnull(Col4,''),  
-	isnull(Col5,''),  
-	isnull(Col6,''),  
-	isnull(Col7,''),  
-	isnull(Col8,''),  
-	isnull(Col9,''),  
-	isnull(Col10,'')
-FROM    
-	RpteHSD0033_03_PPPKG_QIVG_Tx_BySchoolCode WITH (NOLOCK)
-ORDER BY  
-	Display_Seq  
+---- --------------------------------------------------  
+---- From stored procedure: proc_EHS_eHSD0033_02_03_PrepareData
+---- To Excel sheet:   eHSD0033-03: Report on yearly PPPKG claim transaction by school code (current season) (QIV Govt)
+---- --------------------------------------------------  
+--SELECT    
+--	isnull(Col1,''),  
+--	isnull(Col2,''),  
+--	isnull(Col3,''),  
+--	isnull(Col4,''),  
+--	isnull(Col5,''),  
+--	isnull(Col6,''),  
+--	isnull(Col7,''),  
+--	isnull(Col8,''),  
+--	isnull(Col9,''),  
+--	isnull(Col10,'')
+--FROM    
+--	RpteHSD0033_03_PPPKG_QIVG_Tx_BySchoolCode WITH (NOLOCK)
+--ORDER BY  
+--	Display_Seq  
 
--- --------------------------------------------------  
--- From stored procedure: proc_EHS_eHSD0033_02_03_PrepareData
--- To Excel sheet:   eHSD0033-03: Report on yearly PPPKG claim transaction by school code (current season) (LAIV Govt)
--- --------------------------------------------------  
-SELECT    
-	isnull(Col1,''),  
-	isnull(Col2,''),  
-	isnull(Col3,''),  
-	isnull(Col4,''),  
-	isnull(Col5,''),  
-	isnull(Col6,''),  
-	isnull(Col7,''),  
-	isnull(Col8,''),  
-	isnull(Col9,''),  
-	isnull(Col10,'')
-FROM    
-	RpteHSD0033_03_PPPKG_LAIVG_Tx_BySchoolCode WITH (NOLOCK)
-ORDER BY  
-	Display_Seq  
+---- --------------------------------------------------  
+---- From stored procedure: proc_EHS_eHSD0033_02_03_PrepareData
+---- To Excel sheet:   eHSD0033-03: Report on yearly PPPKG claim transaction by school code (current season) (LAIV Govt)
+---- --------------------------------------------------  
+--SELECT    
+--	isnull(Col1,''),  
+--	isnull(Col2,''),  
+--	isnull(Col3,''),  
+--	isnull(Col4,''),  
+--	isnull(Col5,''),  
+--	isnull(Col6,''),  
+--	isnull(Col7,''),  
+--	isnull(Col8,''),  
+--	isnull(Col9,''),  
+--	isnull(Col10,'')
+--FROM    
+--	RpteHSD0033_03_PPPKG_LAIVG_Tx_BySchoolCode WITH (NOLOCK)
+--ORDER BY  
+--	Display_Seq  
 
 -- --------------------------------------------------  
 -- From stored procedure: proc_EHS_eHSD0033_04_PrepareData  

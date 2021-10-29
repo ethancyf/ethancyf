@@ -236,14 +236,19 @@ Partial Public Class EHSAccountCreationV1
         End If
 
 		'CRE20-006 DHC integration [Start][Nichole]
-       'If Me._udtSessionHandler.ArtifactGetFromSession(FunctCode) IsNot Nothing Then
-        If _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201) IsNot Nothing Then
-            btnStep1cNextCreation.Visible = False
-             'remove the cancel button
+        If Me.ClaimMode = Common.Component.ClaimMode.DHC Then
+            'Hide button
             btnstep1a1Back.Visible = False
-            btnStep1b1Cancel.Visible = False
             btnStep1a2Cancel.Visible = False
-        End if 
+            btnStep1b1Cancel.Visible = False
+            btnStep1cNextCreation.Visible = False
+        Else
+            'Show button
+            btnstep1a1Back.Visible = True
+            btnStep1a2Cancel.Visible = True
+            btnStep1b1Cancel.Visible = True
+            btnStep1cNextCreation.Visible = True
+        End If
         'CRE20-006 DHC integration [End][Nichole]
         
         'CRE20-xxx COVID-19 [Start][Nichole] 
@@ -3144,13 +3149,6 @@ Partial Public Class EHSAccountCreationV1
             Me._blnIsRequireHandlePageRefresh = True
             Return
         End If
-
-
-        'CRE20-006 DHC integration [Start][Nichole]
-        If Me._udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201) IsNot Nothing Then
-            btnStep1cNextCreation.Visible = False
-        End If
-        'CRE20-006 DHC integration [End][Nichole]
 
         Me._systemMessage = New Common.ComObject.SystemMessage(FunctCode, "I", "00001")
         Me.udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Complete

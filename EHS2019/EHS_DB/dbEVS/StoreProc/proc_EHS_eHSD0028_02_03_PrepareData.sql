@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR# :			INT21-0025
+-- Modified by:		Winnie SUEN
+-- Modified date:	07 Oct 2021
+-- Description:		Handle Null for calculating subtotal in worksheet 02 (iii)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			CRE21-010
 -- Modified by:		Martin Tang
 -- Modified date:	08 Sep 2021
@@ -989,7 +996,8 @@ EXEC [proc_SymmetricKey_open]
 						   END	
 
 			-- Sub-total
-			SET @result4 = @result1 + @result2 + ISNULL(@result3,0)		
+			SET @result4 = ISNULL(@result1,0) + ISNULL(@result2,0) + ISNULL(@result3,0)	
+			
 			-- No. of SP Involved
 			SET @result5 = (SELECT COUNT(DISTINCT SP_ID) 
 							FROM #temp_VSS 

@@ -9,9 +9,6 @@ Imports HCSP.BLL
 Partial Public Class ucNoticePopUp
     Inherits System.Web.UI.UserControl
 
-    'CRE20-006 declare the sessionhandler [Start][Nichole]
-    Private udcSessionHandler As New SessionHandler
-    'CRE20-006 declare the sessionhandler [End][Nichole]
 #Region "Constants"
     Private Const VS_BUTTON_MODE As String = "ButtonMode"
     Private Const VS_ICON_MODE As String = "IconMode"
@@ -530,10 +527,9 @@ Partial Public Class ucNoticePopUp
         ' CRE13-003 - Token Replacement [End][Tommy L]
 
         'CRE20-006 DHC integration - user cancel to create the new claim account, the browswer will close [Start][Nichole]
+        Dim udtDHCClient As Common.Component.DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = (New SessionHandler).DHCInfoGetFromSession()
 
-        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
-
-        If strFromOutsider Is Nothing Then
+        If udtDHCClient Is Nothing Then
             RaiseEvent ButtonClick(enumButtonClick.OK)
         Else
             If ibtnOK.AlternateText = Me.GetGlobalResourceObject("AlternateText", "ProceedBtn") Then

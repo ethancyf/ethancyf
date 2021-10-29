@@ -2885,6 +2885,10 @@ Partial Public Class ClaimCreation
             Me.udcConfirmClaimCreation.EnableVaccinationRecordChecking = False
             Me.udcConfirmClaimCreation.ShowHKICSymbol = True
             Me.udcConfirmClaimCreation.ShowOCSSSCheckingResult = False
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.udcConfirmClaimCreation.ShowContactNoNotAbleToSMS = True
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
             Me.udcConfirmClaimCreation.LoadTranInfo(udtEHSTransaction, New DataTable(), True, True, True)
 
             Me.udcInfoMessageBox.AddMessage(New SystemMessage("990000", SeverityCode.SEVI, MsgCode.MSG00021))

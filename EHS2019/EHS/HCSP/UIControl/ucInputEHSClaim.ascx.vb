@@ -255,30 +255,27 @@ Partial Public Class ucInputEHSClaim
                     udcInputEHSClaim = Me.ucInputHCVS
                     udcInputEHSClaim.ID = EHSClaimControlID.HCVS
                     udcInputEHSClaim.Visible = True
+
+                    Dim udcInputHCVS As ucInputHCVS = CType(udcInputEHSClaim, ucInputHCVS)
                     'CRE20-006 DHC Claim Service [Start][Nichole]
-                    Dim strFromOutsider As String = _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
-                    Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+                    Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession()
                     Dim udtDistrcitBLL As Common.Component.District.DistrictBLL = New Common.Component.District.DistrictBLL
 
-                    If strFromOutsider IsNot Nothing Then
-                        CType(udcInputEHSClaim, ucInputHCVS).DHCServiceEnable = False
-                        'CType(udcInputEHSClaim, ucInputHCVS).DHC_DDLDistrictCodeEnable = False
-                        'CType(udcInputEHSClaim, ucInputHCVS).DHCServiceSetting = YesNo.Yes
-                        CType(udcInputEHSClaim, ucInputHCVS).DHCClaimAmount = udtDHCClient.Claim_Amount
-                        'DHCClaimAmt
+                    If udcInputHCVS IsNot Nothing AndAlso udtDHCClient IsNot Nothing Then
+                        udcInputHCVS.DHCServiceEnable = False
+                        udcInputHCVS.DHCCheckboxEnable = True
+                        'udcInputHCVS.DHC_DDLDistrictCodeEnable = False
+                        'udcInputHCVS.DHCServiceSetting = YesNo.Yes
+                        udcInputHCVS.DHCClaimAmount = udtDHCClient.Claim_Amount
 
-                        CType(udcInputEHSClaim, ucInputHCVS).DHCCheckboxEnable = True
                         If _udtSessionHandler.Language = CultureLanguage.TradChinese Or _udtSessionHandler.Language = CultureLanguage.SimpChinese Then
-                            ' CType(udcInputEHSClaim, ucInputHCVS).DHCDistrictCode = udtDistrcitBLL.GetDistrictNameByDistrictCode(udtDHCClient.DHCDistrictCode).District_ChiName
-                            CType(udcInputEHSClaim, ucInputHCVS).DHCDistrictCode = udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtDHCClient.DHCDistrictCode).DistrictBoardChi
+                            udcInputHCVS.DHCDistrictCode = udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtDHCClient.DHCDistrictCode).DistrictBoardChi
                         Else
-                            CType(udcInputEHSClaim, ucInputHCVS).DHCDistrictCode = udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtDHCClient.DHCDistrictCode).DistrictBoard
+                            udcInputHCVS.DHCDistrictCode = udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtDHCClient.DHCDistrictCode).DistrictBoard
                         End If
-                        ' Else
-                        ' CType(udcInputEHSClaim, ucInputHCVS).DHC_DDLDistrictCodeEnable = True
+
                     End If
                     'CRE20-006 DHC Claim service [End][Nichole]
-
 
                 End If
 
