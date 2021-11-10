@@ -48,6 +48,17 @@ Namespace Component.EHSTransaction
             Return udtResTransactionDetailList
         End Function
 
+        Public Function FilterBySchemeSeq(ByVal intSchemeSeq As Integer) As TransactionDetailModelCollection
+            Dim udtResTransactionDetailList As New TransactionDetailModelCollection()
+            For Each udtTransactionDetailModel As TransactionDetailModel In Me
+
+                If udtTransactionDetailModel.SchemeSeq = intSchemeSeq Then
+                    udtResTransactionDetailList.Add(New TransactionDetailModel(udtTransactionDetailModel))
+                End If
+            Next
+            Return udtResTransactionDetailList
+        End Function
+
         Public Function FilterByServiceDate(ByVal dtmDate As Date) As TransactionDetailModelCollection
             Dim udtResTransactionDetailList As New TransactionDetailModelCollection()
             For Each udtTransactionDetailModel As TransactionDetailModel In Me

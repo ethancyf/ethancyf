@@ -147,8 +147,8 @@ Namespace Component.ClaimRules
             Public Const GENDER As String = "GENDER"
             Public Const SERVICEDTM As String = "SERVICEDTM"
             Public Const EXACTDOD As String = "EXACTDOD"
-            Public Const HAPATIENT As String = "HAPATIENT" ' CRE20-0XX (HA Scheme)
-
+            Public Const HAPATIENT As String = "HAPATIENT"
+            Public Const HAPATIENTGROUP As String = "HAPGROUP"
         End Class
 
         Public Class DOBCalMethodClass
@@ -723,7 +723,7 @@ Namespace Component.ClaimRules
         End Function
         'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
 
-        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        ' CRE20-015 (HA Scheme) [Start][Winnie]
         Public Shared Function CompareEligibleRuleByHAPatient(ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, _
                                                               ByVal strCompareValue As String, ByVal strOperator As String) As Boolean
             Dim strPassValue As String = String.Empty
@@ -737,7 +737,64 @@ Namespace Component.ClaimRules
             Return RuleComparator(strOperator, strCompareValue.Trim, strPassValue.Trim)
 
         End Function
-        ' CRE20-0XX (HA Scheme) [End][Winnie]
+        ' CRE20-015 (HA Scheme) [End][Winnie]
+
+        '' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
+        '' ---------------------------------------------------------------------------------------------------------
+        'Public Shared Function CompareEligibleRuleByHAPatientFullList(ByVal udtEHSPersonalInfo As EHSPersonalInformationModel) As Boolean
+
+        '    Dim blnRes As Boolean = False
+        '    Dim udtHAServicePatientBLL As New HAServicePatient.HAServicePatientBLL
+        '    Dim dtHAPatient As DataTable = udtHAServicePatientBLL.getHAServicePatientByIdentityNum(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum)
+
+        '    If dtHAPatient.Rows.Count > 0 Then
+        '        blnRes = True
+        '    End If
+
+        '    Return blnRes
+
+        'End Function
+        '' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
+
+        ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Shared Function CompareEligibleRuleByHAPatientGroup(ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, _
+                                                                     ByVal strCompareValueList As String, _
+                                                                     ByVal strOperator As String) As Boolean
+
+            Dim blnRes As Boolean = False
+            Dim strCompareValue() As String = Split(strCompareValueList, "|")   'Value format: 1|2|3 ....
+            Dim strPassValue As String = String.Empty
+            Dim udtHAServicePatientBLL As New HAServicePatient.HAServicePatientBLL
+            Dim dtHAPatient As DataTable = udtHAServicePatientBLL.getHAServicePatientGroupByIdentityNum(udtEHSPersonalInfo.DocCode, _
+                                                                                                          udtEHSPersonalInfo.IdentityNum)
+
+            'Pass Value
+            If dtHAPatient.Rows.Count > 0 Then
+                strPassValue = dtHAPatient.Rows(0)("Group_No").ToString
+
+            End If
+
+            If strCompareValue.Length > 1 Then
+                ' Check if patient in any one of group
+                For ct As Integer = 0 To strCompareValue.Length - 1
+                    blnRes = RuleComparator(strOperator, strCompareValue(ct).Trim, strPassValue.Trim)
+
+                    If blnRes Then
+                        Exit For
+                    End If
+
+                Next
+
+            Else
+                blnRes = RuleComparator(strOperator, strCompareValue(0).Trim, strPassValue.Trim)
+
+            End If
+
+            Return blnRes
+
+        End Function
+        ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
 
         Public Shared Sub ConvertPassValueDate(ByVal strUnit As String, ByVal dtmPassDOB As DateTime, ByVal dtmCompareDate As Date, ByRef dtmReturnPassDOB As DateTime, ByRef dtmReturnCompareDate As DateTime)
             '   Y   = Year (exact Year)        
@@ -2117,11 +2174,25 @@ Namespace Component.ClaimRules
                     End If
                     'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
 
-                    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                    ' CRE20-015 (HA Scheme) [Start][Winnie]
                 Case EligibilityRuleTypeClass.HAPATIENT
                     Return CheckEligibleRuleSingleEntryByHAPatient(udtEHSPersonalInfo, udtEligibilityRule)
-                    ' CRE20-0XX (HA Scheme) [End][Winnie]
+                    ' CRE20-015 (HA Scheme) [End][Winnie]
 
+                    ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case EligibilityRuleTypeClass.HAPATIENTGROUP
+                    If udtEligibilityRule.CompareValue = "ALL" Then
+                        Return True
+
+                        'Return CompareEligibleRuleByHAPatientFullList(udtEHSPersonalInfo)
+
+                    Else
+                        ' Check whether patient in particular group (for previous season only)
+                        Return CompareEligibleRuleByHAPatientGroup(udtEHSPersonalInfo, udtEligibilityRule.CompareValue.Trim(), udtEligibilityRule.Operator.Trim().ToUpper())
+
+                    End If
+                    ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
                 Case Else
                     Throw New Exception("ClaimRuleBLL[CheckEligibleRuleSingleEntry]: Unhandled Eligible Rule : " & udtEligibilityRule.RuleType.Trim().ToUpper())
             End Select
@@ -2186,14 +2257,14 @@ Namespace Component.ClaimRules
         End Function
         'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
 
-        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        ' CRE20-015 (HA Scheme) [Start][Winnie]
         Private Shared Function CheckEligibleRuleSingleEntryByHAPatient(ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, ByVal udtEligibilityRule As EligibilityRuleModel) As Boolean
             Dim strCompareValue As String = udtEligibilityRule.CompareValue.Trim
             Dim strOperator As String = udtEligibilityRule.Operator.Trim().ToUpper()
 
             Return CompareEligibleRuleByHAPatient(udtEHSPersonalInfo, strCompareValue, strOperator)
         End Function
-        ' CRE20-0XX (HA Scheme) [End][Winnie]
+        ' CRE20-015 (HA Scheme) [End][Winnie]
 
         Public Shared Function ConvertEligibilityRule(ByVal udtEligibilityRuleList As EligibilityRuleModelCollection) As SortedList(Of String, EligibilityRuleModelCollection)
             Dim lstSortEligibilityRuleList As New SortedList(Of String, EligibilityRuleModelCollection)
@@ -6410,7 +6481,7 @@ Namespace Component.ClaimRules
 
 #Region "Block HA Service Claim for non HA Patient (Table: [HAServicePatient])"
 
-        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        ' CRE20-015 (HA Scheme) [Start][Winnie]
         Public Function CheckIsHAPatient(ByVal strSchemeCode As String, _
                                              ByVal strRecipientDocCode As String, _
                                              ByVal strRecipientIdentityNum As String) As String
@@ -6438,7 +6509,7 @@ Namespace Component.ClaimRules
             End If
 
         End Function
-        ' CRE20-0XX (HA Scheme) [End][Winnie]
+        ' CRE20-015 (HA Scheme) [End][Winnie]
 #End Region
 
 #Region "Others"

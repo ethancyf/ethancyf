@@ -50,6 +50,30 @@ Namespace Component.HAServicePatient
 
         End Function
 
+        'Get HAServicePatientGroup
+        Public Function getHAServicePatientGroupByIdentityNum(ByVal strDocType As String, ByVal strIdentityNum As String, Optional ByVal udtDB As Database = Nothing) As DataTable
+            Dim udtFormatter As New Format.Formatter()
+            Dim dt As New DataTable
+
+            If udtDB Is Nothing Then udtDB = New Database()
+
+            strIdentityNum = udtFormatter.formatDocumentIdentityNumber(strDocType, strIdentityNum)
+
+            Try
+                Dim prams() As SqlParameter = { _
+                    udtDB.MakeInParam("@Identity", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, strIdentityNum)}
+                udtDB.RunProc("proc_HAServicePatientGroup_get_byDocID", prams, dt)
+
+            Catch eSQL As SqlException
+                Throw
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return dt
+
+        End Function
+
 
 #End Region
 

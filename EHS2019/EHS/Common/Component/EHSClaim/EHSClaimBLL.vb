@@ -867,7 +867,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
             End If
 
             If Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER AndAlso _
-               Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
+               Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA AndAlso _
+               Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.SSSCMC Then
                 udtRuleResult = Me.CheckSchemeSubsidy(udtEHSTransaction)
                 If Not udtRuleResult Is Nothing Then
                     udtRuleResultList.RuleResults.Add(udtRuleResult)
@@ -1805,6 +1806,16 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
                 End If
 
+                ' CRE21-019 (SSSCMC $1000) [Start][Winnie]
+            ElseIf _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.SSSCMC Then
+                If blnIsEligible Then
+                    If CheckAvailableSubsidizeItem_SSSCMC(udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel) = False Then
+                        udtRuleResultList.RuleResults.Add(New RuleResult(RuleID.AvailableSubsidyNoVoucher))
+                    End If
+
+                End If
+                ' CRE21-019 (SSSCMC $1000) [End][Winnie]
+
             ElseIf _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.EHAPP Then
 
                 If blnIsEligible Then
@@ -2017,6 +2028,33 @@ Namespace Component.EHSClaim.EHSClaimBLL
         End Function
         ' CRE19-006 (DHC) [End][Winnie]
 
+
+        ' CRE21-019 (SSSCMC $1000) [Start][Winnie]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function CheckAvailableSubsidizeItem_SSSCMC(ByVal udtEHSTransaction As EHSTransactionModel, _
+                                                            ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                            ByVal udtSchemeClaimModel As SchemeClaimModel) As Boolean
+
+            ' 1. Get remaining Subsidize (if no remaining subsidize: No available Subsidy)
+            ' 2. Compare remaining subsidize vs claiming subsidize (if no remaining subsidize for claiming subsidize)
+
+            Dim udtEHSTransactionBLL As New EHSTransactionBLL
+            Dim decAvailableSubidy As Decimal
+            decAvailableSubidy = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaimModel.SubsidizeGroupClaimList, udtEHSTransaction.ServiceDate)
+
+            If decAvailableSubidy > 0 Then
+                If (decAvailableSubidy - udtEHSTransaction.VoucherClaimRMB) < 0 Then
+                    Return False
+                Else
+                    Return True
+                End If
+            Else
+                Return False
+            End If
+
+        End Function
+        ' CRE21-019 (SSSCMC $1000) [End][Winnie]
+
         ' CRE13-001 - EHAPP [Start][Tommy L]
         ' -------------------------------------------------------------------------------------
         Private Function CheckAvailableSubsidizeItem_EHAPP(ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection) As Boolean
@@ -2081,7 +2119,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
             ' Check if it is a valid subsidy item
             If Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER AndAlso _
-                Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
+                Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA AndAlso _
+                Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.SSSCMC Then
                 'Dim udtSchemeDetailBLL As New SchemeDetailBLL()
                 Dim udtSchemeClaimBLL As New SchemeClaimBLL()
                 If udtEHSTransaction.TransactionDetails Is Nothing OrElse udtEHSTransaction.TransactionDetails.Count <= 0 Then

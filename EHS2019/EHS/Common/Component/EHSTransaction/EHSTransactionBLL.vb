@@ -989,13 +989,16 @@ Namespace Component.EHSTransaction
                         ' INT13-0012 - Fix EHAPP concurrent claim checking [End][Tommy L]
                         ' CRE13-001 - EHAPP [End][Tommy L]
 
-                        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                        ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
                         ' ---------------------------------------------------------------------------------------------------------
                     ElseIf udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_HAService Then
                         ' Available Subsidy 
                         Dim decAvailableSubsidy As Decimal = 0.0
 
-                        decAvailableSubsidy = Me.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaimModel.SubsidizeGroupClaimList, udtDB)
+                        decAvailableSubsidy = Me.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, _
+                                                                                  udtSchemeClaimModel.SubsidizeGroupClaimList, _
+                                                                                  udtEHSTransactionModel.ServiceDate, _
+                                                                                  udtDB)
 
                         '1. Compare the available subsidy between model and DB
                         '2. Check claimed amount between 0 and available subsidy
@@ -1005,7 +1008,7 @@ Namespace Component.EHSTransaction
                             strMsgCode = "00197"
                         End If
 
-                        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+                        ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
                     Else
                         ' Available Voucher 
                         Dim intAvailableVoucher As Integer = 0
@@ -3776,39 +3779,290 @@ Namespace Component.EHSTransaction
         End Function
         ' INT13-0012 - Fix EHAPP concurrent claim checking [End][Tommy L]
 
-        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         Public Function getAvailableSubsidizeItem_SSSCMC(ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
                                                          ByVal udtSubsidizeGroupClaimList As SubsidizeGroupClaimModelCollection, _
+                                                         ByVal dtmServiceDate As DateTime, _
                                                          Optional ByRef udtDB As Database = Nothing) As Decimal
 
-            Dim udtSchemeDetailBLL As New SchemeDetails.SchemeDetailBLL
+            Dim dtmCurrentDate = (New GeneralFunction).GetSystemDateTime.Date
 
-            Dim udtSubsidizeItemDetailList As SchemeDetails.SubsidizeItemDetailsModelCollection = udtSchemeDetailBLL.getSubsidizeItemDetails(udtSubsidizeGroupClaimList(0).SubsidizeItemCode)
-            Dim udtSubsidizeItemDetail As SchemeDetails.SubsidizeItemDetailsModel = udtSubsidizeItemDetailList(0)
+            Dim udtSchemeClaimBLL As New SchemeClaimBLL()
 
-            Dim udtTransDetailBenefitList As TransactionDetailModelCollection = Me.getTransactionDetail_SSSCMC(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, udtSubsidizeGroupClaimList(0).SchemeCode, udtDB)
-            Dim udtTransDetailBenefitListByAvailItem As TransactionDetailModelCollection
+            ' Retrieve Scheme Claim & Specific SubsidizeGroup (For All SchemeSeq)
+            Dim udtSchemeClaimList As SchemeClaimModelCollection = udtSchemeClaimBLL.getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSubsidizeCode(udtSubsidizeGroupClaimList(0).SchemeCode, _
+                                                                                                                                                        udtSubsidizeGroupClaimList(0).SubsidizeCode)
 
-            Dim decNumSubsidize_Total As Decimal = CDec(udtSubsidizeGroupClaimList(0).NumSubsidize)
-            Dim decNumSubsidize_Used As Decimal = 0.0
+            '----------------------------------------
+            ' Grant Subsidy Amount (For Each Season)
+            '----------------------------------------
+            'Dim decNumSubsidize_Total As Decimal = CDec(udtSubsidizeGroupClaimList(0).NumSubsidize)
+            Dim dicGrantSubsidize As Dictionary(Of Integer, Decimal) = Me.getGrantSubsidize_SSSCMC(udtSubsidizeGroupClaimList(0).SchemeCode, _
+                                                                                                   udtSubsidizeGroupClaimList(0).SubsidizeCode, _
+                                                                                                   udtEHSPersonalInfo, _
+                                                                                                   dtmCurrentDate)
 
-            For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSubsidizeGroupClaimList
-                udtTransDetailBenefitListByAvailItem = udtTransDetailBenefitList.FilterBySubsidizeItemDetail(udtSubsidizeGroupClaim.SchemeCode, _
-                                                                                                             udtSubsidizeGroupClaim.SchemeSeq, _
-                                                                                                             udtSubsidizeGroupClaim.SubsidizeCode, _
-                                                                                                             udtSubsidizeGroupClaim.SubsidizeItemCode, _
-                                                                                                             udtSubsidizeItemDetail.AvailableItemCode)
+            '----------------------------------------
+            ' Used Subsidy Amount (For Each Season)
+            '----------------------------------------
+            Dim dicUsedSubsidize As Dictionary(Of Integer, Decimal) = Me.getUsedSubsidize_SSSCMC(udtSubsidizeGroupClaimList(0).SchemeCode, _
+                                                                                                   udtSubsidizeGroupClaimList(0).SubsidizeCode, _
+                                                                                                   udtEHSPersonalInfo, _
+                                                                                                   dtmCurrentDate, udtDB)
 
-                For Each udtTransDetailBenefitByAvailItem As TransactionDetailModel In udtTransDetailBenefitListByAvailItem
-                    decNumSubsidize_Used += CDec(udtTransDetailBenefitByAvailItem.TotalAmountRMB)
-                Next
-            Next
-
-            Return decNumSubsidize_Total - decNumSubsidize_Used
+            '----------------------------------------
+            ' Available Subsidy Amount (as at service date)
+            '----------------------------------------
+            Dim decAvailableAmt As Decimal = CalculateAvailableSubsidizeItem_SSSCMC(dtmServiceDate, udtSchemeClaimList, dicGrantSubsidize, dicUsedSubsidize)
+            Return decAvailableAmt
 
         End Function
-        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+        ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
+
+        ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve the subsidy granted per season
+        ''' dtmServiceDate refer to the claim service date or current date
+        ''' </summary>
+        ''' <param name="strSchemeCode"></param>
+        ''' <param name="strSubsidizeCode"></param>
+        ''' <param name="udtEHSPersonalInformation"></param>
+        ''' <param name="dtmServiceDate"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getGrantSubsidize_SSSCMC(ByVal strSchemeCode As String, _
+                                                 ByVal strSubsidizeCode As String, _
+                                                 ByVal udtEHSPersonalInformation As EHSAccount.EHSAccountModel.EHSPersonalInformationModel, _
+                                                 ByVal dtmServiceDate As Date) As Dictionary(Of Integer, Decimal)
+
+            Dim dicGrantSubsidize As New Dictionary(Of Integer, Decimal)
+            Dim udtClaimRulesBLL As New ClaimRulesBLL()
+            Dim udtSchemeClaimBLL As New SchemeClaimBLL()
+
+            ' Retrieve Scheme Claim & Specific SubsidizeGroup (For All SchemeSeq)
+            Dim udtSchemeClaimList As SchemeClaimModelCollection = udtSchemeClaimBLL.getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSubsidizeCode(strSchemeCode, strSubsidizeCode)
+
+            ' To Check Eligibility, Assume The last Date Expiry Dtm is used for calculation 
+            For Each udtSchemeClaim As SchemeClaimModel In udtSchemeClaimList
+
+                ' Scheme Claim is currently effective or passed
+                If udtSchemeClaim.EffectiveDtm <= dtmServiceDate AndAlso udtSchemeClaim.SubsidizeGroupClaimList.Count > 0 Then
+
+                    For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
+
+                        Dim decSeasonGrantSubsidize As Integer = 0.0
+
+                        ' Future subsidize group claim is filtered
+                        If udtSubsidizeGroupClaim.ClaimPeriodFrom > dtmServiceDate Then
+                            Continue For
+                        End If
+
+                        ' Filter Future Date
+                        Dim dtmCheckEligible As Nullable(Of DateTime) = Nothing
+                        dtmCheckEligible = udtSubsidizeGroupClaim.ClaimPeriodTo.AddDays(-1)
+
+                        If udtSubsidizeGroupClaim.ClaimPeriodFrom <= dtmServiceDate And udtSubsidizeGroupClaim.ClaimPeriodTo > dtmServiceDate Then
+                            dtmCheckEligible = dtmServiceDate
+                        End If
+
+                        'Requirement of getting entitlement
+                        '---------------------------------------
+                        '1. Recipient is alive
+                        '2. Recipient is eligible at that season 
+                        If udtClaimRulesBLL.CheckEligibilityPerSubsidize(udtSubsidizeGroupClaim, udtEHSPersonalInformation, dtmCheckEligible, Nothing, True).IsEligible Then
+                            decSeasonGrantSubsidize = udtSubsidizeGroupClaim.NumSubsidize
+                        End If
+
+                        dicGrantSubsidize.Add(udtSubsidizeGroupClaim.SchemeSeq, decSeasonGrantSubsidize)
+                        'intTotalGrantSubsidize = intTotalGrantSubsidize + intSeasonGrantSubsidize
+
+                    Next
+
+                End If
+
+            Next
+
+            Return dicGrantSubsidize
+        End Function
+        ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
+
+        ' CRE21-019 (SSSCMC $1000) [Start][Winnie SUEN]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve Used Subsidy amount per season
+        ''' dtmServiceDate refer to the claim service date or current date
+        ''' </summary>
+        ''' <param name="strSchemeCode"></param>
+        ''' <param name="strSubsidizeCode"></param>
+        ''' <param name="udtEHSPersonalInfo"></param>
+        ''' <param name="dtmServiceDate"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getUsedSubsidize_SSSCMC(ByVal strSchemeCode As String, _
+                                                 ByVal strSubsidizeCode As String, _
+                                                 ByVal udtEHSPersonalInfo As EHSAccount.EHSAccountModel.EHSPersonalInformationModel, _
+                                                 ByVal dtmServiceDate As Date, _
+                                                 Optional ByRef udtDB As Database = Nothing) As Dictionary(Of Integer, Decimal)
+
+            Dim dicUsedSubsidize As New Dictionary(Of Integer, Decimal)
+            Dim udtClaimRulesBLL As New ClaimRulesBLL()
+            Dim udtSchemeClaimBLL As New SchemeClaimBLL()
+
+            Dim udtTransDetailBenefitList As TransactionDetailModelCollection = Me.getTransactionDetail_SSSCMC(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, strSchemeCode, udtDB)
+
+            ' Retrieve Scheme Claim & Specific SubsidizeGroup (For All SchemeSeq)
+            Dim udtSchemeClaimList As SchemeClaimModelCollection = udtSchemeClaimBLL.getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSubsidizeCode(strSchemeCode, strSubsidizeCode)
+
+            ' To Check Eligibility, Assume The last Date Expiry Dtm is used for calculation 
+            For Each udtSchemeClaim As SchemeClaimModel In udtSchemeClaimList
+
+                ' Scheme Claim is currently effective or passed
+                If udtSchemeClaim.EffectiveDtm <= dtmServiceDate AndAlso udtSchemeClaim.SubsidizeGroupClaimList.Count > 0 Then
+
+                    For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
+
+                        Dim decSeasonNumSubsidize_Used As Decimal = 0.0
+
+                        ' Get used subsidy for each season
+                        For Each udtTransDetailBenefitByAvailItem As TransactionDetailModel In udtTransDetailBenefitList.FilterBySchemeSeq(udtSubsidizeGroupClaim.SchemeSeq)
+                            decSeasonNumSubsidize_Used += CDec(udtTransDetailBenefitByAvailItem.TotalAmountRMB)
+                        Next
+
+                        dicUsedSubsidize.Add(udtSubsidizeGroupClaim.SchemeSeq, decSeasonNumSubsidize_Used)
+                    Next
+
+                End If
+
+            Next
+
+            Return dicUsedSubsidize
+        End Function
+
+
+        Private Function CalculateAvailableSubsidizeItem_SSSCMC(ByVal dtmServiceDate As Date, _
+                                                                ByVal udtSchemeClaimList As SchemeClaimModelCollection, _
+                                                                ByVal dicGrantSubsidize As Dictionary(Of Integer, Decimal), _
+                                                                ByVal dicUsed As Dictionary(Of Integer, Decimal)) As Decimal
+
+            Dim dtmCurrentDate = (New GeneralFunction).GetSystemDateTime.Date
+            Dim udtClaimRulesBLL As New ClaimRulesBLL()
+            Dim udtSchemeClaimBLL As New SchemeClaimBLL()
+
+            Dim intTargetSchemeSeq As Integer = 0
+            Dim intCurrentSchemeSeq As Integer = 0
+
+            ' -------------------------------------------------------------------------------------------------------------
+            ' Find Target Scheme Seq and Current Scheme Seq
+            ' -------------------------------------------------------------------------------------------------------------
+            For Each udtSchemeClaim As SchemeClaimModel In udtSchemeClaimList
+
+                ' Scheme Claim is currently effective or passed
+                If udtSchemeClaim.SubsidizeGroupClaimList.Count > 0 Then
+
+                    If udtSchemeClaim.EffectiveDtm <= dtmServiceDate Then
+                        If udtSchemeClaim.SubsidizeGroupClaimList.Filter(dtmServiceDate.Date).Count > 0 Then
+                            intTargetSchemeSeq = udtSchemeClaim.SubsidizeGroupClaimList.Filter(dtmServiceDate.Date)(0).SchemeSeq
+                        End If
+                    End If
+
+                    If udtSchemeClaim.SubsidizeGroupClaimList.Filter(dtmCurrentDate).Count > 0 Then
+                        intCurrentSchemeSeq = udtSchemeClaim.SubsidizeGroupClaimList.Filter(dtmCurrentDate)(0).SchemeSeq
+                    End If
+
+                End If
+            Next
+
+            ' -------------------------------------------------------------------------------------------------------------
+            ' Calculation
+            ' -------------------------------------------------------------------------------------------------------------
+            Dim decTargetAvailableVoucher As Decimal = 0.0
+            Dim decMinValue As Nullable(Of Decimal) = Nothing
+
+            ' e.g. Sample data, Current Scheme Seq. = 3
+            ' -------------------------------------------------------------------------------------------------------------
+            ' Scheme Seq   | Entitle    | Used      | Period End Bal    | Available Voucher for claim
+            ' -------------------------------------------------------------------------------------------------------------
+            ' 1            | 2000       | 1800      | 200               | 100   (Back date claim)
+            ' 2            | 1000       | 1100      | 100               | 100   (Back date claim)
+            ' 3            | 1000       | 800       | 300               | 300   (Current Season)
+
+            ' -------------------------------------------------------------------------------------------------------------
+            ' 1. Get the target available voucher
+            ' -------------------------------------------------------------------------------------------------------------
+            decTargetAvailableVoucher = Me.getPeriodEndBalanceAsAtServiceDate_SSSCMC(intTargetSchemeSeq, dicGrantSubsidize, dicUsed)
+
+
+            '====================================================================================
+            'Current Season     e.g. Target Scheme Seq. = 3, Current Scheme Seq. = 3
+            '====================================================================================
+            If intTargetSchemeSeq = intCurrentSchemeSeq Then
+                Return decTargetAvailableVoucher
+            End If
+
+            '====================================================================================
+            'Previous Season     e.g. Target Scheme Seq. = 1, Current Scheme Seq. = 3   
+            '====================================================================================
+
+            ' -------------------------------------------------------------------------------------------------------------
+            ' 2. Get the list of value (available voucher) after the target scheme seq. for comparison
+            ' -------------------------------------------------------------------------------------------------------------
+            ' e.g. The list of available voucher includes the scheme seq. 2, 3 
+            For intSchemeSeq As Integer = intTargetSchemeSeq + 1 To intCurrentSchemeSeq
+                '(a) Available voucher at that scheme seq.
+                ' e.g. Scheme Seq = 2, Available voucher = 1000
+                Dim decSchemeSeqAvailableVoucher As Decimal = getPeriodEndBalanceAsAtServiceDate_SSSCMC(intSchemeSeq, dicGrantSubsidize, dicUsed)
+
+                'Find the minimum voucher amount
+                ' e.g. 200 > 100
+                If decTargetAvailableVoucher > decSchemeSeqAvailableVoucher Then
+                    'Set initial value
+                    If decMinValue Is Nothing Then
+                        decMinValue = decSchemeSeqAvailableVoucher
+                    End If
+
+                    'Compare the values, choose the minimum one to set
+                    If Not decMinValue Is Nothing AndAlso decMinValue > decSchemeSeqAvailableVoucher Then
+                        decMinValue = decSchemeSeqAvailableVoucher
+                    End If
+
+                End If
+
+            Next
+
+            'If has the minimum voucher amount, the target available voucher will be overrided.
+            If Not decMinValue Is Nothing Then
+                decTargetAvailableVoucher = decMinValue
+            End If
+
+
+            Return decTargetAvailableVoucher
+
+        End Function
+
+        ''' <summary>
+        ''' Retrieve the Period End Balance as at particular season
+        ''' </summary>
+        ''' <param name="dicGrantSubsidize"></param>
+        ''' <param name="intSchemeSeq"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getPeriodEndBalanceAsAtServiceDate_SSSCMC(ByVal intSchemeSeq As Integer, _
+                                                                  ByVal dicGrantSubsidize As Dictionary(Of Integer, Decimal), _
+                                                                  ByVal dicUsed As Dictionary(Of Integer, Decimal)) As Decimal
+
+            Dim dectAvailableVoucher As Decimal = 0.0
+
+            For intCurrentSchemeSeq As Integer = 1 To intSchemeSeq
+                dectAvailableVoucher += dicGrantSubsidize.Item(intCurrentSchemeSeq) - dicUsed.Item(intCurrentSchemeSeq)
+            Next
+
+            Return dectAvailableVoucher
+
+        End Function
+        ' CRE21-019 (SSSCMC $1000) [End][Winnie SUEN]
+
 
 #End Region
 

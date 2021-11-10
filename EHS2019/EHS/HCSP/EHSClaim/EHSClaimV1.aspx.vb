@@ -1572,11 +1572,11 @@ Partial Public Class EHSClaimV1
 
     End Sub
 
-    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    ' CRE20-015 (HA Scheme) [Start][Winnie]
     Private Sub udcPopupPracticeRadioButtonGroup_SchemeSelected() Handles udcPopupPracticeRadioButtonGroup.SchemeSelected
         ModalPopupPracticeSelection.Show()
     End Sub
-    ' CRE20-0XX (HA Scheme) [End][Winnie]
+    ' CRE20-015 (HA Scheme) [End][Winnie]
 
     '---------------------------------------------------------------------------------------------------------
     'Select Print Option
@@ -3366,10 +3366,10 @@ Partial Public Class EHSClaimV1
             Dim udtPracticeDisplayList As PracticeDisplayModelCollection = _udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
 
             udcPopupPracticeRadioButtonGroup.VerticalScrollBar = True
-            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            ' CRE20-015 (HA Scheme) [Start][Winnie]
             udcPopupPracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
             udcPopupPracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
-            ' CRE20-0XX (HA Scheme) [End][Winnie]
+            ' CRE20-015 (HA Scheme) [End][Winnie]
             ' CRE20-0022 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             udcPopupPracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplayList, _udtSP.PracticeList, _
@@ -5237,10 +5237,10 @@ Partial Public Class EHSClaimV1
             Dim udtPracticeDisplays As BLL.PracticeDisplayModelCollection = Nothing
             udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
             Me.udcPopupPracticeRadioButtonGroup.VerticalScrollBar = True
-            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            ' CRE20-015 (HA Scheme) [Start][Winnie]
             Me.udcPopupPracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
             Me.udcPopupPracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
-            ' CRE20-0XX (HA Scheme) [End][Winnie]
+            ' CRE20-015 (HA Scheme) [End][Winnie]
             ' CRE20-0022 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             Me.udcPopupPracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, _
@@ -6048,8 +6048,6 @@ Partial Public Class EHSClaimV1
                         End If
                         ' CRE13-001 - EHAPP [End][Tommy L]
 
-                        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-                        ' ---------------------------------------------------------------------------------------------------------
                     Case SchemeClaimModel.EnumControlType.SSSCMC
                         Dim blnValid As Boolean = True
                         Dim udtPersonalInformation As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
@@ -6059,10 +6057,13 @@ Partial Public Class EHSClaimV1
                             blnValid = False
                         End If
 
+                        ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
                         ' Check Patient whether has available subsidy
-                        If Not _udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtPersonalInformation, udtSchemeClaim.SubsidizeGroupClaimList) > 0 Then
+                        If Not _udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtPersonalInformation, udtSchemeClaim.SubsidizeGroupClaimList, dtmServiceDate) > 0 Then
                             blnValid = False
                         End If
+                        ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
 
                         If blnValid Then
                             notAvailableForClaim = False
@@ -6078,9 +6079,10 @@ Partial Public Class EHSClaimV1
 
                             Me._udtSessionHandler.HAPatientSaveToSession(dtHAPatient)
 
-                        End If
+                        Else
+                            Me._udtSessionHandler.HAPatientRemoveFromSession()
 
-                        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+                        End If
 
                 End Select
 
@@ -12318,7 +12320,10 @@ Partial Public Class EHSClaimV1
                 ' --------------------------------------------------------------
                 Dim udtEHSTransactionBLL As New EHSTransactionBLL
 
-                decAvailableAmount = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
+                ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                decAvailableAmount = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList, udtEHSTransaction.ServiceDate)
+                ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
 
                 If decAvailableAmount > 0 AndAlso decAvailableAmount >= udcInputSSSCMC.UsedRMB Then
                     ' Subsidies for SSSCMC is available
@@ -14437,10 +14442,10 @@ Partial Public Class EHSClaimV1
 
         'Build practice Selection List
         Me.PracticeRadioButtonGroup.VerticalScrollBar = False
-        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        ' CRE20-015 (HA Scheme) [Start][Winnie]
         Me.PracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
         Me.PracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
-        ' CRE20-0XX (HA Scheme) [End][Winnie]
+        ' CRE20-015 (HA Scheme) [End][Winnie]
 
         ' CRE20-0022 (Immu record) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------

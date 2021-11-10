@@ -312,8 +312,11 @@ Partial Public Class ucInputSSSCMC
         'Bind DropDownList Sub-specialities
         BindSubSpecialities()
 
+        ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         ' Available subsidy
-        _decAvailableSubidy = _udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
+        _decAvailableSubidy = _udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList, MyBase.ServiceDate)
+        ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
 
         If _decAvailableSubidy <= 0.0 Then
             _decAvailableSubidy = 0.0

@@ -9107,6 +9107,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_FunctionFeature_FNFT_get_ByFunctionCodeAndFe
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_FunctionFeature_FNFT_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_FunctionInformation_get_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_GovSIVPatient_get_byDocCodeDocID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_HAServicePatientGroup_get_byDocID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HAServicePatient_bulkcopy.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HAServicePatient_get_byDocCodeDocID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HAServiceSubSpecialitiesMapping_get.sql -text
