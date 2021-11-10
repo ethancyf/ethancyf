@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- CR# :			CRE21-017
+-- Modified by:		Koala CHENG
+-- Modified date:	29 Oct 2021
+-- Description:		[03-QIV] Add column "No. of Reimbursed Transactions"
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR# :			I-CRE20-005
@@ -185,7 +191,8 @@ SET NOCOUNT ON;
 		--IsCurrentSeason		INT,
 		Is1stDose				INT,
 		Is2ndDose				INT,
-		IsOnlyDose				INT
+		IsOnlyDose				INT,
+		Record_Status			VARCHAR(1)
 	)    
 
 	CREATE TABLE #ResultTable_02   
@@ -366,7 +373,8 @@ SET NOCOUNT ON;
 		--IsCurrentSeason,
 		Is1stDose,
 		Is2ndDose,
-		IsOnlyDose			
+		IsOnlyDose,
+		Record_Status
 	)    
 	SELECT    
 		vt.Voucher_Acc_ID,
@@ -385,7 +393,8 @@ SET NOCOUNT ON;
 		--CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '1STDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '2NDDOSE' THEN 1 ELSE 0 END,
-		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END
+		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END,
+		VT.Record_Status
 	FROM VoucherTransaction VT WITH (NOLOCK)
 		INNER JOIN TransactionDetail D WITH (NOLOCK) on VT.Transaction_ID = D.Transaction_ID  
 		INNER JOIN TransactionAdditionalField AF WITH (NOLOCK) ON VT.Transaction_ID = AF.Transaction_ID  AND AF.AdditionalFieldID = 'SchoolCode'
@@ -428,7 +437,8 @@ SET NOCOUNT ON;
 		--IsCurrentSeason,
 		Is1stDose,
 		Is2ndDose,
-		IsOnlyDose
+		IsOnlyDose,
+		Record_Status
 	)    
 	SELECT    
 		vt.Voucher_Acc_ID,
@@ -447,7 +457,8 @@ SET NOCOUNT ON;
 		--CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '1STDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '2NDDOSE' THEN 1 ELSE 0 END,
-		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END
+		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END,
+		VT.Record_Status
 	FROM VoucherTransaction VT WITH (NOLOCK)    
 		INNER JOIN TransactionDetail D WITH (NOLOCK)     
 			ON VT.Transaction_ID = D.Transaction_ID     
@@ -491,7 +502,8 @@ SET NOCOUNT ON;
 		--IsCurrentSeason,
 		Is1stDose,
 		Is2ndDose,
-		IsOnlyDose
+		IsOnlyDose,
+		Record_Status
 	)    
 	SELECT    
 		vt.Voucher_Acc_ID,
@@ -510,7 +522,8 @@ SET NOCOUNT ON;
 		--CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '1STDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '2NDDOSE' THEN 1 ELSE 0 END,
-		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END
+		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END,
+		VT.Record_Status
 	FROM VoucherTransaction VT WITH (NOLOCK)    
 		INNER JOIN TransactionDetail D WITH (NOLOCK)     
 			ON VT.Transaction_ID = D.Transaction_ID    
@@ -897,10 +910,10 @@ SET NOCOUNT ON;
 	INSERT INTO #ResultTable_03 (_display_seq)    
 	VALUES (4)  
 
-	INSERT INTO #ResultTable_03 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5, _result_value6)
-	VALUES (5, 'School Code', '1st dose', '2nd dose', 'Only dose', 'Total', 'No. of Students')
+	INSERT INTO #ResultTable_03 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5, _result_value6, _result_value7)
+	VALUES (5, 'School Code', '1st dose', '2nd dose', 'Only dose', 'Total', 'No. of Students', 'No. of Reimbursed Transactions')
 
-	INSERT INTO #ResultTable_03 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5, _result_value6)
+	INSERT INTO #ResultTable_03 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5, _result_value6, _result_value7)
 	SELECT 
 		10 + ROW_NUMBER () OVER (ORDER BY T.SchoolCode),
 		T.SchoolCode, 
@@ -908,7 +921,8 @@ SET NOCOUNT ON;
 		SUM(T.Is2ndDose) AS [2ndDose],
 		SUM(T.IsOnlyDose) AS [OnlyDose],
 		SUM(T.NoOfTrans) AS [Total],
-		SUM(T.NoOfStudents) AS [NoOfStudents]
+		SUM(T.NoOfStudents) AS [NoOfStudents],
+		SUM(T.NoOfReimbursedTrans) as [NoOfReimbursedTrans]
 	FROM
 		(
 			SELECT 
@@ -918,7 +932,8 @@ SET NOCOUNT ON;
 				COUNT(DISTINCT identity_num) [NoOfStudents], -- Same doc code + doc id consider as 1 student
 				SUM(Is1stDose) [Is1stDose],
 				SUM(Is2ndDose) [Is2ndDose],
-				SUM(IsOnlyDose) [IsOnlyDose]				
+				SUM(IsOnlyDose) [IsOnlyDose],
+				SUM(CASE WHEN Record_Status = 'R' THEN 1 ELSE 0 END) [NoOfReimbursedTrans]
 			FROM
 				#Transaction
 			GROUP BY
