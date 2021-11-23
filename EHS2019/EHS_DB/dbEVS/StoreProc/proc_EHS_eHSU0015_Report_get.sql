@@ -14,6 +14,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- CR# :			CRE21-019-02
+-- Modified by:		Koala CHENG
+-- Modified date:	09 Nov 2021
+-- Description:		Add patient group column
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			CRE20-015-14
 -- Modified by:		Koala CHENG
 -- Modified date:	26 Jul 2021
@@ -54,6 +61,10 @@ GO
 
 		DECLARE @ReportDtm DATETIME = GETDATE();
 
+		DECLARE @Group_No_Latest INT
+		
+		-- If [HAServicePatientGroup] is empty (Before $1000 effective), all patient will be group 1
+		SELECT @Group_No_Latest = ISNULL(MAX(Group_No), 0) + 1 FROM HAServicePatientGroup WITH (NOLOCK)
 		-- =============================================  
 		-- Declaration  
 		-- =============================================  
@@ -77,7 +88,8 @@ GO
 			_result_value7_NameChi nVARCHAR(100) DEFAULT '',	-- Chinese name.
 			_result_value7_DOB nVARCHAR(100) DEFAULT '',		-- DOB,
 			_result_value7_Exact_DOB nVARCHAR(100) DEFAULT '',	-- Exact DOB.
-			_result_value7_Sex nVARCHAR(100) DEFAULT '',					-- Sex.
+			_result_value7_Sex nVARCHAR(100) DEFAULT '',		-- Sex.
+			_result_value7_PatientGroup nVARCHAR(100) DEFAULT '',			-- Patient Group.
 			_result_value8 nVARCHAR(100) DEFAULT '',
 			_result_value9 nVARCHAR(100) DEFAULT '',
 			_result_value10 nVARCHAR(100) DEFAULT '',
@@ -85,7 +97,7 @@ GO
 			_result_value12 nVARCHAR(100) DEFAULT '',
 			_result_value13 nVARCHAR(100) DEFAULT '',
 			_result_value14 nVARCHAR(100) DEFAULT '',
-			_result_value15 nVARCHAR(100) DEFAULT '',
+			_result_value15 nVARCHAR(1000) DEFAULT '',
 			_result_value16 nVARCHAR(100) DEFAULT '',
 			_result_value17 nVARCHAR(100) DEFAULT '',
 			_result_value18 nVARCHAR(100) DEFAULT '',
@@ -130,6 +142,7 @@ GO
 			_result_value7_DOB,
 			_result_value7_Exact_DOB,
 			_result_value7_Sex,
+			_result_value7_PatientGroup,
 			_result_value8,
 			_result_value9,
 			_result_value10,
@@ -163,6 +176,7 @@ GO
             '', --'Date of Birth',
             '', --'Date of Birth Flag',
             '', --'Sex',
+            '', --'Patient Group',
             '', --N'全额减免病人',
             '', --N'病人申请费用减免资料不符',
             'M', --N'病人自付费用 ¥',
@@ -198,6 +212,7 @@ GO
 		_result_value7_DOB,
 		_result_value7_Exact_DOB,
 		_result_value7_Sex,
+		_result_value7_PatientGroup,
         _result_value8,
         _result_value9,
         _result_value10,
@@ -233,6 +248,7 @@ GO
             'Date of Birth',
             'Date of Birth Flag',
             'Sex',
+            'Patient Group',
             N'全额减免病人',
             N'病人申请费用减免资料不符',
             N'病人自付费用 ¥',
@@ -270,6 +286,7 @@ GO
         _result_value7_DOB,
         _result_value7_Exact_DOB,
         _result_value7_Sex,
+        _result_value7_PatientGroup,
         _result_value8,
         _result_value9,
         _result_value10,
@@ -307,6 +324,7 @@ GO
 	, convert(varchar, isnull(tp.DOB, pp.DOB), 106)  [Date of Birth]
 	, isnull(tp.Exact_DOB, pp.Exact_DOB)  [Date of Birth Flag]
 	, isnull(tp.Sex, pp.Sex)  [Sex]
+	, Grp.Group_No [Patient Group]
 	-- ,CONVERT(varchar(MAX), DecryptByKey(E_Doc_No)) AS [E_Doc_No]
 	, case vd.Subsidize_Code
 		when 'HAS_A' then ''
@@ -385,6 +403,9 @@ GO
 		left join ReimbursementAuthTran RAT with (nolock) on  VT.Transaction_ID = RAT.Transaction_ID   
 		left join StatusData stat2 with (nolock) on RAT.Authorised_Status = stat2.Status_Value
 			and stat2.enum_class = 'ReimbursementStatus'
+		left join 
+			(SELECT HAP.Encrypt_Field1, ISNULL(HAPG.Group_No, @Group_No_Latest) AS Group_No FROM HAServicePatient HAP with (nolock) LEFT JOIN HAServicePatientGroup HAPG with (nolock) ON HAP.Encrypt_Field1 = HAPG.Encrypt_Field1) Grp
+			ON pp.Encrypt_Field1 = Grp.Encrypt_Field1 OR tp.Encrypt_Field1 = Grp.Encrypt_Field1 
     where
         vt.scheme_code = 'SSSCMC' --and vt.record_status not in ('I','W','D')
         and vt.Transaction_Dtm >= @In_From_Date
@@ -451,6 +472,7 @@ GO
         ISNULL(_result_value7_DOB, ''),
         ISNULL(_result_value7_Exact_DOB, ''),
         ISNULL(_result_value7_Sex, ''),
+        ISNULL(_result_value7_PatientGroup, ''),
         ISNULL(_result_value8, ''),
         ISNULL(_result_value9, ''),
         ISNULL(_result_value10, ''),
