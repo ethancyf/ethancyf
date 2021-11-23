@@ -529,7 +529,7 @@ Partial Public Class EHSClaimV1
                                 End If
 
                             Case SchemeClaimModel.EnumControlType.VSS
-                                strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(dtmServiceDate)
+                                strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(udtSP.SPID, udtSelectedPracticeDisplay.PracticeID, dtmServiceDate)
 
                                 '_udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctCode)
 
@@ -1498,7 +1498,7 @@ Partial Public Class EHSClaimV1
                                     End If
 
                                 Case SchemeClaimModel.EnumControlType.VSS
-                                    strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(dtmServiceDate)
+                                    strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(udtNewPracticeDisplay.SPID, udtNewPracticeDisplay.PracticeID, dtmServiceDate)
 
                                     Dim udcInputVSSCOVID19 As ucInputVSSCOVID19 = Me.udcStep2aInputEHSClaim.GetVSSCOVID19Control()
                                     If Not udcInputVSSCOVID19 Is Nothing Then
@@ -4197,7 +4197,7 @@ Partial Public Class EHSClaimV1
                     End If
 
                 Case SchemeClaimModel.VSS
-                    strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(dtmServiceDate)
+                    strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(udtSelectedPracticeDisplay.SPID, udtSelectedPracticeDisplay.PracticeID, dtmServiceDate)
 
                     'Convert sub-category -> Dictionary -> Json
                     Dim strSubCategoryMappingJavaScript As String = String.Empty
@@ -4725,7 +4725,7 @@ Partial Public Class EHSClaimV1
                             strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForCentreJavaScript(udtSelectedPractice.SPID, udtSelectedPractice.PracticeID, dtmServiceDate)
 
                         Case SchemeClaimModel.EnumControlType.VSS
-                            strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(dtmServiceDate)
+                            strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(udtSelectedPractice.SPID, udtSelectedPractice.PracticeID, dtmServiceDate)
 
                         Case SchemeClaimModel.EnumControlType.RVP
                             strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForRCHJavaScript(dtmServiceDate)
@@ -5323,6 +5323,7 @@ Partial Public Class EHSClaimV1
         Me._udtSessionHandler.CurrentUserGetFromSession(udtSP, udtDataEntry)
         Dim udtLatestC19Vaccine As TransactionDetailVaccineModel = Nothing
         Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
+        Dim udtVaccineHistoryList As TransactionDetailVaccineModelCollection = Nothing
 
         '----------------------------------------------------------------------------
         ' Prepare value for proceed
@@ -5449,7 +5450,7 @@ Partial Public Class EHSClaimV1
 
                                     Select Case udtSchemeClaim.ControlType
                                         Case SchemeClaimModel.EnumControlType.VSS
-                                            Dim drVaccineLotNo() As DataRow = Me.GetCOVID19VaccineLotMappingForPrivate(dtmServiceDate)
+                                            Dim drVaccineLotNo() As DataRow = Me.GetCOVID19VaccineLotMappingForPrivate(udtSP.SPID, udtSelectedPracticeDisplay.PracticeID, dtmServiceDate)
 
                                             If drVaccineLotNo IsNot Nothing AndAlso drVaccineLotNo.Length > 0 Then
                                                 blnCOVID19ForClaim = True
@@ -5474,6 +5475,11 @@ Partial Public Class EHSClaimV1
                                     End Select
 
                                 End If
+
+                                '--------------------
+                                ' VaccinationRecord
+                                '--------------------
+                                udtInputPicker.VaccinationRecord = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
 
                                 '--------------------
                                 ' With Category
@@ -5618,6 +5624,7 @@ Partial Public Class EHSClaimV1
                                     Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
                                     Dim dicC19Category As Dictionary(Of TransactionDetailVaccineModelCollection.COVID19Category, String) = Nothing
                                     Dim strContactNo As String = String.Empty
+                                    Dim strRecipientType As String = String.Empty
 
                                     'Find the latest COVID19 transaction in EHS
                                     udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
@@ -5633,6 +5640,9 @@ Partial Public Class EHSClaimV1
 
                                     'Contact No.
                                     strContactNo = udtC19VaccineList.FilterFindNearestContactNo()
+
+                                    'Recipient Type
+                                    strRecipientType = udtC19VaccineList.FilterFindNearestRecipientType()
 
                                     'Only allow EHS Transaction, not include CMS / CIMS record
                                     If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -5683,6 +5693,23 @@ Partial Public Class EHSClaimV1
                                                 Dim udtTransactAdditionfield As New TransactionAdditionalFieldModel()
                                                 udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
                                                 udtTransactAdditionfield.AdditionalFieldValueCode = strContactNo
+                                                udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                                                udtTransactAdditionfield.SchemeCode = udtLatestC19Transaction.TransactionDetails(0).SchemeCode
+                                                udtTransactAdditionfield.SchemeSeq = udtLatestC19Transaction.TransactionDetails(0).SchemeSeq
+                                                udtTransactAdditionfield.SubsidizeCode = udtLatestC19Transaction.TransactionDetails(0).SubsidizeCode
+                                                udtLatestC19Transaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+                                            End If
+                                        End If
+
+                                        'Recipient Type
+                                        If strRecipientType <> String.Empty Then
+                                            udtTAF = udtLatestC19Transaction.TransactionAdditionFields.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.RecipientType)
+                                            If udtTAF IsNot Nothing Then
+                                                udtTAF.AdditionalFieldValueCode = strRecipientType
+                                            Else
+                                                Dim udtTransactAdditionfield As New TransactionAdditionalFieldModel()
+                                                udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.RecipientType
+                                                udtTransactAdditionfield.AdditionalFieldValueCode = strRecipientType
                                                 udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
                                                 udtTransactAdditionfield.SchemeCode = udtLatestC19Transaction.TransactionDetails(0).SchemeCode
                                                 udtTransactAdditionfield.SchemeSeq = udtLatestC19Transaction.TransactionDetails(0).SchemeSeq
@@ -5795,31 +5822,40 @@ Partial Public Class EHSClaimV1
                                             Dim udtDischargeResult As DischargeResultModel = _udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(FunctionCode)
                                             Dim udtVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
                                             Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
-                                            Dim blnHas1STDOSE As Boolean = False
-                                            Dim blnHas2NDDOSE As Boolean = False
 
-                                            For Each udtVaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                                                'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
-                                                If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                                                    blnHas1STDOSE = True
-                                                End If
+                                            'Dim blnHas1STDOSE As Boolean = False
+                                            'Dim blnHas2NDDOSE As Boolean = False
+                                            'Dim blnHas3RDDOSE As Boolean = False
 
-                                                'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
-                                                If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
-                                                    blnHas2NDDOSE = True
-                                                End If
+                                            'For Each udtVaccine As TransactionDetailVaccineModel In udtC19VaccineList
+                                            '    'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
+                                            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                                            '        blnHas1STDOSE = True
+                                            '    End If
 
-                                            Next
+                                            '    'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
+                                            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                                            '        blnHas2NDDOSE = True
+                                            '    End If
 
-                                            '1. If on discharge list, check whether has injected the 1st dose COVID19 vaccine
+                                            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                                            '        blnHas3RDDOSE = True
+                                            '    End If
+
+                                            'Next
+
+                                            '1. If on discharge list, check whether has injected COVID19 vaccine
                                             If udtDischargeResult IsNot Nothing AndAlso _
                                                 (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
                                                 udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch) Then
 
-                                                If blnHas1STDOSE AndAlso Not blnHas2NDDOSE Then
+                                                'If blnHas1STDOSE AndAlso (Not blnHas2NDDOSE OrElse Not blnHas3RDDOSE) Then
+                                                If udtC19VaccineList.Count > 0 Then
+                                                    'Claimed C19
                                                     notAvailableForClaim = True
                                                     blnDischargeClaimed = True
 
+                                                    'Remove all dose selection
                                                     If udtEHSClaimVaccine.SubsidizeList IsNot Nothing Then
                                                         For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
                                                             For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
@@ -5827,24 +5863,26 @@ Partial Public Class EHSClaimV1
                                                             Next
                                                         Next
                                                     End If
-                                                End If
-
-                                                If Not blnHas1STDOSE AndAlso Not blnHas2NDDOSE Then
+                                                Else
+                                                    'No C19 record
                                                     If udtEHSClaimVaccine.SubsidizeList IsNot Nothing Then
+                                                        'Only 1st dose can be chosen 
                                                         For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
                                                             For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
-                                                                If udtEHSClaimSubsidizeDetail.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                                                                If udtEHSClaimSubsidizeDetail.AvailableItemCode <> SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
                                                                     udtEHSClaimSubsidizeDetail.Available = False
                                                                 End If
                                                             Next
                                                         Next
                                                     End If
                                                 End If
+
                                             End If
 
                                             '2. Check non-local recovered history from previous transaction
                                             If blnNonLocalRecovered Then
-                                                If blnHas1STDOSE AndAlso Not blnHas2NDDOSE Then
+                                                'If blnHas1STDOSE AndAlso (Not blnHas2NDDOSE OrElse Not blnHas3RDDOSE) Then
+                                                If udtC19VaccineList.Count > 0 Then
                                                     notAvailableForClaim = True
                                                     blnNonLocalRecoveredHistoryClaimed = True
 
@@ -6093,50 +6131,77 @@ Partial Public Class EHSClaimV1
                 If notAvailableForClaim Then
 
                     If isEligibleForClaim Then
-                        'Me._udtSystemMessage = New SystemMessage("990000", "I", "00019")
-                        'Me.udcMsgBoxInfo.AddMessage(New SystemMessage("990000", "E", "00019"))
 
-                        ' 2010-05-08 Fix
                         Dim udtVaccinationBLL As New VaccinationBLL
 
-                        ' CRE13-001 - EHAPP [Start][Koala]
-                        ' -------------------------------------------------------------------------------------
                         If udtVaccinationBLL.SchemeContainVaccine(udtSchemeClaim) Then
+                            'No available subsidy
                             If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                                'COVID19 Scheme
+
+                                udtVaccineHistoryList = GetVaccinationRecordFromSession(Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode), udtSchemeClaim.SchemeCode.Trim())
+                                Dim udtC19VaccineHistoryList As TransactionDetailVaccineModelCollection = udtVaccineHistoryList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
                                 If blnDischargeClaimed OrElse blnNonLocalRecoveredHistoryClaimed Then
+                                    'Recovered Patient
+                                    'This recovered patient has already received %s dose of vaccine. According to the current recommendation, 1 dose of Comirnaty (BioNTech) or CoronaVac (Sinovac) is recommended for recovered patient.
                                     Me._udtSystemMessage = New SystemMessage("990000", "E", "00483")
+                                    Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage, "%s", udtC19VaccineHistoryList.Count)
+
                                 Else
-                                    Me._udtSystemMessage = New SystemMessage("990000", "E", "00474")
+
+                                    Dim udtSchemeDetailBLL As New SchemeDetailBLL
+                                    Dim udtEHSClaimVaccine As EHSClaimVaccineModel = Me._udtSessionHandler.EHSClaimVaccineGetFromSession()
+                                    Dim udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel = udtEHSClaimVaccine.SubsidizeList(0)
+                                    Dim udtSubsidizeGroupClaimItemDetailsList As SubsidizeGroupClaimItemDetailsModelCollection = Nothing
+
+                                    udtSubsidizeGroupClaimItemDetailsList = udtSchemeDetailBLL.getSubsidizeGroupClaimItemDetails(udtEHSClaimSubsidize.SchemeCode, _
+                                                                                                                                 udtEHSClaimSubsidize.SchemeSeq, _
+                                                                                                                                 udtEHSClaimSubsidize.SubsidizeCode, _
+                                                                                                                                 udtEHSClaimSubsidize.SubsidizeItemCode)
+
+                                    If udtSubsidizeGroupClaimItemDetailsList.Count > udtC19VaccineHistoryList.Count Then
+                                        'There is no available subsidy in the selected scheme for this eHealth (Subsidies) Account.
+                                        Me._udtSystemMessage = New SystemMessage("990000", "E", "00107")
+                                        Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
+                                    Else
+                                        'The citizen has already received %s doses of COVID-19 vaccines.
+                                        Me._udtSystemMessage = New SystemMessage("990000", "E", "00474")
+
+                                        'Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage, "%s", udtSubsidizeGroupClaimItemDetailsList.Count)
+                                        Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage, "%s", udtC19VaccineHistoryList.Count)
+                                    End If
+
                                 End If
 
                             Else
+                                'Others (HCVS, VSS, RVP ...)
+                                'No available subsidy. The patient might have received vaccination at other Service Provider, Hospital Authority or Department of Health. Please check with patient for his/her vaccination history.
                                 Me._udtSystemMessage = New SystemMessage("990000", "E", "00255")
+                                Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
+
                             End If
+
                         Else
-                            ' CRE19-003 (Opt voucher capping) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
+                            'No conversion rate on RMB / Opt. voucher capping
                             If blnWithoutConversionRate = False AndAlso blnNoAvailableQuota = False Then
-                                ' CRE19-003 (Opt voucher capping) [End][Winnie]
+                                'There is no available subsidy in the selected scheme for this eHealth (Subsidies) Account.
                                 Me._udtSystemMessage = New SystemMessage("990000", "E", "00107")
+                                Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
+
                             End If
+
                         End If
-                        ' CRE13-001 - EHAPP [End][Koala]
+
                     Else
+                        'Not Eligible
+                        'The service recipient is not eligible for the selected scheme.
                         Me._udtSystemMessage = New SystemMessage("990000", "E", "00106")
-                        'Me.udcMsgBoxInfo.AddMessage(New SystemMessage("990000", "E", "00106"))
+                        Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
+
                     End If
 
-                    ' 2010-05-08 Fix
-                    ' Display Error Box instead of Info Box for no available subsidy or not eligible
-                    ' The Error Message Box build in after step
-                    Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
-                    'Me.udcMsgBoxErr.BuildMessageBox(Me._strValidationFail)
-
-                    'Me.udcMsgBoxInfo.Type = CustomControls.InfoMessageBoxType.Information
-                    'Me.udcMsgBoxInfo.AddMessage(Me._udtSystemMessage)
-                    'Me.udcMsgBoxInfo.BuildMessageBox()
-
-                    'disable proceed claim control
+                    'Disable proceed claim control
                     Me.SetClaimButtonEnable(Me.btnStep2aClaim, False)
 
                     Me.udcStep2aInputEHSClaim.AvaliableForClaim = False
@@ -6166,7 +6231,6 @@ Partial Public Class EHSClaimV1
             '----------------------------------------------------------
             Dim udtEHSTransactionLatestVaccine As EHSTransactionModel = Nothing
             Dim udtTranDetailLatestVaccine As TransactionDetailVaccineModel = Nothing
-            Dim udtVaccineHistoryList As TransactionDetailVaccineModelCollection = Nothing
 
             'COVID19
             If (udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS OrElse _
@@ -6257,41 +6321,41 @@ Partial Public Class EHSClaimV1
                             End If
                         End If
 
-                        'Case 2: used of 1 COVID19 vaccine for recovery patient
+                        'Case 2: used of COVID19 vaccine for recovery patient
                         If _udtSessionHandler.ClaimCOVID19DischargeReminderGetFromSession(FunctionCode) = False AndAlso Not blnPopupUsed Then
                             If notAvailableForClaim AndAlso _
-                                ((blnDischargeClaimed AndAlso _
-                                 udtDischargeResult IsNot Nothing AndAlso _
-                                (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
-                                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch)) _
-                                OrElse _
-                                (blnNonLocalRecoveredHistoryClaimed)) Then
+                                (blnDischargeClaimed OrElse _
+                                blnNonLocalRecoveredHistoryClaimed) Then
+
+                                Dim udtC19VaccineHistoryList As TransactionDetailVaccineModelCollection = udtVaccineHistoryList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
                                 panPopupExclamationImportantReminder.Width = Unit.Pixel(500)
-                                ucNoticePopUpExclamationImportantReminder.HeaderText = GetGlobalResourceObject("Text", "RecoveredPatientReceived1DosesHeading")
-                                ucNoticePopUpExclamationImportantReminder.MessageText = GetGlobalResourceObject("Text", "RecoveredPatientReceived1DosesContent")
+                                'Recovered patient received %s dose vaccine
+                                ucNoticePopUpExclamationImportantReminder.HeaderText = Replace(GetGlobalResourceObject("Text", "RecoveredPatientReceivedDosesHeading"), "%s", udtC19VaccineHistoryList.Count)
+                                'This recovered patient has already received %s dose of vaccine.<br><br>According to the current recommendation, 1 dose of Comirnaty (BioNTech) or CoronaVac (Sinovac) is recommended for recovered patient.
+                                ucNoticePopUpExclamationImportantReminder.MessageText = Replace(GetGlobalResourceObject("Text", "RecoveredPatientReceivedDosesContent"), "%s", udtC19VaccineHistoryList.Count)
                                 ModalPopupExclamationImportantReminder.Show()
                                 blnPopupUsed = True
                             End If
                         End If
 
-                        'Case 3: used of 2 COVID19 vaccine before infected
-                        If _udtSessionHandler.ClaimCOVID19DischargeReminderGetFromSession(FunctionCode) = False AndAlso Not blnPopupUsed Then
-                            If notAvailableForClaim AndAlso _
-                                ((Not blnDischargeClaimed AndAlso _
-                                udtDischargeResult IsNot Nothing AndAlso _
-                                (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
-                                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch)) _
-                                OrElse _
-                                (Not blnNonLocalRecoveredHistoryClaimed AndAlso blnNonLocalRecovered)) Then
+                        ''Case 3: used of 2 COVID19 vaccine before infected
+                        'If _udtSessionHandler.ClaimCOVID19DischargeReminderGetFromSession(FunctionCode) = False AndAlso Not blnPopupUsed Then
+                        '    If notAvailableForClaim AndAlso _
+                        '        ((Not blnDischargeClaimed AndAlso _
+                        '        udtDischargeResult IsNot Nothing AndAlso _
+                        '        (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
+                        '        udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch)) _
+                        '        OrElse _
+                        '        (Not blnNonLocalRecoveredHistoryClaimed AndAlso blnNonLocalRecovered)) Then
 
-                                panPopupExclamationImportantReminder.Width = Unit.Pixel(500)
-                                ucNoticePopUpExclamationImportantReminder.HeaderText = GetGlobalResourceObject("Text", "RecoveredPatientReceived2DosesHeading")
-                                ucNoticePopUpExclamationImportantReminder.MessageText = GetGlobalResourceObject("Text", "RecoveredPatientReceived2DosesContent")
-                                ModalPopupExclamationImportantReminder.Show()
-                                blnPopupUsed = True
-                            End If
-                        End If
+                        '        panPopupExclamationImportantReminder.Width = Unit.Pixel(500)
+                        '        ucNoticePopUpExclamationImportantReminder.HeaderText = GetGlobalResourceObject("Text", "RecoveredPatientReceived2DosesHeading")
+                        '        ucNoticePopUpExclamationImportantReminder.MessageText = GetGlobalResourceObject("Text", "RecoveredPatientReceived2DosesContent")
+                        '        ModalPopupExclamationImportantReminder.Show()
+                        '        blnPopupUsed = True
+                        '    End If
+                        'End If
 
                         'If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
                         '    panStep2aDeclareJoineHRSS.Visible = False
@@ -6471,8 +6535,8 @@ Partial Public Class EHSClaimV1
                 panStep2aDeclareClaim.Visible = True
                 panStep2aDeclareNonLocalRecoveredHistory.Visible = True
 
-                'Bind the OTHER vaccination record table in enter claim page
-                Dim dtOtherVaccineRecord As DataTable = TransactionDetailListToNonCOVID19DataTable(GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode))
+                'Bind the OTHER vaccination record table in enter claim page (Full list included for bar vaccine)
+                Dim dtOtherVaccineRecord As DataTable = TransactionDetailListToNonCOVID19DataTable(GetVaccinationRecordFromSession(udtEHSAccount, String.Empty))
                 BuildOtherVaccinationRecordGrid(dtOtherVaccineRecord)
 
                 'Bind the C19 vaccination record table in enter claim page
@@ -8244,6 +8308,7 @@ Partial Public Class EHSClaimV1
 
         Dim udtInputPicker As New InputPickerModel()
         udtInputPicker.RCHCode = udcInputRVP.RCHCode
+        udtInputPicker.VaccinationRecordWithoutBar = GetVaccinationRecordFromSession(udtEHSAccount, String.Empty) 'Full list included for bar vaccine
 
         'Init Controls
         udcInputRVP.SetRCHCodeError(False)
@@ -8647,6 +8712,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
         udtInputPicker.DischargeResult = udtDischargeResult
         udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+        udtInputPicker.VaccinationRecordWithoutBar = GetVaccinationRecordFromSession(udtEHSAccount, String.Empty) 'Full list included for bar vaccine
 
         udcInputRVPCOVID19.SetDoseErrorImage(False)
 
@@ -8975,24 +9041,6 @@ Partial Public Class EHSClaimV1
         If isValid Then
             udcInputRVPCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
 
-            'Clear old vaccination record for vaccination card
-            _udtSessionHandler.ClaimCOVID19VaccinationCardRemoveFromSession(FunctionCode)
-
-            'Find the nearest vaccination record for vaccination card
-            Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
-            udtVaccinationRecordList = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode).FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
-
-            If udtVaccinationRecordList.Count > 0 Then
-                Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
-
-                If udtEHSClaimVaccine.GetSelectedDoseForCOVID19.AvailableItemCode.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then
-                    'If udtInputPicker.Brand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
-                    _udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
-                    'End If
-
-                End If
-
-            End If
 
             If Me.ClaimMode = ClaimMode.COVID19 AndAlso panStep2aRecipinetContactInfo.Visible Then
                 Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
@@ -9435,6 +9483,7 @@ Partial Public Class EHSClaimV1
         Dim udtInputPicker As New InputPickerModel()
         udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+        udtInputPicker.VaccinationRecordWithoutBar = GetVaccinationRecordFromSession(udtEHSAccount, String.Empty) 'Full list included for bar vaccine
 
         udcInputVSS.SetDoseErrorImage(False)
 
@@ -9906,6 +9955,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
         udtInputPicker.DischargeResult = udtDischargeResult
         udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+        udtInputPicker.VaccinationRecordWithoutBar = GetVaccinationRecordFromSession(udtEHSAccount, String.Empty) 'Full list included for bar vaccine
 
         udcInputVSSCOVID19.SetDoseErrorImage(False)
 
@@ -10240,25 +10290,6 @@ Partial Public Class EHSClaimV1
         If isValid Then
             udcInputVSSCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
 
-            'Clear old vaccination record for vaccination card
-            _udtSessionHandler.ClaimCOVID19VaccinationCardRemoveFromSession(FunctionCode)
-
-            'Find the nearest vaccination record for vaccination card
-            Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
-            udtVaccinationRecordList = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode).FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
-
-            If udtVaccinationRecordList.Count > 0 Then
-                Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
-
-                If udtEHSClaimVaccine.GetSelectedDoseForCOVID19.AvailableItemCode.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then
-                    'If udtInputPicker.Brand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
-                    _udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
-                    'End If
-
-                End If
-
-            End If
-
             If Me.ClaimMode = ClaimMode.COVID19 AndAlso panStep2aRecipinetContactInfo.Visible Then
                 Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
 
@@ -10374,6 +10405,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
         udtInputPicker.DischargeResult = udtDischargeResult
         udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+        udtInputPicker.VaccinationRecordWithoutBar = GetVaccinationRecordFromSession(udtEHSAccount, String.Empty) 'Full list included for bar vaccine
 
         Me.udcMsgBoxErr.Clear()
 
@@ -10723,25 +10755,6 @@ Partial Public Class EHSClaimV1
         If isValid Then
             udcInputCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
 
-            'Clear old vaccination record for vaccination card
-            _udtSessionHandler.ClaimCOVID19VaccinationCardRemoveFromSession(FunctionCode)
-
-            'Find the nearest vaccination record for vaccination card
-            Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
-            udtVaccinationRecordList = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode).FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
-
-            If udtVaccinationRecordList.Count > 0 Then
-                Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
-
-                If udtEHSClaimVaccine.GetSelectedDoseForCOVID19.AvailableItemCode.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then
-                    'If udtInputPicker.Brand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
-                    _udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
-                    'End If
-
-                End If
-
-            End If
-
             If Me.ClaimMode = ClaimMode.COVID19 AndAlso panStep2aRecipinetContactInfo.Visible Then
                 Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
 
@@ -10857,6 +10870,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
         udtInputPicker.DischargeResult = udtDischargeResult
         udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+        udtInputPicker.VaccinationRecordWithoutBar = GetVaccinationRecordFromSession(udtEHSAccount, String.Empty) 'Full list included for bar vaccine
 
         Me.udcMsgBoxErr.Clear()
 
@@ -11172,25 +11186,6 @@ Partial Public Class EHSClaimV1
         If isValid Then
             udcInputCOVID19RVP.Save(udtEHSTransaction, udtEHSClaimVaccine)
 
-            'Clear old vaccination record for vaccination card
-            _udtSessionHandler.ClaimCOVID19VaccinationCardRemoveFromSession(FunctionCode)
-
-            'Find the nearest vaccination record for vaccination card
-            Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
-            udtVaccinationRecordList = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode).FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
-
-            If udtVaccinationRecordList.Count > 0 Then
-                Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
-
-                If udtEHSClaimVaccine.GetSelectedDoseForCOVID19.AvailableItemCode.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then
-                    'If udtInputPicker.Brand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
-                    _udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
-                    'End If
-
-                End If
-
-            End If
-
             If Me.ClaimMode = ClaimMode.COVID19 AndAlso panStep2aRecipinetContactInfo.Visible Then
                 Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
 
@@ -11316,6 +11311,7 @@ Partial Public Class EHSClaimV1
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
         udtInputPicker.DischargeResult = udtDischargeResult
         udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
+        udtInputPicker.VaccinationRecordWithoutBar = GetVaccinationRecordFromSession(udtEHSAccount, String.Empty) 'Full list included for bar vaccine
 
         Me.udcMsgBoxErr.Clear()
 
@@ -11637,25 +11633,6 @@ Partial Public Class EHSClaimV1
 
         If isValid Then
             udcInputCOVID19OR.Save(udtEHSTransaction, udtEHSClaimVaccine)
-
-            'Clear old vaccination record for vaccination card
-            _udtSessionHandler.ClaimCOVID19VaccinationCardRemoveFromSession(FunctionCode)
-
-            'Find the nearest vaccination record for vaccination card
-            Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
-            udtVaccinationRecordList = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode).FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
-
-            If udtVaccinationRecordList.Count > 0 Then
-                Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
-
-                If udtEHSClaimVaccine.GetSelectedDoseForCOVID19.AvailableItemCode.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then
-                    'If udtInputPicker.Brand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
-                    _udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
-                    'End If
-
-                End If
-
-            End If
 
             If Me.ClaimMode = ClaimMode.COVID19 AndAlso panStep2aRecipinetContactInfo.Visible Then
                 Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
@@ -12402,6 +12379,14 @@ Partial Public Class EHSClaimV1
                                 strText = strText & "|||" & udtPopupSystemMessage.GetMessage
                             End If
                         Next
+
+                        If udtClaimRuleResult.ResultParam.Count > 0 Then
+                            For Each kvp As KeyValuePair(Of String, Object) In udtClaimRuleResult.ResultParam
+                                If TypeOf kvp.Value Is String Then
+                                    strText = strText.Replace(kvp.Key, kvp.Value)
+                                End If
+                            Next
+                        End If
 
                     End If
 
@@ -13666,6 +13651,86 @@ Partial Public Class EHSClaimV1
                     Me._udtSessionHandler.EHSClaimVaccineSaveToSession(udtEHSClaimVaccine)
                 End If
 
+
+                ' --------------------------------------------------------------------------------------------
+                ' Vaccination Card Record
+                ' --------------------------------------------------------------------------------------------
+
+                ' CRE20-023-60 (Immu record - 3rd Dose) [Start][Winnie SUEN]
+                ' -------------------------------------------------------------
+                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                    'Clear old vaccination record for vaccination card
+                    _udtSessionHandler.ClaimCOVID19VaccinationCardRemoveFromSession(FunctionCode)
+
+                    'Find the nearest vaccination record for vaccination card
+                    Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
+                    udtVaccinationRecordList = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode).FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                    'Assign vaccination record for vaccination card
+                    Dim udtVaccinationCardRecord As New VaccinationCardRecordModel()
+
+                    Dim udtVaccinationRecord_FirstDose As TransactionDetailVaccineModel = Nothing
+                    Dim udtVaccinationRecord_SecondDose As TransactionDetailVaccineModel = Nothing
+                    Dim udtVaccinationRecord_ThirdDose As TransactionDetailVaccineModel = Nothing
+
+                    Select Case udtEHSTransaction.TransactionDetails(0).AvailableItemCode.Trim().ToUpper()
+                        Case SubsidizeItemDetailsModel.DoseCode.FirstDOSE
+
+                            udtVaccinationCardRecord.FirstDose = New VaccinationCardDoseRecordModel(udtEHSTransaction)
+
+                            If udtVaccinationRecordList.Count > 0 Then
+                                udtVaccinationRecord_SecondDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.SecondDOSE)
+                                If udtVaccinationRecord_SecondDose IsNot Nothing Then
+                                    udtVaccinationCardRecord.SecondDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_SecondDose)
+                                End If
+
+                                udtVaccinationRecord_ThirdDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.ThirdDOSE)
+                                If udtVaccinationRecord_ThirdDose IsNot Nothing Then
+                                    udtVaccinationCardRecord.ThirdDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_ThirdDose)
+                                End If
+
+                            End If
+
+                        Case SubsidizeItemDetailsModel.DoseCode.SecondDOSE
+
+                            udtVaccinationCardRecord.SecondDose = New VaccinationCardDoseRecordModel(udtEHSTransaction)
+
+                            If udtVaccinationRecordList.Count > 0 Then
+                                udtVaccinationRecord_FirstDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.FirstDOSE)
+                                If udtVaccinationRecord_FirstDose IsNot Nothing Then
+                                    udtVaccinationCardRecord.FirstDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_FirstDose)
+                                End If
+
+                                udtVaccinationRecord_ThirdDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.ThirdDOSE)
+                                If udtVaccinationRecord_ThirdDose IsNot Nothing Then
+                                    udtVaccinationCardRecord.ThirdDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_ThirdDose)
+                                End If
+                            End If
+
+                        Case SubsidizeItemDetailsModel.DoseCode.ThirdDOSE
+
+                            udtVaccinationCardRecord.ThirdDose = New VaccinationCardDoseRecordModel(udtEHSTransaction)
+
+                            If udtVaccinationRecordList.Count > 0 Then
+                                udtVaccinationRecord_FirstDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.FirstDOSE)
+                                If udtVaccinationRecord_FirstDose IsNot Nothing Then
+                                    udtVaccinationCardRecord.FirstDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_FirstDose)
+                                End If
+
+                                udtVaccinationRecord_SecondDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.SecondDOSE)
+                                If udtVaccinationRecord_SecondDose IsNot Nothing Then
+                                    udtVaccinationCardRecord.SecondDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_SecondDose)
+                                End If
+                            End If
+
+                    End Select
+
+                    ' Save to session
+                    _udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationCardRecord, FunctionCode)
+
+                End If
+                ' CRE20-023-60 (Immu record - 3rd Dose) [End][Winnie SUEN]
+
                 'Log
                 If ClaimMode = Common.Component.ClaimMode.COVID19 AndAlso udtSchemeClaim.SchemeCode = SchemeClaimModel.COVID19CVC Then
                     EHSClaimBasePage.AddDescriptionCentreBooth(udtAuditLogEntry, udtEHSTransaction.ServiceProviderID, udtEHSTransaction.PracticeID)
@@ -14805,8 +14870,10 @@ Partial Public Class EHSClaimV1
         ' Columns
         With dtVaccineRecord.Columns
             .Add("ServiceReceiveDtm", GetType(Date))
+            .Add("ServiceReceiveDtmSorting", GetType(String))
             .Add("SubsidizeDesc", GetType(String))
             .Add("SubsidizeDescChi", GetType(String))
+            .Add("SubsidizeDescSorting", GetType(String))
             .Add("AvailableItemDesc", GetType(String))
             .Add("AvailableItemDescChi", GetType(String))
             .Add("AvailableItemDescCN", GetType(String))
@@ -14820,8 +14887,10 @@ Partial Public Class EHSClaimV1
                 Dim drVaccineRecord As DataRow = dtVaccineRecord.NewRow
 
                 drVaccineRecord("ServiceReceiveDtm") = udtTranDetailVaccine.ServiceReceiveDtm
+                drVaccineRecord("ServiceReceiveDtmSorting") = udtTranDetailVaccine.ServiceReceiveDtm.ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English)) + "_" + udtTranDetailVaccine.AvailableItemCode
                 drVaccineRecord("SubsidizeDesc") = udtTranDetailVaccine.SubsidizeDesc
                 drVaccineRecord("SubsidizeDescChi") = udtTranDetailVaccine.SubsidizeDescChi
+                drVaccineRecord("SubsidizeDescSorting") = udtTranDetailVaccine.SubsidizeDesc + "_" + udtTranDetailVaccine.ServiceReceiveDtm.ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English))
                 drVaccineRecord("AvailableItemDesc") = udtTranDetailVaccine.AvailableItemDesc
                 drVaccineRecord("AvailableItemDescChi") = udtTranDetailVaccine.AvailableItemDescChi
                 drVaccineRecord("AvailableItemDescCN") = udtTranDetailVaccine.AvailableItemDescCN
@@ -14840,7 +14909,7 @@ Partial Public Class EHSClaimV1
         ' Sort the datatable
         Dim dtResult As DataTable = dtVaccineRecord.Clone
 
-        For Each dr As DataRow In dtVaccineRecord.Select(String.Empty, "ServiceReceiveDtm DESC")
+        For Each dr As DataRow In dtVaccineRecord.Select(String.Empty, "ServiceReceiveDtmSorting DESC")
             dtResult.ImportRow(dr)
         Next
 
@@ -14907,6 +14976,7 @@ Partial Public Class EHSClaimV1
         ' Columns
         With dtVaccineRecord.Columns
             .Add("ServiceReceiveDtm", GetType(Date))
+            .Add("ServiceReceiveDtmSorting", GetType(String))
             .Add("SubsidizeDesc", GetType(String))
             .Add("SubsidizeDescChi", GetType(String))
             .Add("SubsidizeDescSorting", GetType(String))
@@ -14925,6 +14995,7 @@ Partial Public Class EHSClaimV1
                 Dim drVaccineRecord As DataRow = dtVaccineRecord.NewRow
 
                 drVaccineRecord("ServiceReceiveDtm") = udtTranDetailVaccine.ServiceReceiveDtm
+                drVaccineRecord("ServiceReceiveDtmSorting") = udtTranDetailVaccine.ServiceReceiveDtm.ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English)) + "_" + udtTranDetailVaccine.AvailableItemCode
                 drVaccineRecord("SubsidizeDesc") = udtTranDetailVaccine.SubsidizeDesc
                 drVaccineRecord("SubsidizeDescChi") = udtTranDetailVaccine.SubsidizeDescChi
                 drVaccineRecord("SubsidizeDescSorting") = udtTranDetailVaccine.SubsidizeDesc + "_" + udtTranDetailVaccine.ServiceReceiveDtm.ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English))
@@ -14947,7 +15018,7 @@ Partial Public Class EHSClaimV1
         ' Sort the datatable
         Dim dtResult As DataTable = dtVaccineRecord.Clone
 
-        For Each dr As DataRow In dtVaccineRecord.Select(String.Empty, "ServiceReceiveDtm DESC")
+        For Each dr As DataRow In dtVaccineRecord.Select(String.Empty, "ServiceReceiveDtmSorting DESC")
             dtResult.ImportRow(dr)
         Next
 
@@ -15845,7 +15916,13 @@ Partial Public Class EHSClaimV1
         udtVaccineResultBagSession.DHVaccineResult = udtDHVaccineResultSession
         udtVaccineResultBagSession.HAVaccineResult = udtHAVaccineResultSession
 
-        udtVaccinationBLL.GetVaccinationRecord(udtEHSAccount, udtTranDetailVaccineList, udtVaccineResultBag, htRecordSummary, New AuditLogEntry(FunctCode, Me), strSchemeCode, udtVaccineResultBagSession)
+        udtVaccinationBLL.GetVaccinationRecord(udtEHSAccount,
+                                               udtTranDetailVaccineList,
+                                               udtVaccineResultBag,
+                                               htRecordSummary,
+                                               New AuditLogEntry(FunctCode, Me),
+                                               strSchemeCode,
+                                               udtVaccineResultBagSession)
 
         udtSession.CMSVaccineResultSaveToSession(udtVaccineResultBag.HAVaccineResult, FunctCode)
         udtSession.CIMSVaccineResultSaveToSession(udtVaccineResultBag.DHVaccineResult, FunctCode)
@@ -16143,6 +16220,16 @@ Partial Public Class EHSClaimV1
                     Case "990000-E-00461"
                         'Me.udcMsgBoxErr.AddMessage(sm, "%DaysApart", udtClaimRuleResult.ResultParam("%DaysApart"))
                         Me.udcMsgBoxErr.AddMessage(sm)
+                    Case "990000-E-00507"
+                        Me.udcMsgBoxErr.AddMessage(sm, _
+                                                   New String() {"%TargetEN", "%TargetTC", "%TargetSC", "%DependenceEN", "%DependenceTC", "%DependenceSC"}, _
+                                                   New String() {udtClaimRuleResult.ResultParam("%TargetEN"), _
+                                                                 udtClaimRuleResult.ResultParam("%TargetTC"), _
+                                                                 udtClaimRuleResult.ResultParam("%TargetSC"), _
+                                                                 udtClaimRuleResult.ResultParam("%DependenceEN"), _
+                                                                 udtClaimRuleResult.ResultParam("%DependenceTC"), _
+                                                                 udtClaimRuleResult.ResultParam("%DependenceSC")})
+
                     Case Else
                         Me.udcMsgBoxErr.AddMessage(sm)
                 End Select
@@ -16440,11 +16527,11 @@ Partial Public Class EHSClaimV1
 
     ' CRE20-0022 (Immu record) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    Private Function GetCOVID19VaccineLotMappingForPrivate(ByVal dtmServiceDate As Date) As DataRow()
+    Private Function GetCOVID19VaccineLotMappingForPrivate(ByVal strSPID As String, ByVal intPracticeID As Integer, ByVal dtmServiceDate As Date) As DataRow()
 
         Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
-        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(dtmServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
+        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(strSPID, intPracticeID, dtmServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
         Dim drVaccineLotNo() As DataRow = Nothing
 
         If dtVaccineLotNo.Rows.Count > 0 Then
@@ -16523,13 +16610,13 @@ Partial Public Class EHSClaimV1
 
     ' CRE20-0022 (Immu record) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    Private Function GetVaccineLotNoMappingForPrivateJavaScript(ByVal dtmServiceDate As Date) As String
+    Private Function GetVaccineLotNoMappingForPrivateJavaScript(ByVal strSPID As String, ByVal intPracticeID As Integer, ByVal dtmServiceDate As Date) As String
         Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
         Dim strVaccineLotNoMappingJavaScript As String = String.Empty
 
         'Get Vaccine Lot No. mapping
-        Dim drVaccineLotNo() As DataRow = Me.GetCOVID19VaccineLotMappingForPrivate(dtmServiceDate)
+        Dim drVaccineLotNo() As DataRow = Me.GetCOVID19VaccineLotMappingForPrivate(strSPID, intPracticeID, dtmServiceDate)
 
         If drVaccineLotNo IsNot Nothing AndAlso drVaccineLotNo.Length > 0 Then
             'Convert DataRow -> Dictionary(Brand_ID, Vaccine_Lot_No) -> Json

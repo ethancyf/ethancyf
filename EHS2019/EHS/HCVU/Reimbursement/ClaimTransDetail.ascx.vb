@@ -1542,96 +1542,137 @@ Partial Public Class ClaimTransDetail
     Private Function CheckVaccinationRecordForReprint(ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtTranDetailVaccineList As TransactionDetailVaccineModelCollection) As Boolean
         Dim blnValid As Boolean = True
         Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
-        Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
-        Dim intCountDose As Integer = 0
+        Dim udtResTranDetailVaccineModel_FirstDose As TransactionDetailVaccineModel = Nothing
+        Dim udtResTranDetailVaccineModel_SecondDose As TransactionDetailVaccineModel = Nothing
+        Dim udtResTranDetailVaccineModel_ThirdDose As TransactionDetailVaccineModel = Nothing
+
+        Dim intCount_FirstDose As Integer = 0
+        Dim intCount_SecondDose As Integer = 0
+        Dim intCount_ThirdDose As Integer = 0
+
+        Dim udtVaccinationCardRecord As New VaccinationCardRecordModel()
 
         udtVaccinationRecordList = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
         If udtVaccinationRecordList.Count > 0 Then
-            'Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord(TransactionDetailVaccineModel.ProviderClass.Private)
 
-            Select Case udtEHSTransaction.TransactionDetails(0).AvailableItemCode.Trim().ToUpper()
-                Case SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
+            ' CRE20-023-59 (Immu record - 3rd Dose) [Start][Winnie SUEN]
+            ' -------------------------------------------------------------
+            For Each udtVaccinationRecord As TransactionDetailVaccineModel In udtVaccinationRecordList
+                
+                ' ====== 1st Dose ======
+                If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                    intCount_FirstDose = intCount_FirstDose + 1
 
-                    For Each udtVaccinationRecord As TransactionDetailVaccineModel In udtVaccinationRecordList
-                        If udtVaccinationRecord.TransactionID.Trim = udtEHSTransaction.TransactionID.Trim Then Continue For
+                    If udtResTranDetailVaccineModel_FirstDose Is Nothing Then
+                        udtResTranDetailVaccineModel_FirstDose = udtVaccinationRecord
+                    Else
+                        If udtResTranDetailVaccineModel_FirstDose.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
+                            udtResTranDetailVaccineModel_FirstDose = udtVaccinationRecord
+                        End If
+                    End If
+                End If
 
-                        If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                ' ====== 2nd Dose ======
+                If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                    intCount_SecondDose = intCount_SecondDose + 1
+
+                    If udtResTranDetailVaccineModel_SecondDose Is Nothing Then
+                        udtResTranDetailVaccineModel_SecondDose = udtVaccinationRecord
+                    Else
+                        If udtResTranDetailVaccineModel_SecondDose.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
+                            udtResTranDetailVaccineModel_SecondDose = udtVaccinationRecord
+                        End If
+                    End If
+                End If
+
+                ' ====== 3rd Dose ======
+                If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                    intCount_ThirdDose = intCount_ThirdDose + 1
+
+                    If udtResTranDetailVaccineModel_ThirdDose Is Nothing Then
+                        udtResTranDetailVaccineModel_ThirdDose = udtVaccinationRecord
+                    Else
+                        If udtResTranDetailVaccineModel_ThirdDose.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
+                            udtResTranDetailVaccineModel_ThirdDose = udtVaccinationRecord
+                        End If
+                    End If
+                End If
+
+            Next
+
+            ' Validation
+
+            ' ====== Duplicate Dose ======
+            If blnValid Then
+                If intCount_FirstDose > 1 OrElse intCount_SecondDose > 1 OrElse intCount_ThirdDose > 1 Then
+                    blnValid = False
+                End If
+            End If
+
+            ' ====== Dose Sequence ======
+            If blnValid Then
+                Dim dtmLatestDate As Date = Nothing
+
+                If udtResTranDetailVaccineModel_FirstDose IsNot Nothing Then
+                    If dtmLatestDate = Nothing Then
+                        dtmLatestDate = udtResTranDetailVaccineModel_FirstDose.ServiceReceiveDtm
+                    Else
+                        If dtmLatestDate <= udtResTranDetailVaccineModel_FirstDose.ServiceReceiveDtm Then
+                            dtmLatestDate = udtResTranDetailVaccineModel_FirstDose.ServiceReceiveDtm
+                        Else
                             blnValid = False
                         End If
+                    End If
+                End If
 
-                        'If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.SecondDOSE _
-                        '    AndAlso udtEHSTransaction.ServiceDate >= udtVaccinationRecord.ServiceReceiveDtm Then
-                        '    blnValid = False
-                        'End If
-
-                        'If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.SecondDOSE _
-                        '    AndAlso udtEHSTransaction.ServiceDate < udtVaccinationRecord.ServiceReceiveDtm Then
-
-                        If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
-                            intCountDose = intCountDose + 1
-
-                            If intCountDose > 1 Then
-                                blnValid = False
-                            End If
-
-                        End If
-
-                        If blnValid Then
-                            If udtResTranDetailVaccineModel Is Nothing Then
-                                udtResTranDetailVaccineModel = udtVaccinationRecord
-                            Else
-                                If udtResTranDetailVaccineModel.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
-                                    udtResTranDetailVaccineModel = udtVaccinationRecord
-                                End If
-                            End If
-                        End If
-
-                    Next
-
-                Case SchemeDetails.SubsidizeItemDetailsModel.DoseCode.SecondDOSE
-
-                    For Each udtVaccinationRecord As TransactionDetailVaccineModel In udtVaccinationRecordList
-                        If udtVaccinationRecord.TransactionID.Trim = udtEHSTransaction.TransactionID.Trim Then Continue For
-
-                        If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                If udtResTranDetailVaccineModel_SecondDose IsNot Nothing Then
+                    If dtmLatestDate = Nothing Then
+                        dtmLatestDate = udtResTranDetailVaccineModel_SecondDose.ServiceReceiveDtm
+                    Else
+                        If dtmLatestDate <= udtResTranDetailVaccineModel_SecondDose.ServiceReceiveDtm Then
+                            dtmLatestDate = udtResTranDetailVaccineModel_SecondDose.ServiceReceiveDtm
+                        Else
                             blnValid = False
                         End If
+                    End If
+                End If
 
-                        'If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE _
-                        '    AndAlso udtEHSTransaction.ServiceDate <= udtVaccinationRecord.ServiceReceiveDtm Then
-                        '    blnValid = False
-                        'End If
-
-                        'If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE _
-                        '    AndAlso udtEHSTransaction.ServiceDate > udtVaccinationRecord.ServiceReceiveDtm Then
-
-                        If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                            intCountDose = intCountDose + 1
-
-                            If intCountDose > 1 Then
-                                blnValid = False
-                            End If
-
+                If udtResTranDetailVaccineModel_ThirdDose IsNot Nothing Then
+                    If dtmLatestDate = Nothing Then
+                        dtmLatestDate = udtResTranDetailVaccineModel_ThirdDose.ServiceReceiveDtm
+                    Else
+                        If dtmLatestDate <= udtResTranDetailVaccineModel_ThirdDose.ServiceReceiveDtm Then
+                            dtmLatestDate = udtResTranDetailVaccineModel_ThirdDose.ServiceReceiveDtm
+                        Else
+                            blnValid = False
                         End If
+                    End If
+                End If
+            End If
 
-                        If blnValid Then
-                            If udtResTranDetailVaccineModel Is Nothing Then
-                                udtResTranDetailVaccineModel = udtVaccinationRecord
-                            Else
-                                If udtResTranDetailVaccineModel.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
-                                    udtResTranDetailVaccineModel = udtVaccinationRecord
-                                End If
-                            End If
-                        End If
-                    Next
+            If blnValid Then
 
-            End Select
+                If udtResTranDetailVaccineModel_FirstDose IsNot Nothing Then
+                    udtVaccinationCardRecord.FirstDose = New VaccinationCardDoseRecordModel(udtResTranDetailVaccineModel_FirstDose)
+                End If
+
+                If udtResTranDetailVaccineModel_SecondDose IsNot Nothing Then
+                    udtVaccinationCardRecord.SecondDose = New VaccinationCardDoseRecordModel(udtResTranDetailVaccineModel_SecondDose)
+                End If
+
+                If udtResTranDetailVaccineModel_ThirdDose IsNot Nothing Then
+                    udtVaccinationCardRecord.ThirdDose = New VaccinationCardDoseRecordModel(udtResTranDetailVaccineModel_ThirdDose)
+                End If
+
+            End If
+
+            'Save vaccine detail for reprint vaccination card
+            udtSessionHandlerBLL.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationCardRecord, _strClaimTransDetailFunctionCode)
+
+            ' CRE20-023-59 (Immu record - 3rd Dose) [End][Winnie SUEN]
 
         End If
-
-        'Save vaccine detail for reprint vaccination card
-        udtSessionHandlerBLL.ClaimCOVID19VaccinationCardSaveToSession(udtResTranDetailVaccineModel, _strClaimTransDetailFunctionCode)
 
         Return blnValid
 

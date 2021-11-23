@@ -19,6 +19,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private Sub InitializeComponent()
             Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(Covid19DoseTable))
             Me.Detail = New GrapeCity.ActiveReports.SectionReportModel.Detail()
+            Me.Label9 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label35 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label36 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.Label37 = New GrapeCity.ActiveReports.SectionReportModel.Label()
@@ -71,6 +72,31 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.FirstDoseCover = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.SecondDoseInjectionDateChi = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.SecondDoseCover = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label1 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label5 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccineTitle = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label40 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label41 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label42 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label49 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.Label50 = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccineNameChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseInjectionDateLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseInjectionDateChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccinationCenterLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccinationCenterChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseLotNumberChiLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccineNameLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseLotNumberLabel = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccineName = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseLotNumber = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseInjectionDate = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccinationCenterChi = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccineNameChi = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccinationCenter = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseInjectionDateChi = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.ThirdDoseVaccinationCenterEngOnly = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            CType(Me.Label9, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label35, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label36, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label37, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -123,13 +149,53 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.FirstDoseCover, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.SecondDoseInjectionDateChi, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.SecondDoseCover, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label5, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccineTitle, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label40, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label41, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label42, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label49, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.Label50, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccineNameChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseInjectionDateLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseInjectionDateChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccinationCenterLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccinationCenterChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseLotNumberChiLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccineNameLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseLotNumberLabel, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccineName, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseLotNumber, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseInjectionDate, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccinationCenterChi, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccineNameChi, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccinationCenter, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseInjectionDateChi, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.ThirdDoseVaccinationCenterEngOnly, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
             '
             'Detail
             '
-            Me.Detail.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.Label35, Me.Label36, Me.Label37, Me.FirstDoseVaccineTitle, Me.Label2, Me.Label11, Me.Label10, Me.Label14, Me.Label13, Me.Label6, Me.FirstDoseVaccineNameChiLabel, Me.FirstDoseLotNumberLabel, Me.FirstDoseInjectionDateLabel, Me.FirstDoseInjectionDateChiLabel, Me.FirstDoseVaccinationCenterLabel, Me.FirstDoseVaccinationCenterChiLabel, Me.Label19, Me.FirstDoseVaccineName, Me.FirstDoseLotNumber, Me.FirstDoseInjectionDate, Me.FirstDoseVaccinationCenterChi, Me.SecondDoseLotNumber, Me.SecondDoseInjectionDate, Me.SecondDoseVaccinationCenterChi, Me.Label3, Me.FirstDoseVaccineNameChi, Me.SecondDoseVaccineName, Me.SecondDoseVaccineNameChi, Me.SecondDoseVaccineTitle, Me.Label24, Me.Label25, Me.Label26, Me.SecondDoseVaccineNameChiLabel, Me.SecondDoseLotNumberLabel, Me.SecondDoseInjectionDateLabel, Me.SecondDoseInjectionDateChiLabel, Me.SecondDoseVaccinationCenterLabel, Me.SecondDoseVaccinationCenterChiLabel, Me.Label33, Me.Label34, Me.SecondDoseVaccinationCenter, Me.FirstDoseVaccinationCenter, Me.SecondDoseVaccinationCenterEngOnly, Me.FirstDoseVaccinationCenterEngOnly, Me.FirstDoseLotNumberChiLabel, Me.FirstDoseVaccineNameLabel, Me.SecondDoseLotNumberChiLabel, Me.SecondDoseVaccineNameLabel, Me.FirstDoseInjectionDateChi, Me.FirstDoseCover, Me.SecondDoseInjectionDateChi, Me.SecondDoseCover})
-            Me.Detail.Height = 4.686!
+            Me.Detail.BackColor = System.Drawing.Color.White
+            Me.Detail.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.Label9, Me.Label35, Me.Label36, Me.Label37, Me.FirstDoseVaccineTitle, Me.Label2, Me.Label11, Me.Label10, Me.Label14, Me.Label13, Me.Label6, Me.FirstDoseVaccineNameChiLabel, Me.FirstDoseLotNumberLabel, Me.FirstDoseInjectionDateLabel, Me.FirstDoseInjectionDateChiLabel, Me.FirstDoseVaccinationCenterLabel, Me.FirstDoseVaccinationCenterChiLabel, Me.Label19, Me.FirstDoseVaccineName, Me.FirstDoseLotNumber, Me.FirstDoseInjectionDate, Me.FirstDoseVaccinationCenterChi, Me.SecondDoseLotNumber, Me.SecondDoseInjectionDate, Me.SecondDoseVaccinationCenterChi, Me.Label3, Me.FirstDoseVaccineNameChi, Me.SecondDoseVaccineName, Me.SecondDoseVaccineNameChi, Me.SecondDoseVaccineTitle, Me.Label24, Me.Label25, Me.Label26, Me.SecondDoseVaccineNameChiLabel, Me.SecondDoseLotNumberLabel, Me.SecondDoseInjectionDateLabel, Me.SecondDoseInjectionDateChiLabel, Me.SecondDoseVaccinationCenterLabel, Me.SecondDoseVaccinationCenterChiLabel, Me.Label33, Me.Label34, Me.SecondDoseVaccinationCenter, Me.FirstDoseVaccinationCenter, Me.SecondDoseVaccinationCenterEngOnly, Me.FirstDoseVaccinationCenterEngOnly, Me.FirstDoseLotNumberChiLabel, Me.FirstDoseVaccineNameLabel, Me.SecondDoseLotNumberChiLabel, Me.SecondDoseVaccineNameLabel, Me.FirstDoseInjectionDateChi, Me.FirstDoseCover, Me.SecondDoseInjectionDateChi, Me.SecondDoseCover, Me.Label1, Me.Label5, Me.ThirdDoseVaccineTitle, Me.Label40, Me.Label41, Me.Label42, Me.Label49, Me.Label50, Me.ThirdDoseVaccineNameChiLabel, Me.ThirdDoseInjectionDateLabel, Me.ThirdDoseInjectionDateChiLabel, Me.ThirdDoseVaccinationCenterLabel, Me.ThirdDoseVaccinationCenterChiLabel, Me.ThirdDoseLotNumberChiLabel, Me.ThirdDoseVaccineNameLabel, Me.ThirdDoseLotNumberLabel, Me.ThirdDoseVaccineName, Me.ThirdDoseLotNumber, Me.ThirdDoseInjectionDate, Me.ThirdDoseVaccinationCenterChi, Me.ThirdDoseVaccineNameChi, Me.ThirdDoseVaccinationCenter, Me.ThirdDoseInjectionDateChi, Me.ThirdDoseVaccinationCenterEngOnly})
+            Me.Detail.Height = 6.890418!
             Me.Detail.Name = "Detail"
+            '
+            'Label9
+            '
+            Me.Label9.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label9.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label9.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label9.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label9.Height = 0.748!
+            Me.Label9.HyperLink = Nothing
+            Me.Label9.Left = 2.064!
+            Me.Label9.Name = "Label9"
+            Me.Label9.Style = ""
+            Me.Label9.Text = ""
+            Me.Label9.Top = 6.12!
+            Me.Label9.Width = 5.811999!
             '
             'Label35
             '
@@ -824,6 +890,321 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.SecondDoseCover.Top = 2.627!
             Me.SecondDoseCover.Width = 5.811999!
             '
+            'Label1
+            '
+            Me.Label1.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label1.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label1.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label1.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label1.Height = 0.825!
+            Me.Label1.HyperLink = Nothing
+            Me.Label1.Left = 2.064!
+            Me.Label1.Name = "Label1"
+            Me.Label1.Style = ""
+            Me.Label1.Text = ""
+            Me.Label1.Top = 4.903!
+            Me.Label1.Width = 5.811!
+            '
+            'Label5
+            '
+            Me.Label5.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label5.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label5.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label5.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label5.Height = 0.39325!
+            Me.Label5.HyperLink = Nothing
+            Me.Label5.Left = 2.064!
+            Me.Label5.Name = "Label5"
+            Me.Label5.Style = ""
+            Me.Label5.Text = ""
+            Me.Label5.Top = 5.726998!
+            Me.Label5.Width = 5.811999!
+            '
+            'ThirdDoseVaccineTitle
+            '
+            Me.ThirdDoseVaccineTitle.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.ThirdDoseVaccineTitle.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.ThirdDoseVaccineTitle.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.ThirdDoseVaccineTitle.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.ThirdDoseVaccineTitle.Height = 0.825!
+            Me.ThirdDoseVaccineTitle.HyperLink = Nothing
+            Me.ThirdDoseVaccineTitle.Left = 0.0000002011657!
+            Me.ThirdDoseVaccineTitle.Name = "ThirdDoseVaccineTitle"
+            Me.ThirdDoseVaccineTitle.Style = ""
+            Me.ThirdDoseVaccineTitle.Text = ""
+            Me.ThirdDoseVaccineTitle.Top = 4.902!
+            Me.ThirdDoseVaccineTitle.Width = 2.064!
+            '
+            'Label40
+            '
+            Me.Label40.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label40.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label40.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label40.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label40.Height = 0.393!
+            Me.Label40.HyperLink = Nothing
+            Me.Label40.Left = 0.0000004395843!
+            Me.Label40.Name = "Label40"
+            Me.Label40.Style = ""
+            Me.Label40.Text = ""
+            Me.Label40.Top = 5.727998!
+            Me.Label40.Width = 2.064!
+            '
+            'Label41
+            '
+            Me.Label41.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label41.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label41.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label41.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label41.Height = 0.748!
+            Me.Label41.HyperLink = Nothing
+            Me.Label41.Left = 0.0000004395843!
+            Me.Label41.Name = "Label41"
+            Me.Label41.Style = ""
+            Me.Label41.Text = ""
+            Me.Label41.Top = 6.119998!
+            Me.Label41.Width = 2.064!
+            '
+            'Label42
+            '
+            Me.Label42.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label42.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label42.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label42.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.Label42.Height = 0.30976!
+            Me.Label42.HyperLink = Nothing
+            Me.Label42.Left = 0.0!
+            Me.Label42.Name = "Label42"
+            Me.Label42.Style = ""
+            Me.Label42.Text = "" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+            Me.Label42.Top = 4.593!
+            Me.Label42.Width = 7.875!
+            '
+            'Label49
+            '
+            Me.Label49.Height = 0.25!
+            Me.Label49.HyperLink = Nothing
+            Me.Label49.Left = 0.692!
+            Me.Label49.Name = "Label49"
+            Me.Label49.Style = "font-family: Times New Roman; font-size: 11.75pt; font-weight: bold; text-align: " & _
+        "left; vertical-align: middle; ddo-char-set: 1"
+            Me.Label49.Text = "3rd Dose "
+            Me.Label49.Top = 4.623001!
+            Me.Label49.Width = 0.874!
+            '
+            'Label50
+            '
+            Me.Label50.Height = 0.2550001!
+            Me.Label50.HyperLink = Nothing
+            Me.Label50.Left = 0.07099999!
+            Me.Label50.Name = "Label50"
+            Me.Label50.Style = "font-family: PMingLiU; font-size: 11.75pt; font-weight: bold; text-align: left; v" & _
+        "ertical-align: middle; ddo-char-set: 1"
+            Me.Label50.Text = "第三針 "
+            Me.Label50.Top = 4.62!
+            Me.Label50.Width = 0.6210001!
+            '
+            'ThirdDoseVaccineNameChiLabel
+            '
+            Me.ThirdDoseVaccineNameChiLabel.Height = 0.2!
+            Me.ThirdDoseVaccineNameChiLabel.HyperLink = Nothing
+            Me.ThirdDoseVaccineNameChiLabel.Left = 0.05!
+            Me.ThirdDoseVaccineNameChiLabel.Name = "ThirdDoseVaccineNameChiLabel"
+            Me.ThirdDoseVaccineNameChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+        " ddo-char-set: 1"
+            Me.ThirdDoseVaccineNameChiLabel.Text = "疫苗名稱"
+            Me.ThirdDoseVaccineNameChiLabel.Top = 4.943!
+            Me.ThirdDoseVaccineNameChiLabel.Width = 1.313!
+            '
+            'ThirdDoseInjectionDateLabel
+            '
+            Me.ThirdDoseInjectionDateLabel.Height = 0.2!
+            Me.ThirdDoseInjectionDateLabel.HyperLink = Nothing
+            Me.ThirdDoseInjectionDateLabel.Left = 0.05!
+            Me.ThirdDoseInjectionDateLabel.Name = "ThirdDoseInjectionDateLabel"
+            Me.ThirdDoseInjectionDateLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1"
+            Me.ThirdDoseInjectionDateLabel.Text = "Vaccination Date"
+            Me.ThirdDoseInjectionDateLabel.Top = 5.92!
+            Me.ThirdDoseInjectionDateLabel.Width = 1.132!
+            '
+            'ThirdDoseInjectionDateChiLabel
+            '
+            Me.ThirdDoseInjectionDateChiLabel.Height = 0.2!
+            Me.ThirdDoseInjectionDateChiLabel.HyperLink = Nothing
+            Me.ThirdDoseInjectionDateChiLabel.Left = 0.05!
+            Me.ThirdDoseInjectionDateChiLabel.Name = "ThirdDoseInjectionDateChiLabel"
+            Me.ThirdDoseInjectionDateChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+        " ddo-char-set: 1"
+            Me.ThirdDoseInjectionDateChiLabel.Text = "接種日期"
+            Me.ThirdDoseInjectionDateChiLabel.Top = 5.763!
+            Me.ThirdDoseInjectionDateChiLabel.Width = 0.6210001!
+            '
+            'ThirdDoseVaccinationCenterLabel
+            '
+            Me.ThirdDoseVaccinationCenterLabel.Height = 0.2!
+            Me.ThirdDoseVaccinationCenterLabel.HyperLink = Nothing
+            Me.ThirdDoseVaccinationCenterLabel.Left = 0.05!
+            Me.ThirdDoseVaccinationCenterLabel.Name = "ThirdDoseVaccinationCenterLabel"
+            Me.ThirdDoseVaccinationCenterLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1"
+            Me.ThirdDoseVaccinationCenterLabel.Text = "Vaccination Premises"
+            Me.ThirdDoseVaccinationCenterLabel.Top = 6.499!
+            Me.ThirdDoseVaccinationCenterLabel.Width = 1.372!
+            '
+            'ThirdDoseVaccinationCenterChiLabel
+            '
+            Me.ThirdDoseVaccinationCenterChiLabel.Height = 0.2!
+            Me.ThirdDoseVaccinationCenterChiLabel.HyperLink = Nothing
+            Me.ThirdDoseVaccinationCenterChiLabel.Left = 0.05!
+            Me.ThirdDoseVaccinationCenterChiLabel.Name = "ThirdDoseVaccinationCenterChiLabel"
+            Me.ThirdDoseVaccinationCenterChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+        " ddo-char-set: 1"
+            Me.ThirdDoseVaccinationCenterChiLabel.Text = "接種地點"
+            Me.ThirdDoseVaccinationCenterChiLabel.Top = 6.291!
+            Me.ThirdDoseVaccinationCenterChiLabel.Width = 0.6210001!
+            '
+            'ThirdDoseLotNumberChiLabel
+            '
+            Me.ThirdDoseLotNumberChiLabel.Height = 0.2!
+            Me.ThirdDoseLotNumberChiLabel.HyperLink = Nothing
+            Me.ThirdDoseLotNumberChiLabel.Left = 0.05!
+            Me.ThirdDoseLotNumberChiLabel.Name = "ThirdDoseLotNumberChiLabel"
+            Me.ThirdDoseLotNumberChiLabel.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+        " ddo-char-set: 1"
+            Me.ThirdDoseLotNumberChiLabel.Text = "生產商 / 批號"
+            Me.ThirdDoseLotNumberChiLabel.Top = 5.363!
+            Me.ThirdDoseLotNumberChiLabel.Width = 1.313!
+            '
+            'ThirdDoseVaccineNameLabel
+            '
+            Me.ThirdDoseVaccineNameLabel.Height = 0.2!
+            Me.ThirdDoseVaccineNameLabel.HyperLink = Nothing
+            Me.ThirdDoseVaccineNameLabel.Left = 0.05!
+            Me.ThirdDoseVaccineNameLabel.Name = "ThirdDoseVaccineNameLabel"
+            Me.ThirdDoseVaccineNameLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1"
+            Me.ThirdDoseVaccineNameLabel.Text = "Vaccine Name"
+            Me.ThirdDoseVaccineNameLabel.Top = 5.123!
+            Me.ThirdDoseVaccineNameLabel.Width = 1.75!
+            '
+            'ThirdDoseLotNumberLabel
+            '
+            Me.ThirdDoseLotNumberLabel.Height = 0.2!
+            Me.ThirdDoseLotNumberLabel.HyperLink = Nothing
+            Me.ThirdDoseLotNumberLabel.Left = 0.04999995!
+            Me.ThirdDoseLotNumberLabel.Name = "ThirdDoseLotNumberLabel"
+            Me.ThirdDoseLotNumberLabel.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1"
+            Me.ThirdDoseLotNumberLabel.Text = "Manufacturer / Lot No."
+            Me.ThirdDoseLotNumberLabel.Top = 5.538!
+            Me.ThirdDoseLotNumberLabel.Width = 1.75!
+            '
+            'ThirdDoseVaccineName
+            '
+            Me.ThirdDoseVaccineName.Height = 0.22!
+            Me.ThirdDoseVaccineName.HyperLink = Nothing
+            Me.ThirdDoseVaccineName.Left = 2.12!
+            Me.ThirdDoseVaccineName.Name = "ThirdDoseVaccineName"
+            Me.ThirdDoseVaccineName.ShrinkToFit = True
+            Me.ThirdDoseVaccineName.Style = "font-family: Times New Roman; font-size: 10pt; font-weight: bold; text-align: lef" & _
+        "t; vertical-align: middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.ThirdDoseVaccineName.Text = ""
+            Me.ThirdDoseVaccineName.Top = 5.123!
+            Me.ThirdDoseVaccineName.Width = 5.693!
+            '
+            'ThirdDoseLotNumber
+            '
+            Me.ThirdDoseLotNumber.Height = 0.24!
+            Me.ThirdDoseLotNumber.HyperLink = Nothing
+            Me.ThirdDoseLotNumber.Left = 2.12!
+            Me.ThirdDoseLotNumber.Name = "ThirdDoseLotNumber"
+            Me.ThirdDoseLotNumber.ShrinkToFit = True
+            Me.ThirdDoseLotNumber.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.ThirdDoseLotNumber.Text = ""
+            Me.ThirdDoseLotNumber.Top = 5.403!
+            Me.ThirdDoseLotNumber.Width = 5.756!
+            '
+            'ThirdDoseInjectionDate
+            '
+            Me.ThirdDoseInjectionDate.Height = 0.22!
+            Me.ThirdDoseInjectionDate.HyperLink = Nothing
+            Me.ThirdDoseInjectionDate.Left = 2.12!
+            Me.ThirdDoseInjectionDate.Name = "ThirdDoseInjectionDate"
+            Me.ThirdDoseInjectionDate.ShrinkToFit = True
+            Me.ThirdDoseInjectionDate.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: middle;" & _
+        " ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.ThirdDoseInjectionDate.Text = ""
+            Me.ThirdDoseInjectionDate.Top = 5.926!
+            Me.ThirdDoseInjectionDate.Width = 5.463!
+            '
+            'ThirdDoseVaccinationCenterChi
+            '
+            Me.ThirdDoseVaccinationCenterChi.Height = 0.35!
+            Me.ThirdDoseVaccinationCenterChi.HyperLink = Nothing
+            Me.ThirdDoseVaccinationCenterChi.Left = 2.12!
+            Me.ThirdDoseVaccinationCenterChi.Name = "ThirdDoseVaccinationCenterChi"
+            Me.ThirdDoseVaccinationCenterChi.ShrinkToFit = True
+            Me.ThirdDoseVaccinationCenterChi.Style = "font-family: PMingLiU; font-size: 10pt; text-align: left; vertical-align: bottom;" & _
+        " ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.ThirdDoseVaccinationCenterChi.Text = ""
+            Me.ThirdDoseVaccinationCenterChi.Top = 6.12!
+            Me.ThirdDoseVaccinationCenterChi.Width = 5.756!
+            '
+            'ThirdDoseVaccineNameChi
+            '
+            Me.ThirdDoseVaccineNameChi.Height = 0.22!
+            Me.ThirdDoseVaccineNameChi.HyperLink = Nothing
+            Me.ThirdDoseVaccineNameChi.Left = 2.12!
+            Me.ThirdDoseVaccineNameChi.Name = "ThirdDoseVaccineNameChi"
+            Me.ThirdDoseVaccineNameChi.ShrinkToFit = True
+            Me.ThirdDoseVaccineNameChi.Style = "font-family: PMingLiU; font-size: 10pt; font-weight: bold; text-align: left; vert" & _
+        "ical-align: top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.ThirdDoseVaccineNameChi.Text = ""
+            Me.ThirdDoseVaccineNameChi.Top = 4.943!
+            Me.ThirdDoseVaccineNameChi.Width = 5.756!
+            '
+            'ThirdDoseVaccinationCenter
+            '
+            Me.ThirdDoseVaccinationCenter.Height = 0.35!
+            Me.ThirdDoseVaccinationCenter.HyperLink = Nothing
+            Me.ThirdDoseVaccinationCenter.Left = 2.12!
+            Me.ThirdDoseVaccinationCenter.Name = "ThirdDoseVaccinationCenter"
+            Me.ThirdDoseVaccinationCenter.ShrinkToFit = True
+            Me.ThirdDoseVaccinationCenter.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.ThirdDoseVaccinationCenter.Text = ""
+            Me.ThirdDoseVaccinationCenter.Top = 6.508!
+            Me.ThirdDoseVaccinationCenter.Width = 5.756!
+            '
+            'ThirdDoseInjectionDateChi
+            '
+            Me.ThirdDoseInjectionDateChi.Height = 0.22!
+            Me.ThirdDoseInjectionDateChi.HyperLink = Nothing
+            Me.ThirdDoseInjectionDateChi.Left = 2.12!
+            Me.ThirdDoseInjectionDateChi.Name = "ThirdDoseInjectionDateChi"
+            Me.ThirdDoseInjectionDateChi.ShrinkToFit = True
+            Me.ThirdDoseInjectionDateChi.Style = "font-family: PMingLiU; font-size: 10pt; font-weight: normal; text-align: left; ve" & _
+        "rtical-align: top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.ThirdDoseInjectionDateChi.Text = ""
+            Me.ThirdDoseInjectionDateChi.Top = 5.762!
+            Me.ThirdDoseInjectionDateChi.Width = 5.463!
+            '
+            'ThirdDoseVaccinationCenterEngOnly
+            '
+            Me.ThirdDoseVaccinationCenterEngOnly.Height = 0.715!
+            Me.ThirdDoseVaccinationCenterEngOnly.HyperLink = Nothing
+            Me.ThirdDoseVaccinationCenterEngOnly.Left = 2.12!
+            Me.ThirdDoseVaccinationCenterEngOnly.Name = "ThirdDoseVaccinationCenterEngOnly"
+            Me.ThirdDoseVaccinationCenterEngOnly.ShrinkToFit = True
+            Me.ThirdDoseVaccinationCenterEngOnly.Style = "font-family: Times New Roman; font-size: 10pt; text-align: left; vertical-align: " & _
+        "top; ddo-char-set: 1; ddo-shrink-to-fit: true"
+            Me.ThirdDoseVaccinationCenterEngOnly.Text = ""
+            Me.ThirdDoseVaccinationCenterEngOnly.Top = 6.153!
+            Me.ThirdDoseVaccinationCenterEngOnly.Visible = False
+            Me.ThirdDoseVaccinationCenterEngOnly.Width = 5.756!
+            '
             'Covid19DoseTable
             '
             Me.MasterReport = False
@@ -837,6 +1218,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Times New Roman; font-size: 14pt; font-weight: bold; font-style: ita" & _
                 "lic", "Heading2", "Normal"))
             Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 13pt; font-weight: bold", "Heading3", "Normal"))
+            CType(Me.Label9, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label35, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label36, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.Label37, System.ComponentModel.ISupportInitialize).EndInit()
@@ -889,6 +1271,30 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.FirstDoseCover, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.SecondDoseInjectionDateChi, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.SecondDoseCover, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label1, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label5, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccineTitle, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label40, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label41, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label42, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label49, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.Label50, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccineNameChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseInjectionDateLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseInjectionDateChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccinationCenterLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccinationCenterChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseLotNumberChiLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccineNameLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseLotNumberLabel, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccineName, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseLotNumber, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseInjectionDate, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccinationCenterChi, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccineNameChi, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccinationCenter, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseInjectionDateChi, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.ThirdDoseVaccinationCenterEngOnly, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
         End Sub
@@ -932,9 +1338,20 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private WithEvents Label35 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label36 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents Label37 As GrapeCity.ActiveReports.SectionReportModel.Label
+
+        Private WithEvents Label1 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label5 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccineTitle As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label40 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label41 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label42 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label49 As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label50 As GrapeCity.ActiveReports.SectionReportModel.Label
+
         Private WithEvents SecondDoseVaccinationCenter As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents FirstDoseVaccinationCenter As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseVaccinationCenterEngOnly As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents Label9 As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents FirstDoseVaccinationCenterEngOnly As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseCover As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents FirstDoseCover As GrapeCity.ActiveReports.SectionReportModel.Label
@@ -944,5 +1361,21 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private WithEvents SecondDoseVaccineNameLabel As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents FirstDoseInjectionDateChi As GrapeCity.ActiveReports.SectionReportModel.Label
         Private WithEvents SecondDoseInjectionDateChi As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccineNameChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseInjectionDateLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseInjectionDateChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccinationCenterLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccinationCenterChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseLotNumberChiLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccineNameLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseLotNumberLabel As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccineName As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseLotNumber As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseInjectionDate As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccinationCenterChi As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccineNameChi As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccinationCenter As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseInjectionDateChi As GrapeCity.ActiveReports.SectionReportModel.Label
+        Private WithEvents ThirdDoseVaccinationCenterEngOnly As GrapeCity.ActiveReports.SectionReportModel.Label
     End Class
 End Namespace

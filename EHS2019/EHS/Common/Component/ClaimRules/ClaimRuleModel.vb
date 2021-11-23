@@ -133,8 +133,17 @@ Namespace Component.ClaimRules
             ''' </summary>
             Public Const VACCINE_DETECT = "VACCINEDETECT"
 
-        End Class
+            ''' <summary>
+            ''' Check duplicate dose in vaccination history
+            ''' </summary>
+            Public Const DUPLICATE_DOSE_HISTORY = "DUPLICATEDOSEHISTORY"
 
+            ''' <summary>
+            ''' Check latest dose in vaccination history whether is matched
+            ''' </summary>
+            Public Const LATEST_EVENT = "LATESTEVENT"
+
+        End Class
 
 #Region "Schema"
 

@@ -754,14 +754,28 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 udtInputPicker.NonLocalRecoveredHistory = Nothing
             End If
 
+            'Vaccination Record without bar
+            Dim udtTranDetailVaccineNoBarList As New EHSTransaction.TransactionDetailVaccineModelCollection
+            Dim objVaccinationBLL As New VaccinationBLL
+
+            If objVaccinationBLL.SchemeContainVaccine(udtSchemeClaimModel) Then
+                If Not udtHAVaccineResult Is Nothing Then
+                    udtTranDetailVaccineNoBarList.JoinVaccineList(udtEHSAccount.getPersonalInformation(udtEHSTransaction.DocCode), udtHAVaccineResult.SinglePatient.VaccineList, udtAuditLogEntry, String.Empty)
+                End If
+
+                If Not udtDHVaccineResult Is Nothing Then
+                    udtTranDetailVaccineNoBarList.JoinVaccineList(udtEHSAccount.getPersonalInformation(udtEHSTransaction.DocCode), udtDHVaccineResult.SingleClient.VaccineRecordList, udtAuditLogEntry, String.Empty)
+                End If
+
+                udtInputPicker.VaccinationRecordWithoutBar = udtTranDetailVaccineNoBarList
+            End If
+
             '----------------------------------------------------------------
             ' a1. If has inputted benefit, use it. If not, get benefit again
             '----------------------------------------------------------------
             If udtTransactionBenefitDetailList Is Nothing Then
 
                 udtTransactionBenefitDetailList = udtEHSTransactionBLL.getTransactionDetailVaccine(udtEHSTransaction.DocCode, udtEHSAccount.getPersonalInformation(udtEHSTransaction.DocCode).IdentityNum)
-
-                Dim objVaccinationBLL As New VaccinationBLL
 
                 If objVaccinationBLL.SchemeContainVaccine(udtSchemeClaimModel) Then
                     If Not udtHAVaccineResult Is Nothing Then
@@ -773,6 +787,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     End If
 
                 End If
+
+                udtInputPicker.VaccinationRecord = udtTransactionBenefitDetailList
             End If
 
             '-----------------------------------------------------------------------------
@@ -1136,7 +1152,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
             If udtEHSTransaction.TransactionAdditionFields.VaccineBrand IsNot Nothing Then
                 udtInputPicker.Brand = udtEHSTransaction.TransactionAdditionFields.VaccineBrand.Trim
             End If
-            udtInputPicker.VaccinationRecord = udtTransactionBenefitDetailList
 
             ' CRE20-0022 (Immu record) [End][Chris YIM]
 

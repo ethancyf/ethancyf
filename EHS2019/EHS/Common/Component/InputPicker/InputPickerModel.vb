@@ -21,6 +21,7 @@
         'User Define Type
         Private _udtInputVaccineModelCollection As InputPicker.InputVaccineModelCollection
         Private _udtVaccinationRecord As EHSTransaction.TransactionDetailVaccineModelCollection
+        Private _udtVaccinationRecordWithoutBar As EHSTransaction.TransactionDetailVaccineModelCollection
         Private _udtC19Transaction As EHSTransaction.EHSTransactionModel
         Private _udtDischargeResult As COVID19.DischargeResultModel
 
@@ -134,6 +135,15 @@
             End Set
         End Property
 
+        Public Property VaccinationRecordWithoutBar() As EHSTransaction.TransactionDetailVaccineModelCollection
+            Get
+                Return _udtVaccinationRecordWithoutBar
+            End Get
+            Set(ByVal Value As EHSTransaction.TransactionDetailVaccineModelCollection)
+                _udtVaccinationRecordWithoutBar = Value
+            End Set
+        End Property
+
         Public Property LatestC19Transaction() As EHSTransaction.EHSTransactionModel
             Get
                 Return _udtC19Transaction
@@ -172,6 +182,7 @@
 
             _udtInputVaccineModelCollection = Nothing
             _udtVaccinationRecord = Nothing
+            _udtVaccinationRecordWithoutBar = Nothing
 
             _udtC19Transaction = Nothing
             _udtDischargeResult = Nothing

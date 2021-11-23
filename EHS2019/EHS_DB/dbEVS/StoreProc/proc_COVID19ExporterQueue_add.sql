@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-0023-60 (3rd Dose)
+-- Modified by:		Winnie SUEN
+-- Modified date:	08 Oct 2021
+-- Description:		1. Handle 3rd Dose for 'Vaccine_dose_sequence'
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-0023-58 (Non-local Recovered History)
 -- Modified by:		Winnie SUEN
 -- Modified date:	18 Aug 2021
@@ -649,6 +656,8 @@ AS
                    THEN '1st dose'
                    WHEN '2NDDOSE'
                    THEN '2nd dose'
+                   WHEN '3RDDOSE'
+                   THEN '3rd dose'
                    ELSE ''
                END AS 'Vaccine_dose_sequence',
                CASE vt.Scheme_Code

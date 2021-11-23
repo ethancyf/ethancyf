@@ -829,6 +829,9 @@ Partial Public Class ClaimCreation
         udtSession.CIMSVaccineResultRemoveFromSession(FunctionCode)
         ViewState.Remove(VS.VaccinationRecordPopupShown)
 
+        ' Clear Discharge List
+        udtSessionHandlerBLL.ClaimCOVID19DischargeRecordRemoveFromSession(FunctionCode)
+
         ' Clear selected category
         Me.udtSessionHandlerBLL.ClaimCategoryRemoveFromSession(FunctionCode)
 
@@ -2432,6 +2435,13 @@ Partial Public Class ClaimCreation
                                     udtAdditionalWarning.MessageDescription = udtSystemMessage.GetMessage(EnumLanguage.EN)
                                     udtAdditionalWarning.MessageDescriptionChi = udtSystemMessage.GetMessage(EnumLanguage.TC)
 
+                                    If udtWarning.ClaimRuleResult.ResultParam.Count > 0 Then
+                                        For Each kvp As KeyValuePair(Of String, Object) In udtWarning.ClaimRuleResult.ResultParam
+                                            udtAdditionalWarning.MessageDescription = udtAdditionalWarning.MessageDescription.Replace(kvp.Key, kvp.Value)
+                                            udtAdditionalWarning.MessageDescriptionChi = udtAdditionalWarning.MessageDescriptionChi.Replace(kvp.Key, kvp.Value)
+                                        Next
+                                    End If
+
                                     udtAdditionalWarningMessage.Add(udtAdditionalWarning)
 
                                 End If
@@ -2440,12 +2450,37 @@ Partial Public Class ClaimCreation
 
                             udtDeleteWarningMessage.Add(udtWarning)
 
-
                         Else
-                            If Not IsNothing(udtWarning.MessageVariableNameArrayList) AndAlso Not IsNothing(udtWarning.MessageVariableValueArrayList) AndAlso _
-                               udtWarning.MessageVariableNameArrayList.Count > 0 AndAlso udtWarning.MessageVariableValueArrayList.Count > 0 Then
+                            Dim arrFindName As ArrayList
+                            Dim arrReplaceName As ArrayList
 
-                                Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage, udtWarning.MessageVariableNameArrayList.ToArray(Type.GetType("System.String")), udtWarning.MessageVariableValueArrayList.ToArray(Type.GetType("System.String")))
+                            If udtWarning.MessageVariableNameArrayList Is Nothing Then
+                                arrFindName = New ArrayList
+                            Else
+                                arrFindName = udtWarning.MessageVariableNameArrayList
+                            End If
+
+                            If udtWarning.MessageVariableValueArrayList Is Nothing Then
+                                arrReplaceName = New ArrayList
+                            Else
+                                arrReplaceName = udtWarning.MessageVariableValueArrayList
+                            End If
+
+                            If udtWarning.ClaimRuleResult IsNot Nothing AndAlso udtWarning.ClaimRuleResult.ResultParam IsNot Nothing Then
+                                If udtWarning.ClaimRuleResult.ResultParam.Count > 0 Then
+                                    For Each kvp As KeyValuePair(Of String, Object) In udtWarning.ClaimRuleResult.ResultParam
+                                        arrFindName.Add(kvp.Key)
+                                        arrReplaceName.Add(kvp.Value.ToString)
+                                    Next
+                                End If
+                            End If
+
+                            If Not IsNothing(arrFindName) AndAlso Not IsNothing(arrReplaceName) AndAlso _
+                               arrFindName.Count > 0 AndAlso arrReplaceName.Count > 0 Then
+
+                                Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage, _
+                                                                   arrFindName.ToArray(Type.GetType("System.String")), _
+                                                                   arrReplaceName.ToArray(Type.GetType("System.String")))
                             Else
                                 Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage)
                             End If

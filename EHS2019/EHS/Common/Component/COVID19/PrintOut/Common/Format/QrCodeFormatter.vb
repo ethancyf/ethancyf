@@ -12,12 +12,10 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
 
     Public Class QrcodeFormatter
         Public Function GenerateQRCodeString(ByRef udtEHSTransaction As EHSTransactionModel, _
-                                             ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, _
+                                             ByRef udtVaccinationRecord As VaccinationCardRecordModel, _
                                              ByRef udtEHSAccount As EHSAccountModel, _
                                              ByRef dtmPrintTime As Date, _
-                                             ByVal blnDischarge As Boolean, _
-                                             ByVal blnNonLocalRecoveredHistory1stDose As Boolean, _
-                                             ByVal blnNonLocalRecoveredHistory2ndDose As Boolean) As String
+                                             ByVal blnDischarge As Boolean) As String
 
             Dim udtGeneralFunction As New ComFunction.GeneralFunction
             Dim udtCOVID19BLL As New COVID19.COVID19BLL
@@ -33,16 +31,19 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             Dim strTransId As String = "|" + (New Formatter).formatSystemNumber(udtEHSTransaction.TransactionID)
             Dim strMaskedDocId As String = "|" + FormatDocIdentityNoForQrCodeDisplay(udtPatientInformation.DocCode, udtPatientInformation.IdentityNum, True, udtPatientInformation.AdoptionPrefixNum)
             Dim strMaskedName As String = "|" + maskEnglishNameByStar(udtPatientInformation.EName)
-            Dim strDoseDate_1st As String = "|-"
-            Dim strVaccineName_1st As String = "|"
-            Dim strVaccineNameTC_1st As String = "|-"
+
+
+            Dim strSecondLast_DoseDate As String = "|-"
+            Dim strSecondLast_VaccineName As String = "|"
+            Dim strSecondLast_VaccineNameTC As String = "|-"
             Dim strSpecialIndicator_1 As String = "|"
-            Dim strReservedField_1 As String = "|"
-            Dim strDoseDate_2nd As String = "|-"
-            Dim strVaccineName_2nd As String = "|"
-            Dim strVaccineNameTC_2nd As String = "|-"
+            Dim strThirdLast_VaccinePt_1 As String = "|"
+
+            Dim strLast_DoseDate As String = "|-"
+            Dim strLast_VaccineName As String = "|"
+            Dim strLast_VaccineNameTC As String = "|-"
             Dim strSpecialIndicator_2 As String = "|"
-            Dim strReservedField_2 As String = "|"
+            Dim strThirdLast_VaccinePt_2 As String = "|"
 
             Dim strPrintDate As String = "|" + dtmPrintTime.ToString((New Formatter).DisplayVaccinationRecordClockFormat()) + "|"
             'Dim DigitialSignature As String = "|MEUCIQCvLIjK8IpB5Uk0TNgbVQoQy/I3z19yTeVohVeYsmfcnwIgcWF482uALTQUt9Oe8VJ/0K6FxWM1NAmGzDaqa5f9V94="
@@ -63,61 +64,117 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             End If
 
             'Get Vaccine Name & Injection date
-            If (strCurrentDose = "1STDOSE") Then
-                '===== Normal Case =====
-                strVaccineName_1st = "|" + dt.Rows(0)("Brand_Printout_Name")
-                strVaccineNameTC_1st = "|" + dt.Rows(0)("Brand_Printout_Name_Chi")
-                strDoseDate_1st = "|" + FormatDate(udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
-                If blnDischarge OrElse blnNonLocalRecoveredHistory1stDose Then
-                    strSpecialIndicator_1 = "|001"
-                End If
-                '===== Normal Case =====
 
-                '===== date dateback dose record ====
-                If (Not udtVaccinationRecordHistory Is Nothing) Then
-                    'date dateback fill second dose record
-                    If (udtVaccinationRecordHistory.AvailableItemCode = "2NDDOSE") Then
-                        strVaccineName_2nd = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutName(udtVaccinationRecordHistory.VaccineBrand)
-                        strVaccineNameTC_2nd = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(udtVaccinationRecordHistory.VaccineBrand)
-                        strDoseDate_2nd = "|" + FormatDate(udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
-                        If blnDischarge OrElse blnNonLocalRecoveredHistory2ndDose Then
-                            strSpecialIndicator_2 = "|001"
-                        End If
-                    End If
-                Else
-                    If blnDischarge Then
-                        strDoseDate_2nd = "|NA"
-                    End If
-                End If
-                '===== date dateback dose record ====
-            Else
-                '===== Normal Case =====
-                strVaccineName_2nd = "|" + dt.Rows(0)("Brand_Printout_Name")
-                strVaccineNameTC_2nd = "|" + dt.Rows(0)("Brand_Printout_Name_Chi")
-                strDoseDate_2nd = "|" + FormatDate(udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
-                If blnDischarge OrElse blnNonLocalRecoveredHistory2ndDose Then
-                    strSpecialIndicator_2 = "|001"
-                End If
-                '===== Normal Case =====
+            ' CRE20-023-59 (Immu record - 3rd Dose) [Start][Winnie SUEN]
+            ' -------------------------------------------------------------
+            ' Defination:
+            ' udtLastDose = Last Dose (Not applicable to 1st dose only case), otherwise, = nothing
+            ' udtSecondLastDose = 2nd Last Dose (Not applicable to 1st dose only case), otherwise, show 1st Dose
+            ' udtThirdLastDose = 3rd Last Dose = 1st dose when 3rd dose exist
+            Dim udtLastDose As VaccinationCardDoseRecordModel = Nothing
+            Dim udtSecondLastDose As VaccinationCardDoseRecordModel = Nothing
+            Dim udtThirdLastDose As VaccinationCardDoseRecordModel = Nothing
 
-                If (Not udtVaccinationRecordHistory Is Nothing) Then
-                    If (udtVaccinationRecordHistory.AvailableItemCode = "1STDOSE") Then
-                        strVaccineName_1st = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutName(udtVaccinationRecordHistory.VaccineBrand)
-                        strVaccineNameTC_1st = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(udtVaccinationRecordHistory.VaccineBrand)
-                        strDoseDate_1st = "|" + FormatDate(udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
-                        If blnDischarge OrElse blnNonLocalRecoveredHistory1stDose Then
-                            strSpecialIndicator_1 = "|001"
-                        End If
-                    End If
+            Dim blnNonLocalRecovered As Boolean = False
+
+            With udtVaccinationRecord
+                If .FirstDose IsNot Nothing AndAlso .SecondDose Is Nothing AndAlso .ThirdDose Is Nothing Then
+                    '1st Dose only
+                    udtLastDose = Nothing
+                    udtSecondLastDose = .FirstDose
+                    udtThirdLastDose = Nothing
+
+                ElseIf .FirstDose Is Nothing AndAlso .SecondDose IsNot Nothing AndAlso .ThirdDose Is Nothing Then
+                    '2nd Dose only
+                    udtLastDose = .SecondDose
+                    udtSecondLastDose = Nothing
+                    udtThirdLastDose = Nothing
+
+                ElseIf .FirstDose Is Nothing AndAlso .SecondDose Is Nothing AndAlso .ThirdDose IsNot Nothing Then
+                    '3rd Dose only
+                    udtLastDose = .ThirdDose
+                    udtSecondLastDose = Nothing
+                    udtThirdLastDose = Nothing
+
+                ElseIf .FirstDose IsNot Nothing AndAlso .SecondDose IsNot Nothing AndAlso .ThirdDose Is Nothing Then
+                    '1+2 Dose
+                    udtLastDose = .SecondDose
+                    udtSecondLastDose = .FirstDose
+                    udtThirdLastDose = Nothing
+
+                ElseIf .FirstDose Is Nothing AndAlso .SecondDose IsNot Nothing AndAlso .ThirdDose IsNot Nothing Then
+                    '2+3 Dose
+                    udtLastDose = .ThirdDose
+                    udtSecondLastDose = .SecondDose
+                    udtThirdLastDose = Nothing
+
+                ElseIf .FirstDose IsNot Nothing AndAlso .SecondDose Is Nothing AndAlso .ThirdDose IsNot Nothing Then
+                    '1+3 Dose
+                    udtLastDose = .ThirdDose
+                    udtSecondLastDose = Nothing
+                    udtThirdLastDose = .FirstDose
+
+                ElseIf .FirstDose IsNot Nothing AndAlso .SecondDose IsNot Nothing AndAlso .ThirdDose IsNot Nothing Then
+                    '1+2+3 Dose
+                    udtLastDose = .ThirdDose
+                    udtSecondLastDose = .SecondDose
+                    udtThirdLastDose = .FirstDose
+
+                End If
+
+            End With
+
+
+            '===== Last Dose =====
+            If (Not udtLastDose Is Nothing) Then
+                strLast_VaccineName = "|" + udtLastDose.VaccineName
+                strLast_VaccineNameTC = "|" + udtLastDose.VaccineNameChi
+                strLast_DoseDate = "|" + FormatDate(udtLastDose.InjectionDate, EnumDateFormat.DDMMYYYY)
+
+                If udtLastDose.NonLocalRecoveredHistory Then blnNonLocalRecovered = True
+            End If
+            '===== Last Dose =====
+
+            '===== 2nd Last Dose =====
+            If (Not udtSecondLastDose Is Nothing) Then
+                strSecondLast_VaccineName = "|" + udtSecondLastDose.VaccineName
+                strSecondLast_VaccineNameTC = "|" + udtSecondLastDose.VaccineNameChi
+                strSecondLast_DoseDate = "|" + FormatDate(udtSecondLastDose.InjectionDate, EnumDateFormat.DDMMYYYY)
+
+                If udtSecondLastDose.NonLocalRecoveredHistory Then blnNonLocalRecovered = True
+            End If
+            '===== 2nd Last Dose =====
+
+            '===== 3rd Last Dose =====
+            If (Not udtThirdLastDose Is Nothing) Then
+                strThirdLast_VaccinePt_1 = "|" + FormatDate(udtThirdLastDose.InjectionDate, EnumDateFormat.DDMMYYYY)
+                strThirdLast_VaccinePt_1 += "," + udtThirdLastDose.VaccineName
+                strThirdLast_VaccinePt_2 = "|" + udtThirdLastDose.VaccineNameChi
+
+                If udtThirdLastDose.NonLocalRecoveredHistory Then blnNonLocalRecovered = True
+            End If
+            '===== 3rd Last Dose =====
+
+            'Get COVID recovered indicator
+            If (blnDischarge OrElse blnNonLocalRecovered) AndAlso udtLastDose IsNot Nothing Then
+                strSpecialIndicator_2 = "|001"
+            End If
+
+            If (blnDischarge OrElse blnNonLocalRecovered) AndAlso udtSecondLastDose IsNot Nothing Then
+                strSpecialIndicator_1 = "|001"
+
+                If udtLastDose Is Nothing Then
+                    strLast_DoseDate = "|NA"
                 End If
             End If
+            ' CRE20-023-59 (Immu record - 3rd Dose) [End][Winnie SUEN]
 
             'Generate Digital Signature
             Dim udtQRcode As QRCodeModel = Nothing
 
             strRawData = String.Concat(strPrefix1AndPrefix2, strQRCodeVersion, strKeyVersion, strTransId, strMaskedDocId, strMaskedName, _
-                                       strDoseDate_1st, strVaccineName_1st, strVaccineNameTC_1st, strSpecialIndicator_1, strReservedField_1, _
-                                       strDoseDate_2nd, strVaccineName_2nd, strVaccineNameTC_2nd, strSpecialIndicator_2, strReservedField_2, strPrintDate)
+                                       strSecondLast_DoseDate, strSecondLast_VaccineName, strSecondLast_VaccineNameTC, strSpecialIndicator_1, strThirdLast_VaccinePt_1, _
+                                       strLast_DoseDate, strLast_VaccineName, strLast_VaccineNameTC, strSpecialIndicator_2, strThirdLast_VaccinePt_2, strPrintDate)
 
             udtQRcode = udtCOVID19BLL.GenerateDigitalSignature(strRawData)
 

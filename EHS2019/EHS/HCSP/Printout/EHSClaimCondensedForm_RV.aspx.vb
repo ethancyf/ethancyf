@@ -57,7 +57,7 @@ Partial Public Class EHSClaimCondensedForm_RV
         Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
         Dim udtEHSTransaction As EHSTransactionModel = _udtSessionHandler.EHSTransactionGetFromSession(strFunctCode)
         Dim udtSmartIDContent As BLL.SmartIDContentModel = Me._udtSessionHandler.SmartIDContentGetFormSession(strFunctCode)
-        Dim udtVaccinationRecord As TransactionDetailVaccineModel = _udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
+        Dim udtVaccinationRecord As COVID19.VaccinationCardRecordModel = _udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
         Dim udtDischargeResult As COVID19.DischargeResultModel = _udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(strFunctCode)
         Dim blnDischarge As Boolean = False
         Dim blnNonLocalRecoveredHistory1stDose As Boolean = False
@@ -71,36 +71,7 @@ Partial Public Class EHSClaimCondensedForm_RV
             blnDischarge = True
         End If
 
-        If udtEHSTransaction IsNot Nothing AndAlso _
-            udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
-            udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory IsNot Nothing AndAlso _
-            udtEHSTransaction.TransactionAdditionFields.NonLocalRecoveredHistory = YesNo.Yes Then
-
-            If udtEHSTransaction.TransactionDetails(0).AvailableItemCode = "1STDOSE" Then
-                blnNonLocalRecoveredHistory1stDose = True
-            End If
-
-            If udtEHSTransaction.TransactionDetails(0).AvailableItemCode = "2NDDOSE" Then
-                blnNonLocalRecoveredHistory2ndDose = True
-            End If
-
-        End If
-
-        If udtVaccinationRecord IsNot Nothing AndAlso udtVaccinationRecord.NonLocalRecovered IsNot Nothing Then
-
-            If udtVaccinationRecord.NonLocalRecovered = YesNo.Yes Then
-
-                If udtVaccinationRecord.AvailableItemCode = "1STDOSE" Then
-                    blnNonLocalRecoveredHistory1stDose = True
-                End If
-
-                If udtVaccinationRecord.AvailableItemCode = "2NDDOSE" Then
-                    blnNonLocalRecoveredHistory2ndDose = True
-                End If
-
-            End If
-        End If
-
+        
         ' Create the report instance
         Select Case udtSchemeClaim.SchemeCode
             Case SchemeClaimModel.CIVSS
@@ -162,7 +133,7 @@ Partial Public Class EHSClaimCondensedForm_RV
                             AndAlso Not IsNothing(udtSchemeClaim) Then
 
                         objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, _
-                                                                                                       blnDischarge, blnNonLocalRecoveredHistory1stDose, blnNonLocalRecoveredHistory2ndDose)
+                                                                                                       blnDischarge)
                     End If
 
                 Else
@@ -209,7 +180,7 @@ Partial Public Class EHSClaimCondensedForm_RV
                         AndAlso Not IsNothing(udtSchemeClaim) Then
 
                     objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, _
-                                                                                                   blnDischarge, blnNonLocalRecoveredHistory1stDose, blnNonLocalRecoveredHistory2ndDose)
+                                                                                                   blnDischarge)
                 End If
                 'CRE20-022 (Immu record)  [End][Raiman] 
 
@@ -220,7 +191,7 @@ Partial Public Class EHSClaimCondensedForm_RV
                             AndAlso Not IsNothing(udtEHSAccount) _
                             AndAlso Not IsNothing(udtSchemeClaim) Then
                         objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, _
-                                                                                                       blnDischarge, blnNonLocalRecoveredHistory1stDose, blnNonLocalRecoveredHistory2ndDose)
+                                                                                                       blnDischarge)
 
                     End If
                 End If

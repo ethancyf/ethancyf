@@ -288,7 +288,10 @@ Partial Public Class ucInputVSSCOVID19
         BindSubCategory()
 
         'Get Vaccine Brand & Lot No.
-        Dim dtVaccineLotNo As DataTable = _udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
+        Dim dtVaccineLotNo As DataTable = _udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(CurrentPractice.SPID, _
+                                                                                               CurrentPractice.PracticeID, _
+                                                                                               ServiceDate, _
+                                                                                               COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
@@ -803,7 +806,10 @@ Partial Public Class ucInputVSSCOVID19
         Dim dtVaccineLotNo As DataTable = Nothing
         Dim strVaccineLotID As String = String.Empty
 
-        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
+        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(CurrentPractice.SPID, _
+                                                                             CurrentPractice.PracticeID, _
+                                                                             ServiceDate, _
+                                                                             COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
@@ -1560,13 +1566,9 @@ Partial Public Class ucInputVSSCOVID19
             strSelectedValue = Me.Request.Form("ctl00$ContentPlaceHolder1$udcStep2aInputEHSClaim$" + Me.ddlCDoseCovid19.UniqueID)
         End If
 
-        'Set selected if "1st Dose" exists
+        'Set selected dose
         If strSelectedValue = String.Empty AndAlso MyBase.SessionHandler.ClaimCOVID19DoseGetFromSession(FunctCode) Is Nothing Then
-            For Each li As ListItem In ddlCDoseCovid19.Items
-                If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                    strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
-                End If
-            Next
+            strSelectedValue = FindNextDoseForSelection(EHSClaimVaccine, ddlCDoseCovid19)
         End If
 
         'If nothing, get value form session

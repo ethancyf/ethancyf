@@ -97,6 +97,68 @@ Public MustInherit Class ucInputEHSClaimBase
     End Function
 
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
+
+    Shared Function FindNextDoseForSelection(ByVal EHSClaimVaccine As EHSClaimVaccineModel, ByRef ddlCDoseCovid19 As DropDownList) As String
+        Dim strSelectedValue = String.Empty
+        Dim intLatestDoseInjected As Integer = 0
+        Dim intMaxDoseforInject As Integer = 0
+        Dim udtDoseList As New EHSClaimVaccineModel.EHSClaimSubidizeDetailModelCollection
+        Dim dicDoseList As New Dictionary(Of Integer, Boolean)
+
+        If EHSClaimVaccine IsNot Nothing Then
+            For Each udtSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In EHSClaimVaccine.SubsidizeList
+                For Each udtEHSClaimSubidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtSubsidize.SubsidizeDetailList
+                    If Not dicDoseList.ContainsKey(udtEHSClaimSubidizeDetail.DisplaySeq) Then
+                        dicDoseList.Add(udtEHSClaimSubidizeDetail.DisplaySeq, udtEHSClaimSubidizeDetail.Available)
+                    Else
+                        Dim blnRes As Boolean = dicDoseList.Item(udtEHSClaimSubidizeDetail.DisplaySeq)
+
+                        blnRes = blnRes Or udtEHSClaimSubidizeDetail.Available
+
+                        dicDoseList.Remove(udtEHSClaimSubidizeDetail.DisplaySeq)
+                        dicDoseList.Add(udtEHSClaimSubidizeDetail.DisplaySeq, blnRes)
+                    End If
+
+                    If udtEHSClaimSubidizeDetail.DisplaySeq > intMaxDoseforInject Then
+                        intMaxDoseforInject = udtEHSClaimSubidizeDetail.DisplaySeq
+                    End If
+
+                    If udtEHSClaimSubidizeDetail.Available Then
+                        udtDoseList.Add(udtEHSClaimSubidizeDetail)
+                    End If
+                Next
+            Next
+
+            For Each udtKVP As KeyValuePair(Of Integer, Boolean) In dicDoseList
+                If Not udtKVP.Value Then
+                    If udtKVP.Key > intLatestDoseInjected Then
+                        intLatestDoseInjected = udtKVP.Key
+                    End If
+                End If
+            Next
+
+            If intMaxDoseforInject > intLatestDoseInjected Then
+                Dim udtEHSClaimSubidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel = udtDoseList.FilterByDisplaySeq(intLatestDoseInjected + 1)
+
+                If udtEHSClaimSubidizeDetail IsNot Nothing Then
+                    Dim strTargetDose As String = udtEHSClaimSubidizeDetail.AvailableItemCode
+
+                    For Each li As ListItem In ddlCDoseCovid19.Items
+                        'If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                        '    strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
+                        'End If
+                        If li.Value = strTargetDose Then
+                            strSelectedValue = strTargetDose
+                        End If
+                    Next
+                End If
+            End If
+        End If
+
+        Return strSelectedValue
+
+    End Function
+
 #End Region
 
 #Region "Properties"

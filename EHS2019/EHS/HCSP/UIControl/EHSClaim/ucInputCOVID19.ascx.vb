@@ -965,13 +965,9 @@ Partial Public Class ucInputCOVID19
 
         strSelectedValue = AntiXssEncoder.HtmlEncode(Me.ddlCDoseCovid19.SelectedValue, True)
 
-        'Set selected if "1st Dose" exists
+        'Set selected dose
         If strSelectedValue = String.Empty AndAlso _udtSessionHandler.ClaimCOVID19DoseGetFromSession(FunctCode) Is Nothing Then
-            For Each li As ListItem In ddlCDoseCovid19.Items
-                If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                    strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
-                End If
-            Next
+            strSelectedValue = FindNextDoseForSelection(EHSClaimVaccine, ddlCDoseCovid19)
         End If
 
         'If nothing, get value form session

@@ -864,6 +864,30 @@ Namespace Component.EHSTransaction
 
         End Function
 
+        ' CRE20-023-60 (Immu record - 3rd Dose) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
+        Public Function FilterFindNearestRecordByDose(ByVal strAvailableItemCode As String) As TransactionDetailVaccineModel
+
+            Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If (strAvailableItemCode.Trim.ToUpper = udtTranDetailVaccineModel.AvailableItemCode.Trim.ToUpper) Then
+
+                    If udtResTranDetailVaccineModel Is Nothing Then
+                        udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+                    Else
+                        If udtResTranDetailVaccineModel.ServiceReceiveDtm <= udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                            udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+                        End If
+                    End If
+                End If
+            Next
+
+            Return udtResTranDetailVaccineModel
+
+        End Function
+        ' CRE20-023-60 (Immu record - 3rd Dose) [End][Winnie SUEN]
+
         Public Function FilterIncludeBySubsidizeItemCode(ByVal strSubsidizeItemCode As String) As TransactionDetailVaccineModelCollection
             Dim udtResTranDetailVaccineList As New TransactionDetailVaccineModelCollection
 
@@ -990,6 +1014,53 @@ Namespace Component.EHSTransaction
             Next
 
             Return strNearestContactNo
+
+        End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterFindNearestRecipientType() As String
+            Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
+            Dim strNearestRecipientType As String = String.Empty
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If udtResTranDetailVaccineModel Is Nothing Then
+                    If udtTranDetailVaccineModel.RecipientType <> String.Empty Then
+                        'Vaccine
+                        udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+                        'Recipient Type
+                        strNearestRecipientType = udtResTranDetailVaccineModel.RecipientType
+                    End If
+
+                Else
+                    If udtResTranDetailVaccineModel.ServiceReceiveDtm < udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                        'Vaccine
+                        udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+
+                        'Recipient Type
+                        If udtResTranDetailVaccineModel.RecipientType <> String.Empty Then
+                            strNearestRecipientType = udtResTranDetailVaccineModel.RecipientType
+                        End If
+
+                    End If
+
+                    If udtResTranDetailVaccineModel.ServiceReceiveDtm = udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                        If udtResTranDetailVaccineModel.TransactionDtm < udtTranDetailVaccineModel.TransactionDtm Then
+                            'Vaccine
+                            udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+
+                            'Recipient Type
+                            If udtResTranDetailVaccineModel.RecipientType <> String.Empty Then
+                                strNearestRecipientType = udtResTranDetailVaccineModel.RecipientType
+                            End If
+                        End If
+                    End If
+
+                End If
+            Next
+
+            Return strNearestRecipientType
 
         End Function
         ' CRE20-0023 (Immu record) [End][Chris YIM]

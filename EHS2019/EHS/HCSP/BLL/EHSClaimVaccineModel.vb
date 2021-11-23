@@ -794,6 +794,17 @@ Imports Common.Component
             Return udtOutEHSClaimSubidizeDetail
         End Function
 
+        Public Function FilterByDisplaySeq(ByVal intDisplaySeq As Integer) As EHSClaimSubidizeDetailModel
+            Dim udtOutEHSClaimSubidizeDetail As EHSClaimSubidizeDetailModel = Nothing
+            For Each udtEHSClaimSubidizeDetail As EHSClaimSubidizeDetailModel In Me
+                If udtEHSClaimSubidizeDetail.DisplaySeq.Equals(intDisplaySeq) Then
+                    udtOutEHSClaimSubidizeDetail = udtEHSClaimSubidizeDetail
+                    Exit For
+                End If
+            Next
+            Return udtOutEHSClaimSubidizeDetail
+        End Function
+
         Default Public Overloads ReadOnly Property Item(ByVal intIndex As Integer) As EHSClaimSubidizeDetailModel
             Get
                 Return CType(MyBase.Item(intIndex), EHSClaimSubidizeDetailModel)

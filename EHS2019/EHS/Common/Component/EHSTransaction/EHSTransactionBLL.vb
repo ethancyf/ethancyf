@@ -951,8 +951,10 @@ Namespace Component.EHSTransaction
                                                                                                           COVID19.COVID19BLL.Source.GetFromDB)
 
                                     Case SchemeClaimModel.VSS
-                                        dtVaccineLot = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(udtEHSTransactionModel.ServiceDate, _
-                                                                                                           COVID19.COVID19BLL.Source.GetFromDB)
+                                        dtVaccineLot = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(udtEHSTransactionModel.ServiceProviderID, _
+                                                                                                          udtEHSTransactionModel.PracticeID, _
+                                                                                                          udtEHSTransactionModel.ServiceDate, _
+                                                                                                          COVID19.COVID19BLL.Source.GetFromDB)
 
                                     Case SchemeClaimModel.RVP
                                         dtVaccineLot = udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH(udtEHSTransactionModel.ServiceDate, _
@@ -4508,11 +4510,14 @@ Namespace Component.EHSTransaction
             Dim strContactNo As String = String.Empty
             If Not drSource.IsNull("Contact_No") Then strContactNo = drSource("Contact_No").ToString().Trim()
 
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strRecipientType As String = String.Empty
+            If Not drSource.IsNull("Recipient_Type") Then strRecipientType = drSource("Recipient_Type").ToString().Trim()
+
             Dim strNonLocalRecovered As String = String.Empty
             If Not drSource.IsNull("Non_Local_Recovered") Then strNonLocalRecovered = drSource("Non_Local_Recovered").ToString().Trim()
 
-            ' CRE20-0023 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             Dim strMainCategory As String = String.Empty
             If Not drSource.IsNull("Main_Category") Then strMainCategory = drSource("Main_Category").ToString().Trim()
 
@@ -4563,6 +4568,7 @@ Namespace Component.EHSTransaction
 
             udtTransactionDetailVaccineModel.JoinEHRSS = strJoinEHRSS.Trim
             udtTransactionDetailVaccineModel.ContactNo = strContactNo.Trim
+            udtTransactionDetailVaccineModel.RecipientType = strRecipientType.Trim
             udtTransactionDetailVaccineModel.NonLocalRecovered = strNonLocalRecovered.Trim
             udtTransactionDetailVaccineModel.MainCategory = strMainCategory.Trim
             udtTransactionDetailVaccineModel.SubCategory = strSubCategory.Trim

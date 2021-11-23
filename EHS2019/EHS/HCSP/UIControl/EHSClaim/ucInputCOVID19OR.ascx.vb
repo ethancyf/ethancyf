@@ -1516,13 +1516,9 @@ Partial Public Class ucInputCOVID19OR
             strSelectedValue = Me.Request.Form("ctl00$ContentPlaceHolder1$udcStep2aInputEHSClaim$" + Me.ddlCDoseCovid19.UniqueID)
         End If
 
-        'Set selected if "1st Dose" exists
+        'Set selected dose
         If strSelectedValue = String.Empty AndAlso MyBase.SessionHandler.ClaimCOVID19DoseGetFromSession(FunctCode) Is Nothing Then
-            For Each li As ListItem In ddlCDoseCovid19.Items
-                If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                    strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
-                End If
-            Next
+            strSelectedValue = FindNextDoseForSelection(EHSClaimVaccine, ddlCDoseCovid19)
         End If
 
         'If nothing, get value form session

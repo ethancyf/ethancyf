@@ -351,6 +351,7 @@ EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19Vacc
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19VaccinationCard_A5.resx -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19VaccinationCard_A5.vb -text
 EHS2019/EHS/Common/Component/COVID19/QRCodeModel.vb -text
+EHS2019/EHS/Common/Component/COVID19/VaccinationCardRecordModel.vb -text
 EHS2019/EHS/Common/Component/ClaimCategory/ClaimCategoryBLL.vb -text
 EHS2019/EHS/Common/Component/ClaimCategory/ClaimCategoryEligibilityModel.vb -text
 EHS2019/EHS/Common/Component/ClaimCategory/ClaimCategoryEligibilityModelCollection.vb -text

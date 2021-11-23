@@ -10,6 +10,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Chris YIM
+-- Modified date:	09 Nov 2021
+-- Description:		Add column [Recipient_Type]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Chris YIM
 -- Modified date:	23 Sep 2021
 -- Description:		Add column [Main_Category] & [Sub_Category]
 -- =============================================
@@ -614,7 +621,8 @@ EXEC [proc_SymmetricKey_open]
 		TAF_2.[AdditionalFieldValueCode] AS [Contact_No],
 		TAF_3.[AdditionalFieldValueCode] AS [Non_Local_Recovered],
 		TAF_4.[AdditionalFieldValueCode] AS [Main_Category],
-		TAF_5.[AdditionalFieldValueCode] AS [Sub_Category]
+		TAF_5.[AdditionalFieldValueCode] AS [Sub_Category],
+		TAF_6.[AdditionalFieldValueCode] AS [Recipient_Type]
 	FROM 
 		@result R
 			INNER JOIN SubsidizeItem I
@@ -640,7 +648,10 @@ EXEC [proc_SymmetricKey_open]
 			LEFT OUTER JOIN TransactionAdditionalField TAF_5 WITH(NOLOCK)
 				ON R.[Transaction_ID] = TAF_5.[Transaction_ID]
 					AND TAF_5.[AdditionalFieldID] = 'SubCategory'
-			
+			LEFT OUTER JOIN TransactionAdditionalField TAF_6 WITH(NOLOCK)
+				ON R.[Transaction_ID] = TAF_6.[Transaction_ID]
+					AND TAF_6.[AdditionalFieldID] = 'RecipientType'
+					
 	ORDER BY R.[Service_Receive_Dtm]
 
 EXEC [proc_SymmetricKey_close]

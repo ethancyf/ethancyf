@@ -13,6 +13,14 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================  
+-- Modification History  
+-- Modified by:		Winnie SUEN
+-- Modified date:   15 Oct 2021
+-- CR No.:			CRE20-023-60 (3rd Dose)
+-- Description:		Handle new service type [PRIVATE_BIONTECH] for Particular Private Clinic with BioNTech
+-- =============================================  
 -- =============================================  
 -- Modification History  
 -- Modified by:    Nichole Ip
@@ -48,7 +56,7 @@ BEGIN
 -- Return results  
 -- =============================================  
   
- SELECT  
+ SELECT
   VLM.[Vaccine_Lot_ID],  
   VLD.[Vaccine_Lot_No],  
   VBD.[Brand_ID],  
@@ -91,6 +99,8 @@ BEGIN
     ON VLM.[Vaccine_Lot_No] = VLD.[Vaccine_Lot_No]  
    INNER JOIN [COVID19VaccineBrandDetail] VBD WITH(NOLOCK)  
     ON VLD.[Brand_ID] = VBD.[Brand_ID]  
+   LEFT JOIN [COVID19VaccineLotPrivateSPMapping] VSPM WITH(NOLOCK)  
+    ON VSPM.[Service_Type] = VLM.[Service_Type]
  WHERE  
   VLM.Record_Status ='A' 
   AND (@Service_Dtm IS NULL OR @Service_Dtm >= Service_Period_From 
@@ -99,7 +109,17 @@ BEGIN
     WHEN VLD.[Expiry_Date] < VLM.[Service_Period_To] THEN VLD.[Expiry_Date]  
     ELSE VLM.[Service_Period_To]  
    END )
-  AND VLM.[Service_Type] = 'PRIVATE'  
+  AND (	VLM.[Service_Type] = 'PRIVATE'
+		OR (VLM.[Service_Type] = 'PRIVATE_BIONTECH'
+			AND	VSPM.[SP_ID] = @SP_ID
+			AND	VSPM.[Practice_Display_Seq] = @Practice_Display_Seq
+			AND VSPM.[Record_Status] = 'A'
+			AND (@Service_Dtm IS NULL OR 
+					((VSPM.[Effective_Date] IS NULL OR VSPM.[Effective_Date] <= @Service_Dtm)
+					AND (VSPM.[Expiry_Date] IS NULL OR VSPM.[Expiry_Date] >= @Service_Dtm ))
+				)
+			)
+		)
  ORDER BY   
   VBD.[Brand_Trade_Name],  
   VLM.[Vaccine_Lot_No]  

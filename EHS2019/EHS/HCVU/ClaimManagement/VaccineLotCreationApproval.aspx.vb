@@ -533,7 +533,7 @@ Partial Public Class VaccineLotCreationApproval
                     'check any records of service type in private or rvp on mapping and mapping request table
                     Dim dtUsedCentre As DataTable = udtVaccineLotBLL.GetVaccineLotLotMappingInUseByLotNo(lblDetailVaccineLotNo.Text.Trim)
                     Dim dvUsedCentreFilterWithRVP As DataView = New DataView(dtUsedCentre)
-                    dvUsedCentreFilterWithRVP.RowFilter = udtVaccineLotBLL.FilterCentreByServiceType(PrivateServiceType, RVPServiceType) '[Service_Type] IN ('PRIVATE', 'RVP')
+                    dvUsedCentreFilterWithRVP.RowFilter = udtVaccineLotBLL.FilterCentreByServiceType(False)
 
                     If dvUsedCentreFilterWithRVP.Count > 0 Then
                         msgBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00002))
@@ -541,7 +541,7 @@ Partial Public Class VaccineLotCreationApproval
                     Else
                         'check any records of service type in centre on mapping and mapping request table
                         Dim dvFilterWithCentre As DataView = New DataView(dtUsedCentre)
-                        dvFilterWithCentre.RowFilter = udtVaccineLotBLL.FilterCentreByServiceType(CentreServiceType) ' "[Service_Type] = 'CENTRE'"
+                        dvFilterWithCentre.RowFilter = udtVaccineLotBLL.FilterCentreByServiceType(True) ' "[Service_Type] = 'CENTRE'"
                         Dim dtDistinctCentreName As DataTable = dvFilterWithCentre.ToTable(True, {"Centre_Name", "centre_service_type"})
 
                         If dtDistinctCentreName.Rows.Count > 0 Then

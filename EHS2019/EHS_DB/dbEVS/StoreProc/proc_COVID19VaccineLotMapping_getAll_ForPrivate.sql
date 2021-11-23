@@ -13,6 +13,14 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================  
+-- Modification History  
+-- Modified by:		Winnie SUEN
+-- Modified date:   15 Oct 2021
+-- CR No.:			CRE20-023-60 (3rd Dose)
+-- Description:		Handle new service type [PRIVATE_BIONTECH] for Particular Private Clinic with BioNTech
+-- ============================================= 
 -- =============================================  
 -- Modification History  
 -- Modified by:    Nichole Ip
@@ -28,7 +36,8 @@ GO
 -- Description:  Immu Record  
 -- =============================================  
   
--- For Scheme (VSS)  
+-- For Scheme (VSS) Back Office Claim
+-- No need to cater Effective Period and Status
 CREATE PROCEDURE [dbo].[proc_COVID19VaccineLotMapping_getAll_ForPrivate]  
  @SP_ID CHAR(8)  = NULL,  
  @Practice_Display_Seq SMALLINT = NULL 
@@ -90,9 +99,12 @@ BEGIN
     ON VLM.[Vaccine_Lot_No] = VLD.[Vaccine_Lot_No]  
    INNER JOIN [COVID19VaccineBrandDetail] VBD WITH(NOLOCK)  
     ON VLD.[Brand_ID] = VBD.[Brand_ID]  
+   LEFT JOIN [COVID19VaccineLotPrivateSPMapping] VSPM WITH(NOLOCK)  
+    ON VSPM.[Service_Type] = VLM.[Service_Type]
  WHERE  
-  --VLM.Record_Status ='A' and
-  VLM.[Service_Type] = 'PRIVATE'  
+	(VLM.[Service_Type] = 'PRIVATE' OR VLM.[Service_Type] = 'PRIVATE_BIONTECH'
+	)
+
  ORDER BY   
   VBD.[Brand_Trade_Name],  
   VLM.[Vaccine_Lot_No]  

@@ -800,7 +800,7 @@
                                         AllowSorting="True"  AllowPaging="False"  OnRowDataBound="gvCOtherVaccinationRecord_RowDataBound"
                                         OnPreRender="gvCOtherVaccinationRecord_PreRender" OnSorting="gvCOtherVaccinationRecord_Sorting">
                                         <Columns>
-                                            <asp:TemplateField SortExpression="ServiceReceiveDtm" HeaderText="<%$ Resources: Text, InjectionDate %>">
+                                            <asp:TemplateField SortExpression="ServiceReceiveDtmSorting" HeaderText="<%$ Resources: Text, InjectionDate %>">
                                                 <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#5b9bd5" BorderColor="Transparent"/>                                  
                                                 <ItemStyle Width="125px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
                                                 <ItemTemplate>
@@ -878,14 +878,14 @@
                                                     <asp:Label ID="lblCIndex" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField SortExpression="ServiceReceiveDtm" HeaderText="<%$ Resources: Text, InjectionDate %>">
+                                            <asp:TemplateField SortExpression="ServiceReceiveDtmSorting" HeaderText="<%$ Resources: Text, InjectionDate %>">
                                                 <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000" />
                                                 <ItemStyle Width="125px" VerticalAlign="Top" Font-Size="Medium" />
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblCInjectionDate" runat="server" Text='<%# Bind("ServiceReceiveDtm") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField SortExpression="SubsidizeDesc" HeaderText="<%$ Resources: Text, Vaccines %>">
+                                            <asp:TemplateField SortExpression="SubsidizeDescSorting" HeaderText="<%$ Resources: Text, Vaccines %>">
                                                 <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000" />
                                                 <ItemStyle Width="280px" VerticalAlign="Top" Font-Size="Medium" />
                                                 <ItemTemplate>

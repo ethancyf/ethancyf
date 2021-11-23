@@ -18,6 +18,7 @@ Namespace Component.ClaimRules
             Public Const CLINICTYPE As String = "CLINICTYPE"
             Public Const SAMECLINIC As String = "SAMECLINIC"
             Public Const INJECTDATE As String = "INJECTDATE"
+            Public Const LATEST_DOSE As String = "LATESTDOSE"
         End Class
 #End Region
 

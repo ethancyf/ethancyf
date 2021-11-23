@@ -1637,18 +1637,17 @@ Namespace BLL
 #End Region
 
 #Region "Claim COVID-19 - Vaccination Card"
-        Public Sub ClaimCOVID19VaccinationCardSaveToSession(ByVal udtEHSTransaction As TransactionDetailVaccineModel, ByVal strFunctionCode As String)
-            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)) = udtEHSTransaction
+        Public Sub ClaimCOVID19VaccinationCardSaveToSession(ByVal udtVaccinationCardRecord As COVID19.VaccinationCardRecordModel, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)) = udtVaccinationCardRecord
         End Sub
 
-        Public Function ClaimCOVID19VaccinationCardGetFromSession(ByVal strFunctionCode As String) As TransactionDetailVaccineModel
-            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)), TransactionDetailVaccineModel)
+        Public Function ClaimCOVID19VaccinationCardGetFromSession(ByVal strFunctionCode As String) As COVID19.VaccinationCardRecordModel
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)), COVID19.VaccinationCardRecordModel)
         End Function
 
         Public Sub ClaimCOVID19VaccinationCardRemoveFromSession(ByVal strFunctionCode As String)
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard))
         End Sub
-
 #End Region
 
 #Region "Claim COVID-19 - Carry Forword"
@@ -1722,7 +1721,7 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeDemographicReminder))
         End Sub
 #End Region
-      
+
 #Region "Claim COVID-19 - Discharge Override Reason"
 
         Public Sub ClaimCOVID19DischargeOverrideReasonSaveToSession(ByVal strReason As String, ByVal strFunctionCode As String)

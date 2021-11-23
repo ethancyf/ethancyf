@@ -241,10 +241,10 @@ Namespace Component.COVID19
             '    blnDiff = True
             'End If
 
-            'If HttpContext.Current.Session(SESS.PracticeDisplaySeq) Is Nothing OrElse _
-            '    CType(HttpContext.Current.Session(SESS.PracticeDisplaySeq), Integer) <> intPracticeDisplaySeq Then
-            '    blnDiff = True
-            'End If
+            If HttpContext.Current.Session(SESS.PracticeDisplaySeq) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.PracticeDisplaySeq), Integer) <> intPracticeDisplaySeq Then
+                blnDiff = True
+            End If
 
             If HttpContext.Current.Session(SESS.ServiceDate) Is Nothing OrElse _
                 CType(HttpContext.Current.Session(SESS.ServiceDate), DateTime) <> dtmServiceDate Then

@@ -1034,11 +1034,9 @@ Partial Public Class ucInputCOVID19RVP
             Me.rblCRecipientType.Enabled = False
             If MyBase.EHSTransactionLatestVaccineRecord IsNot Nothing Then
                 'EHS Transaction
-                If (MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.RVP OrElse _
-                    MyBase.EHSTransactionLatestVaccineRecord.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP) AndAlso _
-                    MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
-                    MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
-                    MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.RecipientType <> String.Empty Then
+                If MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
+                   MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
+                   MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.RecipientType <> String.Empty Then
 
                     For Each li As ListItem In rblCRecipientType.Items
                         If MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.RecipientType.Trim.ToUpper = li.Value.Trim.ToUpper Then
@@ -1239,13 +1237,9 @@ Partial Public Class ucInputCOVID19RVP
 
         strSelectedValue = AntiXssEncoder.HtmlEncode(Me.ddlCDoseCovid19.SelectedValue, True)
 
-        'Set selected if "1st Dose" exists
+        'Set selected dose
         If strSelectedValue = String.Empty AndAlso Me.SessionHandler.ClaimCOVID19DoseGetFromSession(FunctCode) Is Nothing Then
-            For Each li As ListItem In ddlCDoseCovid19.Items
-                If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                    strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
-                End If
-            Next
+            strSelectedValue = FindNextDoseForSelection(EHSClaimVaccine, ddlCDoseCovid19)
         End If
 
         'If nothing, get value form session

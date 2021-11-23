@@ -486,12 +486,12 @@ Namespace BLL
         ' CRE20-0022 (Immu record) [Start][Raiman]
         ' ---------------------------------------------------------------------------------------------------------
 #Region "COVID-19 - Vaccination Card"
-        Public Sub ClaimCOVID19VaccinationCardSaveToSession(ByVal udtEHSTransaction As TransactionDetailVaccineModel, ByVal strFunctionCode As String)
-            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)) = udtEHSTransaction
+        Public Sub ClaimCOVID19VaccinationCardSaveToSession(ByVal udtVaccinationCardRecord As VaccinationCardRecordModel, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)) = udtVaccinationCardRecord
         End Sub
 
-        Public Function ClaimCOVID19VaccinationCardGetFromSession(ByVal strFunctionCode As String) As TransactionDetailVaccineModel
-            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)), TransactionDetailVaccineModel)
+        Public Function ClaimCOVID19VaccinationCardGetFromSession(ByVal strFunctionCode As String) As VaccinationCardRecordModel
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)), VaccinationCardRecordModel)
         End Function
 
         Public Sub ClaimCOVID19VaccinationCardRemoveFromSession(ByVal strFunctionCode As String)

@@ -625,15 +625,15 @@ Namespace Component.VaccineLot
 
         End Function
 
-        Public Function FilterCentreByServiceType(ByVal strServiceType1 As String, Optional ByVal strServiceType2 As String = Nothing) As String
+        Public Function FilterCentreByServiceType(ByVal blnIncludeCentreOnly As Boolean) As String
 
             Dim strFilterServiceType As String
 
-            strFilterServiceType = "[Service_Type] IN ('" + strServiceType1 + "'"
-            If strServiceType2 IsNot String.Empty Then
-                strFilterServiceType += ",'" + strServiceType2 + "'"
+            If blnIncludeCentreOnly Then
+                strFilterServiceType = "[Service_Type] = '" + "CENTRE" + "'"
+            Else
+                strFilterServiceType = "[Service_Type] <> '" + "CENTRE" + "'"
             End If
-            strFilterServiceType += ")"
 
             Return strFilterServiceType
 
