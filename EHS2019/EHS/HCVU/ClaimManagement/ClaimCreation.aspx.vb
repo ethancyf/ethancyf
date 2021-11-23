@@ -2437,8 +2437,10 @@ Partial Public Class ClaimCreation
 
                                     If udtWarning.ClaimRuleResult.ResultParam.Count > 0 Then
                                         For Each kvp As KeyValuePair(Of String, Object) In udtWarning.ClaimRuleResult.ResultParam
-                                            udtAdditionalWarning.MessageDescription = udtAdditionalWarning.MessageDescription.Replace(kvp.Key, kvp.Value)
-                                            udtAdditionalWarning.MessageDescriptionChi = udtAdditionalWarning.MessageDescriptionChi.Replace(kvp.Key, kvp.Value)
+                                            If TypeOf kvp.Value Is String Then
+                                                udtAdditionalWarning.MessageDescription = udtAdditionalWarning.MessageDescription.Replace(kvp.Key, kvp.Value)
+                                                udtAdditionalWarning.MessageDescriptionChi = udtAdditionalWarning.MessageDescriptionChi.Replace(kvp.Key, kvp.Value)
+                                            End If
                                         Next
                                     End If
 
@@ -2469,8 +2471,10 @@ Partial Public Class ClaimCreation
                             If udtWarning.ClaimRuleResult IsNot Nothing AndAlso udtWarning.ClaimRuleResult.ResultParam IsNot Nothing Then
                                 If udtWarning.ClaimRuleResult.ResultParam.Count > 0 Then
                                     For Each kvp As KeyValuePair(Of String, Object) In udtWarning.ClaimRuleResult.ResultParam
-                                        arrFindName.Add(kvp.Key)
-                                        arrReplaceName.Add(kvp.Value.ToString)
+                                        If TypeOf kvp.Value Is String Then
+                                            arrFindName.Add(kvp.Key)
+                                            arrReplaceName.Add(kvp.Value.ToString)
+                                        End If
                                     Next
                                 End If
                             End If

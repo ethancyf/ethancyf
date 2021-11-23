@@ -4884,6 +4884,8 @@ Namespace Component.ClaimRules
 
                     If udtInputPicker Is Nothing Then Return False
 
+                    If udtInputPicker.VaccinationRecordWithoutBar Is Nothing Then Return False
+
                     Dim blnResult As Boolean = False
 
                     If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
@@ -6918,7 +6920,7 @@ Namespace Component.ClaimRules
                     Case SubsidizeItemDetailsModel.DoseCode.ThirdDOSE
                         strTarget = "3rdDose"
                     Case SubsidizeItemDetailsModel.DoseCode.ONLYDOSE
-                        strDependence = "OnlyDose"
+                        strTarget = "OnlyDose"
                 End Select
 
                 If udtClaimRule.Dependence IsNot Nothing AndAlso udtClaimRule.Dependence <> String.Empty Then
@@ -6935,14 +6937,19 @@ Namespace Component.ClaimRules
                 End If
 
                 ' Assign the target dose
-                dicResultParam.Add("%TargetEN", HttpContext.GetGlobalResourceObject("Text", strTarget, New System.Globalization.CultureInfo(CultureLanguage.English)).ToString.ToLower)
-                dicResultParam.Add("%TargetTC", HttpContext.GetGlobalResourceObject("Text", strTarget, New System.Globalization.CultureInfo(CultureLanguage.TradChinese)))
-                dicResultParam.Add("%TargetSC", HttpContext.GetGlobalResourceObject("Text", strTarget, New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)))
+                If strTarget <> String.Empty Then
+                    dicResultParam.Add("%TargetEN", Common.Resource.CustomResourceProviderFactory.GetGlobalResourceObject("Text", strTarget, EnumLanguage.EN).ToString.ToLower)
+                    dicResultParam.Add("%TargetTC", Common.Resource.CustomResourceProviderFactory.GetGlobalResourceObject("Text", strTarget, EnumLanguage.TC))
+                    dicResultParam.Add("%TargetSC", Common.Resource.CustomResourceProviderFactory.GetGlobalResourceObject("Text", strTarget, EnumLanguage.SC))
+                End If
 
                 ' Assign the dependence dose
-                dicResultParam.Add("%DependenceEN", HttpContext.GetGlobalResourceObject("Text", strDependence, New System.Globalization.CultureInfo(CultureLanguage.English)).ToString.ToLower)
-                dicResultParam.Add("%DependenceTC", HttpContext.GetGlobalResourceObject("Text", strDependence, New System.Globalization.CultureInfo(CultureLanguage.TradChinese)))
-                dicResultParam.Add("%DependenceSC", HttpContext.GetGlobalResourceObject("Text", strDependence, New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)))
+                If strDependence <> String.Empty Then
+                    dicResultParam.Add("%DependenceEN", Common.Resource.CustomResourceProviderFactory.GetGlobalResourceObject("Text", strDependence, EnumLanguage.EN).ToString.ToLower)
+                    dicResultParam.Add("%DependenceTC", Common.Resource.CustomResourceProviderFactory.GetGlobalResourceObject("Text", strDependence, EnumLanguage.TC))
+                    dicResultParam.Add("%DependenceSC", Common.Resource.CustomResourceProviderFactory.GetGlobalResourceObject("Text", strDependence, EnumLanguage.SC))
+                End If
+
             End If
 
         End Sub
