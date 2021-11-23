@@ -2514,9 +2514,9 @@ Namespace Component.EHSTransaction
                                                                  udtDB.MakeInParam("@Function_Code", SqlDbType.Char, 6, udtWarningResult.ErrorMessage.FunctionCode), _
                                                                  udtDB.MakeInParam("@Severity_Code", SqlDbType.Char, 1, udtWarningResult.ErrorMessage.SeverityCode), _
                                                                  udtDB.MakeInParam("@Message_Code", SqlDbType.Char, 5, udtWarningResult.ErrorMessage.MessageCode), _
-                                                                 udtDB.MakeInParam("@Message_Variable_Name", SqlDbType.VarChar, 80, IIf(udtWarningResult.MessageVariableName Is Nothing, DBNull.Value, udtWarningResult.MessageVariableName)), _
+                                                                 udtDB.MakeInParam("@Message_Variable_Name", SqlDbType.VarChar, 1000, IIf(udtWarningResult.MessageVariableName Is Nothing, DBNull.Value, udtWarningResult.MessageVariableName)), _
                                                                  udtDB.MakeInParam("@Message_Variable_Value", SqlDbType.NVarChar, 255, IIf(udtWarningResult.MessageVariableValue Is Nothing, DBNull.Value, udtWarningResult.MessageVariableValue)), _
-                                                                 udtDB.MakeInParam("@Message_Variable_Name_Chi", SqlDbType.VarChar, 80, IIf(udtWarningResult.MessageVariableNameChi Is Nothing, DBNull.Value, udtWarningResult.MessageVariableNameChi)), _
+                                                                 udtDB.MakeInParam("@Message_Variable_Name_Chi", SqlDbType.VarChar, 1000, IIf(udtWarningResult.MessageVariableNameChi Is Nothing, DBNull.Value, udtWarningResult.MessageVariableNameChi)), _
                                                                  udtDB.MakeInParam("@Message_Variable_Value_Chi", SqlDbType.NVarChar, 255, IIf(udtWarningResult.MessageVariableValueChi Is Nothing, DBNull.Value, udtWarningResult.MessageVariableValueChi)) _
                                               }
 

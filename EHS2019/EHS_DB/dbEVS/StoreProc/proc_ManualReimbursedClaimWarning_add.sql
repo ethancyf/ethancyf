@@ -9,6 +9,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-0023-63 (Revise Back Office Claim Message)
+-- Modified by:		Winnie SUEN
+-- Modified date:	08 Oct 2021
+-- Description:		1. Enlarge column [Message_Variable_Name] and [Message_Variable_Name_Chi] data size (80 -> 1000)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:	Derek LEUNG
 -- Modified date:	09 Nov 2010
 -- Description:	Grant execute permission to WSEXT	
@@ -18,22 +25,17 @@ GO
 -- Create date: 21 July 2010
 -- Description: Retreive Manual Reimbursement Warning Message	
 -- =============================================
--- =============================================
--- Modification History
--- Modified by:	
--- Modified date: 
--- Description:	
--- =============================================
+
 CREATE PROCEDURE [dbo].[proc_ManualReimbursedClaimWarning_add]
 	@Transaction_ID char(20),
 	@Display_Seq integer, 
 	@Function_Code char(6),
 	@Severity_Code char(1),
 	@Message_Code char(5), 
-	@Message_Variable_Name varchar(30) = NULL, 
-	@Message_Variable_Value nvarchar(200)  = NULL, 
-	@Message_Variable_Name_Chi varchar(30)  = NULL, 
-	@Message_Variable_Value_Chi nvarchar(200)  = NULL
+	@Message_Variable_Name varchar(1000) = NULL, 
+	@Message_Variable_Value nvarchar(255)  = NULL, 
+	@Message_Variable_Name_Chi varchar(1000)  = NULL, 
+	@Message_Variable_Value_Chi nvarchar(255)  = NULL
 	
 AS
 BEGIN
