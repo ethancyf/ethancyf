@@ -49,7 +49,7 @@ Public Class Core
 
         Dim strMode As String = ConfigurationManager.AppSettings("Mode")
 
-        Me.Text = String.Format("{0} Packager v1.5.0", strMode)
+        Me.Text = String.Format("{0} Packager v1.5.1", strMode)
         lblStatus.Text = "Ready"
     End Sub
 
@@ -945,6 +945,7 @@ Public Class Core
 
         Dim cllnProjectBinDestinationNotFound As Collection = New Collection
         Dim cllnProjectFileMappingNotFound As Collection = New Collection
+        Dim cllnGetStaticFolderDestination As Collection = New Collection
 
         For Each dr As DataGridViewRow In gvBL.Rows
             strInName = dr.Cells("BLFileName").Value
@@ -995,54 +996,87 @@ Public Class Core
 
             ElseIf strInName.ToLower.StartsWith("staticpage\") Then
                 Dim strSpecificPath As String
-                strSpecificPath = GetSpecificPath2Level(strInName)
-                For Each strFolderDestination As String In GetStaticFolderDestination(strSpecificPath)
+                Dim arrStaticFolderDestination As ArrayList = Nothing
 
-                    strBuildFileName = String.Format("{0}{1}", strFolderDestination, StaticpageGetFileFromFile(strInName, strSpecificPath))
-
-                    strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
-
-                    _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
-                Next
-
+                ' Process Level 3 in [EHSStaticFolderMapping]
                 strSpecificPath = GetSpecificPath3Level(strInName)
                 If strSpecificPath <> String.Empty Then
-                    For Each strFolderDestination As String In GetStaticFolderDestination(strSpecificPath)
 
-                        strBuildFileName = String.Format("{0}{1}", strFolderDestination, StaticpageGetFileFromFile(strInName, strSpecificPath))
-
-                        strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
-
-                        _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
-                    Next
-                End If
-
-                '==================================================================================================
-
-            ElseIf strInName.ToLower.StartsWith("commonbin\") Or strInName.ToLower.StartsWith("common.dll\") Then
-                ' [eHS] CommonBin folder is not a project, no compiled file will be copied
-                ' [PCD] common.dll folder is not a project, no compiled file will be copied
-
-                '==================================================================================================
-            Else
-                Dim arrProjectFileDestination As ArrayList = GetProjectFileDestination(strProject)
-                If arrProjectFileDestination Is Nothing Then
-                    If Not cllnProjectFileMappingNotFound.Contains(strProject) Then cllnProjectFileMappingNotFound.Add(strProject, strProject)
-                Else
-                    For Each strFileDestination As String In GetProjectFileDestination(strProject)
-
-                        If Me.dicConsoleProject.ContainsKey(strProject.ToLower) And strInName.EndsWith(".config") Then
-                            strBuildFileName = String.Format("{0}{1}.exe.config", strFileDestination, strProject)
-                            strBuildFileCopyFrom = String.Format("{0}\bin\release\{1}.exe.config", strProject, strProject)
+                    arrStaticFolderDestination = GetStaticFolderDestination(strSpecificPath)
+                    If arrStaticFolderDestination Is Nothing Then
+                        ' Process Level 2 if Level setting is not found in [EHSStaticFolderMapping]
+                        strSpecificPath = GetSpecificPath2Level(strInName)
+                        arrStaticFolderDestination = GetStaticFolderDestination(strSpecificPath)
+                        If arrStaticFolderDestination Is Nothing Then
+                            If Not cllnGetStaticFolderDestination.Contains(strSpecificPath) Then cllnGetStaticFolderDestination.Add(strSpecificPath, strSpecificPath)
                         Else
-                            strBuildFileName = String.Format("{0}{1}", strFileDestination, GetFileFromFile(strInName))
-                            strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
+                            For Each strFolderDestination As String In GetStaticFolderDestination(strSpecificPath)
+
+                                strBuildFileName = String.Format("{0}{1}", strFolderDestination, StaticpageGetFileFromFile(strInName, strSpecificPath))
+
+                                strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
+
+                                _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                            Next
                         End If
 
-                        _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
-                    Next
+                    Else
+                        For Each strFolderDestination As String In GetStaticFolderDestination(strSpecificPath)
+
+                            strBuildFileName = String.Format("{0}{1}", strFolderDestination, StaticpageGetFileFromFile(strInName, strSpecificPath))
+
+                            strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
+
+                            _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                        Next
+                    End If
                 End If
-            End If
+
+
+                'If arrStaticFolderDestination Is Nothing Then
+                '    strSpecificPath = GetSpecificPath2Level(strInName)
+                '    arrStaticFolderDestination = GetStaticFolderDestination(strSpecificPath)
+                '    If arrStaticFolderDestination Is Nothing Then
+                '        If Not cllnGetStaticFolderDestination.Contains(strSpecificPath) Then cllnGetStaticFolderDestination.Add(strSpecificPath, strSpecificPath)
+                '    Else
+                '        For Each strFolderDestination As String In GetStaticFolderDestination(strSpecificPath)
+
+                '            strBuildFileName = String.Format("{0}{1}", strFolderDestination, StaticpageGetFileFromFile(strInName, strSpecificPath))
+
+                '            strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
+
+                '            _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                '        Next
+                '    End If
+                'End If
+
+
+                '==================================================================================================
+
+                ElseIf strInName.ToLower.StartsWith("commonbin\") Or strInName.ToLower.StartsWith("common.dll\") Then
+                    ' [eHS] CommonBin folder is not a project, no compiled file will be copied
+                    ' [PCD] common.dll folder is not a project, no compiled file will be copied
+
+                    '==================================================================================================
+                Else
+                    Dim arrProjectFileDestination As ArrayList = GetProjectFileDestination(strProject)
+                    If arrProjectFileDestination Is Nothing Then
+                        If Not cllnProjectFileMappingNotFound.Contains(strProject) Then cllnProjectFileMappingNotFound.Add(strProject, strProject)
+                    Else
+                        For Each strFileDestination As String In GetProjectFileDestination(strProject)
+
+                            If Me.dicConsoleProject.ContainsKey(strProject.ToLower) And strInName.EndsWith(".config") Then
+                                strBuildFileName = String.Format("{0}{1}.exe.config", strFileDestination, strProject)
+                                strBuildFileCopyFrom = String.Format("{0}\bin\release\{1}.exe.config", strProject, strProject)
+                            Else
+                                strBuildFileName = String.Format("{0}{1}", strFileDestination, GetFileFromFile(strInName))
+                                strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
+                            End If
+
+                            _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                        Next
+                    End If
+                End If
 
         Next
 
@@ -1067,6 +1101,12 @@ Public Class Core
                 strMsg += String.Format("<{0}ProjectBinDestination>{1}", strMode, strProjectNotFound) + vbCrLf
             Next
         End If
+        If cllnGetStaticFolderDestination.Count > 0 Then
+            For Each strProjectNotFound As String In cllnGetStaticFolderDestination
+                strMsg += String.Format("<{0}EHSStaticFolderMapping>{1}", strMode, strProjectNotFound) + vbCrLf
+            Next
+        End If
+
 
         If strMsg <> String.Empty Then
             MsgBox(strMsg, MsgBoxStyle.Critical, "Project setting not found")
@@ -1293,6 +1333,8 @@ Public Class Core
     End Function
 
     Private Function GetStaticFolderDestination(ByVal strProject As String) As ArrayList
+        If Not dicStaticFolderMapping.ContainsKey(strProject.ToLower) Then Return Nothing
+
         Return dicStaticFolderMapping(strProject.ToLower)
     End Function
 
