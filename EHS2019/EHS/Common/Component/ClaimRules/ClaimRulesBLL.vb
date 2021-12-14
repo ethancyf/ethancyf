@@ -2624,7 +2624,7 @@ Namespace Component.ClaimRules
                                     Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
                                     'Find the latest COVID19 transaction in EHS
-                                    udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
+                                    udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord(dtmServiceDate)
 
                                     'Only allow EHS Transaction, not include CMS / CIMS record
                                     If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -4348,7 +4348,9 @@ Namespace Component.ClaimRules
                         '    End If
                         'Next
 
-                        udtNearestVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord()
+                        udtNearestVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord(dtmServiceDate)
+
+                        If udtNearestVaccinationRecord Is Nothing Then Return False
 
                         'If recipient on discharge list and has injected 1st dose before infected, bypass the checking
                         Dim udtDischargeResult As DischargeResultModel = udtInputPicker.DischargeResult
@@ -4374,6 +4376,7 @@ Namespace Component.ClaimRules
                                         Return False
                                     End If
                                 End If
+                                'End If
                             End If
                         End If
 
@@ -4408,7 +4411,9 @@ Namespace Component.ClaimRules
 
                         If udtVaccinationRecordList.Count = 0 Then Return False
 
-                        Dim udtNearestVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
+                        Dim udtNearestVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord(dtmServiceDate)
+
+                        If udtNearestVaccinationRecord Is Nothing Then Return False
 
                         If udtClaimRule.Dependence.Trim().ToUpper() <> udtNearestVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then Return False
                         'If udtInputPicker.Brand.Trim <> udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then Return False
@@ -4445,6 +4450,7 @@ Namespace Component.ClaimRules
                                             Return False
                                         End If
                                     End If
+
                                 End If
                             End If
 
@@ -4464,12 +4470,12 @@ Namespace Component.ClaimRules
                                     Else
                                         If (Int(udtClaimRule.CompareValue) <> 0 AndAlso udtClaimRule.Operator = "<") OrElse _
                                             (Int(udtClaimRule.CompareValue) <> 0 AndAlso udtClaimRule.Operator = ">") Then
-                                            dicResultParam.Add("%DaysApart", Math.Abs(Int(udtClaimRule.CompareValue)))
+                                            dicResultParam.Add("%DaysApart", CStr(Math.Abs(Int(udtClaimRule.CompareValue))))
                                         End If
 
                                         If (Int(udtClaimRule.CompareValue) <> 0 AndAlso udtClaimRule.Operator = "<=") OrElse _
                                             (Int(udtClaimRule.CompareValue) <> 0 AndAlso udtClaimRule.Operator = ">=") Then
-                                            dicResultParam.Add("%DaysApart", Math.Abs(Int(udtClaimRule.CompareValue)) + 1)
+                                            dicResultParam.Add("%DaysApart", CStr(Math.Abs(Int(udtClaimRule.CompareValue)) + 1))
                                         End If
                                     End If
                                 End If
@@ -4581,6 +4587,7 @@ Namespace Component.ClaimRules
                             Dim dtmDischarge As Nullable(Of DateTime) = Nothing
 
                             Dim udtNearestVaccinationRecord As TransactionDetailVaccineModel = Nothing
+                            Dim udtNearestVaccinationRecordByServiceDate As TransactionDetailVaccineModel = Nothing
                             Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
                             Dim dtmNearestDoseInject As Nullable(Of DateTime) = Nothing
 
@@ -4609,7 +4616,13 @@ Namespace Component.ClaimRules
                                     'Next
 
                                     udtNearestVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord()
-                                    dtmNearestDoseInject = udtNearestVaccinationRecord.ServiceReceiveDtm
+
+                                    udtNearestVaccinationRecordByServiceDate = udtVaccinationRecordList.FilterFindNearestRecord(dtmServiceDate)
+
+                                    If udtNearestVaccinationRecordByServiceDate IsNot Nothing Then
+                                        dtmNearestDoseInject = udtNearestVaccinationRecordByServiceDate.ServiceReceiveDtm
+                                    End If
+
                                 End If
 
                             End If
@@ -4780,56 +4793,62 @@ Namespace Component.ClaimRules
 
                     If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
                         Dim blnHasHistory As Boolean = False
-                        Dim blnValid As Boolean = True
+                        'Dim blnValid As Boolean = True
                         Dim strNonLocalRecoveredHistory As String = udtInputPicker.NonLocalRecoveredHistory
+
+                        'If strNonLocalRecoveredHistory IsNot Nothing AndAlso strNonLocalRecoveredHistory = YesNo.Yes Then
+                        '    blnHasHistory = True
+                        'Else
+                        '    Return False
+                        'End If
 
                         If strNonLocalRecoveredHistory IsNot Nothing AndAlso strNonLocalRecoveredHistory = YesNo.Yes Then
                             blnHasHistory = True
-                        Else
-                            Return False
                         End If
 
                         If blnHasHistory Then
                             Dim lstSystemMessage As New List(Of ComObject.SystemMessage)
                             'Dim udtVaccinationRecord As TransactionDetailVaccineModel = Nothing
-                            Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
+                            'Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
 
-                            'When claims 2nd / 3rd dose, find the latest C19 vaccination record
-                            If strDoseCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE OrElse _
-                               strDoseCode = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                            ''When claims 2nd / 3rd dose, find the latest C19 vaccination record
+                            'If strDoseCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE OrElse _
+                            '   strDoseCode = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
 
-                                'Find the all C19 vaccination record
-                                udtVaccinationRecordList = udtInputPicker.VaccinationRecord.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+                            '    'Find the all C19 vaccination record
+                            '    udtVaccinationRecordList = udtInputPicker.VaccinationRecord.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
-                                'If udtVaccinationRecordList.Count > 0 Then
-                                '    udtVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord()
-                                'End If
+                            '    If udtVaccinationRecordList.Count > 0 Then
+                            '        udtVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord()
+                            '    End If
 
-                            End If
+                            'End If
 
-                            '1. Check subsidy 
-                            If strDoseCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE OrElse _
-                               strDoseCode = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
-                                'If udtVaccinationRecordList IsNot Nothing AndAlso udtVaccinationRecordList.Count > 0 Then
-                                '    'Warning when the latest vaccination is 1st dose
-                                '    For Each udtVR As TransactionDetailVaccineModel In udtVaccinationRecordList
-                                '        If udtVR.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                                '            blnValid = False
-                                '            Exit For
-                                '        End If
-                                '    Next
+                            ''1. Check subsidy 
+                            'If strDoseCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE OrElse _
+                            '   strDoseCode = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                            '    If udtVaccinationRecordList IsNot Nothing AndAlso udtVaccinationRecordList.Count > 0 Then
+                            '        'Warning when the latest vaccination is 1st dose
+                            '        For Each udtVR As TransactionDetailVaccineModel In udtVaccinationRecordList
+                            '            If udtVR.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                            '                blnValid = False
+                            '                Exit For
+                            '            End If
+                            '        Next
 
-                                '    If Not blnValid Then
-                                '        lstSystemMessage.Add(New ComObject.SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00482))
-                                '    End If
+                            '        If Not blnValid Then
+                            '            lstSystemMessage.Add(New ComObject.SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00482))
+                            '        End If
 
-                                'Else
-                                '    'Warning when claims 2nd dose C19 vaccine without any C19 vaccination record
-                                blnValid = False
-                                lstSystemMessage.Add(New ComObject.SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00482))
-                                'End If
+                            '    Else
+                            '        'Warning when claims 2nd dose C19 vaccine without any C19 vaccination record
+                            '        blnValid = False
+                            '        lstSystemMessage.Add(New ComObject.SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00482))
+                            '    End If
 
-                            End If
+                            'End If
+
+                            lstSystemMessage.Add(New ComObject.SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00482))
 
                             If lstSystemMessage.Count > 0 Then
                                 dicResultParam.Add("SystemMessage", lstSystemMessage)
@@ -4837,9 +4856,12 @@ Namespace Component.ClaimRules
 
                         End If
 
-                        If Not blnValid Then
-                            Return True
-                        End If
+                        'If Not blnValid Then
+                        '    Return True
+                        'End If
+
+                        Return CheckClaimRuleSingleEntryByCount(IIf(blnHasHistory, 1, 0), udtClaimRule.Operator.Trim())
+
                     End If
 
                     Return False
@@ -5033,7 +5055,9 @@ Namespace Component.ClaimRules
 
                         If udtVaccinationRecordList.Count = 0 Then Return False
 
-                        udtNearestVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord()
+                        udtNearestVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord(dtmServiceDate)
+
+                        If udtNearestVaccinationRecord Is Nothing Then Return False
 
                         If udtClaimRule.Dependence.Trim.ToUpper = udtNearestVaccinationRecord.AvailableItemCode.Trim.ToUpper Then
                             Return True
@@ -5324,6 +5348,32 @@ Namespace Component.ClaimRules
             Return blnRes
         End Function
         ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Shared Function CheckClaimRuleSingleEntryByCount(ByVal intCount As Integer, ByVal strOperator As String) As Boolean
+            Dim blnRes As Boolean = False
+
+            Select Case strOperator
+                Case "="
+                    If intCount > 0 Then
+                        blnRes = True
+                    Else
+                        blnRes = False
+                    End If
+
+                Case "<>"
+                    If intCount > 0 Then
+                        blnRes = False
+                    Else
+                        blnRes = True
+                    End If
+
+            End Select
+
+            Return blnRes
+        End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 #End Region
 
 #Region "Active Scheme Checking"
@@ -6261,12 +6311,16 @@ Namespace Component.ClaimRules
                                     udtVaccinationRecordList = udtInputPicker.VaccinationRecord.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
                                     If udtVaccinationRecordList.Count > 0 Then
-                                        udtNearestVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord()
+                                        udtNearestVaccinationRecord = udtVaccinationRecordList.FilterFindNearestRecord(dtmServiceDate)
 
-                                        'Compare AvailableItemCode(e.g. 1STDOSE) with vaccination history
-                                        blnMatched = blnMatched AndAlso RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
-                                                                                       udtSubsidizeItemDetailRuleModel.CompareValue.Trim.ToUpper, _
-                                                                                       udtNearestVaccinationRecord.AvailableItemCode.Trim.ToUpper)
+                                        If udtNearestVaccinationRecord IsNot Nothing Then
+                                            'Compare AvailableItemCode(e.g. 1STDOSE) with vaccination history
+                                            blnMatched = blnMatched AndAlso RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                                           udtSubsidizeItemDetailRuleModel.CompareValue.Trim.ToUpper, _
+                                                                                           udtNearestVaccinationRecord.AvailableItemCode.Trim.ToUpper)
+                                        Else
+                                            blnMatched = False
+                                        End If
 
                                     Else
                                         blnMatched = False
@@ -6586,11 +6640,11 @@ Namespace Component.ClaimRules
 
                     ' 2. Assign the apart days (e.g. 0 - 13 days), for display need to add 1 days
                     If (Int(strCompareValue) <> 0 AndAlso strOperator = "<=") OrElse (Int(strCompareValue) <> 0 AndAlso strOperator = ">=") Then
-                        dicResultParam.Add("%DaysApart", Math.Abs(Int(strCompareValue)) + 1)
+                        dicResultParam.Add("%DaysApart", CStr(Math.Abs(Int(strCompareValue)) + 1))
                     End If
 
                     If (Int(strCompareValue) <> 0 AndAlso strOperator = "<") OrElse (Int(strCompareValue) <> 0 AndAlso strOperator = ">") Then
-                        dicResultParam.Add("%DaysApart", Math.Abs(Int(strCompareValue)))
+                        dicResultParam.Add("%DaysApart", CStr(Math.Abs(Int(strCompareValue))))
                     End If
                 End If
             End If
@@ -6694,11 +6748,11 @@ Namespace Component.ClaimRules
 
                     ' 2. Assign the apart days (e.g. 0 - 13 days), for display need to add 1 days
                     If (Int(strCompareValue) <> 0 AndAlso strOperator = "<=") OrElse (Int(strCompareValue) < 0 AndAlso strOperator = ">=") Then
-                        dicResultParam.Add("%DaysApart", Math.Abs(Int(strCompareValue)) + 1)
+                        dicResultParam.Add("%DaysApart", CStr(Math.Abs(Int(strCompareValue)) + 1))
                     End If
 
                     If (Int(strCompareValue) <> 0 AndAlso strOperator = "<") OrElse (Int(strCompareValue) < 0 AndAlso strOperator = ">") Then
-                        dicResultParam.Add("%DaysApart", Math.Abs(Int(strCompareValue)))
+                        dicResultParam.Add("%DaysApart", CStr(Math.Abs(Int(strCompareValue))))
                     End If
 
                 End If

@@ -456,7 +456,7 @@ Partial Public Class ucVaccinationRecord1
         End If
 
         If udtTranDetailVaccineC19List.Count > 0 Then
-            Dim udtTranDetailVaccineC19Latest As TransactionDetailVaccineModel = udtTranDetailVaccineC19List.FilterFindNearestRecord()
+            Dim udtTranDetailVaccineC19Latest As TransactionDetailVaccineModel = udtTranDetailVaccineC19List.FilterFindNearestRecord(dtmNow)
 
             If udtTranDetailVaccineC19Latest IsNot Nothing AndAlso _
                 Math.Abs(DateDiff(DateInterval.Day, udtTranDetailVaccineC19Latest.ServiceReceiveDtm, dtmNow)) < intInterval Then

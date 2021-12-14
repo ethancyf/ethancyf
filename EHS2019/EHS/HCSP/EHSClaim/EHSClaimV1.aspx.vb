@@ -5627,7 +5627,7 @@ Partial Public Class EHSClaimV1
                                     Dim strRecipientType As String = String.Empty
 
                                     'Find the latest COVID19 transaction in EHS
-                                    udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
+                                    udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord(dtmServiceDate)
 
                                     'Join EHRSS History
                                     blnJoinEHRSS = udtC19VaccineList.FilterJoinEHRSSHistory
@@ -5810,92 +5810,92 @@ Partial Public Class EHSClaimV1
 
                                 ' CRE20-0023 (Immu record) [Start][Chris YIM]
                                 ' ---------------------------------------------------------------------------------------------------------
-                                Select Case udtSchemeClaim.SchemeCode
-                                    Case SchemeClaimModel.RVP, _
-                                         SchemeClaimModel.VSS, _
-                                         SchemeClaimModel.COVID19CVC, _
-                                         SchemeClaimModel.COVID19DH, _
-                                         SchemeClaimModel.COVID19RVP, _
-                                         SchemeClaimModel.COVID19OR
+                                'Select Case udtSchemeClaim.SchemeCode
+                                '    Case SchemeClaimModel.RVP, _
+                                '         SchemeClaimModel.VSS, _
+                                '         SchemeClaimModel.COVID19CVC, _
+                                '         SchemeClaimModel.COVID19DH, _
+                                '         SchemeClaimModel.COVID19RVP, _
+                                '         SchemeClaimModel.COVID19OR
 
-                                        If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                                            Dim udtDischargeResult As DischargeResultModel = _udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(FunctionCode)
-                                            Dim udtVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
-                                            Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+                                '        If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                                '            Dim udtDischargeResult As DischargeResultModel = _udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(FunctionCode)
+                                '            Dim udtVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
+                                '            Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
 
-                                            'Dim blnHas1STDOSE As Boolean = False
-                                            'Dim blnHas2NDDOSE As Boolean = False
-                                            'Dim blnHas3RDDOSE As Boolean = False
+                                '            'Dim blnHas1STDOSE As Boolean = False
+                                '            'Dim blnHas2NDDOSE As Boolean = False
+                                '            'Dim blnHas3RDDOSE As Boolean = False
 
-                                            'For Each udtVaccine As TransactionDetailVaccineModel In udtC19VaccineList
-                                            '    'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
-                                            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                                            '        blnHas1STDOSE = True
-                                            '    End If
+                                '            'For Each udtVaccine As TransactionDetailVaccineModel In udtC19VaccineList
+                                '            '    'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
+                                '            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                                '            '        blnHas1STDOSE = True
+                                '            '    End If
 
-                                            '    'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
-                                            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
-                                            '        blnHas2NDDOSE = True
-                                            '    End If
+                                '            '    'If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE AndAlso udtVaccine.ServiceReceiveDtm > dtDischargePatient.Rows(0)("Discharge_Date") Then
+                                '            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                                '            '        blnHas2NDDOSE = True
+                                '            '    End If
 
-                                            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
-                                            '        blnHas3RDDOSE = True
-                                            '    End If
+                                '            '    If udtVaccine.AvailableItemCode = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                                '            '        blnHas3RDDOSE = True
+                                '            '    End If
 
-                                            'Next
+                                '            'Next
 
-                                            '1. If on discharge list, check whether has injected COVID19 vaccine
-                                            If udtDischargeResult IsNot Nothing AndAlso _
-                                                (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
-                                                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch) Then
+                                '            '1. If on discharge list, check whether has injected COVID19 vaccine
+                                '            If udtDischargeResult IsNot Nothing AndAlso _
+                                '                (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
+                                '                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch) Then
 
-                                                'If blnHas1STDOSE AndAlso (Not blnHas2NDDOSE OrElse Not blnHas3RDDOSE) Then
-                                                If udtC19VaccineList.Count > 0 Then
-                                                    'Claimed C19
-                                                    notAvailableForClaim = True
-                                                    blnDischargeClaimed = True
+                                '                'If blnHas1STDOSE AndAlso (Not blnHas2NDDOSE OrElse Not blnHas3RDDOSE) Then
+                                '                If udtC19VaccineList.Count > 0 Then
+                                '                    'Claimed C19
+                                '                    notAvailableForClaim = True
+                                '                    blnDischargeClaimed = True
 
-                                                    'Remove all dose selection
-                                                    If udtEHSClaimVaccine.SubsidizeList IsNot Nothing Then
-                                                        For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
-                                                            For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
-                                                                udtEHSClaimSubsidizeDetail.Available = False
-                                                            Next
-                                                        Next
-                                                    End If
-                                                Else
-                                                    'No C19 record
-                                                    If udtEHSClaimVaccine.SubsidizeList IsNot Nothing Then
-                                                        'Only 1st dose can be chosen 
-                                                        For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
-                                                            For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
-                                                                If udtEHSClaimSubsidizeDetail.AvailableItemCode <> SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                                                                    udtEHSClaimSubsidizeDetail.Available = False
-                                                                End If
-                                                            Next
-                                                        Next
-                                                    End If
-                                                End If
+                                '                    'Remove all dose selection
+                                '                    If udtEHSClaimVaccine.SubsidizeList IsNot Nothing Then
+                                '                        For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
+                                '                            For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
+                                '                                udtEHSClaimSubsidizeDetail.Available = False
+                                '                            Next
+                                '                        Next
+                                '                    End If
+                                '                Else
+                                '                    'No C19 record
+                                '                    If udtEHSClaimVaccine.SubsidizeList IsNot Nothing Then
+                                '                        'Only 1st dose can be chosen 
+                                '                        For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
+                                '                            For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
+                                '                                If udtEHSClaimSubsidizeDetail.AvailableItemCode <> SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                                '                                    udtEHSClaimSubsidizeDetail.Available = False
+                                '                                End If
+                                '                            Next
+                                '                        Next
+                                '                    End If
+                                '                End If
 
-                                            End If
+                                '            End If
 
-                                            '2. Check non-local recovered history from previous transaction
-                                            If blnNonLocalRecovered Then
-                                                'If blnHas1STDOSE AndAlso (Not blnHas2NDDOSE OrElse Not blnHas3RDDOSE) Then
-                                                If udtC19VaccineList.Count > 0 Then
-                                                    notAvailableForClaim = True
-                                                    blnNonLocalRecoveredHistoryClaimed = True
+                                '            '2. Check non-local recovered history from previous transaction
+                                '            If blnNonLocalRecovered Then
+                                '                'If blnHas1STDOSE AndAlso (Not blnHas2NDDOSE OrElse Not blnHas3RDDOSE) Then
+                                '                If udtC19VaccineList.Count > 0 Then
+                                '                    notAvailableForClaim = True
+                                '                    blnNonLocalRecoveredHistoryClaimed = True
 
-                                                End If
+                                '                End If
 
-                                            End If
+                                '            End If
 
-                                        End If
+                                '        End If
 
-                                    Case Else
-                                        ' Nothing to do
+                                '    Case Else
+                                '        ' Nothing to do
 
-                                End Select
+                                'End Select
 
                                 ' CRE20-0023 (Immu record) [End][Chris YIM]
 
@@ -8714,6 +8714,8 @@ Partial Public Class EHSClaimV1
         udtInputPicker.NonLocalRecoveredHistory = IIf(chkStep2aDeclareNonLocalRecoveredHistory.Checked, YesNo.Yes, YesNo.No)
         udtInputPicker.VaccinationRecordWithoutBar = GetVaccinationRecordFromSession(udtEHSAccount, String.Empty) 'Full list included for bar vaccine
 
+        Me.udcMsgBoxErr.Clear()
+
         udcInputRVPCOVID19.SetDoseErrorImage(False)
 
         udtRuleResults = Me._udtSessionHandler.EligibleResultGetFromSession()
@@ -8792,7 +8794,7 @@ Partial Public Class EHSClaimV1
             udtInputPicker.VaccinationRecord = udtC19VaccineList
 
             'Find the latest COVID19 transaction in EHS
-            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
+            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord(udtEHSTransaction.ServiceDate)
 
             'Only allow EHS Transaction, not include CMS / CIMS record
             If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -8978,6 +8980,7 @@ Partial Public Class EHSClaimV1
                 If udtClaimRuleResultList IsNot Nothing AndAlso udtClaimRuleResultList.Count > 0 Then
                     Dim blnError As Boolean = False
                     Dim blnWarning As Boolean = False
+                    Dim blnWarningReason As Boolean = False
 
                     For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
                         If udtClaimRuleResult.IsBlock Then
@@ -8988,9 +8991,47 @@ Partial Public Class EHSClaimV1
                             (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
                             blnWarning = True
                         End If
+
+                        If Not udtClaimRuleResult.IsBlock AndAlso udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
+                            blnWarningReason = True
+                        End If
                     Next
 
-                    If Not blnError AndAlso blnWarning Then
+                    If Not blnError AndAlso blnWarningReason Then
+                        '1st Priority: Warring with Reason
+                        udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
+
+                        'not Popup prompt before
+                        If strText.Equals(String.Empty) AndAlso isValid Then
+                            Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
+
+                            Me.ModalPopupExclamationImportantReminderWithReason.Show()
+
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                        End If
+
+                        isValid = False
+
+                    ElseIf Not blnError AndAlso blnWarning Then
+                        '2nd Priority: Warring only
                         udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
 
                         'not Popup prompt before
@@ -9017,6 +9058,7 @@ Partial Public Class EHSClaimV1
 
                         isValid = False
                     End If
+
                 End If
 
                 Me._udtSessionHandler.EligibleResultSaveToSession(udtRuleResults)
@@ -10040,7 +10082,7 @@ Partial Public Class EHSClaimV1
             udtInputPicker.VaccinationRecord = udtC19VaccineList
 
             'Find the latest COVID19 transaction in EHS
-            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
+            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord(udtEHSTransaction.ServiceDate)
 
             'Only allow EHS Transaction, not include CMS / CIMS record
             If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -10226,6 +10268,7 @@ Partial Public Class EHSClaimV1
                 If udtClaimRuleResultList IsNot Nothing AndAlso udtClaimRuleResultList.Count > 0 Then
                     Dim blnError As Boolean = False
                     Dim blnWarning As Boolean = False
+                    Dim blnWarningReason As Boolean = False
 
                     For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
                         If udtClaimRuleResult.IsBlock Then
@@ -10236,9 +10279,47 @@ Partial Public Class EHSClaimV1
                             (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
                             blnWarning = True
                         End If
+
+                        If Not udtClaimRuleResult.IsBlock AndAlso udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
+                            blnWarningReason = True
+                        End If
                     Next
 
-                    If Not blnError AndAlso blnWarning Then
+                    If Not blnError AndAlso blnWarningReason Then
+                        '1st Priority: Warring with Reason
+                        udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
+
+                        'not Popup prompt before
+                        If strText.Equals(String.Empty) AndAlso isValid Then
+                            Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
+
+                            Me.ModalPopupExclamationImportantReminderWithReason.Show()
+
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                        End If
+
+                        isValid = False
+
+                    ElseIf Not blnError AndAlso blnWarning Then
+                        '2nd Priority: Warring only
                         udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
 
                         'not Popup prompt before
@@ -11024,6 +11105,10 @@ Partial Public Class EHSClaimV1
 
                             Me.ucNoticePopUpExclamationError.MessageText = strHTMLList
 
+                            Me.ucNoticePopUpExclamationError.ShowEnquiryDesc = True
+
+                            Me.ucNoticePopUpExclamationError.EnquiryDescText = "<span style='font-weight:bold'>" & GetGlobalResourceObject("Text", "RecoveredPatientEnquiry") & "</span>"
+
                             Me.ModalPopupExclamationErrorBox.Show()
 
                             _udtAuditLogEntry.AddDescripton("Message", strText)
@@ -11121,6 +11206,7 @@ Partial Public Class EHSClaimV1
                 If udtClaimRuleResultList IsNot Nothing AndAlso udtClaimRuleResultList.Count > 0 Then
                     Dim blnError As Boolean = False
                     Dim blnWarning As Boolean = False
+                    Dim blnWarningReason As Boolean = False
 
                     For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
                         If udtClaimRuleResult.IsBlock Then
@@ -11131,10 +11217,47 @@ Partial Public Class EHSClaimV1
                             (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
                             blnWarning = True
                         End If
+
+                        If Not udtClaimRuleResult.IsBlock AndAlso udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
+                            blnWarningReason = True
+                        End If
                     Next
 
-                    If Not blnError AndAlso blnWarning Then
+                    If Not blnError AndAlso blnWarningReason Then
+                        '1st Priority: Warring with Reason
+                        udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
 
+                        'not Popup prompt before
+                        If strText.Equals(String.Empty) AndAlso isValid Then
+                            Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
+
+                            Me.ModalPopupExclamationImportantReminderWithReason.Show()
+
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                        End If
+
+                        isValid = False
+
+                    ElseIf Not blnError AndAlso blnWarning Then
+                        '2nd Priority: Warring only
                         udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
 
                         'not Popup prompt before
@@ -11388,7 +11511,7 @@ Partial Public Class EHSClaimV1
             udtInputPicker.VaccinationRecord = udtC19VaccineList
 
             'Find the latest COVID19 transaction in EHS
-            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
+            udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord(udtEHSTransaction.ServiceDate)
 
             'Only allow EHS Transaction, not include CMS / CIMS record
             If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
@@ -11472,6 +11595,10 @@ Partial Public Class EHSClaimV1
                             Me.ucNoticePopUpExclamationError.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
 
                             Me.ucNoticePopUpExclamationError.MessageText = strHTMLList
+
+                            Me.ucNoticePopUpExclamationError.ShowEnquiryDesc = True
+
+                            Me.ucNoticePopUpExclamationError.EnquiryDescText = "<span style='font-weight:bold'>" & GetGlobalResourceObject("Text", "RecoveredPatientEnquiry") & "</span>"
 
                             Me.ModalPopupExclamationErrorBox.Show()
 
@@ -11570,6 +11697,7 @@ Partial Public Class EHSClaimV1
                 If udtClaimRuleResultList IsNot Nothing AndAlso udtClaimRuleResultList.Count > 0 Then
                     Dim blnError As Boolean = False
                     Dim blnWarning As Boolean = False
+                    Dim blnWarningReason As Boolean = False
 
                     For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
                         If udtClaimRuleResult.IsBlock Then
@@ -11580,9 +11708,47 @@ Partial Public Class EHSClaimV1
                             (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
                             blnWarning = True
                         End If
+
+                        If Not udtClaimRuleResult.IsBlock AndAlso udtClaimRuleResult.HandleMethod = HandleMethodENum.WarningReason Then
+                            blnWarningReason = True
+                        End If
                     Next
 
-                    If Not blnError AndAlso blnWarning Then
+                    If Not blnError AndAlso blnWarningReason Then
+                        '1st Priority: Warring with Reason
+                        udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
+
+                        'not Popup prompt before
+                        If strText.Equals(String.Empty) AndAlso isValid Then
+                            Dim strHTMLList As String = Me.Step2aPromptContent(udtClaimRuleResultList)
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.CustomHeaderText = GetGlobalResourceObject("Text", "ImportantNotice")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonMsgBoxErr.Clear()
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonText = GetGlobalResourceObject("Text", "PopupReasons")
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReason = String.Empty
+
+                            Me.ModalPopupExclamationImportantReminderWithReason.Show()
+
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+
+                        End If
+
+                        isValid = False
+
+                    ElseIf Not blnError AndAlso blnWarning Then
+                        '2nd Priority: Warring only
                         udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResultList(0).RuleType), udtClaimRuleResultList(0))
 
                         'not Popup prompt before
@@ -12364,7 +12530,9 @@ Partial Public Class EHSClaimV1
 
                     If udtClaimRuleResult.ResultParam.Count > 0 Then
                         For Each kvp As KeyValuePair(Of String, Object) In udtClaimRuleResult.ResultParam
-                            strText = strText.Replace(kvp.Key, kvp.Value)
+                            If Not TypeOf kvp.Value Is List(Of SystemMessage) Then
+                                strText = strText.Replace(kvp.Key, kvp.Value)
+                            End If
                         Next
                     End If
 
@@ -12382,7 +12550,7 @@ Partial Public Class EHSClaimV1
 
                         If udtClaimRuleResult.ResultParam.Count > 0 Then
                             For Each kvp As KeyValuePair(Of String, Object) In udtClaimRuleResult.ResultParam
-                                If TypeOf kvp.Value Is String Then
+                                If Not TypeOf kvp.Value Is List(Of SystemMessage) Then
                                     strText = strText.Replace(kvp.Key, kvp.Value)
                                 End If
                             Next

@@ -839,10 +839,14 @@ Namespace Component.EHSTransaction
             End Function
         End Class
 
-        Public Function FilterFindNearestRecord(Optional ByVal strInfoProvider As String = "") As TransactionDetailVaccineModel
+        Public Function FilterFindNearestRecord(Optional ByVal dtmServiceDate? As DateTime = Nothing, Optional ByVal strInfoProvider As String = "") As TransactionDetailVaccineModel
             Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
 
             For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If dtmServiceDate IsNot Nothing Then
+                    If udtTranDetailVaccineModel.ServiceReceiveDtm > dtmServiceDate Then Continue For
+                End If
+
                 If strInfoProvider.Trim.ToUpper = udtTranDetailVaccineModel.Provider.Trim.ToUpper OrElse strInfoProvider = String.Empty Then
                     If udtResTranDetailVaccineModel Is Nothing Then
                         udtResTranDetailVaccineModel = udtTranDetailVaccineModel

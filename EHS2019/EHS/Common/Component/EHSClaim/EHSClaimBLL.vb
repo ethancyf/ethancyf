@@ -833,7 +833,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
 
                 'Find the latest COVID19 transaction in EHS
-                udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord
+                udtLatestC19Vaccine = udtC19VaccineList.FilterFindNearestRecord(udtEHSTransaction.ServiceDate)
 
                 'Only allow EHS Transaction, not include CMS / CIMS record
                 If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then

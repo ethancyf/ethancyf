@@ -156,6 +156,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 End If
 
                 ' Show "No Records" if no 2nd dose
+                SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Left
                 SecondDoseCover.Text = String.Format(" {0}", HttpContext.GetGlobalResourceObject("Text", "NoRecords", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))) & _
                     Environment.NewLine & _
                     String.Format(" {0}", HttpContext.GetGlobalResourceObject("Text", "NoRecords", New System.Globalization.CultureInfo(CultureLanguage.English)))

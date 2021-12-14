@@ -2410,6 +2410,7 @@ Partial Public Class ClaimCreation
             If blnIsValid Then
                 udtWarningMessage = udtValidationResults.WarningResults
                 If udtWarningMessage.RuleResults.Count > 0 Then
+
                     udtEHSTransaction.WarningMessage = udtWarningMessage
 
                     Dim udtAdditionalWarningMessage As New EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResultList
@@ -2437,7 +2438,7 @@ Partial Public Class ClaimCreation
 
                                     If udtWarning.ClaimRuleResult.ResultParam.Count > 0 Then
                                         For Each kvp As KeyValuePair(Of String, Object) In udtWarning.ClaimRuleResult.ResultParam
-                                            If TypeOf kvp.Value Is String Then
+                                            If Not TypeOf kvp.Value Is List(Of SystemMessage) Then
                                                 udtAdditionalWarning.MessageDescription = udtAdditionalWarning.MessageDescription.Replace(kvp.Key, kvp.Value)
                                                 udtAdditionalWarning.MessageDescriptionChi = udtAdditionalWarning.MessageDescriptionChi.Replace(kvp.Key, kvp.Value)
                                             End If
@@ -2471,9 +2472,11 @@ Partial Public Class ClaimCreation
                             If udtWarning.ClaimRuleResult IsNot Nothing AndAlso udtWarning.ClaimRuleResult.ResultParam IsNot Nothing Then
                                 If udtWarning.ClaimRuleResult.ResultParam.Count > 0 Then
                                     For Each kvp As KeyValuePair(Of String, Object) In udtWarning.ClaimRuleResult.ResultParam
-                                        If TypeOf kvp.Value Is String Then
-                                            arrFindName.Add(kvp.Key)
-                                            arrReplaceName.Add(kvp.Value.ToString)
+                                        If Not TypeOf kvp.Value Is List(Of SystemMessage) Then
+                                            If udtWarning.ErrorMessage.GetMessage.Contains(kvp.Key) Then
+                                                arrFindName.Add(kvp.Key)
+                                                arrReplaceName.Add(kvp.Value.ToString)
+                                            End If
                                         End If
                                     Next
                                 End If
@@ -2500,6 +2503,78 @@ Partial Public Class ClaimCreation
                     If udtAdditionalWarningMessage.RuleResults.Count > 0 Then
                         udtEHSTransaction.WarningMessage.Merge(udtAdditionalWarningMessage)
                     End If
+
+                    'Remove useless variables. e.g. %DoseInterval||%TargetEN||%TargetTC||%TargetSC||%DateApart => %TargetEN||%DateApart
+                    For Each udtWarning As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtEHSTransaction.WarningMessage.RuleResults
+                        'udtWarning.MessageVariableName
+                        Dim arrVariableNameEN As New ArrayList
+                        Dim arrVariableValueEN As New ArrayList
+                        Dim arrVariableNameTC As New ArrayList
+                        Dim arrVariableValueTC As New ArrayList
+
+                        Dim strNewMessageVariableName As String = Nothing
+                        Dim strNewMessageVariableValue As String = Nothing
+                        Dim strNewMessageVariableNameChi As String = Nothing
+                        Dim strNewMessageVariableValueChi As String = Nothing
+
+                        If udtWarning.MessageVariableName IsNot Nothing AndAlso udtWarning.MessageVariableName <> String.Empty Then
+                            Dim strMessageEN As String = udtWarning.ErrorMessage.GetMessage(EnumLanguage.EN)
+                            Dim strMessageTC As String = udtWarning.ErrorMessage.GetMessage(EnumLanguage.TC)
+
+                            Dim strVariableEN() As String = Split(udtWarning.MessageVariableName, "||")
+                            Dim strValueEN() As String = Split(udtWarning.MessageVariableValue, "||")
+
+                            Dim strVariableTC() As String = Split(udtWarning.MessageVariableNameChi, "||")
+                            Dim strValueTC() As String = Split(udtWarning.MessageVariableValueChi, "||")
+
+                            If strVariableEN.Length > 0 Then
+                                For intCt As Integer = 0 To strVariableEN.Length - 1
+                                    If strMessageEN.Contains(strVariableEN(intCt)) Then
+                                        arrVariableNameEN.Add(strVariableEN(intCt))
+                                        arrVariableValueEN.Add(strValueEN(intCt))
+                                    End If
+
+                                    If strMessageTC.Contains(strVariableTC(intCt)) Then
+                                        arrVariableNameTC.Add(strVariableTC(intCt))
+                                        arrVariableValueTC.Add(strValueTC(intCt))
+                                    End If
+                                Next
+                            End If
+
+                            If arrVariableNameEN.Count > 0 Then
+                                For intCt As Integer = 0 To arrVariableNameEN.Count - 1
+                                    If intCt = 0 Then
+                                        strNewMessageVariableName = arrVariableNameEN(intCt)
+                                        strNewMessageVariableValue = arrVariableValueEN(intCt)
+                                    Else
+                                        strNewMessageVariableName = strNewMessageVariableName + "||" + arrVariableNameEN(intCt)
+                                        strNewMessageVariableValue = strNewMessageVariableValue + "||" + arrVariableValueEN(intCt)
+                                    End If
+
+                                Next
+                            End If
+
+                            If arrVariableNameTC.Count > 0 Then
+                                For intCt As Integer = 0 To arrVariableNameTC.Count - 1
+                                    If intCt = 0 Then
+                                        strNewMessageVariableNameChi = arrVariableNameTC(intCt)
+                                        strNewMessageVariableValueChi = arrVariableValueTC(intCt)
+                                    Else
+                                        strNewMessageVariableNameChi = strNewMessageVariableNameChi + "||" + arrVariableNameTC(intCt)
+                                        strNewMessageVariableValueChi = strNewMessageVariableValueChi + "||" + arrVariableValueTC(intCt)
+                                    End If
+                                Next
+                            End If
+
+                        End If
+
+                        'Override variable & value
+                        udtWarning.MessageVariableName = strNewMessageVariableName
+                        udtWarning.MessageVariableValue = strNewMessageVariableValue
+                        udtWarning.MessageVariableNameChi = strNewMessageVariableNameChi
+                        udtWarning.MessageVariableValueChi = strNewMessageVariableValueChi
+
+                    Next
 
                 End If
             End If

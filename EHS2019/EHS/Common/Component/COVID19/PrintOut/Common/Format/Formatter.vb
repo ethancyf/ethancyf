@@ -106,11 +106,6 @@ Namespace Component.COVID19.PrintOut.Common.Format
             Return dtmDate.ToString("yyyy年MM月dd日")
         End Function
 
-        Public Shared Function FormatHKID(ByVal strHKID As String) As String
-            strHKID = strHKID.Trim
-            Return strHKID.Substring(0, strHKID.Length - 1) + "(" + strHKID.Substring(strHKID.Length - 1, 1) + ")"
-        End Function
-
         Public Function formatDOBDisplay(ByVal dtDOB As Date, ByVal strExactDOB As String, ByVal strLanguage As String) As String
             Dim strRes As String
             strRes = ""
@@ -339,265 +334,76 @@ Namespace Component.COVID19.PrintOut.Common.Format
         ''' <remarks></remarks>
         Public Shared Function FormatDocIdentityNoForQrCodeDisplay(ByVal strDocType As String, ByVal strDocIDNo As String, ByVal blnMask As Boolean, Optional ByVal strAdoptionPrefixNum As String = "") As String
             Dim strRes As String = String.Empty
-            Dim strMaskStr As String = String.Empty
-            Dim strMaskStrPrefix As String = String.Empty
+            Dim udtCommonFormatter As New Global.Common.Format.Formatter
 
-            ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 4 - Claim [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            Dim udtValidator As New Global.Common.Validation.Validator
-            Dim udtSM As Global.Common.ComObject.SystemMessage = Nothing
+            ' ===============================
+            ' 1. Format Document No. e.g. A1234567 => A123456(7)
+            ' ===============================
+            strRes = udtCommonFormatter.FormatDocIdentityNoForDisplay(strDocType.Trim(), strDocIDNo, False, strAdoptionPrefixNum)
 
-            ' Check Doc No. format
-            udtSM = udtValidator.chkIdentityNumber(strDocType, strDocIDNo, strAdoptionPrefixNum)
-
-            If udtSM IsNot Nothing Then
-                ' Invalid Format
-                Select Case strDocType
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ADOPC
-
-                        'Mask sample 1  (too short, Add X up to 7 chars for Prefix, and add X up to 5 chars for Doc No.)
-                        'Before Mark:   123/12
-                        'After Mark:    12XXXXX/XXXXX
-
-                        'Mask sample 2
-                        'Before Mark:   1234567890/1234567890
-                        'After Mark:    1234XXX/12XXX
-
-                        If blnMask Then
-                            If strAdoptionPrefixNum.Length <= 4 Then
-                                strAdoptionPrefixNum = (Right(strAdoptionPrefixNum.Trim, strAdoptionPrefixNum.Length \ 2)).PadLeft(8, "*")
-                            Else
-                                strAdoptionPrefixNum = (Right(strAdoptionPrefixNum.Trim, 4)).PadLeft(8, "*")
-                            End If
-
-                            If strDocIDNo.Length <= 2 Then
-                                strDocIDNo = strDocIDNo.Trim.PadLeft(5, "*")
-                            Else
-                                strDocIDNo = (Right(strAdoptionPrefixNum.Trim, 2)).PadLeft(5, "*")
-                            End If
-                        End If
-
-                        If strAdoptionPrefixNum <> String.Empty Then
-                            strRes = strAdoptionPrefixNum.Trim + "/" + strDocIDNo.Trim
-                        Else
-                            strRes = strDocIDNo.Trim
-                        End If
-
-
-                    Case Else
-                        ' No formatting for doc no. with invalid format
-
-                        'Mask sample 1  (too short, Add X up to 9 chars)
-                        'Before Mark:   12
-                        'After Mark:    12XXXXXXX
-
-                        'Mask sample 2
-                        'Before Mark:   12345678901234567890
-                        'After Mark:    1234XXXXX
-
-                        If blnMask Then
-                            If strDocIDNo.Length <= 4 Then
-                                ' 12XXXXXXX
-                                strRes = (Right(strDocIDNo.Trim, strAdoptionPrefixNum.Length \ 2)).PadLeft(9, "*")
-
-                            Else
-                                ' 1234XXXXX
-                                strRes = (Right(strDocIDNo.Trim, 4)).PadLeft(9, "*")
-                            End If
-                        Else
-                            ' 12345678901234567890
-                            strRes = strDocIDNo
-                        End If
-                End Select
-                ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 4 - Claim [End][Winnie]
-
-            Else
-                ' Validate Format
-
-                Select Case strDocType
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ADOPC
-                        '***9999/**999
-
-                        strMaskStr = "***"
-
-                        If blnMask Then
-                            strRes = (Right(strAdoptionPrefixNum.Trim, 4)).PadLeft(7, "*") + "/" + (Right(strAdoptionPrefixNum.Trim, 2)).PadLeft(5, "*")
-                        Else
-                            strRes = strAdoptionPrefixNum + "/" + strDocIDNo.Trim
-                        End If
-
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.DI
-                        'XXXXXXXXX
-
-                        strMaskStr = "*****"
-
-                        If blnMask Then
-                            strDocIDNo = (Right(strAdoptionPrefixNum.Trim, 4)).PadLeft(9, "*")
-                        End If
-
-                        strRes = strDocIDNo.Trim
-
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.EC
-                        strRes = FormatHKID(strDocIDNo, blnMask)
-
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.HKBC, _
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ROP140, _
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.CCIC
-                        'XX999999(X)
-
-                        strRes = FormatHKID(strDocIDNo, blnMask)
-
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.HKIC
-                        'XX999999(X)
-
-                        strRes = FormatHKID(strDocIDNo, blnMask)
-
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ID235B
-                        'XX999999
-
-                        strMaskStr = "***"
-
-                        If blnMask Then
-                            strDocIDNo = (Right(strAdoptionPrefixNum.Trim, 5)).PadLeft(8, "*")
-                        End If
-
-                        strRes = strDocIDNo.Trim
-
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.REPMT
-                        'XX9999999
-
-                        strMaskStr = "****"
-
-                        If blnMask Then
-                            strDocIDNo = (Right(strAdoptionPrefixNum.Trim, 5)).PadLeft(9, "*")
-                        End If
-
-                        strRes = strDocIDNo.Trim
-
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.VISA
-                        'XXXX-9999999-99(X)
-
-                        strMaskStr = "*****"
-
-                        If blnMask Then
-                            strDocIDNo = (Right(strAdoptionPrefixNum.Trim, 9)).PadLeft(14, "*")
-                        End If
-
-                        If Not strDocType.Trim.Equals(String.Empty) Then
-                            strRes = strDocIDNo.Trim.Substring(0, 4) + "-" + strDocIDNo.Trim.Substring(4, 7) + "-" + strDocIDNo.Trim.Substring(11, 2) + "(" + strDocIDNo.Trim.Substring(13, 1) + ")"
-                        End If
-
-                        ' CRE19-001 (VSS 2019) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
-                    Case Global.Common.Component.DocType.DocTypeModel.DocTypeCode.OC,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.OW,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TW,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.IR,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.HKP,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.OTHER,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.PASS,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ISSHK,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.MEP,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TWMTP,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TWPAR,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TWVTD,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TWNS,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.MD,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.MP,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ET,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.DS
-                        ' CRE19-001 (VSS 2019) [End][Winnie]
-
-                        'Mask sample 1
-                        'Before Mark:   12345678901234567890
-                        'After Mark:    XXXXXXXXXXXXXXXX7890
-
-                        'Mask sample 2
-                        'Before Mark:   1234567890
-                        'After Mark:    XXXXXX7890
-
-                        'Mask sample 3 (Too short, Add X up to 9 chars)
-                        'Before Mark:   1234
-                        'After Mark:    XXXXX1234
-
-
-                        If blnMask Then
-                            If strDocIDNo.Length <= 4 Then
-                                ' XXXXX1234
-                                strRes = (Right(strDocIDNo, 4)).PadLeft(9, "*")
-                            Else
-                                'Calculate the start position to mask
-                                Dim intPos As Integer = 0
-                                Dim intChar As Integer = 0
-                                Dim intCnt As Integer = 4
-
-                                For idx As Integer = strDocIDNo.Length - 1 To 0 Step -1
-                                    Dim strChar As String = strDocIDNo.Chars(idx).ToString
-
-                                    If strChar <> "(" AndAlso strChar <> ")" AndAlso strChar <> "-" AndAlso strChar <> "/" Then
-                                        intChar = intChar + 1
-                                    End If
-
-                                    intPos = intPos + 1
-
-                                    If intChar = intCnt Then
-                                        Exit For
-                                    End If
-                                Next
-
-                                ' XXXXXXXXXXXXXXXX1234
-                                strRes = (Right(strDocIDNo, intPos)).PadLeft(strDocIDNo.Length, "*")
-                            End If
-
-                        Else
-                            ' 12345678901234567890
-                            strRes = strDocIDNo
-                        End If
-                    Case Else
-                        strRes = strDocIDNo
-                End Select
+            ' ===============================
+            ' 2. Mask Document No. e.g. A1234567 => ****456(7)
+            ' ===============================
+            If blnMask Then
+                strRes = maskDocIdentityNoByStar(strRes)
             End If
 
             Return strRes.ToUpper
         End Function
 
         ''' <summary>
-        ''' Format the HKIC No. with blanket for displaying to user. Mask the last four digits is needed if there is any privacy concern.
+        ''' Mask document no. Only the last 4 alphanumeric characters will be shown
         ''' </summary>
-        ''' <param name="strOriHKID">The un-format validate HKIC No.</param>
-        ''' <param name="blnMasked">
-        ''' A option for masking the HKIC No.
-        ''' True: Mask is applied.
-        ''' False: Mask is not applied.
-        ''' </param>
-        ''' <returns>Formatted HKIC No.</returns>
+        ''' <param name="strDocIDNo"></param>
+        ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Shared Function formatHKID(ByVal strOriHKID As String, ByVal blnMasked As Boolean) As String
-            Dim strRes As String
-            Dim strMaskStr As String
-            strMaskStr = "****"
-            strOriHKID = strOriHKID.Trim()
-            strRes = strOriHKID
+        Private Shared Function maskDocIdentityNoByStar(ByVal strDocIDNo As String) As String
 
-            If blnMasked Then
-                Select Case strOriHKID.Length
-                    Case 8
-                        strOriHKID = (Right(strOriHKID, 4)).PadLeft(8, "*")
-                    Case 9
-                        strOriHKID = (Right(strOriHKID, 5)).PadLeft(9, "*")
-                End Select
+            'Mask sample 1
+            'Before Mark:   1234567890-12345678-9(0)
+            'After Mark:    XXXXXXXXXXXXXXXX78-9(0)
+
+            'Mask sample 2
+            'Before Mark:   1234567890
+            'After Mark:    XXXXXX7890
+
+            'Mask sample 3 (Too short, Add X up to 9 chars)
+            'Before Mark:   1234
+            'After Mark:    XXXXX1234
+
+            strDocIDNo = strDocIDNo.Trim
+            Dim strRes As String = strDocIDNo
+
+            If strDocIDNo.Length <= 4 Then
+                ' XXXXX1234
+                strRes = (Right(strDocIDNo, 4)).PadLeft(9, "*")
+            Else
+                'Calculate the start position to mask
+                Dim intPos As Integer = 0
+                Dim intChar As Integer = 0
+                Dim intCnt As Integer = 4
+
+                For idx As Integer = strDocIDNo.Length - 1 To 0 Step -1
+                    Dim strChar As String = strDocIDNo.Chars(idx).ToString
+
+                    If strChar <> "(" AndAlso strChar <> ")" AndAlso strChar <> "-" AndAlso strChar <> "/" Then
+                        intChar = intChar + 1
+                    End If
+
+                    intPos = intPos + 1
+
+                    If intChar = intCnt Then
+                        Exit For
+                    End If
+                Next
+
+                ' XXXXXXXXXXXXXXXX1234
+                strRes = (Right(strDocIDNo, intPos)).PadLeft(strDocIDNo.Length, "*")
+
             End If
 
-            If Trim(strOriHKID) <> "" Then
-                strRes = strOriHKID.Substring(0, strOriHKID.Length() - 1) + "(" + strOriHKID.Substring(strOriHKID.Length() - 1, 1) + ")"
-            End If
-            strRes = strRes.ToUpper
             Return strRes
         End Function
-
 
         Public Shared Function maskEnglishNameByStar(ByVal strName As String) As String
 
