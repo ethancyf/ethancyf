@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE21-020
+-- Modified by:		Koala CHENG
+-- Modified date:	19 Nov 2021
+-- Description:		To include the School Code in the Pre-Authorization Checking File (for both PPP-PS and PPP-KG)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -180,7 +187,8 @@ AS
         Scheme_Seq             SMALLINT,
         --TRAN_Verification_Case   CHAR(1),     
         RCH_Code               CHAR(10), 
-        RCH_Type               CHAR(5)
+        RCH_Type               CHAR(5),
+		School_Code			   VARCHAR(100)
         );
 
         CREATE TABLE #temp01
@@ -230,7 +238,7 @@ AS
          Subsidize_Type         CHAR(20), 
          SP_ID                  CHAR(8), 
          Practice_Display_Seq   SMALLINT, 
-         RCH_Code               CHAR(10), 
+         RCH_Code               VARCHAR(100), 
          RCH_Type               CHAR(5)
         );
 
@@ -305,6 +313,11 @@ AS
             WHEN @scheme_code = 'RVP'
             THEN RHL.Type
             ELSE NULL
+        END AS [RCH_Type],
+		CASE
+            WHEN @scheme_code IN ('PPP','PPPKG')
+            THEN TAF_SCH.AdditionalFieldValueCode
+            ELSE NULL
         END AS [RCH_Type]
         FROM ReimbursementAuthTran AS RAT
              INNER JOIN VoucherTransaction AS VT WITH(NOLOCK)
@@ -339,6 +352,9 @@ AS
                 AND TAF.AdditionalFieldID = 'RHCCode'
              LEFT JOIN RVPHomeList AS RHL WITH(NOLOCK)
              ON TAF.AdditionalFieldValueCode = RHL.RCH_code
+			 LEFT JOIN TransactionAdditionalField AS TAF_SCH WITH(NOLOCK)
+             ON RAT.Transaction_ID = TAF_SCH.Transaction_ID
+				AND TAF_SCH.AdditionalFieldID = 'SchoolCode'
         WHERE RAT.Reimburse_ID = @reimburse_id
               AND RAT.Scheme_Code = @scheme_code
         ORDER BY VT.SP_ID ASC, 
@@ -894,8 +910,11 @@ AS
         Subsidize_Type, 
         SP_ID, 
         practice_display_seq, 
-        RCH_Code, 
-        RCH_Type
+        CASE WHEN @scheme_code = 'RVP' THEN RCH_Code
+			 WHEN @scheme_code IN ('PPP','PPPKG') THEN School_Code
+			 ELSE '' END AS RCH_CODE,
+		CASE WHEN @scheme_code = 'RVP' THEN RCH_Type
+			 ELSE '' END AS RCH_Type
         FROM #initialTransaction AS IT
         ORDER BY SP_Item_No ASC;
 
@@ -1193,7 +1212,7 @@ AS
                                                transaction_dtm AS [Transaction Date], 
                                                RTRIM(Display_Code) AS [Scheme], 
                                                RTRIM(subsidize_display_Code) AS [Subsidy], -- display when @subsidize_type_details = 'vaccine'      
-                                               RTRIM(RCH_Code) AS [RCH Code], -- display when @Scheme_Code = 'RVP'       
+                                               RTRIM(RCH_Code) AS [RCH Code], -- display when @Scheme_Code = 'RVP', 'PPP', 'PPPKG'    
                                                RTRIM(RCH_Type) AS [RCH Type]    -- display when @Scheme_Code = 'RVP'       
                                         FROM #temp03
                                         ORDER BY SP_ID ASC, 
@@ -1271,7 +1290,7 @@ AS
                                                transaction_dtm AS [Transaction Date], 
                                                RTRIM(Display_Code) AS [Scheme], 
                                                RTRIM(subsidize_display_Code) AS [Subsidy], -- display when @subsidize_type_details = 'vaccine'      
-                                               RTRIM(RCH_Code) AS [RCH Code], -- display when @Scheme_Code = 'RVP'       
+                                               RTRIM(RCH_Code) AS [RCH Code], -- display when @Scheme_Code = 'RVP', 'PPP', 'PPPKG'    
                                                RTRIM(RCH_Type) AS [RCH Type]    -- display when @Scheme_Code = 'RVP'       
                                         FROM #temp03
                                         ORDER BY SP_ID ASC, 
