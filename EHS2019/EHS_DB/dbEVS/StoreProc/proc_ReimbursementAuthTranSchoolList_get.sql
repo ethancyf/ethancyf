@@ -16,6 +16,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 
 -- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	07 Jan 2022
+-- CR No.:			INT22-0001
+-- Description:		Default sort by School Code in ascending order
+-- =============================================
+-- =============================================
 -- Author:			Martin Tang
 -- Create date:		09 Sep 2020
 -- CR No.:			CRE20-003
@@ -67,7 +74,8 @@ AS
         GROUP BY s.School_Code, 
                  s.Name_Chi, 
                  s.Name_Eng, 
-                 rat.Scheme_Code;
+                 rat.Scheme_Code
+		ORDER BY s.School_Code
     END;
 GO
 
