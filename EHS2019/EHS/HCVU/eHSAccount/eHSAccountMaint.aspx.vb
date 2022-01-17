@@ -3217,16 +3217,16 @@ Partial Public Class eHSAccountMaint
 
                 blnProceed = Me.ValidateRectifyDetail_Visa(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
 
-                ' CRE20-023 (Immu record) [Start][Martin]
-            Case DocTypeModel.DocTypeCode.OW,
-                DocTypeModel.DocTypeCode.RFNo8
-
-                udtEHSAccount.EHSPersonalInformationList(0).DocCode = Me.txtDocCode.Text.Trim
-                blnProceed = Me.ValidateRectifyDetail_OW_RFNo8(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
+            Case DocTypeModel.DocTypeCode.OW
+                'udtEHSAccount.EHSPersonalInformationList(0).DocCode = Me.txtDocCode.Text.Trim
+                blnProceed = Me.ValidateRectifyDetail_OW(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
 
             Case DocTypeModel.DocTypeCode.TW
                 blnProceed = Me.ValidateRectifyDetail_TW(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
-                ' CRE20-0023 (Immu record) [End][Martin]
+
+            Case DocTypeModel.DocTypeCode.RFNo8
+                'udtEHSAccount.EHSPersonalInformationList(0).DocCode = Me.txtDocCode.Text.Trim
+                blnProceed = Me.ValidateRectifyDetail_RFNo8(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
 
             Case DocTypeModel.DocTypeCode.CCIC
 
@@ -4852,16 +4852,17 @@ Partial Public Class eHSAccountMaint
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.VISA
                 blnProceed = Me.ValidateRectifyDetail_Visa(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
 
-                ' CRE20-0023 (Immu record) [Start][Martin]
-            Case DocTypeModel.DocTypeCode.OW,
-                DocTypeModel.DocTypeCode.RFNo8
-                udtEHSAccount.EHSPersonalInformationList(0).DocCode = Me.txtDocCode.Text.Trim
-                blnProceed = Me.ValidateRectifyDetail_OW_RFNo8(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
+            Case DocTypeModel.DocTypeCode.OW
+                udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.OW
+                blnProceed = Me.ValidateRectifyDetail_OW(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
 
             Case DocTypeModel.DocTypeCode.TW
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.TW
                 blnProceed = Me.ValidateRectifyDetail_TW(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
-                ' CRE20-0023 (Immu record) [End][Martin]
+
+            Case DocTypeModel.DocTypeCode.RFNo8
+                udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.RFNo8
+                blnProceed = Me.ValidateRectifyDetail_RFNo8(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
 
             Case DocTypeModel.DocTypeCode.CCIC
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.CCIC
@@ -6385,7 +6386,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("DOB", udcInputHKIC.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputHKIC.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputHKIC.ENameFirstName)
-        _udtAuditLogEntry.AddDescripton("Chiname", udcInputHKIC.CName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputHKIC.CName)
         _udtAuditLogEntry.AddDescripton("CCCode1", udcInputHKIC.CCCode1)
         _udtAuditLogEntry.AddDescripton("CCCode2", udcInputHKIC.CCCode2)
         _udtAuditLogEntry.AddDescripton("CCCode3", udcInputHKIC.CCCode3)
@@ -6519,7 +6520,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("ECSerialNumber", udcInputEC.SerialNumber)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputEC.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputEC.ENameFirstName)
-        _udtAuditLogEntry.AddDescripton("Chiname", udcInputEC.CName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputEC.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputEC.Gender)
         _udtAuditLogEntry.AddDescripton("DateOfIssue Day", udcInputEC.ECDateDay)
         _udtAuditLogEntry.AddDescripton("DateOfIssue Month", udcInputEC.ECDateMonth)
@@ -6710,7 +6711,7 @@ Partial Public Class eHSAccountMaint
 
         ' CRE15-014 HA_MingLiu UTF32 [Start][Winnie]
         'Chinese Name
-        Me.udtSM = Me.udtValidator.chkChiName(udcInputEC.CName)
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputEC.CName, DocTypeModel.DocTypeCode.EC)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputEC.SetCNameError(True)
@@ -6847,6 +6848,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("DOB", udcInputHKBC.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputHKBC.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputHKBC.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputHKBC.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputHKBC.Gender)
         _udtAuditLogEntry.AddDescripton("DOBInWord", udcInputHKBC.DOBInWord)
         _udtAuditLogEntry.AddDescripton("DOBInWordCase", udcInputHKBC.DOBInWordCase.ToString())
@@ -6865,7 +6867,6 @@ Partial Public Class eHSAccountMaint
         Dim strExactDOB As String = String.Empty
         Dim strDOB As String = udcInputHKBC.DOB
         Dim dtmDOB As Date
-
 
         Select Case udcInputHKBC.DOB.Trim
             Case String.Empty
@@ -6908,7 +6909,6 @@ Partial Public Class eHSAccountMaint
             isValid = False
         End If
 
-
         'DOBInWordCase
         If udcInputHKBC.DOBInWordCase Then
             If udcInputHKBC.DOBInWord Is Nothing OrElse udcInputHKBC.DOBInWord = String.Empty Then
@@ -6927,6 +6927,14 @@ Partial Public Class eHSAccountMaint
             Me.udcMsgBox.AddMessage(udtSM)
         End If
 
+        'Chinese Name
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputHKBC.CName, DocTypeModel.DocTypeCode.HKBC)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputHKBC.SetCNameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
         'Gender
         Me.udtSM = Me.udtValidator.chkGender(udcInputHKBC.Gender)
         If Not IsNothing(udtSM) Then
@@ -6942,6 +6950,7 @@ Partial Public Class eHSAccountMaint
             End If
             udtEHSAccountPersonalInfo.ENameSurName = udcInputHKBC.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputHKBC.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputHKBC.CName
             udtEHSAccountPersonalInfo.Gender = udcInputHKBC.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB 'udcInputHKBC.IsExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtformatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
@@ -6973,6 +6982,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("DOB", udcInputAdopt.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputAdopt.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputAdopt.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputAdopt.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputAdopt.Gender)
         _udtAuditLogEntry.AddDescripton("DOBInWord", udcInputAdopt.DOBInWord)
         _udtAuditLogEntry.AddDescripton("DOBInWordCase", udcInputAdopt.DOBInWordCase.ToString())
@@ -6998,6 +7008,14 @@ Partial Public Class eHSAccountMaint
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputAdopt.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Chinese Name
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputAdopt.CName, DocTypeModel.DocTypeCode.ADOPC)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputAdopt.SetCNameError(True)
             Me.udcMsgBox.AddMessage(udtSM)
         End If
 
@@ -7073,6 +7091,7 @@ Partial Public Class eHSAccountMaint
 
             udtEHSAccountPersonalInfo.ENameSurName = udcInputAdopt.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputAdopt.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputAdopt.CName
             udtEHSAccountPersonalInfo.Gender = udcInputAdopt.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB 'udcInputAdopt.IsExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtformatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
@@ -7104,6 +7123,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("DOB", udcInputDI.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputDI.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputDI.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputDI.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputDI.Gender)
         _udtAuditLogEntry.AddDescripton("DOI", udcInputDI.DateOfIssue)
         '_udtAuditLogEntry.AddDescripton("ExactDOB", udcInputDI.ExactDOB)
@@ -7122,6 +7142,14 @@ Partial Public Class eHSAccountMaint
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputDI.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Chinese Name
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputDI.CName, DocTypeModel.DocTypeCode.DI)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputDI.SetCNameError(True)
             Me.udcMsgBox.AddMessage(udtSM)
         End If
 
@@ -7178,10 +7206,12 @@ Partial Public Class eHSAccountMaint
 
             udtEHSAccountPersonalInfo.ENameSurName = udcInputDI.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputDI.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputDI.CName
             udtEHSAccountPersonalInfo.Gender = udcInputDI.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtformatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
             udtEHSAccountPersonalInfo.DateofIssue = dtIssueDate
+
         End If
 
         Return isvalid
@@ -7208,6 +7238,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("BirthEntryNo", udcInputID235B.BirthEntryNo)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputID235B.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputID235B.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputID235B.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputID235B.Gender)
         _udtAuditLogEntry.AddDescripton("RemainUntil", udcInputID235B.PermitRemain)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputID235B.DateOfBirth)
@@ -7226,6 +7257,14 @@ Partial Public Class eHSAccountMaint
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputID235B.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Chinese Name
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputID235B.CName, DocTypeModel.DocTypeCode.ID235B)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputID235B.SetCNameError(True)
             Me.udcMsgBox.AddMessage(udtSM)
         End If
 
@@ -7278,6 +7317,7 @@ Partial Public Class eHSAccountMaint
 
             udtEHSAccountPersonalInfo.ENameSurName = udcInputID235B.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputID235B.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputID235B.CName
             udtEHSAccountPersonalInfo.Gender = udcInputID235B.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
@@ -7307,6 +7347,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("REPMTNo", udcInputReentryPermit.REPMTNo)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputReentryPermit.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputReentryPermit.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputReentryPermit.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputReentryPermit.Gender)
         _udtAuditLogEntry.AddDescripton("DOI", udcInputReentryPermit.DateOfIssue)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputReentryPermit.DateOfBirth)
@@ -7325,6 +7366,14 @@ Partial Public Class eHSAccountMaint
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputReentryPermit.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Chinese Name
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputReentryPermit.CName, DocTypeModel.DocTypeCode.REPMT)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputReentryPermit.SetCNameError(True)
             Me.udcMsgBox.AddMessage(udtSM)
         End If
 
@@ -7377,6 +7426,7 @@ Partial Public Class eHSAccountMaint
 
             udtEHSAccountPersonalInfo.ENameSurName = udcInputReentryPermit.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputReentryPermit.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputReentryPermit.CName
             udtEHSAccountPersonalInfo.Gender = udcInputReentryPermit.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtformatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
@@ -7404,6 +7454,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("VISANo", udcInputVisa.VISANo)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputVisa.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputVisa.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputVisa.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputVisa.Gender)
         _udtAuditLogEntry.AddDescripton("PassportNo", udcInputVisa.PassportNo)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputVisa.DOB)
@@ -7430,6 +7481,14 @@ Partial Public Class eHSAccountMaint
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputVisa.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Chinese Name
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputVisa.CName, DocTypeModel.DocTypeCode.VISA)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputVisa.SetCNameError(True)
             Me.udcMsgBox.AddMessage(udtSM)
         End If
 
@@ -7461,6 +7520,7 @@ Partial Public Class eHSAccountMaint
             End If
             udtEHSAccountPersonalInfo.ENameSurName = udcInputVisa.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputVisa.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputVisa.CName
             udtEHSAccountPersonalInfo.Gender = udcInputVisa.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtformatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
@@ -7471,11 +7531,8 @@ Partial Public Class eHSAccountMaint
         Return isValid
     End Function
 
-
-    ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
-    'OW or RFNo8
-    Private Function ValidateRectifyDetail_OW_RFNo8(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry, ByVal udcControlMode As ucInputDocTypeBase.BuildMode) As Boolean
+    'OW
+    Private Function ValidateRectifyDetail_OW(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry, ByVal udcControlMode As ucInputDocTypeBase.BuildMode) As Boolean
         Dim isValid As Boolean = True
         Dim udcInputOW As ucInputOW
 
@@ -7645,6 +7702,101 @@ Partial Public Class eHSAccountMaint
         Return isValid
     End Function
 
+    'RFNo8
+    Private Function ValidateRectifyDetail_RFNo8(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry, ByVal udcControlMode As ucInputDocTypeBase.BuildMode) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputRFNo8 As ucInputRFNo8
+
+        If udcControlMode = ucInputDocTypeBase.BuildMode.Creation Then
+            udcInputRFNo8 = Me.ucInputDocumentType_NewAcc.GetRFNo8Control
+            Me.ucInputDocumentType_NewAcc.ActiveViewChanged = False
+        Else
+            udcInputRFNo8 = Me.ucInputDocumentType.GetRFNo8Control
+        End If
+
+        udcInputRFNo8.SetProperty(udcControlMode)
+        udcInputRFNo8.SetErrorImage(udcControlMode, False)
+
+        _udtAuditLogEntry.AddDescripton("DocumentNo", udcInputRFNo8.DocumentNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputRFNo8.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputRFNo8.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputRFNo8.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputRFNo8.CName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputRFNo8.Gender)
+        _udtAuditLogEntry.AddDescripton("ExactDOB", udcInputRFNo8.IsExactDOB)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
+
+        'DocNo.
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(txtDocCode.Text.Trim, udcInputRFNo8.DocumentNo.Trim, String.Empty)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputRFNo8.SetDocNoError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String = udcInputRFNo8.DOB
+        Dim dtmDOB As Date
+
+        Select Case udcInputRFNo8.DOB.Trim
+            Case String.Empty
+                udtSM = New SystemMessage("990000", "E", "00003")
+                udcInputRFNo8.SetDOBError(True)
+
+            Case Else
+                udtSM = Me.udtValidator.chkDOB(txtDocCode.Text.Trim, strDOB, dtmDOB, strExactDOB)
+
+                If Not udtSM Is Nothing Then
+                    udcInputRFNo8.SetDOBError(True)
+                End If
+        End Select
+
+        If Not IsNothing(udtSM) Then
+            Me.udcMsgBox.AddMessage(udtSM)
+            isValid = False
+        End If
+
+        'English Name
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputRFNo8.ENameSurName, udcInputRFNo8.ENameFirstName, txtDocCode.Text.Trim)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputRFNo8.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Chinese Name
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputRFNo8.CName, DocTypeModel.DocTypeCode.RFNo8)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputRFNo8.SetCNameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Gender
+        Me.udtSM = Me.udtValidator.chkGender(udcInputRFNo8.Gender)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputRFNo8.SetGenderError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        If isValid Then
+            Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(txtDocCode.Text.Trim)
+            If udcControlMode = ucInputDocTypeBase.BuildMode.Creation Then
+                udtEHSAccountPersonalInfo.IdentityNum = udcInputRFNo8.DocumentNo
+            End If
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputRFNo8.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputRFNo8.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputRFNo8.CName
+            udtEHSAccountPersonalInfo.Gender = udcInputRFNo8.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isValid
+    End Function
+    ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
 
     'CCIC
@@ -7765,7 +7917,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputROP140.ENameFirstName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputROP140.Gender)
         _udtAuditLogEntry.AddDescripton("DOI", udcInputROP140.DateOfIssue)
-        _udtAuditLogEntry.AddDescripton("Chiname", udcInputROP140.CName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputROP140.CName)
         _udtAuditLogEntry.AddDescripton("CCCode1", udcInputROP140.CCCode1)
         _udtAuditLogEntry.AddDescripton("CCCode2", udcInputROP140.CCCode2)
         _udtAuditLogEntry.AddDescripton("CCCode3", udcInputROP140.CCCode3)

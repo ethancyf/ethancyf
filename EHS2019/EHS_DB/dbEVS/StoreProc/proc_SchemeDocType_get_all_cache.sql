@@ -5,19 +5,19 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================  
+-- Modification History  
+-- Modified by:		Chris YIM
+-- Modified date:   14 Dec 2021
+-- CR No.:			CRE20-023-68
+-- Description:		Add 2 columns [Display_Seq] & [Claim_Type] 
+-- =============================================  
 -- =============================================  
 -- Modification History  
 -- Modified by:   Raiman
 -- Modified date:  20 Jan 2021  
 -- Description:   Change AgeLimit of schemeDocTypeTable for Covid19 Scheme Visa Doctype 
--- ============================================= 
--- =============================================
--- Modification History
--- Modified by:	Derek LEUNG
--- Modified date:	09 Nov 2010
--- Description:	Grant execute permission to WSEXT	
--- ============================================= 
+-- =============================================  
 -- =============================================  
 -- Modification History  
 -- Modified by:   Pak Ho LEE  
@@ -28,12 +28,6 @@ GO
 -- Author:  Pak Ho LEE  
 -- Create date: 13 Aug 2009  
 -- Description: Retrieve all Scheme(Claim) - Document Relation  
--- =============================================  
--- =============================================  
--- Modification History  
--- Modified by:    
--- Modified date:   
--- Description:    
 -- =============================================  
 
 
@@ -64,7 +58,9 @@ SELECT
 	[Age_LowerLimitUnit] = CASE WHEN LTRIM(RTRIM(SDT.[Override_Age_Limit])) = 'Y' THEN SDT.[Age_LowerLimitUnit] ELSE DT.[Age_LowerLimitUnit] END, 
 	[Age_UpperLimit] = CASE WHEN LTRIM(RTRIM(SDT.[Override_Age_Limit])) = 'Y' THEN SDT.[Age_UpperLimit] ELSE DT.[Age_UpperLimit] END, 
 	[Age_UpperLimitUnit] = CASE WHEN LTRIM(RTRIM(SDT.[Override_Age_Limit])) = 'Y' THEN SDT.[Age_UpperLimitUnit] ELSE DT.[Age_UpperLimitUnit] END,
-	[Age_CalMethod] = CASE WHEN LTRIM(RTRIM(SDT.[Override_Age_Limit])) = 'Y' THEN SDT.[Age_CalMethod] ELSE DT.[Age_CalMethod] END
+	[Age_CalMethod] = CASE WHEN LTRIM(RTRIM(SDT.[Override_Age_Limit])) = 'Y' THEN SDT.[Age_CalMethod] ELSE DT.[Age_CalMethod] END,
+	[Display_Seq] = CASE WHEN SDT.[Display_Seq] IS NOT NULL THEN SDT.[Display_Seq] ELSE DT.[Display_Seq] END,
+	SDT.[Claim_Type]
 FROM  
 	[SchemeDocType] SDT WITH(NOLOCK)
 		INNER JOIN [DocType] DT  WITH(NOLOCK)
@@ -84,3 +80,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_SchemeDocType_get_all_cache] TO WSEXT
 GO
+

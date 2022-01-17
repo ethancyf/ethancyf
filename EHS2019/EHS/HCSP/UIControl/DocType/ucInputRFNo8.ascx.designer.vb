@@ -149,6 +149,33 @@ Partial Public Class ucInputRFNo8
     Protected WithEvents lblGivenName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCName As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgCNameError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCNameError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''rbGender control.
     '''</summary>
     '''<remarks>
@@ -293,15 +320,6 @@ Partial Public Class ucInputRFNo8
     Protected WithEvents lblDOB As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''rbDOB control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rbDOB As Global.System.Web.UI.WebControls.RadioButton
-
-    '''<summary>
     '''txtDOB control.
     '''</summary>
     '''<remarks>
@@ -318,51 +336,6 @@ Partial Public Class ucInputRFNo8
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgDOBError As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''trDOBInWord control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trDOBInWord As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''rbDOBInWord control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rbDOBInWord As Global.System.Web.UI.WebControls.RadioButton
-
-    '''<summary>
-    '''ddlDOBinWordType control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlDOBinWordType As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''txtDOBInWord control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtDOBInWord As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''imgDOBInWordError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgDOBInWordError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''trTransactionNo_M control.
@@ -417,13 +390,4 @@ Partial Public Class ucInputRFNo8
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents filtereditDOB As Global.AjaxControlToolkit.FilteredTextBoxExtender
-
-    '''<summary>
-    '''filtereditDOBInWord control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents filtereditDOBInWord As Global.AjaxControlToolkit.FilteredTextBoxExtender
 End Class

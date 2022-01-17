@@ -1667,15 +1667,13 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
-        ' CRE15-014 HA_MingLiu UTF32 [Start][Winnie]
         'Chinese Name
-        Me._systemMessage = Me._validator.chkChiName(udcInputEC.CName)
+        Me._systemMessage = Me._validator.chkChiName(udcInputEC.CName, DocTypeModel.DocTypeCode.EC)
         If Not IsNothing(_systemMessage) Then
             isValid = False
             udcInputEC.SetCNameError(True)
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
-        ' CRE15-014 HA_MingLiu UTF32 [End][Winnie]
 
         ' Gender
         Me._systemMessage = Me._validator.chkGender(udcInputEC.Gender)
@@ -1782,6 +1780,14 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
+        'Chinese Name
+        Me._systemMessage = Me._validator.chkChiName(udcInputHKBC.CName, DocTypeModel.DocTypeCode.HKBC)
+        If Not IsNothing(_systemMessage) Then
+            isValid = False
+            udcInputHKBC.SetCNameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
         Me._systemMessage = Me._validator.chkGender(udcInputHKBC.Gender)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
@@ -1789,28 +1795,11 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
-        ' CRE16-012 Removal of DOB InWord [Start][Winnie]
-        'Me._systemMessage = Me._validator.chkDOBType(udcInputHKBC.IsExactDOB)
-        'If Not Me._systemMessage Is Nothing Then
-        '    isValid = False
-        '    udcInputHKBC.SetDOBTypeError(True)
-        '    Me.udcMsgBoxErr.AddMessage(_systemMessage)
-        'End If
-
-        'If udcInputHKBC.DOBInWordCase Then
-        '    If udcInputHKBC.DOBInWord Is Nothing OrElse udcInputHKBC.DOBInWord = String.Empty Then
-        '        isValid = False
-        '        Me._systemMessage = New SystemMessage("990000", "E", "00160")
-        '        udcInputHKBC.SetDOBTypeError(True)
-        '        Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
-        '    End If
-        'End If
-        ' CRE16-012 Removal of DOB InWord [End][Winnie]
-
         If isValid Then
             Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
             udtEHSAccountPersonalInfo.ENameSurName = udcInputHKBC.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputHKBC.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputHKBC.CName
             udtEHSAccountPersonalInfo.Gender = udcInputHKBC.Gender
             udtEHSAccountPersonalInfo.OtherInfo = udcInputHKBC.DOBInWord
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.HKBC
@@ -1845,6 +1834,14 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
+        'Chinese Name
+        Me._systemMessage = Me._validator.chkChiName(udcInputDI.CName, DocTypeModel.DocTypeCode.DI)
+        If Not IsNothing(_systemMessage) Then
+            isValid = False
+            udcInputDI.SetCNameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
         Me._systemMessage = Me._validator.chkGender(udcInputDI.Gender)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
@@ -1865,6 +1862,7 @@ Partial Public Class EHSAccountCreationV1
         If isValid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputDI.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputDI.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputDI.CName
             udtEHSAccountPersonalInfo.Gender = udcInputDI.Gender
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.DI
             udtEHSAccountPersonalInfo.DateofIssue = dtDateOfIssue
@@ -1897,6 +1895,14 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
+        'Chinese Name
+        Me._systemMessage = Me._validator.chkChiName(udcInputID235B.CName, DocTypeModel.DocTypeCode.ID235B)
+        If Not IsNothing(_systemMessage) Then
+            isValid = False
+            udcInputID235B.SetCNameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
         Me._systemMessage = Me._validator.chkGender(udcInputID235B.Gender)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
@@ -1914,18 +1920,10 @@ Partial Public Class EHSAccountCreationV1
             dtmPermitRemain = Me._udtFormatter.convertDate(Me._udtFormatter.formatInputDate(strPermitRemain), Common.Component.CultureLanguage.English)
         End If
 
-        'Me._systemMessage = Me._validator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.ID235B, strDOI, udtEHSAccountPersonalInfo.DOB)
-        'If Not Me._systemMessage Is Nothing Then
-        '    isValid = False
-        '    udcInputID235B.SetPermitRemainError(True)
-        '    Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
-        'Else
-        '    dtDateOfIssue = Me._udtFormatter.convertDate(strDOI, Me._udtSessionHandler.Language())
-        'End If
-
         If isValid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputID235B.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputID235B.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputID235B.CName
             udtEHSAccountPersonalInfo.Gender = udcInputID235B.Gender
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.ID235B
             udtEHSAccountPersonalInfo.PermitToRemainUntil = dtmPermitRemain
@@ -1958,6 +1956,14 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
+        'Chinese Name
+        Me._systemMessage = Me._validator.chkChiName(udcInputReentryPermit.CName, DocTypeModel.DocTypeCode.REPMT)
+        If Not IsNothing(_systemMessage) Then
+            isValid = False
+            udcInputReentryPermit.SetCNameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
         Me._systemMessage = Me._validator.chkGender(udcInputReentryPermit.Gender)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
@@ -1978,6 +1984,7 @@ Partial Public Class EHSAccountCreationV1
         If isValid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputReentryPermit.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputReentryPermit.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputReentryPermit.CName
             udtEHSAccountPersonalInfo.Gender = udcInputReentryPermit.Gender
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.REPMT
             udtEHSAccountPersonalInfo.DateofIssue = dtDateOfIssue
@@ -2007,6 +2014,14 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
+        'Chinese Name
+        Me._systemMessage = Me._validator.chkChiName(udcInputVISA.CName, DocTypeModel.DocTypeCode.VISA)
+        If Not IsNothing(_systemMessage) Then
+            isValid = False
+            udcInputVISA.SetCNameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
         Me._systemMessage = Me._validator.chkGender(udcInputVISA.Gender)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
@@ -2025,6 +2040,7 @@ Partial Public Class EHSAccountCreationV1
             Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
             udtEHSAccountPersonalInfo.ENameSurName = udcInputVISA.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputVISA.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputVISA.CName
             udtEHSAccountPersonalInfo.Gender = udcInputVISA.Gender
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.VISA
             udtEHSAccountPersonalInfo.Foreign_Passport_No = udcInputVISA.PassportNo
@@ -2054,6 +2070,14 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
+        'Chinese Name
+        Me._systemMessage = Me._validator.chkChiName(udcInputAdoption.CName, DocTypeModel.DocTypeCode.ADOPC)
+        If Not IsNothing(_systemMessage) Then
+            isValid = False
+            udcInputAdoption.SetCNameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
         Me._systemMessage = Me._validator.chkGender(udcInputAdoption.Gender)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
@@ -2061,28 +2085,11 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
         End If
 
-        ' CRE16-012 Removal of DOB InWord [Start][Winnie]
-        'Me._systemMessage = Me._validator.chkDOBType(udcInputAdoption.IsExactDOB)
-        'If Not Me._systemMessage Is Nothing Then
-        '    isValid = False
-        '    udcInputAdoption.SetDOBInWordError(True)
-        '    Me.udcMsgBoxErr.AddMessage(_systemMessage)
-        'End If
-
-        'If udcInputAdoption.DOBInWordCase Then
-        '    If udcInputAdoption.DOBInWord Is Nothing OrElse udcInputAdoption.DOBInWord = String.Empty Then
-        '        isValid = False
-        '        Me._systemMessage = New SystemMessage("990000", "E", "00160")
-        '        udcInputAdoption.SetDOBInWordError(True)
-        '        Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
-        '    End If
-        'End If
-        ' CRE16-012 Removal of DOB InWord [End][Winnie]
-
         If isValid Then
             Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
             udtEHSAccountPersonalInfo.ENameSurName = udcInputAdoption.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputAdoption.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputAdoption.CName
             udtEHSAccountPersonalInfo.Gender = udcInputAdoption.Gender
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.ADOPC
             udtEHSAccountPersonalInfo.ExactDOB = udcInputAdoption.IsExactDOB
@@ -2197,6 +2204,14 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
+        'Chinese Name
+        Me._systemMessage = Me._validator.chkChiName(udcInputRFNo8.CName, DocTypeModel.DocTypeCode.RFNo8)
+        If Not IsNothing(_systemMessage) Then
+            isValid = False
+            udcInputRFNo8.SetCNameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
         Me._systemMessage = Me._validator.chkGender(udcInputRFNo8.Gender)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
@@ -2207,6 +2222,7 @@ Partial Public Class EHSAccountCreationV1
         If isValid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputRFNo8.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputRFNo8.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputRFNo8.CName
             udtEHSAccountPersonalInfo.Gender = udcInputRFNo8.Gender
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.RFNo8
             udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)

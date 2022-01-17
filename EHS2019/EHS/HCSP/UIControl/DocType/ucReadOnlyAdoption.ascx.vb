@@ -57,6 +57,7 @@ Partial Public Class ucReadOnlyAdoption
             End If
 
             Me.lblReadonlyEName.Text = formatter.formatEnglishName(MyBase.EHSAccountPersonalInfo.ENameSurName, MyBase.EHSAccountPersonalInfo.ENameFirstName)
+            Me.lblReadonlyCName.Text = formatter.formatChineseName(MyBase.EHSAccountPersonalInfo.CName)
             Me.lblReadonlyEntryNo.Text = formatter.FormatDocIdentityNoForDisplay(DocTypeCode.ADOPC, MyBase.EHSAccountPersonalInfo.IdentityNum, MyBase.MaskIdentityNumber, MyBase.EHSAccountPersonalInfo.AdoptionPrefixNum.Trim())
             Me.lblReadonlyDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, udtSessionHandler.Language(), Nothing, Nothing)
             Me.lblReadonlyGender.Text = Me.GetGlobalResourceObject("Text", strGender)
@@ -81,6 +82,7 @@ Partial Public Class ucReadOnlyAdoption
             Me.panReadonlyHorizontalAdoption.Visible = True
 
             Me.lblReadonlyHorizontalEName.Text = formatter.formatEnglishName(MyBase.EHSAccountPersonalInfo.ENameSurName, MyBase.EHSAccountPersonalInfo.ENameFirstName)
+            Me.lblReadonlyHorizontalCName.Text = formatter.formatChineseName(MyBase.EHSAccountPersonalInfo.CName)
             Me.lblReadonlyHorizontalEntryNo.Text = formatter.FormatDocIdentityNoForDisplay(DocTypeCode.ADOPC, MyBase.EHSAccountPersonalInfo.IdentityNum, MyBase.MaskIdentityNumber, MyBase.EHSAccountPersonalInfo.AdoptionPrefixNum.Trim())
             Me.lblReadonlyHorizontalDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, Session("language"), Nothing, Nothing)
             Me.lblReadonlyHorizontalDocumentType.Text = strDocumentTypeFullName

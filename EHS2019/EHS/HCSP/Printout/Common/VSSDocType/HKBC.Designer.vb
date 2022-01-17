@@ -75,7 +75,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox4.Name = "TextBox4"
             Me.TextBox4.Style = "color: Black; font-size: 11.25pt; text-decoration: underline; ddo-char-set: 0"
             Me.TextBox4.SummaryGroup = ""
-            Me.TextBox4.Text = "Hong Kong Birth Certificate (Established)"
+            Me.TextBox4.Text = "Hong Kong Birth Certificate"
             Me.TextBox4.Top = 0.0!
             Me.TextBox4.Width = 3.313!
             '

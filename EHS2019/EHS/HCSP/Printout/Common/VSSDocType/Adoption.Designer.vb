@@ -75,7 +75,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox4.Name = "TextBox4"
             Me.TextBox4.Style = "color: Black; font-size: 11.25pt; text-decoration: underline; ddo-char-set: 0"
             Me.TextBox4.SummaryGroup = ""
-            Me.TextBox4.Text = "Certificate issued by the Births Registry for adopted children"
+            Me.TextBox4.Text = "Certificate Issued by the Births and Deaths Registry for Adopted Children"
             Me.TextBox4.Top = 0.0!
             Me.TextBox4.Width = 3.312992!
             '

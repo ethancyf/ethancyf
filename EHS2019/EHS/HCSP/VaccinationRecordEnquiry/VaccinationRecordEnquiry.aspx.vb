@@ -464,11 +464,7 @@ Partial Public Class VaccinationRecordEnquiry
 
                 Try
                     If udtSmartIDContent.IsDemonVersion Then
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
                         udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(String.Empty, udtSmartIDContent.IdeasVersion)
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                        udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
 
                     Else
                         Dim udtCFD As IdeasRM.CardFaceData
@@ -665,10 +661,8 @@ Partial Public Class VaccinationRecordEnquiry
 
                         Else
                             ' Go to result
-                            ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                            ' ---------------------------------------------------------------------------------------------------------
+                            udcVaccinationRecord.FunctionCode = FunctionCode
                             udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
-                            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                             Me.GotoViewResult()
 
@@ -821,12 +815,7 @@ Partial Public Class VaccinationRecordEnquiry
             Dim goToCreation As Boolean = True
 
             Try
-
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(String.Empty, udtSmartIDContent.IdeasVersion)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
 
             Catch ex As Exception
                 udtSmartIDContent.EHSAccount = Nothing
@@ -1011,10 +1000,8 @@ Partial Public Class VaccinationRecordEnquiry
 
                     Else
                         ' Go to result
-                        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                        ' ---------------------------------------------------------------------------------------------------------
+                        udcVaccinationRecord.FunctionCode = FunctionCode
                         udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
-                        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                         Me.GotoViewResult()
 
@@ -1155,10 +1142,8 @@ Partial Public Class VaccinationRecordEnquiry
             udtAuditLogEntry.WriteLog(LogID.LOG00006, AuditLogDescription.SearchComplete)
 
             ' (6) No record found, directly go to result
-            ' CRE20-0022 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
+            udcVaccinationRecord.FunctionCode = FunctionCode
             udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
-            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Me.GotoViewResult()
 
@@ -1176,10 +1161,8 @@ Partial Public Class VaccinationRecordEnquiry
                 udtAuditLogEntry.AddDescripton("Go to", "(1) and (2) Go to result")
                 udtAuditLogEntry.WriteLog(LogID.LOG00006, AuditLogDescription.SearchComplete)
 
-                ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
+                udcVaccinationRecord.FunctionCode = FunctionCode
                 udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
-                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 Me.GotoViewResult()
 
@@ -2636,10 +2619,8 @@ Partial Public Class VaccinationRecordEnquiry
         udtAuditLogEntry.AddDescripton("Doc No.", udtEHSPersonalInfo.IdentityNum)
         udtAuditLogEntry.WriteLog(LogID.LOG00019, AuditLogDescription.InputRecipientInformationSmartICProceedToEnquiry)
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
+        udcVaccinationRecord.FunctionCode = FunctionCode
         udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Me.GotoViewResult()
 
@@ -2737,10 +2718,9 @@ Partial Public Class VaccinationRecordEnquiry
         udtAuditLogEntry.WriteLog(LogID.LOG00012, AuditLogDescription.ConfirmRecipientInformationProceed)
 
         ResetMessageBox()
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
+
+        udcVaccinationRecord.FunctionCode = FunctionCode
         udcVaccinationRecord.Build(Session(SESS.EHSAccount), New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Me.GotoViewResult()
 

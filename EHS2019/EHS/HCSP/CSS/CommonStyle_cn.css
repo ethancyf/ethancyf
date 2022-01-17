@@ -183,6 +183,17 @@
 	font-weight: bold;
 }
 
+/***** Text Style for Chinese Name *****/
+.TextChineseName
+{
+    font-family: "MingLiU","MingLiU-ExtB","MingLiU_HKSCS","MingLiU_HKSCS-ExtB";
+}
+
+.TextBoxChineseName
+{
+    font-family: "MingLiU","MingLiU-ExtB","MingLiU_HKSCS","MingLiU_HKSCS-ExtB";
+}
+
 /***** Text Style in Banner *****/
 .bannerText
 {

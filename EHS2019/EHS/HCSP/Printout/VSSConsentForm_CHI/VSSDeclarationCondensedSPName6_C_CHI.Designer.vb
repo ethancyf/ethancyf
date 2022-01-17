@@ -1,4 +1,4 @@
-Namespace PrintOut.VSSConsentForm_CHI
+ï»¿Namespace PrintOut.VSSConsentForm_CHI
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
     Partial Public Class VSSDeclarationCondensedSPName6_C_CHI
         Inherits GrapeCity.ActiveReports.SectionReport
@@ -39,8 +39,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration4Value.Height = 0.25!
             Me.txtDeclaration4Value.Left = 0.0!
             Me.txtDeclaration4Value.Name = "txtDeclaration4Value"
-            Me.txtDeclaration4Value.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 136"
-            Me.txtDeclaration4Value.Text = "¥»¤H¤wÀò"
+            Me.txtDeclaration4Value.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.txtDeclaration4Value.Text = "æœ¬äººå·²ç²"
             Me.txtDeclaration4Value.Top = 0.0!
             Me.txtDeclaration4Value.Width = 0.75!
             '
@@ -51,7 +51,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDocumentExplainedBy.Height = 0.1875!
             Me.txtDocumentExplainedBy.Left = 0.75!
             Me.txtDocumentExplainedBy.Name = "txtDocumentExplainedBy"
-            Me.txtDocumentExplainedBy.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 136"
+            Me.txtDocumentExplainedBy.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 136"
             Me.txtDocumentExplainedBy.Text = Nothing
             Me.txtDocumentExplainedBy.Top = 0.0!
             Me.txtDocumentExplainedBy.Width = 1.22!
@@ -61,8 +61,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox3.Height = 0.1875!
             Me.TextBox3.Left = 2.0!
             Me.TextBox3.Name = "TextBox3"
-            Me.TextBox3.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 136"
-            Me.TextBox3.Text = "§iª¾¨Ã¸ÑÄÀ¬Ì­]¸ê§U­p¹º¤§¡u¦P·NÂà¥æ­Ó¤H¸ê®Æ¡v¤º©Ò¸üªº©Ó¿Õ¤ÎÁn©ú¡C"
+            Me.TextBox3.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.TextBox3.Text = "å‘ŠçŸ¥ä¸¦è§£é‡‹ç–«è‹—è³‡åŠ©è¨ˆåŠƒä¹‹ã€ŒåŒæ„è½‰äº¤å€‹äººè³‡æ–™ã€å…§æ‰€è¼‰çš„æ‰¿è«¾åŠè²æ˜ã€‚"
             Me.TextBox3.Top = 0.0!
             Me.TextBox3.Width = 5.375!
             '
@@ -71,8 +71,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox5.Height = 0.1875!
             Me.TextBox5.Left = 0.0!
             Me.TextBox5.Name = "TextBox5"
-            Me.TextBox5.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 136"
-            Me.TextBox5.Text = "¥»¤H©ú¥Õ©M¦P·N¸Óµ¥©Ó¿Õ¤ÎÁn©úªº¤º®e¡C"
+            Me.TextBox5.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.TextBox5.Text = "æœ¬äººæ˜ç™½å’ŒåŒæ„è©²ç­‰æ‰¿è«¾åŠè²æ˜çš„å…§å®¹ã€‚"
             Me.TextBox5.Top = 0.21875!
             Me.TextBox5.Width = 7.375!
             '

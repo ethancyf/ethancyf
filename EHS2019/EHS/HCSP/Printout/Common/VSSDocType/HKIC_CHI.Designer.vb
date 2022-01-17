@@ -49,8 +49,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox1.Height = 0.188!
             Me.TextBox1.Left = 0.079!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.TextBox1.Text = "¨­¥÷ÃÒ©ú¤å¥ó¡G"
+            Me.TextBox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.TextBox1.Text = "èº«ä»½è­‰æ˜Žæ–‡ä»¶ï¼š"
             Me.TextBox1.Top = 0.0!
             Me.TextBox1.Width = 1.627449!
             '
@@ -60,7 +60,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.txtHKICNo.Height = 0.1875!
             Me.txtHKICNo.Left = 1.728213!
             Me.txtHKICNo.Name = "txtHKICNo"
-            Me.txtHKICNo.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 0"
+            Me.txtHKICNo.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 0"
             Me.txtHKICNo.Text = Nothing
             Me.txtHKICNo.Top = 0.2811024!
             Me.txtHKICNo.Width = 1.002787!
@@ -71,7 +71,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.txtDateOfIssue.Height = 0.1875!
             Me.txtDateOfIssue.Left = 4.931001!
             Me.txtDateOfIssue.Name = "txtDateOfIssue"
-            Me.txtDateOfIssue.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 0"
+            Me.txtDateOfIssue.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 0"
             Me.txtDateOfIssue.Text = Nothing
             Me.txtDateOfIssue.Top = 0.281!
             Me.txtDateOfIssue.Width = 1.053!
@@ -81,8 +81,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox2.Height = 0.1875!
             Me.TextBox2.Left = 0.079!
             Me.TextBox2.Name = "TextBox2"
-            Me.TextBox2.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.TextBox2.Text = "­»´ä¨­¥÷ÃÒ¸¹½X¡G"
+            Me.TextBox2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.TextBox2.Text = "é¦™æ¸¯èº«ä»½è­‰è™Ÿç¢¼ï¼š"
             Me.TextBox2.Top = 0.2811024!
             Me.TextBox2.Width = 1.627449!
             '
@@ -91,8 +91,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.txtDOIText.Height = 0.1875!
             Me.txtDOIText.Left = 4.003!
             Me.txtDOIText.Name = "txtDOIText"
-            Me.txtDOIText.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.txtDOIText.Text = "Ã±µo¤é´Á¡G"
+            Me.txtDOIText.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.txtDOIText.Text = "ç°½ç™¼æ—¥æœŸï¼š"
             Me.txtDOIText.Top = 0.281!
             Me.txtDOIText.Width = 0.9180007!
             '
@@ -102,10 +102,10 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox6.Height = 0.1875!
             Me.TextBox6.Left = 1.728213!
             Me.TextBox6.Name = "TextBox6"
-            Me.TextBox6.Style = "color: Black; font-family: HA_MingLiu; font-size: 12pt; text-decoration: underlin" & _
+            Me.TextBox6.Style = "color: Black; font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-decoration: underlin" & _
         "e; ddo-char-set: 0"
             Me.TextBox6.SummaryGroup = ""
-            Me.TextBox6.Text = "­»´ä¨­¥÷ÃÒ"
+            Me.TextBox6.Text = "é¦™æ¸¯èº«ä»½è­‰"
             Me.TextBox6.Top = 0.0!
             Me.TextBox6.Width = 0.9007877!
             '
@@ -114,8 +114,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.txtHKICSymbolText.Height = 0.1875!
             Me.txtHKICSymbolText.Left = 2.731001!
             Me.txtHKICSymbolText.Name = "txtHKICSymbolText"
-            Me.txtHKICSymbolText.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.txtHKICSymbolText.Text = "²Å¸¹¼Ð°O¡G"
+            Me.txtHKICSymbolText.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.txtHKICSymbolText.Text = "ç¬¦è™Ÿæ¨™è¨˜ï¼š"
             Me.txtHKICSymbolText.Top = 0.281!
             Me.txtHKICSymbolText.Width = 0.8759994!
             '
@@ -125,7 +125,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.txtHKICSymbol.Height = 0.1875!
             Me.txtHKICSymbol.Left = 3.607!
             Me.txtHKICSymbol.Name = "txtHKICSymbol"
-            Me.txtHKICSymbol.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 0"
+            Me.txtHKICSymbol.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 0"
             Me.txtHKICSymbol.Text = Nothing
             Me.txtHKICSymbol.Top = 0.281!
             Me.txtHKICSymbol.Width = 0.385!

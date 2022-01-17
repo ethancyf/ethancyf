@@ -561,7 +561,8 @@ Partial Public Class eHSAccountEnquiryCallCentre
 
                 For Each udtDocType As DocTypeModel In udtDocTypeModelList
                     ' Load Items from Scheme
-                    Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(udtSchemeClaim.SchemeCode)
+                    Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(udtSchemeClaim.SchemeCode, _
+                                                                                                                               SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
                     If udtSchemeDocTypeList.FilterDocCode(udtDocType.DocCode).Count = 0 Then Continue For
                     If Not udtDocTypeModelListFilter.Contains(udtDocType) Then udtDocTypeModelListFilter.Add(udtDocType)
                 Next

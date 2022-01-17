@@ -2750,6 +2750,15 @@ Partial Public Class VaccinationFileRectification
     Protected WithEvents lblRectifyChiName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblRectifyInvalidCharacter control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyInvalidCharacter As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblRectifyContactNoText control.
     '''</summary>
     '''<remarks>

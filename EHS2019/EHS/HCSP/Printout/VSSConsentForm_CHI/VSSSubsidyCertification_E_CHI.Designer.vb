@@ -54,7 +54,7 @@
             Me.textbox1.Height = 0.188!
             Me.textbox1.Left = 0.171!
             Me.textbox1.Name = "textbox1"
-            Me.textbox1.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: left; t" & _
+            Me.textbox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: left; t" & _
         "ext-justify: distribute; vertical-align: top; ddo-char-set: 1; ddo-font-vertical" & _
         ": none"
             Me.textbox1.Text = "登記參與計劃的主診醫生確認長者有"
@@ -66,7 +66,7 @@
             Me.textbox2.Height = 0.1875!
             Me.textbox2.Left = 2.855!
             Me.textbox2.Name = "textbox2"
-            Me.textbox2.Style = "font-family: HA_MingLiu; font-size: 12pt; text-decoration: underline; ddo-char-se" & _
+            Me.textbox2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-decoration: underline; ddo-char-se" & _
         "t: 0"
             Me.textbox2.Text = "高風險情況"
             Me.textbox2.Top = 0.0!
@@ -77,7 +77,7 @@
             Me.TextBox3.Height = 0.188!
             Me.TextBox3.Left = 4.506!
             Me.TextBox3.Name = "TextBox3"
-            Me.TextBox3.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: center;" & _
+            Me.TextBox3.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: center;" & _
         " text-justify: distribute; vertical-align: top; ddo-char-set: 1; ddo-font-vertic" & _
         "al: none"
             Me.TextBox3.Text = "(登記參與計劃的主診醫生簽署)"

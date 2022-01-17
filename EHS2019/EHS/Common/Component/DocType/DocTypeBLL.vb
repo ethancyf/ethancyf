@@ -32,6 +32,8 @@ Namespace Component.DocType
 
             Public Const Available_HCSP_SubPlatform As String = "Available_HCSP_SubPlatform"
 
+            Public Const Claim_Type As String = "Claim_Type"
+
         End Class
 
         Public Class tableSchemeDocType
@@ -53,7 +55,7 @@ Namespace Component.DocType
         End Function
 
         ''' <summary>
-        ''' Retrieve available document type [SchemeDocType] by Scheme(Claim)
+        ''' Retrieve available document type [SchemeDocType] by Scheme_Code
         ''' </summary>
         ''' <param name="strSchemeCode"></param>
         ''' <returns></returns>
@@ -63,9 +65,38 @@ Namespace Component.DocType
             Return udtSchemeDocTypeModelCollection.Filter(strSchemeCode)
         End Function
 
+        ''' <summary>
+        ''' Retrieve available document type [SchemeDocType] by DocType
+        ''' </summary>
+        ''' <param name="strDocType"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
         Public Function getSchemeDocTypeByDocType(ByVal strDocType As String) As SchemeDocTypeModelCollection
             Dim udtSchemeDocTypeModelCollection As SchemeDocTypeModelCollection = Me.getAllSchemeDocTypeCache()
             Return udtSchemeDocTypeModelCollection.FilterDocCode(strDocType)
+        End Function
+
+        ''' <summary>
+        ''' Retrieve available document type [SchemeDocType] by Scheme_Code, Claim_Type
+        ''' </summary>
+        ''' <param name="strSchemeCode"></param>
+        ''' <param name="enumClaimType"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getSchemeDocTypeBySchemeClaimType(ByVal strSchemeCode As String, ByVal enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass) As SchemeDocTypeModelCollection
+            Dim udtSchemeDocTypeModelCollection As SchemeDocTypeModelCollection = Me.getAllSchemeDocTypeCache()
+            Return udtSchemeDocTypeModelCollection.FilterBySchemeCodeClaimType(strSchemeCode, enumClaimType)
+        End Function
+
+        ''' <summary>
+        ''' Retrieve available document type [SchemeDocType] by Claim_Type
+        ''' </summary>
+        ''' <param name="enumClaimType"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getSchemeDocTypeByClaimType(ByVal enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass) As SchemeDocTypeModelCollection
+            Dim udtSchemeDocTypeModelCollection As SchemeDocTypeModelCollection = Me.getAllSchemeDocTypeCache()
+            Return udtSchemeDocTypeModelCollection.FilterByClaimType(enumClaimType)
         End Function
 
         Public Function getDocTypeByAvailable(ByVal eAvailable As EnumAvailable) As DocTypeModelCollection
@@ -117,6 +148,36 @@ Namespace Component.DocType
 
         End Function
 
+        ' CRE20-023-68 (Remove HA MingLiu) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
+        Public Shared Function IsChineseNameAvailable(ByVal strDocCode As String) As Boolean
+
+            Dim blnResult As Boolean = False
+
+            Select Case strDocCode.Trim
+                Case DocType.DocTypeModel.DocTypeCode.HKIC, _
+                    DocType.DocTypeModel.DocTypeCode.ROP140, _
+                    DocType.DocTypeModel.DocTypeCode.ADOPC, _
+                    DocType.DocTypeModel.DocTypeCode.DI, _
+                    DocType.DocTypeModel.DocTypeCode.EC, _
+                    DocType.DocTypeModel.DocTypeCode.HKBC, _
+                    DocType.DocTypeModel.DocTypeCode.ID235B, _
+                    DocType.DocTypeModel.DocTypeCode.REPMT, _
+                    DocType.DocTypeModel.DocTypeCode.RFNo8, _
+                    DocType.DocTypeModel.DocTypeCode.VISA
+
+                    blnResult = True
+
+                Case Else
+                    blnResult = False
+
+            End Select
+
+            Return blnResult
+
+        End Function
+        ' CRE20-023-68 (Remove HA MingLiu) [End][Winnie SUEN]
+
 #End Region
 
 #Region "Cache Function"
@@ -151,12 +212,16 @@ Namespace Component.DocType
                             Dim intAgeUpperLimit As Nullable(Of Integer) = Nothing
                             Dim strAgeUpperLimitUnit As String = String.Empty
                             Dim strAgeCalMethod As String = String.Empty
+                            Dim intDisplaySeq As Nullable(Of Integer) = Nothing
+                            Dim strClaimType As String = String.Empty
 
                             If Not dr.IsNull(tableDocType.Age_LowerLimit) Then intAgeLowerLimit = CInt(dr(tableDocType.Age_LowerLimit))
                             If Not dr.IsNull(tableDocType.Age_LowerLimitUnit) Then strAgeLowerLimitUnit = CStr(dr(tableDocType.Age_LowerLimitUnit)).Trim()
                             If Not dr.IsNull(tableDocType.Age_UpperLimit) Then intAgeUpperLimit = CInt(dr(tableDocType.Age_UpperLimit))
                             If Not dr.IsNull(tableDocType.Age_UpperLimitUnit) Then strAgeUpperLimitUnit = CStr(dr(tableDocType.Age_UpperLimitUnit)).Trim()
                             If Not dr.IsNull(tableDocType.Age_CalMethod) Then strAgeCalMethod = CStr(dr(tableDocType.Age_CalMethod)).Trim()
+                            If Not dr.IsNull(tableDocType.Display_Seq) Then intDisplaySeq = CInt(dr(tableDocType.Display_Seq))
+                            If Not dr.IsNull(tableDocType.Claim_Type) Then strClaimType = CStr(dr(tableDocType.Claim_Type)).Trim()
 
                             udtSchemeDocTypeModel = New SchemeDocTypeModel( _
                                 CStr(dr.Item(tableSchemeDocType.Scheme_Code)).Trim(), _
@@ -166,7 +231,9 @@ Namespace Component.DocType
                                 strAgeLowerLimitUnit, _
                                 intAgeUpperLimit, _
                                 strAgeUpperLimitUnit, _
-                                strAgeCalMethod)
+                                strAgeCalMethod,
+                                intDisplaySeq,
+                                strClaimType)
 
                             udtSchemeDocTypeModelCollection.Add(udtSchemeDocTypeModel)
                         Next

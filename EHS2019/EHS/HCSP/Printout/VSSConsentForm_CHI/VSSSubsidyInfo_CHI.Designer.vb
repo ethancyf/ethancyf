@@ -50,7 +50,7 @@
             Me.txtSubsidizeItemTemplate.Height = 0.188!
             Me.txtSubsidizeItemTemplate.Left = 0.171!
             Me.txtSubsidizeItemTemplate.Name = "txtSubsidizeItemTemplate"
-            Me.txtSubsidizeItemTemplate.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: left; t" & _
+            Me.txtSubsidizeItemTemplate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: left; t" & _
         "ext-justify: distribute; vertical-align: top; ddo-char-set: 1; ddo-font-vertical" & _
         ": none"
             Me.txtSubsidizeItemTemplate.Text = "" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
@@ -62,7 +62,7 @@
             Me.txtSubsidyInformation.Height = 0.1875!
             Me.txtSubsidyInformation.Left = 0.156!
             Me.txtSubsidyInformation.Name = "txtSubsidyInformation"
-            Me.txtSubsidyInformation.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 1"
+            Me.txtSubsidyInformation.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 1"
             Me.txtSubsidyInformation.Text = Nothing
             Me.txtSubsidyInformation.Top = 0.188!
             Me.txtSubsidyInformation.Visible = False

@@ -8,17 +8,17 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023-68 (Add Chinese Name)
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Dec 2021
+-- Description:		Change [Name_CH] nvarchar(6) -> nvarchar(12)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
 -- Description:		Fine tune Performance (Open Key with Dynamic SQL)
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.			
--- Description:		
 -- =============================================
 -- =============================================
 -- Modification History
@@ -31,7 +31,7 @@ GO
 CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_upd_ChiName_Excel]
 	@Student_File_ID		VARCHAR(15),
 	@Student_Seq			INT,
-	@Name_CH_Excel			NVARCHAR(6)
+	@Name_CH_Excel			NVARCHAR(12)
 AS BEGIN
 
 	SET NOCOUNT ON;

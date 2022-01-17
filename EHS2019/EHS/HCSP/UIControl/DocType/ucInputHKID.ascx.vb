@@ -317,7 +317,7 @@ Partial Public Class ucInputHKID
     Public Sub SetCName()
         Dim udtVAMaintBLL As BLL.VoucherAccountMaintenanceBLL = New BLL.VoucherAccountMaintenanceBLL()
         Dim strDBCName As String = String.Empty
-
+        Dim udtCCCodeBLL As CCCode.CCCodeBLL = New CCCode.CCCodeBLL
 
         If Not Me._strCCCode1 Is Nothing Then
             If Me._strCCCode1.Length > 4 Then
@@ -326,7 +326,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode1.Text = Me._strCCCode1
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode1)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode1)
         Else
             Me.txtCCCode1.Text = String.Empty
         End If
@@ -338,7 +338,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode2.Text = Me._strCCCode2
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode2)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode2)
         Else
             Me.txtCCCode2.Text = String.Empty
         End If
@@ -350,7 +350,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode3.Text = Me._strCCCode3
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode3)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode3)
         Else
             Me.txtCCCode3.Text = String.Empty
         End If
@@ -362,7 +362,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode4.Text = Me._strCCCode4
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode4)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode4)
         Else
             Me.txtCCCode4.Text = String.Empty
         End If
@@ -374,7 +374,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode5.Text = Me._strCCCode5
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode5)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode5)
         Else
             Me.txtCCCode5.Text = String.Empty
         End If
@@ -387,7 +387,7 @@ Partial Public Class ucInputHKID
             End If
 
             'strDBCName += udtVAMaintBLL.getChiChar(Me._strCCCode6.Substring(0, 4), Me._strCCCode6.Substring(4, 1))
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode6)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode6)
         Else
             Me.txtCCCode6.Text = String.Empty
         End If
@@ -479,9 +479,8 @@ Partial Public Class ucInputHKID
     End Sub
 
     Public Sub SetCNameModification()
-        Dim udtVAMaintBLL As BLL.VoucherAccountMaintenanceBLL = New BLL.VoucherAccountMaintenanceBLL()
         Dim strDBCName As String = String.Empty
-
+        Dim udtCCCodeBLL As CCCode.CCCodeBLL = New CCCode.CCCodeBLL
 
         If Not Me._strCCCode1 Is Nothing Then
             If Me._strCCCode1.Length > 4 Then
@@ -490,7 +489,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode1Modification.Text = Me._strCCCode1
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode1)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode1)
         Else
             Me.txtCCCode1Modification.Text = String.Empty
         End If
@@ -503,7 +502,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode2Modification.Text = Me._strCCCode2
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode2)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode2)
         Else
             Me.txtCCCode2Modification.Text = String.Empty
         End If
@@ -515,7 +514,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode3Modification.Text = Me._strCCCode3
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode3)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode3)
         Else
             Me.txtCCCode3Modification.Text = String.Empty
         End If
@@ -527,7 +526,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode4Modification.Text = Me._strCCCode4
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode4)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode4)
         Else
             Me.txtCCCode4Modification.Text = String.Empty
         End If
@@ -539,7 +538,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode5Modification.Text = Me._strCCCode5
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode5)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode5)
         Else
             Me.txtCCCode5Modification.Text = String.Empty
         End If
@@ -551,7 +550,7 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode6Modification.Text = Me._strCCCode6
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode6)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode6)
         Else
             Me.txtCCCode6Modification.Text = String.Empty
         End If

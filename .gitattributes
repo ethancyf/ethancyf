@@ -4887,6 +4887,9 @@ EHS2019/EHS/HCVU/UIControl/DocType/ucInputOW.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputPASS.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputPASS.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputPASS.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputRFNo8.ascx -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputRFNo8.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputRFNo8.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputROP140.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputROP140.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputROP140.ascx.vb -text
@@ -4944,6 +4947,9 @@ EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyPASS.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyREPMT.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyREPMT.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyREPMT.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyRFNo8.ascx -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyRFNo8.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyRFNo8.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyROP140.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyROP140.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyROP140.ascx.vb -text
@@ -6157,7 +6163,9 @@ EHS2019/EHS/StaticPage/Common/Common/Images/others/Always[!!-~]Allow[!!-~]Pop-up
 EHS2019/EHS/StaticPage/Common/Common/Images/others/DI_Sample.jpg -text
 EHS2019/EHS/StaticPage/Common/Common/Images/others/HA_MINGLIU_Sample.png -text
 EHS2019/EHS/StaticPage/Common/Common/Images/others/HKBC_Sample.jpg -text
+EHS2019/EHS/StaticPage/Common/Common/Images/others/HKBC_Sample.png -text
 EHS2019/EHS/StaticPage/Common/Common/Images/others/HKBC_Sample_cn.jpg -text
+EHS2019/EHS/StaticPage/Common/Common/Images/others/HKBC_Sample_cn.png -text
 EHS2019/EHS/StaticPage/Common/Common/Images/others/HKID_Sample.jpg -text
 EHS2019/EHS/StaticPage/Common/Common/Images/others/HKID_Sample_cn.jpg -text
 EHS2019/EHS/StaticPage/Common/Common/Images/others/New_HKID_Sample.png -text
@@ -8768,6 +8776,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_BankIn_get_byKey.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_BankIn_get_byStartCutoffDate.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_BankIn_get_forStatmentList.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_BankIn_update.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_CCCodeChineseMapping_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CMS_AuditLog_GetVaccinationEnd_ByDtm.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CMS_AuditLog_Get_ByHourBefore.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CMS_AuditLog_Get_Summary.sql -text

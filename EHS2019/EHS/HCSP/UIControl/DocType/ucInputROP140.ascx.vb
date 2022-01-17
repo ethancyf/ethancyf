@@ -236,8 +236,8 @@ Public Class ucInputROP140
     End Sub
 
     Public Sub SetCName()
-        Dim udtVAMaintBLL As BLL.VoucherAccountMaintenanceBLL = New BLL.VoucherAccountMaintenanceBLL()
         Dim strDBCName As String = String.Empty
+        Dim udtCCCodeBLL As CCCode.CCCodeBLL = New CCCode.CCCodeBLL
 
         If Not Me._strCCCode1 Is Nothing Then
             If Me._strCCCode1.Length > 4 Then
@@ -246,7 +246,7 @@ Public Class ucInputROP140
                 Me.txtCCCode1.Text = Me._strCCCode1
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode1)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode1)
         Else
             Me.txtCCCode1.Text = String.Empty
         End If
@@ -258,7 +258,7 @@ Public Class ucInputROP140
                 Me.txtCCCode2.Text = Me._strCCCode2
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode2)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode2)
         Else
             Me.txtCCCode2.Text = String.Empty
         End If
@@ -270,7 +270,7 @@ Public Class ucInputROP140
                 Me.txtCCCode3.Text = Me._strCCCode3
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode3)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode3)
         Else
             Me.txtCCCode3.Text = String.Empty
         End If
@@ -282,7 +282,7 @@ Public Class ucInputROP140
                 Me.txtCCCode4.Text = Me._strCCCode4
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode4)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode4)
         Else
             Me.txtCCCode4.Text = String.Empty
         End If
@@ -294,7 +294,7 @@ Public Class ucInputROP140
                 Me.txtCCCode5.Text = Me._strCCCode5
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode5)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode5)
         Else
             Me.txtCCCode5.Text = String.Empty
         End If
@@ -306,7 +306,7 @@ Public Class ucInputROP140
                 Me.txtCCCode6.Text = Me._strCCCode6
             End If
 
-            strDBCName += udtVAMaintBLL.getCCCodeBig5(Me._strCCCode6)
+            strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode6)
         Else
             Me.txtCCCode6.Text = String.Empty
         End If

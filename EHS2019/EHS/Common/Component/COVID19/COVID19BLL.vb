@@ -925,7 +925,11 @@ Namespace Component.COVID19
             If strSearchDocCode IsNot Nothing Then
                 Select Case strSearchDocCode.Trim
                     Case DocType.DocTypeModel.DocTypeCode.HKIC, _
+                         DocType.DocTypeModel.DocTypeCode.HKBC, _
                          DocType.DocTypeModel.DocTypeCode.EC, _
+                         DocType.DocTypeModel.DocTypeCode.DI, _
+                         DocType.DocTypeModel.DocTypeCode.REPMT, _
+                         DocType.DocTypeModel.DocTypeCode.ADOPC, _
                          DocType.DocTypeModel.DocTypeCode.OW, _
                          DocType.DocTypeModel.DocTypeCode.CCIC, _
                          DocType.DocTypeModel.DocTypeCode.TW, _
@@ -963,7 +967,11 @@ Namespace Component.COVID19
             If strSearchDocCode IsNot Nothing Then
                 Select Case strSearchDocCode.Trim
                     Case DocType.DocTypeModel.DocTypeCode.HKIC, _
+                         DocType.DocTypeModel.DocTypeCode.HKBC, _
                          DocType.DocTypeModel.DocTypeCode.EC, _
+                         DocType.DocTypeModel.DocTypeCode.DI, _
+                         DocType.DocTypeModel.DocTypeCode.REPMT, _
+                         DocType.DocTypeModel.DocTypeCode.ADOPC, _
                          DocType.DocTypeModel.DocTypeCode.OW, _
                          DocType.DocTypeModel.DocTypeCode.CCIC, _
                          DocType.DocTypeModel.DocTypeCode.TW, _
@@ -986,7 +994,13 @@ Namespace Component.COVID19
         End Function
 
         Public Function DisplaySpecificDocTypeByCentreID(ByVal strSPID As String, ByVal intPracticeID As Integer) As Boolean
-            Dim dtVC As DataTable = Me.GetCOVID19VaccineCentreBySPIDPracticeDisplaySeq(strSPID, intPracticeID)
+            Dim dtVC As DataTable = Nothing
+
+            Try
+                dtVC = Me.GetCOVID19VaccineCentreBySPIDPracticeDisplaySeq(strSPID, intPracticeID)
+            Catch ex As Exception
+
+            End Try
 
             Dim strCentreIDList As String = (New GeneralFunction).GetSystemParameterParmValue1("AllowToUseSpecificDocTypeByCentreID")
             Dim strCentreID() As String = Split(strCentreIDList, "|")
@@ -1018,28 +1032,36 @@ Namespace Component.COVID19
             Dim udtDocTypeModelList As DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
             Dim udtDocTypeModelListFilter As New DocTypeModelCollection
 
-            ' Display doc type for COVID19 scheme
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.HKIC))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.EC))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.CCIC))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.ROP140))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MEP))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWMTP))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWVTD))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWNS))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MD))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MP))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.OW))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TW))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.PASS))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TD))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.CEEP))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.ET))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.RFNo8))
-            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.DS))
+            '' Display doc type for COVID19 scheme
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.HKIC))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.EC))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.CCIC))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.ROP140))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MEP))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWMTP))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWVTD))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWNS))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MD))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MP))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.OW))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TW))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.PASS))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TD))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.CEEP))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.ET))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.RFNo8))
+            'udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.DS))
 
-            udtDocTypeModelListFilter.SortByDisplaySeq()
+            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByClaimType(SchemeDocTypeModel.ClaimTypeEnumClass.COVID19)
+
+            For Each udtSchemeDocType As SchemeDocTypeModel In udtSchemeDocTypeList
+                udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(udtSchemeDocType.DocCode))
+            Next
+
+            udtDocTypeModelListFilter = udtDocTypeModelListFilter.SortByDisplaySeq()
+
             Return udtDocTypeModelListFilter
+
         End Function
         'CRE20-023-54 COVID19OR support DS [End][Martin]
 #End Region

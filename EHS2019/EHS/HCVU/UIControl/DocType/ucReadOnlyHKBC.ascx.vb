@@ -51,6 +51,7 @@ Partial Public Class ucReadOnlyHKBC
 
             ' Name
             lblVEName.Text = udtFormatter.formatEnglishName(udtEHSPersonalInformation.ENameSurName, udtEHSPersonalInformation.ENameFirstName)
+            lblVCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
 
             ' Gender
             Select Case udtEHSPersonalInformation.Gender.Trim
@@ -112,6 +113,7 @@ Partial Public Class ucReadOnlyHKBC
 
             ' Name
             lblHEName.Text = udtFormatter.formatEnglishName(udtEHSPersonalInformation.ENameSurName, udtEHSPersonalInformation.ENameFirstName)
+            lblHCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
 
             ' DOB
             lblHDOB.Text = String.Empty

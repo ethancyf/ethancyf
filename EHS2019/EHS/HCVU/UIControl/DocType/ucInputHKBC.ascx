@@ -75,11 +75,12 @@
                         </td>
                     </tr>
                     <tr>
-                        <td valign="top" style="height: 25px">
-                            <asp:Label ID="lblNameOriginalText" runat="server"></asp:Label></td>
-                        <td valign="top" style="width: 350px; word-wrap: break-word; word-break:break-all;">
+                        <td style="height: 25px;vertical-align:top">
+                            <asp:Label ID="lblNameOriginalText" runat="server" />
+                        </td>
+                        <td style="width: 350px;vertical-align:top; word-wrap: break-word; word-break:break-all;">
                             <asp:Label ID="lblNameOriginal" runat="server" CssClass="tableText"></asp:Label></td>
-                        <td valign="top" style="padding-bottom: 5px; width: 350px;">
+                        <td style="padding-bottom: 5px; width: 350px;vertical-align:top">
                             <table border="0" cellpadding="0" cellspacing="0" style="height: 1px">
                                 <tr>
                                     <td>
@@ -91,8 +92,20 @@
                                 </tr>
                             </table>
                         </td>
-                        <td style="padding-bottom: 5px;" valign="top">
+                        <td style="padding-bottom: 5px;vertical-align:top" valign="top">
                             <asp:Label ID="txtENameTips" runat="server" CssClass="tableTitle"></asp:Label></td>
+                    </tr>
+                    <tr>
+                        <td style="height: 25px;vertical-align:top">
+                            <asp:label ID="lblCNameOriginalText" runat="server"/>
+                        </td>
+                        <td style="width: 350px;vertical-align:top; word-wrap: break-word; word-break:break-all;">
+                            <asp:Label ID="lblCNameOriginal" runat="server" CssClass="tableText" />
+                        </td>
+                        <td style="padding-bottom: 5px; width: 350px;vertical-align:top">
+                            <asp:TextBox ID="txtCName" runat="server" MaxLength="12" CssClass="TextBoxChineseName" onChange="convertToUpper(this);" Width="150px" />
+                            <asp:Image ID="imgCNameError" runat="server" ImageAlign="Top" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
+                        </td>
                     </tr>
                     <tr>
                         <td valign="top" style="height: 35px">
@@ -166,7 +179,8 @@
                                     onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
                                     onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
                             <asp:Image ID="imgNewDOBInWordErr" runat="server" ImageAlign="AbsMiddle" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
-                                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"></asp:Image></td>
+                                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"></asp:Image>
+                        </td>
                     </tr>
                 </table>
             </td>
@@ -200,6 +214,15 @@
                         </td>
                     </tr>
                 </table>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 220px; height: 25px">
+                <asp:Label ID="lblNewCNameText" runat="server" Text="<%$ Resources:Text, Name %>" Height="25px" />
+            </td>
+            <td style="width: 470px;">
+                <asp:TextBox ID="txtNewCName" runat="server" MaxLength="12" CssClass="TextBoxChineseName" onChange="convertToUpper(this);" Width="150px" />
+                <asp:Image ID="imgNewCNameErr" runat="server" ImageAlign="Top" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
             </td>
         </tr>
         <tr>

@@ -551,7 +551,7 @@
                             <br />
                             <cc2:MessageBox ID="udcAcctEditErrorMessage" runat="server" Width="800px" />
                             <cc2:InfoMessageBox ID="udcAcctEditInfoMessage" runat="server" Width="800px" />
-                            <asp:Panel ID="pnlAcctEditInfo" runat="server" ScrollBars="vertical" Height="780px">
+                            <asp:Panel ID="pnlAcctEditInfo" runat="server" ScrollBars="auto" style="max-height:780px;">
                             <table cellpadding="0" cellspacing="0" style="width: 800px">                                        
                                 <tr>
                                     <td>
@@ -583,7 +583,9 @@
                                                     <span style="font-size:16px">)</span>
                                                 </td>
                                                 <td valign="top">
-                                                    <asp:Label ID="lblChiName" runat="server" CssClass="tableText" />
+                                                    <asp:Label ID="lblChiName" runat="server" CssClass="tableText TextChineseName" />
+                                                    &nbsp;
+                                                    <asp:Label ID="lblInvalidCharacter" runat="server" CssClass="tableText" style="color:red" Text="<%$ Resources:Text, InvalidCharacter %>" />
                                                 </td>
                                             </tr>
                                             <tr>
@@ -1005,7 +1007,7 @@
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblClassSummaryNameEN" runat="server" Text='<%# Eval("Name_EN")%>' />
                                                             <br />
-                                                            <asp:Label ID="lblClassSummaryNameCH" runat="server" Text='<%# Eval("Name_CH")%>' Font-Names="HA_MingLiu" />
+                                                            <asp:Label ID="lblClassSummaryNameCH" runat="server" Text='<%# Eval("Name_CH")%>' CssClass="TextChineseName" />
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources: Text, Sex %>" SortExpression="Sex" ItemStyle-Width="30">
@@ -1183,7 +1185,7 @@
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblPreCheckNameEN" runat="server" Text='<%# Eval("Name_EN")%>' />
                                                             <br />
-                                                            <asp:Label ID="lblPreCheckNameCH" runat="server" Text='<%# Eval("Name_CH")%>' Font-Names="HA_MingLiu" />
+                                                            <asp:Label ID="lblPreCheckNameCH" runat="server" Text='<%# Eval("Name_CH")%>' CssClass="TextChineseName" />
                                                         </ItemTemplate>
                                                         <ItemStyle BackColor="White" />
                                                     </asp:TemplateField>

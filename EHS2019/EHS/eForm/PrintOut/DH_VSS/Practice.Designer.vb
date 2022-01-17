@@ -119,7 +119,7 @@ Namespace PrintOut.DH_VSS
             Me.txtPracticeChiName.HyperLink = Nothing
             Me.txtPracticeChiName.Left = 2.0!
             Me.txtPracticeChiName.Name = "txtPracticeChiName"
-            Me.txtPracticeChiName.Style = "font-family: HA_MingLiu; font-size: 9.75pt; font-weight: normal; text-align: left" & _
+            Me.txtPracticeChiName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; font-weight: normal; text-align: left" & _
         "; text-decoration: none; vertical-align: top; ddo-char-set: 0"
             Me.txtPracticeChiName.Text = Nothing
             Me.txtPracticeChiName.Top = 0.7380001!
@@ -241,7 +241,7 @@ Namespace PrintOut.DH_VSS
             Me.txtPracticeChiAddress.Height = 0.1875!
             Me.txtPracticeChiAddress.Left = 2.0!
             Me.txtPracticeChiAddress.Name = "txtPracticeChiAddress"
-            Me.txtPracticeChiAddress.Style = "font-family: HA_MingLiu; font-size: 9.75pt; vertical-align: top; ddo-char-set: 13" & _
+            Me.txtPracticeChiAddress.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; vertical-align: top; ddo-char-set: 13" & _
         "6"
             Me.txtPracticeChiAddress.Text = Nothing
             Me.txtPracticeChiAddress.Top = 1.261!

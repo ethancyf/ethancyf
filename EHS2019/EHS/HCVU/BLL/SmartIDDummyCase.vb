@@ -58,6 +58,22 @@ Public Class SmartIDDummyCase
         End Select
         ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
+        ' CRE20-023-68 (Remove HA MingLiu) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
+        udtPersInfo.CName = VoucherAccountBLL.GetCName(udtPersInfo)
+
+        If udtPersInfo.CName.Contains(" ") Then
+            ' CCCode not exist in mapping
+            udtPersInfo.CName = String.Empty
+            udtPersInfo.CCCode1 = String.Empty
+            udtPersInfo.CCCode2 = String.Empty
+            udtPersInfo.CCCode3 = String.Empty
+            udtPersInfo.CCCode4 = String.Empty
+            udtPersInfo.CCCode5 = String.Empty
+            udtPersInfo.CCCode6 = String.Empty
+        End If
+        ' CRE20-023-68 (Remove HA MingLiu) [End][Winnie SUEN]
+
         Dim udtEHSAccount As New EHSAccountModel()
 
         udtEHSAccount.SchemeCode = strScheme

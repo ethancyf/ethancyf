@@ -17,7 +17,14 @@ GO
 
 -- =============================================
 -- Modification History
--- CR No.:			CRE20-00XX (Immu record)
+-- CR No.:			CRE20-023-68 (Add Chinese Name)
+-- Modified by:		Winnie SUEN
+-- Modified date:	07 Dec 2021
+-- Description:		Decrypt [Encrypt_Field1_Uni] by "NVARCHAR" for new record
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (Immu record)
 -- Modified by:		Martin Tang
 -- Modified date:	31 Dec 2020
 -- Description:		 Assign file ID and get Records from COVID19ExporterQueue
@@ -36,6 +43,7 @@ AS
         FROM SystemParameters
         WHERE Parameter_Name = 'COVID19ExportFileBatchSize';
 
+
         EXEC [proc_SymmetricKey_open];
 
         UPDATE TOP (@intMaxRecods) COVID19ExporterQueue
@@ -53,8 +61,10 @@ AS
              ON ceq.Transaction_ID = cee.Transaction_ID
         WHERE ceq.Record_Status = @ProcessingStatus;
         ------------------------------------------------------------
-        SELECT LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(Encrypt_Field1)))), 
-               ceq.Transaction_ID
+        SELECT 
+			ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(Encrypt_Field1)),'') + 
+			ISNULL(CONVERT(NVARCHAR(MAX), DECRYPTBYKEY(Encrypt_Field1_Uni)),'') AS [Data], 
+			ceq.Transaction_ID
         FROM COVID19ExporterQueue AS ceq
         WHERE ceq.Record_File_ID = @ln_file_id
               AND ceq.Record_Status = @ProcessingStatus;

@@ -81,16 +81,6 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 SecondDoseInjectionDate.Text = FormatDisplayDate(_udtVaccinationRecord.SecondDose.InjectionDate)
                 ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
 
-            Else
-                ' w/o Second Dose + Discharged / Non-local Recovered
-                If _blnDischarge OrElse _
-                    (_udtVaccinationRecord.FirstDose IsNot Nothing AndAlso _udtVaccinationRecord.FirstDose.NonLocalRecoveredHistory) Then
-
-                    SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
-                    SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
-                                           Environment.NewLine & _
-                                           HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
-                End If
             End If
 
         End Sub

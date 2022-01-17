@@ -43,7 +43,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeAddress.Height = 0.25!
             Me.txtPracticeAddress.Left = 2.926!
             Me.txtPracticeAddress.Name = "txtPracticeAddress"
-            Me.txtPracticeAddress.Style = "font-family: HA_MingLiu; font-size: 12.75pt; font-weight: normal; text-decoration" & _
+            Me.txtPracticeAddress.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12.75pt; font-weight: normal; text-decoration" & _
         ": underline; text-justify: auto; ddo-char-set: 136"
             Me.txtPracticeAddress.Text = Nothing
             Me.txtPracticeAddress.Top = 0.271!
@@ -54,7 +54,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtIndex.Height = 0.5!
             Me.txtIndex.Left = 0.0!
             Me.txtIndex.Name = "txtIndex"
-            Me.txtIndex.Style = "font-family: ∑s≤”©˙≈È; font-size: 12.75pt; ddo-char-set: 136"
+            Me.txtIndex.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 12.75pt; ddo-char-set: 136"
             Me.txtIndex.Text = Nothing
             Me.txtIndex.Top = 0.0!
             Me.txtIndex.Width = 0.25!
@@ -64,8 +64,8 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPraticeNameAddressText.Height = 0.25!
             Me.txtPraticeNameAddressText.Left = 0.25!
             Me.txtPraticeNameAddressText.Name = "txtPraticeNameAddressText"
-            Me.txtPraticeNameAddressText.Style = "font-family: ∑s≤”©˙≈È; font-size: 12.75pt; font-weight: normal; ddo-char-set: 136"
-            Me.txtPraticeNameAddressText.Text = "∞ı∑~¶a¬I°]1°^¶W∫Ÿ§Œ¶aß}°G"
+            Me.txtPraticeNameAddressText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 12.75pt; font-weight: normal; ddo-char-set: 136"
+            Me.txtPraticeNameAddressText.Text = "Âü∑Ê•≠Âú∞ÈªûÔºà1ÔºâÂêçÁ®±ÂèäÂú∞ÂùÄÔºö"
             Me.txtPraticeNameAddressText.Top = 0.0!
             Me.txtPraticeNameAddressText.Width = 2.241!
             '
@@ -74,8 +74,8 @@ Namespace PrintOut.DH_VSS_CHI
             Me.TextBox2.Height = 0.5!
             Me.TextBox2.Left = 2.46875!
             Me.TextBox2.Name = "TextBox2"
-            Me.TextBox2.Style = "font-family: ∑s≤”©˙≈È; font-size: 8pt; ddo-char-set: 1"
-            Me.TextBox2.Text = "°]µ˘B°^"
+            Me.TextBox2.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 8pt; ddo-char-set: 1"
+            Me.TextBox2.Text = "ÔºàË®ªBÔºâ"
             Me.TextBox2.Top = 0.0!
             Me.TextBox2.Width = 0.434!
             '
@@ -84,7 +84,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeName.Height = 0.21875!
             Me.txtPracticeName.Left = 2.926!
             Me.txtPracticeName.Name = "txtPracticeName"
-            Me.txtPracticeName.Style = "font-family: HA_MingLiu; font-size: 12.75pt; font-weight: normal; text-decoration" & _
+            Me.txtPracticeName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12.75pt; font-weight: normal; text-decoration" & _
         ": underline; text-justify: auto; ddo-char-set: 136"
             Me.txtPracticeName.Text = Nothing
             Me.txtPracticeName.Top = 0.0!

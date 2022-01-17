@@ -1,4 +1,4 @@
-Imports GrapeCity.ActiveReports
+﻿Imports GrapeCity.ActiveReports
 Imports GrapeCity.ActiveReports.Document
 Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
@@ -51,13 +51,18 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             txtName.Text = patientInformation.EName
             txtNameChi.Text = patientInformation.CName
             txtHKID.Text = _udtFormatter.FormatDocIdentityNoForDisplay(patientInformation.DocCode.Trim(), patientInformation.IdentityNum, False, IIf(patientInformation.DocCode = "ADOPC", patientInformation.AdoptionPrefixNum, vbNull))
-            If patientInformation.DocCode = DocTypeModel.DocTypeCode.ROP140 Then
-                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocNameChi
-                txtDocType.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocName
-            Else
-                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
-                txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
-            End If
+
+            'Document
+            Select Case patientInformation.DocCode
+                Case DocTypeModel.DocTypeCode.ROP140
+                    txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocNameChi
+                    txtDocType.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocName
+
+                Case Else
+                    txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
+                    txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
+
+            End Select
 
             If txtDocTypeChi.Text = txtDocType.Text Then
                 txtDocTypeChi.Visible = False

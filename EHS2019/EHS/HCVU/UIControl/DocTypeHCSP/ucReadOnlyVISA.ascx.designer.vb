@@ -249,6 +249,15 @@ Namespace UIControl.DocTypeHCSP
         Protected WithEvents lblReadonlyEName As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
+        '''lblReadonlyCName control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblReadonlyCName As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
         '''cellReadonlyGenderText control.
         '''</summary>
         '''<remarks>
@@ -364,6 +373,15 @@ Namespace UIControl.DocTypeHCSP
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents lblReadonlyHorizontalEName As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblReadonlyHorizontalCName control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblReadonlyHorizontalCName As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
         '''cellReadonlyHorizontalDOBGenderText control.

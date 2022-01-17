@@ -227,7 +227,7 @@
                     <ItemTemplate>
                         <asp:Label ID="lblGNameEN" runat="server" Text='<%# Eval("Name_EN")%>' />
                         <br />
-                        <asp:Label ID="lblGNameCH" runat="server" Text='<%# Eval("Name_CH")%>' Font-Names="HA_MingLiu" />
+                        <asp:Label ID="lblGNameCH" runat="server" Text='<%# Eval("Name_CH")%>' CssClass="TextChineseName" />
                     </ItemTemplate>
                     <ItemStyle BackColor="White" />
                 </asp:TemplateField>
@@ -733,7 +733,7 @@
                     <ItemTemplate>
                         <asp:Label ID="lblMNameEN" runat="server" Text='<%# Eval("Name_EN")%>' />
                         <br />
-                        <asp:Label ID="lblMNameCH" runat="server" Text='<%# Eval("Name_CH")%>' Font-Names="HA_MingLiu" />
+                        <asp:Label ID="lblMNameCH" runat="server" Text='<%# Eval("Name_CH")%>' CssClass="TextChineseName" />
                     </ItemTemplate>
                     <ItemStyle BackColor="White" />
                 </asp:TemplateField>

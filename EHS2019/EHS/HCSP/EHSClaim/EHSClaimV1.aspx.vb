@@ -712,11 +712,7 @@ Partial Public Class EHSClaimV1
 
                 Try
                     If udtSmartIDContent.IsDemonVersion Then
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
                         udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(udtSchemeClaim, udtSmartIDContent.IdeasVersion)
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                        udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
 
                     Else
                         Dim udtCFD As IdeasRM.CardFaceData
@@ -2231,7 +2227,17 @@ Partial Public Class EHSClaimV1
 
             _udtSessionHandler.NonClinicSettingSaveToSession(panNonClinicSettingStep1.Visible, FunctCode)
 
-            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = (New DocTypeBLL).getSchemeDocTypeByScheme(ddlStep1Scheme.SelectedValue)
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = Nothing
+
+            If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                udtSchemeDocTypeList = (New DocTypeBLL).getSchemeDocTypeBySchemeClaimType(ddlStep1Scheme.SelectedValue, SchemeDocTypeModel.ClaimTypeEnumClass.COVID19)
+            Else
+                udtSchemeDocTypeList = (New DocTypeBLL).getSchemeDocTypeBySchemeClaimType(ddlStep1Scheme.SelectedValue, SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
+            End If
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
+
             blnRetainDocType = RetainDocType(udtSchemeDocTypeList, udcStep1DocumentTypeRadioButtonGroup.SelectedValue, False)
 
         End If
@@ -2263,7 +2269,15 @@ Partial Public Class EHSClaimV1
         ' Handle concurrent browser
         If Not EHSClaimTokenNumValidation() Then Return
 
-        udcSchemeDocTypeLegend.Build(_udtSessionHandler.Language, (New DocTypeBLL).getAllDocType())
+        Dim enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass
+
+        If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+            enumClaimType = SchemeDocTypeModel.ClaimTypeEnumClass.COVID19
+        Else
+            enumClaimType = SchemeDocTypeModel.ClaimTypeEnumClass.Normal
+        End If
+
+        udcSchemeDocTypeLegend.Build(_udtSessionHandler.Language, (New DocTypeBLL).getAllDocType(), enumClaimType)
 
         ModalPopupExtenderSchemeDocTypeLegend.Show()
 
@@ -2301,7 +2315,12 @@ Partial Public Class EHSClaimV1
         Dim strDocCode As String = udcStep1DocumentTypeRadioButtonGroup.SelectedValue
         Dim udtSchemeClaim As SchemeClaimModel = _udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
 
-        If Not IsNothing(udtSchemeClaim) AndAlso Not IsDocumentAcceptedForScheme(strDocCode, udtSchemeClaim.SchemeCode) Then
+        If Not IsNothing(udtSchemeClaim) AndAlso _
+            Not IsDocumentAcceptedForScheme(strDocCode, udtSchemeClaim.SchemeCode, _
+                                            IIf(Me.ClaimMode = Common.Component.ClaimMode.COVID19, _
+                                                SchemeDocTypeModel.ClaimTypeEnumClass.COVID19, _
+                                                SchemeDocTypeModel.ClaimTypeEnumClass.Normal)) Then
+
             udcStep1DocumentTypeRadioButtonGroup.SelectedValue = String.Empty
         End If
 
@@ -2457,7 +2476,11 @@ Partial Public Class EHSClaimV1
         Me.udcClaimSearch.SetProperty(strSearchDocCode)
 
         ' Check document is accepted for the current scheme
-        If Not IsDocumentAcceptedForScheme(strSearchDocCode, strSchemeCode) Then
+        If Not IsDocumentAcceptedForScheme(strSearchDocCode, strSchemeCode, _
+                                            IIf(Me.ClaimMode = Common.Component.ClaimMode.COVID19, _
+                                                SchemeDocTypeModel.ClaimTypeEnumClass.COVID19, _
+                                                SchemeDocTypeModel.ClaimTypeEnumClass.Normal)) Then
+
             udcMsgBoxErr.AddMessage(FunctCode, SeverityCode.SEVE, MsgCode.MSG00001)
             udcMsgBoxErr.BuildMessageBox(_strValidationFail, udtAuditLogEntry, LogID.LOG00005, "Search Account Failed", _
                 New AuditLogInfo(Nothing, Nothing, Nothing, Nothing, strSearchDocCode, (New Formatter).formatDocumentIdentityNumber(strSearchDocCode, SearchGetDocumentNo(strSearchDocCode))))
@@ -3301,8 +3324,11 @@ Partial Public Class EHSClaimV1
         Return isValid
     End Function
 
-    Private Function IsDocumentAcceptedForScheme(ByVal strDocCode As String, ByVal strSchemeCode As String) As Boolean
-        For Each udtSchemeDocType As SchemeDocTypeModel In (New DocTypeBLL).getSchemeDocTypeByScheme(strSchemeCode)
+    Private Function IsDocumentAcceptedForScheme(ByVal strDocCode As String, _
+                                                 ByVal strSchemeCode As String, _
+                                                 ByVal enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass) As Boolean
+
+        For Each udtSchemeDocType As SchemeDocTypeModel In (New DocTypeBLL).getSchemeDocTypeBySchemeClaimType(strSchemeCode, enumClaimType)
             If udtSchemeDocType.DocCode.Trim = strDocCode.Trim Then Return True
         Next
 
@@ -3443,6 +3469,8 @@ Partial Public Class EHSClaimV1
 
             udcStep1DocumentTypeRadioButtonGroup.HCSPSubPlatform = Me.SubPlatform
 
+            udcStep1DocumentTypeRadioButtonGroup.ClaimMode = Me.ClaimMode
+
             If Me.SubPlatform = EnumHCSPSubPlatform.CN Then
                 udcStep1DocumentTypeRadioButtonGroup.ShowLegend = False
             End If
@@ -3517,6 +3545,8 @@ Partial Public Class EHSClaimV1
 
             udcStep1DocumentTypeRadioButtonGroup.HCSPSubPlatform = Me.SubPlatform
 
+            udcStep1DocumentTypeRadioButtonGroup.ClaimMode = Me.ClaimMode
+
             If Me.SubPlatform = EnumHCSPSubPlatform.CN Then
                 udcStep1DocumentTypeRadioButtonGroup.ShowLegend = False
             End If
@@ -3533,12 +3563,18 @@ Partial Public Class EHSClaimV1
                 Else
                     ' Normal Claim
                     Select Case udtSelectedSchemeClaim.SchemeCode
-                        Case SchemeClaimModel.VSS, SchemeClaimModel.RVP
-                            If ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                                udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_COVID19)
-                            Else
-                                udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS)
-                            End If
+                        'Case SchemeClaimModel.VSS
+                        '    If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                        '        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_COVID19)
+                        '    Else
+                        '        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS)
+                        '    End If
+                        'Case SchemeClaimModel.RVP
+                        '    If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                        '        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.RVP_COVID19)
+                        '    Else
+                        '        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS)
+                        '    End If
                         Case SchemeClaimModel.COVID19OR
                             Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
@@ -9702,8 +9738,6 @@ Partial Public Class EHSClaimV1
                     (udtEligibleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtEligibleResult.HandleMethod = HandleMethodENum.Warning) Then
                     Dim intEligibleRuleCount As Integer = 1
 
-                    blnWarning = True
-
                     'Dim drClaimCategory As DataRow = (New ClaimCategoryBLL).getCategoryDesc(MyBase.EHSTransaction.CategoryCode)
                     Dim strCategoryCode As String = String.Empty
                     Dim strCategoryCodeForRule As String = String.Empty
@@ -9740,6 +9774,8 @@ Partial Public Class EHSClaimV1
                     End If
 
                     If strCategoryCode = udcInputVSS.Category Then
+                        blnWarning = True
+
                         udtRuleResults.Add(Me.RuleResultKey(intEligibleRuleCount, udtEligibleResult.RuleType), udtEligibleResult)
 
                         If Not udtEligibleResult.RelatedEligibleRule Is Nothing Then
@@ -16560,8 +16596,6 @@ Partial Public Class EHSClaimV1
                 ' dummy account for smart id
                 ' ----------------------------------------------------------------------------------------
                 udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(udtSchemeClaim, udtSmartIDContent.IdeasVersion)
-                udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
-                'udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).DateofIssue = Convert.ToDateTime("2016-07-28")
 
             Catch ex As Exception
                 udtSmartIDContent.EHSAccount = Nothing

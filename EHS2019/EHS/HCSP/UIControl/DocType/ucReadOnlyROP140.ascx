@@ -53,7 +53,7 @@
                         Width="150px"></asp:Label></td>
                 <td style="vertical-align:top" class="tableCellStyle">
                     <asp:Label ID="lblReadonlyEName" runat="server" CssClass="tableText" />
-                    <asp:Label ID="lblReadonlyCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu" />
+                    <asp:Label ID="lblReadonlyCName" runat="server" CssClass="tableText TextChineseName" />
                 </td>
             </tr>
             <tr>
@@ -96,7 +96,7 @@
                     Width="160px"></asp:Label></td>
             <td style="width: 300px; word-wrap: break-word; word-break:break-all; vertical-align:top" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalEName" runat="server" CssClass="tableText" />
-                <asp:Label ID="lblReadonlyHorizontalCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu" />
+                <asp:Label ID="lblReadonlyHorizontalCName" runat="server" CssClass="tableText TextChineseName" />
             </td>
             <td style="vertical-align:top" runat="server" id="cellReadonlyHorizontalDOBGenderText" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalDOBGenderText" runat="server" CssClass="tableTitle"

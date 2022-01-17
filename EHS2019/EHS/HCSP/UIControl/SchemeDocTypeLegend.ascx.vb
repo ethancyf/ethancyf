@@ -5,6 +5,12 @@ Imports Common.Component.Scheme
 Partial Public Class SchemeDocTypeLegend
     Inherits System.Web.UI.UserControl
 
+#Region "Members"
+
+    Private _enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass
+
+#End Region
+
 #Region "Fields"
 
     Private udtDocTypeBLL As New DocTypeBLL
@@ -27,7 +33,9 @@ Partial Public Class SchemeDocTypeLegend
 
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    Public Sub Build(ByVal strLanguage As String, ByVal udtDocTypeList As DocTypeModelCollection)
+    Public Sub Build(ByVal strLanguage As String, ByVal udtDocTypeList As DocTypeModelCollection, ByVal enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass)
+        _enumClaimType = enumClaimType
+
         lblHSIVSSRemark.Visible = False
 
         Dim dt As New DataTable
@@ -111,7 +119,7 @@ Partial Public Class SchemeDocTypeLegend
             For i As Integer = 1 To CInt(Session(SESS_SchemeCount)) - 1
                 Dim hfDocumentCode As HiddenField = e.Row.FindControl("hfDocumentCode")
 
-                If IsDocumentAcceptedForScheme(hfDocumentCode.Value.Trim, dicIndexToSchemeCode(i)) Then
+                If IsDocumentAcceptedForScheme(hfDocumentCode.Value.Trim, dicIndexToSchemeCode(i), _enumClaimType) Then
                     Dim imgScheme As Image = e.Row.FindControl("imgScheme" + i.ToString)
                     imgScheme.Visible = True
                 End If
@@ -120,8 +128,10 @@ Partial Public Class SchemeDocTypeLegend
         End If
     End Sub
 
-    Private Function IsDocumentAcceptedForScheme(ByVal strDocCode As String, ByVal strSchemeCode As String) As Boolean
-        For Each udtSchemeDocType As SchemeDocTypeModel In udtDocTypeBLL.getSchemeDocTypeByScheme(strSchemeCode)
+    Private Function IsDocumentAcceptedForScheme(ByVal strDocCode As String, ByVal strSchemeCode As String, _
+                                                 ByVal enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass) As Boolean
+
+        For Each udtSchemeDocType As SchemeDocTypeModel In udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(strSchemeCode, enumClaimType)
             If udtSchemeDocType.DocCode.Trim = strDocCode.Trim Then Return True
         Next
 

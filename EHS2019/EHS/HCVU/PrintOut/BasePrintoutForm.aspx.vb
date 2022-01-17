@@ -131,6 +131,10 @@ Partial Public MustInherit Class BasePrintoutForm
 
             ' Create the PDF export object
             Dim pdf As New GrapeCity.ActiveReports.Export.Pdf.Section.PdfExport()
+
+            ' Set fallback font
+            pdf.FontFallback = Common.Component.Printout.PrintoutBLL.FallbackFont()
+
             ' Create a new memory stream that will hold the pdf output
             Dim memStream As New System.IO.MemoryStream()
             ' Export the report to PDF, Write the PDF stream out and Send all buffered content to the client

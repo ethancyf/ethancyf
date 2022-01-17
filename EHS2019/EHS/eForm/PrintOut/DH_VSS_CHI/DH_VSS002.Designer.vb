@@ -1302,7 +1302,7 @@
             Me.txtPartIIaCName.HyperLink = Nothing
             Me.txtPartIIaCName.Left = 1.4375!
             Me.txtPartIIaCName.Name = "txtPartIIaCName"
-            Me.txtPartIIaCName.Style = "font-family: HA_MingLiu; font-size: 11.25pt; font-weight: normal; text-align: lef" & _
+            Me.txtPartIIaCName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; font-weight: normal; text-align: lef" & _
         "t; text-decoration: none; vertical-align: middle; ddo-char-set: 136"
             Me.txtPartIIaCName.Text = Nothing
             Me.txtPartIIaCName.Top = 6.861001!
@@ -1547,7 +1547,7 @@
             Me.txtPartIIcCName.HyperLink = Nothing
             Me.txtPartIIcCName.Left = 1.437!
             Me.txtPartIIcCName.Name = "txtPartIIcCName"
-            Me.txtPartIIcCName.Style = "font-family: HA_MingLiu; font-size: 11.25pt; font-weight: normal; text-align: lef" & _
+            Me.txtPartIIcCName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; font-weight: normal; text-align: lef" & _
         "t; text-decoration: none; vertical-align: middle; ddo-char-set: 136"
             Me.txtPartIIcCName.Text = Nothing
             Me.txtPartIIcCName.Top = 11.37325!
@@ -1660,7 +1660,7 @@
             Me.txtPartIIcAddress.Height = 0.1875!
             Me.txtPartIIcAddress.Left = 1.4375!
             Me.txtPartIIcAddress.Name = "txtPartIIcAddress"
-            Me.txtPartIIcAddress.Style = "font-family: HA_MingLiu; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
+            Me.txtPartIIcAddress.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
         ": 136"
             Me.txtPartIIcAddress.Text = Nothing
             Me.txtPartIIcAddress.Top = 12.6235!
@@ -1834,7 +1834,7 @@
             Me.txtPartVaChiName.Height = 0.1875!
             Me.txtPartVaChiName.Left = 1.71875!
             Me.txtPartVaChiName.Name = "txtPartVaChiName"
-            Me.txtPartVaChiName.Style = "font-family: HA_MingLiu; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
+            Me.txtPartVaChiName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
         ": 136"
             Me.txtPartVaChiName.Text = Nothing
             Me.txtPartVaChiName.Top = 31.39525!
@@ -2035,7 +2035,7 @@
             Me.txtPartIIaAddress.Height = 0.1875!
             Me.txtPartIIaAddress.Left = 1.4375!
             Me.txtPartIIaAddress.Name = "txtPartIIaAddress"
-            Me.txtPartIIaAddress.Style = "font-family: HA_MingLiu; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
+            Me.txtPartIIaAddress.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
         ": 136"
             Me.txtPartIIaAddress.Text = Nothing
             Me.txtPartIIaAddress.Top = 8.110994!

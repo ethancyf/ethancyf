@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023-68 (Add Chinese Name)
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Dec 2021
+-- Description:		Use Collation "Chinese_Taiwan_Stroke_90_CI_AS_SC" for comparing chinese name
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	03 Sep 2021
 -- CR No.			CRE21-014 (PPP COVID19 14 days)
@@ -146,7 +153,7 @@ AS BEGIN
 		Student_Seq		INT,
 		Class_Name	NVARCHAR(40),
 		Class_No	NVARCHAR(20),
-		Chi_Name_Upload NVARCHAR(MAX),
+		Chi_Name_Upload NVARCHAR(MAX) COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC,
 		Eng_Surname_Upload VARCHAR(MAX),
 		Eng_GivenName_Upload VARCHAR(MAX),
 		Sex_Upload		CHAR(1),
@@ -166,7 +173,7 @@ AS BEGIN
 		Validated_Acc_Found		CHAR(1),
 		Validated_Acc_Unmatch_Result	VARCHAR(1000),
 		With_Validated_Acc	CHAR(1),
-		Chi_Name	NVARCHAR(MAX),
+		Chi_Name	NVARCHAR(MAX) COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC,
 		Eng_Surname		VARCHAR(MAX),
 		Eng_GivenName	VARCHAR(MAX),
 		Sex		CHAR(1),

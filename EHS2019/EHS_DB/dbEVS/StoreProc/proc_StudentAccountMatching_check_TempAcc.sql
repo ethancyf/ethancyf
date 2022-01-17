@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-68 (Add Chinese Name)
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Dec 2021
+-- Description:		Change [Name_CH] nvarchar(6) -> nvarchar(12)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -64,7 +72,7 @@ AS BEGIN
 		Name_EN					VARCHAR(100),
 		Surname_EN				VARCHAR(100),
 		Given_Name_EN			VARCHAR(100),
-		Name_CH					NVARCHAR(6),
+		Name_CH					NVARCHAR(12),
 		DOB						Datetime,
 		Exact_DOB				CHAR(1),
 		Sex						CHAR(1),
@@ -201,7 +209,7 @@ EXEC [proc_SymmetricKey_open]
 		Encrypt_Field2_1 = EncryptByKey(KEY_GUID('sym_Key'), R.Surname_EN),
 		Encrypt_Field2_2 = EncryptByKey(KEY_GUID('sym_Key'), R.Given_Name_EN),
 		Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), R.Name_CH), 
-		[Encrypt_Field4] = CASE WHEN R.Name_CH = ''
+		[Encrypt_Field4] = CASE WHEN R.Name_CH = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC
 								THEN Encrypt_Field4
 								ELSE EncryptByKey(KEY_GUID('sym_Key'), R.Name_CH)
 							END, 
@@ -238,7 +246,7 @@ EXEC [proc_SymmetricKey_open]
 		Encrypt_Field2_1 = EncryptByKey(KEY_GUID('sym_Key'), R.Surname_EN),
 		Encrypt_Field2_2 = EncryptByKey(KEY_GUID('sym_Key'), R.Given_Name_EN),
 		Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), R.Name_CH), 
-		[Encrypt_Field4] = CASE WHEN R.Name_CH = ''
+		[Encrypt_Field4] = CASE WHEN R.Name_CH = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC
 								THEN Encrypt_Field4
 								ELSE EncryptByKey(KEY_GUID('sym_Key'), R.Name_CH)
 							END, 

@@ -70,9 +70,9 @@ Namespace PrintOut.Common
             Me.txtNameChi.Height = 0.21875!
             Me.txtNameChi.Left = 1.3125!
             Me.txtNameChi.Name = "txtNameChi"
-            Me.txtNameChi.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; text-decoration: unde" & _
+            Me.txtNameChi.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 136"
-            Me.txtNameChi.Text = "¡@"
+            Me.txtNameChi.Text = "ã€€"
             Me.txtNameChi.Top = 0.26!
             Me.txtNameChi.Width = 2.21875!
             '

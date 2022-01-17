@@ -60,6 +60,15 @@
                             </table>
                         </td>
                     </tr>
+                    <tr>
+                        <td style="width: 200px;vertical-align:top" class="tableCellStyleLite">
+                            <asp:Label ID="lblCName" runat="server" CssClass="tableTitle" Width="150px" />
+                        </td>
+                        <td style="padding-bottom: 5px; width: 350px;vertical-align:top" class="tableCellStyleLite">
+                            <asp:TextBox ID="txtCName" runat="server" MaxLength="12" CssClass="TextBoxChineseName" onChange="convertToUpper(this);" Width="150px" />
+                            <asp:Image ID="imgCNameError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" />
+                        </td>
+                    </tr>
                     <tr style="display:none;">
                         <td style="width: 350px;vertical-align:top;" class="tableCellStyleLite">
                             <asp:RadioButtonList ID="rbGender" runat="server" CssClass="tableText" RepeatDirection="Horizontal"
@@ -111,18 +120,8 @@
                             <table border="0" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td valign="top" colspan="4">
-                                        <asp:RadioButton ID="rbDOB" runat="server" AutoPostBack="True" GroupName="DOBType" />
                                         <asp:TextBox ID="txtDOB" runat="server" Enabled="False" MaxLength="10" Width="75px" onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>&nbsp;
                                         <asp:Image ID="imgDOBError" runat="server" ImageAlign="AbsBottom" Visible="false" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
-                                </tr>
-                                <tr id="trDOBInWord" visible="false" runat="server">
-                                    <td colspan="4" valign="top" style="padding-top: 2px">
-                                        <asp:RadioButton ID="rbDOBInWord" runat="server" AutoPostBack="True" GroupName="DOBType"
-                                            Width="90px" CssClass="tableText" />&nbsp;<asp:DropDownList ID="ddlDOBinWordType"
-                                                runat="server" Width="120px">
-                                            </asp:DropDownList><asp:TextBox ID="txtDOBInWord" runat="server" Enabled="False"
-                                                MaxLength="10" Width="75px" onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
-                                        <asp:Image ID="imgDOBInWordError" runat="server" ImageAlign="AbsBottom" Visible="false" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
                                 </tr>
                             </table>
                         </td>
@@ -146,7 +145,4 @@
 </cc1:FilteredTextBoxExtender>
 <cc1:FilteredTextBoxExtender ID="filtereditDOB" runat="server" FilterType="Custom, Numbers"
     TargetControlID="txtDOB" ValidChars="-">
-</cc1:FilteredTextBoxExtender>
-<cc1:FilteredTextBoxExtender ID="filtereditDOBInWord" runat="server" FilterType="Custom, Numbers"
-    TargetControlID="txtDOBInWord" ValidChars="-">
 </cc1:FilteredTextBoxExtender>

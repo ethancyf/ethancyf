@@ -127,7 +127,7 @@ Namespace PrintOut.Common.Lite
             Me.txtNameChi.Left = 6.0625!
             Me.txtNameChi.MultiLine = False
             Me.txtNameChi.Name = "txtNameChi"
-            Me.txtNameChi.Style = "ddo-char-set: 0; font-size: 10.5pt; font-family: HA_MingLiu; white-space: nowrap;" & _
+            Me.txtNameChi.Style = "ddo-char-set: 0; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; white-space: nowrap;" & _
                 " "
             Me.txtNameChi.Top = 0.0!
             Me.txtNameChi.Width = 1.03125!

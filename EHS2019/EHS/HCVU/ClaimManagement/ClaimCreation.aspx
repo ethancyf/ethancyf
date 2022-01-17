@@ -116,7 +116,7 @@
                                 <asp:TemplateField SortExpression="EName" HeaderText="<%$ Resources:Text, VRName %>">
                                     <ItemTemplate>
                                         <asp:Label ID="lblName" runat="server"></asp:Label></br>
-                                        <asp:Label ID="lblCName" runat="server" Font-Names="HA_MingLiu"></asp:Label>
+                                        <asp:Label ID="lblCName" runat="server" CssClass="TextChineseName"></asp:Label>
                                     </ItemTemplate>
                                     <ItemStyle VerticalAlign="Top" />
                                     <HeaderStyle VerticalAlign="Top" />

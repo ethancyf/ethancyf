@@ -10,6 +10,7 @@ Partial Public Class ucInputDI
     Private _strTDNumber As String
     Private _strENameFirstName As String
     Private _strENameSurName As String
+    Private _strCName As String
     Private _strGender As String
     Private _strDOB As String
     Private _strDOI As String
@@ -26,6 +27,7 @@ Partial Public Class ucInputDI
         Me.lblTDNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language)
         Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+        Me.lblCName.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
@@ -70,6 +72,7 @@ Partial Public Class ucInputDI
         Me._strTDNumber = MyBase.Formatter.FormatDocIdentityNoForDisplay(DocTypeCode.DI, MyBase.EHSPersonalInfo.IdentityNum, False)
         Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
         Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+        Me._strCName = MyBase.EHSPersonalInfo.CName
         Me._strGender = MyBase.EHSPersonalInfo.Gender
         Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
 
@@ -108,7 +111,15 @@ Partial Public Class ucInputDI
 
             End If
 
+            Me.txtCName.Enabled = True
+
         Else
+            'Fill Data
+            Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
+            Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfo.CName
+            Me._strGender = MyBase.EHSPersonalInfo.Gender
+
             If modeType = ucInputDocTypeBase.BuildMode.Modification Then
                 'Modification Mode
 
@@ -121,10 +132,11 @@ Partial Public Class ucInputDI
                     Me.lblTDNo.Visible = True
                 End If
 
-                Me.txtDOB.Enabled = True
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
+                Me.txtCName.Enabled = True
                 SetGenderReadOnlyStyle(False)
+                Me.txtDOB.Enabled = True
                 Me.txtDOI.Enabled = True
             Else
                 'Modification Read-Only Mode
@@ -134,6 +146,7 @@ Partial Public Class ucInputDI
 
                 Me.txtENameSurname.Enabled = False
                 Me.txtENameFirstname.Enabled = False
+                Me.txtCName.Enabled = False
                 SetGenderReadOnlyStyle(True)
                 Me.txtDOB.Enabled = False
                 Me.txtDOI.Enabled = False
@@ -145,6 +158,7 @@ Partial Public Class ucInputDI
         If MyBase.ActiveViewChanged Then
             Me.SetTDError(False)
             Me.SetENameError(False)
+            Me.SetCNameError(False)
             Me.SetGenderError(False)
             Me.SetDOBError(False)
             Me.SetDOIError(False)
@@ -165,6 +179,7 @@ Partial Public Class ucInputDI
         SetupTDNumber()
         SetupENameFirstName()
         SetupENameSurName()
+        SetupCName()
         SetupGender()
         SetupDOB()
         SetupDOI()
@@ -183,6 +198,10 @@ Partial Public Class ucInputDI
 
     Public Sub SetupENameSurName()
         Me.txtENameSurname.Text = Me._strENameSurName
+    End Sub
+
+    Public Sub SetupCName()
+        Me.txtCName.Text = Me._strCName
     End Sub
 
     Public Sub SetupGender()
@@ -237,6 +256,7 @@ Partial Public Class ucInputDI
     Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
         Me.SetTDError(visible)
         Me.SetENameError(visible)
+        Me.SetCNameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
         Me.SetDOIError(visible)
@@ -248,6 +268,10 @@ Partial Public Class ucInputDI
 
     Public Sub SetENameError(ByVal blnVisible As Boolean)
         Me.imgEName.Visible = blnVisible
+    End Sub
+
+    Public Sub SetCNameError(ByVal visible As Boolean)
+        Me.imgCNameError.Visible = visible
     End Sub
 
     Public Sub SetGenderError(ByVal visible As Boolean)
@@ -311,6 +335,7 @@ Partial Public Class ucInputDI
         Me._strTDNumber = Me.txtTDNo.Text.Trim
         Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
         Me._strENameSurName = Me.txtENameSurname.Text.Trim
+        Me._strCName = Me.txtCName.Text.Trim
         Me._strGender = Me.rbGender.SelectedValue.Trim
         Me._strDOI = Me.txtDOI.Text.Trim
         Me._strDOB = Me.txtDOB.Text.Trim
@@ -343,6 +368,15 @@ Partial Public Class ucInputDI
         End Set
     End Property
 
+    Public Property CName() As String
+        Get
+            Return Me._strCName
+        End Get
+        Set(ByVal value As String)
+            Me._strCName = value
+        End Set
+    End Property
+
     Public Property Gender() As String
         Get
             Return Me._strGender
@@ -360,15 +394,6 @@ Partial Public Class ucInputDI
             Me._strDOB = value
         End Set
     End Property
-
-    'Public Property IsExactDOB() As String
-    '    Get
-    '        Return Me._strIsExactDOB
-    '    End Get
-    '    Set(ByVal value As String)
-    '        Me._strIsExactDOB = value
-    '    End Set
-    'End Property
 
     Public Property DateOfIssue() As String
         Get

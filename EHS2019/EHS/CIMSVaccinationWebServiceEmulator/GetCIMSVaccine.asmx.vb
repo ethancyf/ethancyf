@@ -527,6 +527,16 @@ Public Class WebService1
         'CCIC	= Consular Corps Identity Card
         'ROP140	= Acknowledgement of application for a Hong Kong permanent identity card
         'PASS	= Passport
+        'MEP    = Multiple Entry Permit
+        'TWMTP  = Mainland Travel Permit for Taiwan Residents
+        'TWVTD  = Travel Document for Re-entry to Taiwan
+        'TWNS   = Notification Slip for Pre-arrival Registration for Taiwan Residents
+        'MD     = Macao SAR Permanent Resident Identity Card
+        'MP     = Visit Permit for Residents of Macao SAR
+        'TD     = People 's Republic of China Travel Document
+        'CEEP   = People 's Republic of China Exit and Entry Permit
+        'ET     = e - Token
+        'RFNo8  = Recognizance
 
         ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
         ' --------------------------------------------------------------------------------------
@@ -546,7 +556,18 @@ Public Class WebService1
             udtReqClient.docType <> "MD" And _
             udtReqClient.docType <> "CCIC" And _
             udtReqClient.docType <> "ROP140" And _
-            udtReqClient.docType <> "PASS" Then
+            udtReqClient.docType <> "PASS" And _
+            udtReqClient.docType <> "MEP" And _
+            udtReqClient.docType <> "TWMTP" And _
+            udtReqClient.docType <> "TWVTD" And _
+            udtReqClient.docType <> "TWNS" And _
+            udtReqClient.docType <> "MD" And _
+            udtReqClient.docType <> "MP" And _
+            udtReqClient.docType <> "TD" And _
+            udtReqClient.docType <> "CEEP" And _
+            udtReqClient.docType <> "ET" And _
+            udtReqClient.docType <> "RFNo8" Then
+
             ' CRE20-0022 (Immu record) [End][Winnie SUEN]
             udtRspClient.returnCode = "20006"
             udtRspClient.returnCodeDesc = String.Format("Invalid Identity Document Type, {0}", udtReqClient.docType)

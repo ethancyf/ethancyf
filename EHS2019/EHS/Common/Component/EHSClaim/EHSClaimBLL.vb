@@ -1658,7 +1658,19 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Dim blnExceedLimit As Boolean = False
             Dim udtDocTypeBLL As New DocTypeBLL()
 
-            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(udtEHSTransaction.SchemeCode)
+            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = Nothing
+
+            Select Case udtEHSTransaction.SchemeCode
+                Case SchemeClaimModel.VSS, SchemeClaimModel.RVP
+                    If udtEHSTransaction.TransactionDetails IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionDetails(0).SubsidizeItemCode = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                        udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(udtEHSTransaction.SchemeCode, SchemeDocTypeModel.ClaimTypeEnumClass.COVID19)
+                    Else
+                        udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(udtEHSTransaction.SchemeCode, SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
+                    End If
+                Case Else
+                    udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(udtEHSTransaction.SchemeCode, SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
+            End Select
 
             If udtSchemeDocTypeList.Count > 0 Then
                 If udtSchemeDocTypeList.FilterDocCode(udtEHSTransaction.DocCode).Count = 0 Then

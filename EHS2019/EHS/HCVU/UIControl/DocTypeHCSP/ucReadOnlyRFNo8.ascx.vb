@@ -64,6 +64,7 @@ Namespace UIControl.DocTypeHCSP
                 End If
 
                 Me.lblReadonlyEName.Text = formatter.formatEnglishName(MyBase.EHSAccountPersonalInfo.ENameSurName, MyBase.EHSAccountPersonalInfo.ENameFirstName)
+                Me.lblReadonlyCName.Text = formatter.formatChineseName(MyBase.EHSAccountPersonalInfo.CName)
                 Me.lblReadonlyDocNo.Text = formatter.FormatDocIdentityNoForDisplay(MyBase.EHSAccountPersonalInfo.DocCode, MyBase.EHSAccountPersonalInfo.IdentityNum, MyBase.MaskIdentityNumber)
                 Me.lblReadonlyDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, udtSessionHandler.Language(), Nothing, Nothing)
                 Me.lblReadonlyGender.Text = Me.GetGlobalResourceObject("Text", strGender)
@@ -89,6 +90,7 @@ Namespace UIControl.DocTypeHCSP
                 Me.panReadonlyHorizontal.Visible = True
 
                 Me.lblReadonlyHorizontalEName.Text = formatter.formatEnglishName(MyBase.EHSAccountPersonalInfo.ENameSurName, MyBase.EHSAccountPersonalInfo.ENameFirstName)
+                Me.lblReadonlyHorizontalCName.Text = formatter.formatChineseName(MyBase.EHSAccountPersonalInfo.CName)
                 Me.lblReadonlyHorizontalDocNo.Text = formatter.FormatDocIdentityNoForDisplay(MyBase.EHSAccountPersonalInfo.DocCode, MyBase.EHSAccountPersonalInfo.IdentityNum, MyBase.MaskIdentityNumber)
                 Me.lblReadonlyHorizontalDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, Session("language"), Nothing, Nothing)
                 Me.lblReadonlyHorizontalDocumentType.Text = strDocumentTypeFullName

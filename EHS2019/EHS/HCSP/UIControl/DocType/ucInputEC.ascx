@@ -128,7 +128,7 @@
             <td valign="top" class="tableCellStyle">
                 <asp:Label ID="lblCName" runat="server" CssClass="tableTitle" Width="150px"></asp:Label></td>
             <td valign="top" class="tableCellStyle">
-                <asp:TextBox ID="txtCName" runat="server" MaxLength="6" CssClass="textChi" Style="font-family: HA_MingLiu"></asp:TextBox>
+                <asp:TextBox ID="txtCName" runat="server" MaxLength="12" CssClass="textChi TextBoxChineseName"></asp:TextBox>
                 <asp:Image ID="imgCName" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                     ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" Visible="false" />
             </td>

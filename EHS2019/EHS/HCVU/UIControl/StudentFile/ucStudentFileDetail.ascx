@@ -549,7 +549,7 @@
                         <ItemTemplate>
                             <asp:Label ID="lblGNameEN" runat="server" Text='<%# Eval("Name_EN")%>' />
                             <br />
-                            <asp:Label ID="lblGNameCH" runat="server" Text='<%# Eval("Name_CH")%>' Font-Names="HA_MingLiu" />
+                            <asp:Label ID="lblGNameCH" runat="server" Text='<%# Eval("Name_CH")%>' CssClass="TextChineseName" />
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="<%$ Resources: Text, Sex %>" SortExpression="Sex" ItemStyle-Width="30">

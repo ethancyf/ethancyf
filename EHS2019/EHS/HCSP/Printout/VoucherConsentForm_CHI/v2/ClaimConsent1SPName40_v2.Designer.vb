@@ -1,4 +1,5 @@
-﻿
+﻿
+
 Namespace PrintOut.VoucherConsentForm_CHI
 
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
@@ -59,7 +60,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsentTransactionSPName.Height = 0.1874016!
             Me.txtConsentTransactionSPName.Left = 0.8641733!
             Me.txtConsentTransactionSPName.Name = "txtConsentTransactionSPName"
-            Me.txtConsentTransactionSPName.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; vertical-align: top" & _
+            Me.txtConsentTransactionSPName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; vertical-align: top" & _
         "; ddo-char-set: 136"
             Me.txtConsentTransactionSPName.Text = Nothing
             Me.txtConsentTransactionSPName.Top = 0.0!

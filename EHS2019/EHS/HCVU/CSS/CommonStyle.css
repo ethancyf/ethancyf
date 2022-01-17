@@ -200,6 +200,17 @@ table.inboxMessageSystemParameter {
     font-family: "細明體_HKSCS","MingLiu_HKSCS","Arial";
 }
 
+/***** Text Style for Chinese Name *****/
+.TextChineseName
+{
+    font-family: "MingLiU","MingLiU-ExtB","MingLiU_HKSCS","MingLiU_HKSCS-ExtB";
+}
+
+.TextBoxChineseName
+{
+    font-family: "MingLiU","MingLiU-ExtB","MingLiU_HKSCS","MingLiU_HKSCS-ExtB";
+}
+
 .GridViewItemPadding {
     padding-right: 10px;
 }

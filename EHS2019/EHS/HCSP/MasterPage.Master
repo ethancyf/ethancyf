@@ -7,7 +7,7 @@
     <title>eHealth System (Subsidies)</title>    
     <meta http-equiv="Page-Exit" content="revealTrans(Duration=0,Transition=12)" />
     <base id="basetag" runat="server" />
-    <link href="CSS/ComboBoxStyle.css" rel="stylesheet" type="text/css" />
+    <link href="CSS/ComboBoxStyle.css?ver=1" rel="stylesheet" type="text/css" />
     <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
 <%--    <link href="CSS/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
     <link href="CSS/bootstrap.min.css" rel="stylesheet " type="text/css"/>

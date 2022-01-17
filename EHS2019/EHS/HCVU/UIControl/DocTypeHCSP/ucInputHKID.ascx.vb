@@ -315,7 +315,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode1.Text = Me._strCCCode1
                 End If
 
-                strDBCName += getCCCodeBig5(Me._strCCCode1)
+                strDBCName += getChiChar(Me._strCCCode1)
             Else
                 Me.txtCCCode1.Text = String.Empty
             End If
@@ -327,7 +327,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode2.Text = Me._strCCCode2
                 End If
 
-                strDBCName += getCCCodeBig5(Me._strCCCode2)
+                strDBCName += getChiChar(Me._strCCCode2)
             Else
                 Me.txtCCCode2.Text = String.Empty
             End If
@@ -339,7 +339,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode3.Text = Me._strCCCode3
                 End If
 
-                strDBCName += getCCCodeBig5(Me._strCCCode3)
+                strDBCName += getChiChar(Me._strCCCode3)
             Else
                 Me.txtCCCode3.Text = String.Empty
             End If
@@ -351,7 +351,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode4.Text = Me._strCCCode4
                 End If
 
-                strDBCName += getCCCodeBig5(Me._strCCCode4)
+                strDBCName += getChiChar(Me._strCCCode4)
             Else
                 Me.txtCCCode4.Text = String.Empty
             End If
@@ -363,7 +363,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode5.Text = Me._strCCCode5
                 End If
 
-                strDBCName += getCCCodeBig5(Me._strCCCode5)
+                strDBCName += getChiChar(Me._strCCCode5)
             Else
                 Me.txtCCCode5.Text = String.Empty
             End If
@@ -375,7 +375,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode6.Text = Me._strCCCode6
                 End If
 
-                strDBCName += getCCCodeBig5(Me._strCCCode6)
+                strDBCName += getChiChar(Me._strCCCode6)
             Else
                 Me.txtCCCode6.Text = String.Empty
             End If
@@ -470,7 +470,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode1Modification.Text = Me._strCCCode1
                 End If
 
-                strDBCName += Me.getCCCodeBig5(Me._strCCCode1)
+                strDBCName += getChiChar(Me._strCCCode1)
             Else
                 Me.txtCCCode1Modification.Text = String.Empty
             End If
@@ -483,7 +483,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode2Modification.Text = Me._strCCCode2
                 End If
 
-                strDBCName += Me.getCCCodeBig5(Me._strCCCode2)
+                strDBCName += getChiChar(Me._strCCCode2)
             Else
                 Me.txtCCCode2Modification.Text = String.Empty
             End If
@@ -495,7 +495,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode3Modification.Text = Me._strCCCode3
                 End If
 
-                strDBCName += Me.getCCCodeBig5(Me._strCCCode3)
+                strDBCName += getChiChar(Me._strCCCode3)
             Else
                 Me.txtCCCode3Modification.Text = String.Empty
             End If
@@ -507,7 +507,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode4Modification.Text = Me._strCCCode4
                 End If
 
-                strDBCName += Me.getCCCodeBig5(Me._strCCCode4)
+                strDBCName += getChiChar(Me._strCCCode4)
             Else
                 Me.txtCCCode4Modification.Text = String.Empty
             End If
@@ -519,7 +519,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode5Modification.Text = Me._strCCCode5
                 End If
 
-                strDBCName += Me.getCCCodeBig5(Me._strCCCode5)
+                strDBCName += getChiChar(Me._strCCCode5)
             Else
                 Me.txtCCCode5Modification.Text = String.Empty
             End If
@@ -531,7 +531,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtCCCode6Modification.Text = Me._strCCCode6
                 End If
 
-                strDBCName += Me.getCCCodeBig5(Me._strCCCode6)
+                strDBCName += getChiChar(Me._strCCCode6)
             Else
                 Me.txtCCCode6Modification.Text = String.Empty
             End If
@@ -953,75 +953,35 @@ Namespace UIControl.DocTypeHCSP
 
 #Region "CCCode Supporting Function"
 
-        Public Shared Function getCCCTail(ByVal strcccode As String, ByRef strDisplay As String) As String
-            Dim strRes As String
-            Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-            strRes = String.Empty
-            strRes = udtCCCodeBLL.GetCCCodeDesc(strcccode, strDisplay)
-            Return strRes
-        End Function
-
-        Public Shared Function getCCCTail(ByVal strcccode As String) As DataTable
-            Dim dtRes As DataTable
-            Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-            dtRes = udtCCCodeBLL.GetCCCodeDesc(strcccode)
-            Return dtRes
-        End Function
-
-        Public Shared Function getCCCodeBig5(ByVal strCCCode As String) As String
-            Dim strCCCodeBig5 As String = String.Empty
-            Dim dtRes As DataTable
-            Dim strTail As String
-
-            If Not strCCCode Is Nothing AndAlso strCCCode.Length > 0 Then
-                If strCCCode.Length <> 5 Then
-                    Return " "
-                End If
-
-                dtRes = getCCCTail(strCCCode.Substring(0, 4))
-                strTail = strCCCode.Substring(4, 1)
-                If Not dtRes Is Nothing AndAlso dtRes.Rows.Count > 0 Then
-
-                    For Each dataRow As DataRow In dtRes.Rows
-                        If dataRow("ccc_tail").ToString().Equals(strTail) Then
-                            Return dataRow("Big5").ToString()
-                        End If
-                    Next
-
-                    Return " "
-                Else
-                    Return " "
-                End If
-            End If
-
-            Return strCCCodeBig5
+        Public Shared Function getChiChar(ByVal strCCCode As String) As String
+            Return (New CCCodeBLL).getChiCharByCCCode(strCCCode)
         End Function
 
         Public Shared Function GetCName(ByVal udtEHSPersonalInformation As EHSAccountModel.EHSPersonalInformationModel) As String
             Dim strCName As String = String.Empty
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode1) Then
-                strCName += getCCCodeBig5(udtEHSPersonalInformation.CCCode1)
+                strCName += getChiChar(udtEHSPersonalInformation.CCCode1)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode2) Then
-                strCName += getCCCodeBig5(udtEHSPersonalInformation.CCCode2)
+                strCName += getChiChar(udtEHSPersonalInformation.CCCode2)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode3) Then
-                strCName += getCCCodeBig5(udtEHSPersonalInformation.CCCode3)
+                strCName += getChiChar(udtEHSPersonalInformation.CCCode3)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode4) Then
-                strCName += getCCCodeBig5(udtEHSPersonalInformation.CCCode4)
+                strCName += getChiChar(udtEHSPersonalInformation.CCCode4)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode5) Then
-                strCName += getCCCodeBig5(udtEHSPersonalInformation.CCCode5)
+                strCName += getChiChar(udtEHSPersonalInformation.CCCode5)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode6) Then
-                strCName += getCCCodeBig5(udtEHSPersonalInformation.CCCode6)
+                strCName += getChiChar(udtEHSPersonalInformation.CCCode6)
             End If
 
             Return strCName

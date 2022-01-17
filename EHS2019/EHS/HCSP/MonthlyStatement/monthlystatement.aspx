@@ -347,7 +347,7 @@
                                                          <ItemStyle Width="230px" />
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblName" runat="server"></asp:Label><br />
-                                                            <asp:Label ID="lblNameChi" runat="server" Font-Names="HA_MingLiu"></asp:Label>
+                                                            <asp:Label ID="lblNameChi" runat="server" CssClass="TextChineseName" />
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <%-- <asp:TemplateField SortExpression="Total_Unit" HeaderText="<%$ Resources:Text, NoOfUnitRedeem %>">

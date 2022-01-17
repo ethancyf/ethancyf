@@ -176,6 +176,7 @@ Namespace Component.StudentFile
             Public ClassNo_Empty As String
             Public ChiName_Empty As String
             Public ChiName_ExceedMaxLength As String
+            Public ChiName_Invalid As String
             Public EngSurname_Empty As String
             Public EngSurname_Invalid As String
             Public EngGivenName_Invalid As String
@@ -1720,8 +1721,8 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .NameEN), _
                     udtDB.MakeInParam("@Surname_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .SurnameENOriginal), _
                     udtDB.MakeInParam("@Given_Name_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .GivenNameENOriginal), _
-                    udtDB.MakeInParam("@Name_CH", SqlDbType.NVarChar, 6, .NameCH), _
-                    udtDB.MakeInParam("@Name_CH_Excel", SqlDbType.NVarChar, 6, IIf(blnUpdateExcelChiName, .NameCHExcel, DBNull.Value)), _
+                    udtDB.MakeInParam("@Name_CH", SqlDbType.NVarChar, 12, .NameCH), _
+                    udtDB.MakeInParam("@Name_CH_Excel", SqlDbType.NVarChar, 12, IIf(blnUpdateExcelChiName, .NameCHExcel, DBNull.Value)), _
                     udtDB.MakeInParam("@DOB", SqlDbType.DateTime, 8, .DOB), _
                     udtDB.MakeInParam("@Exact_DOB", SqlDbType.Char, 1, .Exact_DOB), _
                     udtDB.MakeInParam("@Sex", SqlDbType.Char, 1, .Sex), _
@@ -1768,7 +1769,7 @@ Namespace Component.StudentFile
             Dim prams() As SqlParameter = { _
                     udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, strStudentFileID), _
                     udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 1, intStudentSeq), _
-                    udtDB.MakeInParam("@Name_CH_Excel", SqlDbType.NVarChar, 6, strNameCHExcel) _
+                    udtDB.MakeInParam("@Name_CH_Excel", SqlDbType.NVarChar, 12, strNameCHExcel) _
                 }
 
             ' CRE20-003 (Batch Upload) [Start][Chris YIM]

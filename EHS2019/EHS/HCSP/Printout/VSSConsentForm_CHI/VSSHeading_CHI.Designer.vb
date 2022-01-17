@@ -37,7 +37,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtHeading.Height = 0.21875!
             Me.txtHeading.Left = 2.6015!
             Me.txtHeading.Name = "txtHeading"
-            Me.txtHeading.Style = "font-family: HA_MingLiu; font-size: 12pt; font-weight: bold; text-align: center; " & _
+            Me.txtHeading.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-weight: bold; text-align: center; " & _
         "text-decoration: none; vertical-align: middle; ddo-char-set: 136"
             Me.txtHeading.Text = Nothing
             Me.txtHeading.Top = 0.096!

@@ -10,6 +10,7 @@ Partial Public Class ucInputVISA
     Private _strVISANo As String
     Private _strENameFirstName As String
     Private _strENameSurName As String
+    Private _strCName As String
     Private _strGender As String
     Private _strDOB As String
     Private _strPassportNo As String
@@ -26,6 +27,7 @@ Partial Public Class ucInputVISA
         Me.lblVISANoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler().Language)
         Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+        Me.lblCName.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblPassportNoText.Text = Me.GetGlobalResourceObject("Text", "PassportNo")
@@ -40,12 +42,19 @@ Partial Public Class ucInputVISA
         'error message
         Me.imgVISANo.ImageUrl = strErrorImageURL
         Me.imgVISANo.AlternateText = strErrorImageALT
+
         Me.imgEName.ImageUrl = strErrorImageURL
         Me.imgEName.AlternateText = strErrorImageALT
+
+        Me.imgCNameError.ImageUrl = strErrorImageURL
+        Me.imgCNameError.AlternateText = strErrorImageALT
+
         Me.imgGender.ImageUrl = strErrorImageURL
         Me.imgGender.AlternateText = strErrorImageALT
+
         Me.imgDOBDate.ImageUrl = strErrorImageURL
         Me.imgDOBDate.AlternateText = strErrorImageALT
+
         Me.imgPassportNo.ImageUrl = strErrorImageURL
         Me.imgPassportNo.AlternateText = strErrorImageALT
 
@@ -65,6 +74,7 @@ Partial Public Class ucInputVISA
         Me._strVISANo = MyBase.EHSPersonalInfo.IdentityNum.Replace("(", String.Empty).Replace(")", String.Empty).Replace("-", String.Empty)
         Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
         Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+        Me._strCName = MyBase.EHSPersonalInfo.CName
         Me._strGender = MyBase.EHSPersonalInfo.Gender
         Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
         Me._strPassportNo = MyBase.EHSPersonalInfo.Foreign_Passport_No
@@ -104,6 +114,8 @@ Partial Public Class ucInputVISA
                 SetGenderReadOnlyStyle(False)
 
             End If
+
+            Me.txtCName.Enabled = True
 
         Else
             'Modification and Read-Only Modes
@@ -155,6 +167,7 @@ Partial Public Class ucInputVISA
                 Me.txtDOB.Enabled = True
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
+                Me.txtCName.Enabled = True
                 SetGenderReadOnlyStyle(False)
                 Me.txtDOB.Enabled = True
                 Me.txtVISANo1.Enabled = True
@@ -181,6 +194,7 @@ Partial Public Class ucInputVISA
 
                 Me.txtENameSurname.Enabled = False
                 Me.txtENameFirstname.Enabled = False
+                Me.txtCName.Enabled = False
                 SetGenderReadOnlyStyle(True)
                 Me.txtDOB.Enabled = False
                 Me.txtVISANo1.Enabled = False
@@ -193,10 +207,10 @@ Partial Public Class ucInputVISA
         ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
         If MyBase.ActiveViewChanged Then
-
             Me.SetVISANoError(False)
             Me.SetPassportNoError(False)
             Me.SetENameError(False)
+            Me.SetCNameError(False)
             Me.SetGenderError(False)
             Me.SetDOBError(False)
 
@@ -217,6 +231,7 @@ Partial Public Class ucInputVISA
         SetupVISANo()
         SetupENameFirstName()
         SetupENameSurName()
+        SetCName()
         SetupGender()
         SetupPassportNo()
         SetupDOB()
@@ -263,6 +278,11 @@ Partial Public Class ucInputVISA
 
     Public Sub SetupENameSurName()
         Me.txtENameSurname.Text = Me._strENameSurName
+    End Sub
+
+    Public Sub SetCName()
+        'Fill Data - Chinese name only
+        Me.txtCName.Text = Me._strCName
     End Sub
 
     Public Sub SetupPassportNo()
@@ -314,6 +334,7 @@ Partial Public Class ucInputVISA
     Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
         Me.SetVISANoError(visible)
         Me.SetENameError(visible)
+        Me.SetCNameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
         Me.SetPassportNoError(visible)
@@ -325,6 +346,10 @@ Partial Public Class ucInputVISA
 
     Public Sub SetENameError(ByVal blnVisible As Boolean)
         Me.imgEName.Visible = blnVisible
+    End Sub
+
+    Public Sub SetCNameError(ByVal visible As Boolean)
+        Me.imgCNameError.Visible = visible
     End Sub
 
     Public Sub SetGenderError(ByVal visible As Boolean)
@@ -387,6 +412,7 @@ Partial Public Class ucInputVISA
         Me._strVISANo = Me.txtVISANo1.Text.Trim + Me.txtVISANo2.Text.Trim + Me.txtVISANo3.Text.Trim + Me.txtVISANo4.Text.Trim
         Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
         Me._strENameSurName = Me.txtENameSurname.Text.Trim
+        Me._strCName = Me.txtCName.Text.Trim
         Me._strGender = Me.rbGender.SelectedValue.Trim
         Me._strDOB = Me.txtDOB.Text.Trim
         Me._strPassportNo = Me.txtPassportNo.Text.Trim
@@ -416,6 +442,15 @@ Partial Public Class ucInputVISA
         End Get
         Set(ByVal value As String)
             Me._strENameSurName = value
+        End Set
+    End Property
+
+    Public Property CName() As String
+        Get
+            Return Me._strCName
+        End Get
+        Set(ByVal value As String)
+            Me._strCName = value
         End Set
     End Property
 

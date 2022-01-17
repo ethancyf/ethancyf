@@ -10,6 +10,7 @@ Partial Public Class ucInputDI
     Private _strTDNumber As String
     Private _strENameFirstName As String
     Private _strENameSurName As String
+    Private _strCName As String
     Private _strGender As String
     Private _strDOB As String
     Private _strDOI As String
@@ -21,6 +22,7 @@ Partial Public Class ucInputDI
         'Table title
         Me.lblDocumentTypeOriginalText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
         Me.lblNameOrignialText.Text = Me.GetGlobalResourceObject("Text", "Name")
+        Me.lblCNameOriginalText.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblGenderOriginalText.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOBOriginalText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblDOIOriginalText.Text = Me.GetGlobalResourceObject("Text", "DOILong")
@@ -48,6 +50,9 @@ Partial Public Class ucInputDI
         Me.imgEName.ImageUrl = strErrorImageURL
         Me.imgEName.AlternateText = strErrorImageALT
 
+        Me.imgCNameError.ImageUrl = strErrorImageURL
+        Me.imgCNameError.AlternateText = strErrorImageALT
+
         Me.imgGender.ImageUrl = strErrorImageURL
         Me.imgGender.AlternateText = strErrorImageALT
 
@@ -74,6 +79,7 @@ Partial Public Class ucInputDI
         Me.lblNewNameText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblNewENameSurnameTips.Text = Me.GetGlobalResourceObject("Text", "Surname")
         Me.lblNewENameGivenNameTips.Text = Me.GetGlobalResourceObject("Text", "Givenname")
+        Me.lblNewCNameText.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblNewGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblNewDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
         Me.lblNewEnameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
@@ -89,6 +95,9 @@ Partial Public Class ucInputDI
 
         Me.imgNewENameErr.ImageUrl = strErrorImageURL
         Me.imgNewENameErr.AlternateText = strErrorImageALT
+
+        Me.imgNewCNameErr.ImageUrl = strErrorImageURL
+        Me.imgNewCNameErr.AlternateText = strErrorImageALT
 
         Me.imgNewGenderErr.ImageUrl = strErrorImageURL
         Me.imgNewGenderErr.AlternateText = strErrorImageALT
@@ -124,6 +133,7 @@ Partial Public Class ucInputDI
                 Me._strTDNumber = MyBase.Formatter.formatHKID(MyBase.EHSPersonalInfoAmend.IdentityNum, False)
                 Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
                 Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+                Me._strCName = MyBase.EHSPersonalInfoAmend.CName
                 Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
 
                 If MyBase.EHSPersonalInfoAmend.DateofIssue.HasValue Then
@@ -149,6 +159,7 @@ Partial Public Class ucInputDI
             Me._strTDNumber = MyBase.Formatter.FormatDocIdentityNoForDisplay(DocTypeCode.DI, MyBase.EHSPersonalInfoAmend.IdentityNum, False)
             Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfoAmend.CName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
 
@@ -179,6 +190,7 @@ Partial Public Class ucInputDI
             Me._strTDNumber = MyBase.Formatter.FormatDocIdentityNoForDisplay(DocTypeCode.DI, MyBase.EHSPersonalInfoAmend.IdentityNum, False)
             Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfoAmend.CName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
 
@@ -206,6 +218,7 @@ Partial Public Class ucInputDI
                 Me.txtDOB.Enabled = True
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
+                Me.txtCName.Enabled = True
                 Me.rbGender.Enabled = True
                 Me.txtDOI.Enabled = True
             Else
@@ -215,6 +228,7 @@ Partial Public Class ucInputDI
                 '--------------------------------------------------------
                 Me.txtENameSurname.Enabled = False
                 Me.txtENameFirstname.Enabled = False
+                Me.txtCName.Enabled = False
                 Me.rbGender.Enabled = False
                 Me.txtDOB.Enabled = False
                 Me.txtDOI.Enabled = False
@@ -235,12 +249,14 @@ Partial Public Class ucInputDI
             SetTDNumber()
             SetENameFirstName()
             SetENameSurName()
+            SetCName()
             SetDOB()
             SetDOI()
         Else
             SetTDNumber()
             SetENameFirstName()
             SetENameSurName()
+            SetCName()
             SetGender()
             SetDOB()
             SetDOI()
@@ -290,6 +306,19 @@ Partial Public Class ucInputDI
             Me.txtENameSurname.Text = Me._strENameSurName
         End If
 
+    End Sub
+
+    Public Sub SetCName()
+        If Mode = BuildMode.Creation Then
+            Me.txtNewCName.Text = Me._strCName
+        ElseIf Mode = BuildMode.Modification_OneSide Then
+            Me.txtNewCName.Text = Me._strCName
+        Else
+            'Amend
+            Me.txtCName.Text = Me._strCName
+            'Original
+            Me.lblCNameOriginal.Text = MyBase.EHSPersonalInfoOriginal.CName
+        End If
     End Sub
 
     Public Sub SetGender()
@@ -373,6 +402,7 @@ Partial Public Class ucInputDI
     Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
         Me.SetTDError(visible)
         Me.SetENameError(visible)
+        Me.SetCNameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
         Me.SetDOIError(visible)
@@ -391,6 +421,15 @@ Partial Public Class ucInputDI
             Me.imgNewENameErr.Visible = blnVisible
         Else
             Me.imgEName.Visible = blnVisible
+        End If
+
+    End Sub
+
+    Public Sub SetCNameError(ByVal blnVisible As Boolean)
+        If Me.Mode = BuildMode.Creation Or Me.Mode = BuildMode.Modification_OneSide Then
+            Me.imgNewCNameErr.Visible = blnVisible
+        Else
+            Me.imgCNameError.Visible = blnVisible
         End If
 
     End Sub
@@ -430,6 +469,7 @@ Partial Public Class ucInputDI
             Me._strTDNumber = Me.txtNewTravelDocNo.Text.Trim
             Me._strENameFirstName = Me.txtNewGivenName.Text.Trim
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
+            Me._strCName = Me.txtNewCName.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue.Trim
             Me._strDOI = Me.txtNewDOI.Text.Trim
             Me._strDOB = Me.txtNewDOB.Text.Trim
@@ -437,6 +477,7 @@ Partial Public Class ucInputDI
             'Travel No is read-only
             Me._strENameFirstName = Me.txtNewGivenName.Text.Trim
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
+            Me._strCName = Me.txtNewCName.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue.Trim
             Me._strDOI = Me.txtNewDOI.Text.Trim
             Me._strDOB = Me.txtNewDOB.Text.Trim
@@ -445,6 +486,7 @@ Partial Public Class ucInputDI
             'Me._strTDNumber = Me.txtTDNo.Text.Trim
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
+            Me._strCName = Me.txtCName.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue.Trim
             Me._strDOI = Me.txtDOI.Text.Trim
             Me._strDOB = Me.txtDOB.Text.Trim
@@ -479,6 +521,15 @@ Partial Public Class ucInputDI
         End Set
     End Property
 
+    Public Property CName() As String
+        Get
+            Return Me._strCName
+        End Get
+        Set(ByVal value As String)
+            Me._strCName = value
+        End Set
+    End Property
+
     Public Property Gender() As String
         Get
             Return Me._strGender
@@ -505,7 +556,6 @@ Partial Public Class ucInputDI
             Me._strDOI = value
         End Set
     End Property
-
 
 #End Region
 

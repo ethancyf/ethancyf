@@ -46,7 +46,7 @@
             Me.txtSPName2.Height = 0.1875!
             Me.txtSPName2.Left = 1.062!
             Me.txtSPName2.Name = "txtSPName2"
-            Me.txtSPName2.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 0"
+            Me.txtSPName2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 0"
             Me.txtSPName2.Text = Nothing
             Me.txtSPName2.Top = 0.219!
             Me.txtSPName2.Width = 4.344!
@@ -56,7 +56,7 @@
             Me.TextBox6.Height = 0.1875!
             Me.TextBox6.Left = 5.472!
             Me.TextBox6.Name = "TextBox6"
-            Me.TextBox6.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: justify" & _
+            Me.TextBox6.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: justify" & _
         "; ddo-char-set: 0"
             Me.TextBox6.Text = "於"
             Me.TextBox6.Top = 0.219!
@@ -67,7 +67,7 @@
             Me.TextBox12.Height = 0.1875!
             Me.TextBox12.Left = 0.0!
             Me.TextBox12.Name = "TextBox12"
-            Me.TextBox12.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: justify" & _
+            Me.TextBox12.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: justify" & _
         "; ddo-char-set: 0"
             Me.TextBox12.Text = "接種疫苗："
             Me.TextBox12.Top = 0.427!
@@ -80,7 +80,7 @@
             Me.txtServiceDate.Height = 0.1875!
             Me.txtServiceDate.Left = 5.719!
             Me.txtServiceDate.Name = "txtServiceDate"
-            Me.txtServiceDate.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 0"
+            Me.txtServiceDate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 0"
             Me.txtServiceDate.Text = Nothing
             Me.txtServiceDate.Top = 0.219!
             Me.txtServiceDate.Width = 1.65625!
@@ -90,7 +90,7 @@
             Me.TextBox4.Height = 0.1875!
             Me.TextBox4.Left = 0.0!
             Me.TextBox4.Name = "TextBox4"
-            Me.TextBox4.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: justify" & _
+            Me.TextBox4.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: justify" & _
         "; ddo-char-set: 0"
             Me.TextBox4.Text = "政府資助，由"
             Me.TextBox4.Top = 0.219!
@@ -101,7 +101,7 @@
             Me.TextBox3.Height = 0.21875!
             Me.TextBox3.Left = 0.0!
             Me.TextBox3.Name = "TextBox3"
-            Me.TextBox3.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: justify" & _
+            Me.TextBox3.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: justify" & _
         "; ddo-char-set: 0"
             Me.TextBox3.Text = "本人確認 / 本人確認以下服務使用者* 為香港居民。本人同意 / 本人同意以下服務使者* 使用下列"
             Me.TextBox3.Top = 0.0!

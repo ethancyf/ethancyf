@@ -120,7 +120,7 @@ Partial Public Class SchemeDocTypeLegend
     End Sub
 
     Private Function IsDocumentAcceptedForScheme(ByVal strDocCode As String, ByVal strSchemeCode As String) As Boolean
-        For Each udtSchemeDocType As SchemeDocTypeModel In udtDocTypeBLL.getSchemeDocTypeByScheme(strSchemeCode)
+        For Each udtSchemeDocType As SchemeDocTypeModel In udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(strSchemeCode, SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
             If udtSchemeDocType.DocCode.Trim = strDocCode.Trim Then Return True
         Next
 

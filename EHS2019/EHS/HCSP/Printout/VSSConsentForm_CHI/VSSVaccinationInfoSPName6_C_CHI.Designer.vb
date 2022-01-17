@@ -44,7 +44,7 @@
             Me.TextBox7.Height = 0.25!
             Me.TextBox7.Left = 0.0!
             Me.TextBox7.Name = "TextBox7"
-            Me.TextBox7.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
+            Me.TextBox7.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
             Me.TextBox7.Text = "本人同意在疫苗資助計劃下，使用以下政府資助，由"
             Me.TextBox7.Top = 0.0!
             Me.TextBox7.Width = 3.906!
@@ -54,7 +54,7 @@
             Me.TextBox13.Height = 0.1875!
             Me.TextBox13.Left = 5.26!
             Me.TextBox13.Name = "TextBox13"
-            Me.TextBox13.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
+            Me.TextBox13.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
             Me.TextBox13.Text = "於"
             Me.TextBox13.Top = 0.0!
             Me.TextBox13.Width = 0.21875!
@@ -66,7 +66,7 @@
             Me.txtServiceDate.Height = 0.1875!
             Me.txtServiceDate.Left = 5.47875!
             Me.txtServiceDate.Name = "txtServiceDate"
-            Me.txtServiceDate.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 136"
+            Me.txtServiceDate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 136"
             Me.txtServiceDate.Text = Nothing
             Me.txtServiceDate.Top = 0.0!
             Me.txtServiceDate.Width = 1.375!
@@ -76,7 +76,7 @@
             Me.TextBox15.Height = 0.1875!
             Me.TextBox15.Left = 0.0!
             Me.TextBox15.Name = "TextBox15"
-            Me.TextBox15.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
+            Me.TextBox15.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
             Me.TextBox15.Text = "的子女/受監護者* 接種疫苗。此乃："
             Me.TextBox15.Top = 0.21875!
             Me.TextBox15.Width = 5.5625!
@@ -88,7 +88,7 @@
             Me.txtSPName.Height = 0.1875!
             Me.txtSPName.Left = 3.866!
             Me.txtSPName.Name = "txtSPName"
-            Me.txtSPName.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 136"
+            Me.txtSPName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 136"
             Me.txtSPName.Text = Nothing
             Me.txtSPName.Top = 0.0!
             Me.txtSPName.Width = 1.354001!
@@ -98,7 +98,7 @@
             Me.TextBox1.Height = 0.1875!
             Me.TextBox1.Left = 6.854!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
+            Me.TextBox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
             Me.TextBox1.Text = "為本人"
             Me.TextBox1.Top = 0.0!
             Me.TextBox1.Width = 0.546!

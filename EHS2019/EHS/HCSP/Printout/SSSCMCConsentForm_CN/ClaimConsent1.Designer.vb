@@ -64,7 +64,7 @@ Namespace PrintOut.SSSCMCConsentForm_CN
             Me.txtConsentTransactionMOName.Height = 0.1875!
             Me.txtConsentTransactionMOName.Left = 0.7188977!
             Me.txtConsentTransactionMOName.Name = "txtConsentTransactionMOName"
-            Me.txtConsentTransactionMOName.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; vertical-align: top" & _
+            Me.txtConsentTransactionMOName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; vertical-align: top" & _
         "; ddo-char-set: 1"
             Me.txtConsentTransactionMOName.Text = Nothing
             Me.txtConsentTransactionMOName.Top = 0.0001574792!

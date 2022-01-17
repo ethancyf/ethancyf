@@ -43,7 +43,7 @@
             Me.chkSubsidizeItemTemplate.Height = 0.21875!
             Me.chkSubsidizeItemTemplate.Left = 0.0!
             Me.chkSubsidizeItemTemplate.Name = "chkSubsidizeItemTemplate"
-            Me.chkSubsidizeItemTemplate.Style = "ddo-char-set: 0; font-size: 12pt; font-family: HA_MingLiu; "
+            Me.chkSubsidizeItemTemplate.Style = "ddo-char-set: 0; font-size: 12pt; font-family: MingLiU_HKSCS-ExtB; "
             Me.chkSubsidizeItemTemplate.Tag = "Template"
             Me.chkSubsidizeItemTemplate.Text = ""
             Me.chkSubsidizeItemTemplate.Top = 0.0!

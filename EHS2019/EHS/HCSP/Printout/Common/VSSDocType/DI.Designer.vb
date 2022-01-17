@@ -90,7 +90,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox6.Name = "TextBox6"
             Me.TextBox6.Style = "color: Black; font-size: 11.25pt; text-decoration: underline; ddo-char-set: 0"
             Me.TextBox6.SummaryGroup = ""
-            Me.TextBox6.Text = "Document of Identity"
+            Me.TextBox6.Text = "Document of Identity for Visa Purposes"
             Me.TextBox6.Top = 0.0!
             Me.TextBox6.Width = 3.313!
             '

@@ -178,7 +178,7 @@
             <asp:Label ID="lblNewCNameText" runat="server" Height="25px"></asp:Label>
             </td>            
             <td style="width: 470px;">
-                <asp:TextBox ID="txtNewCName" runat="server" MaxLength="6" Style="font-family: HA_MingLiu"></asp:TextBox>
+                <asp:TextBox ID="txtNewCName" runat="server" MaxLength="12" CssClass="TextBoxChineseName"></asp:TextBox>
                 <asp:Image ID="imgNewCNameErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                     ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
             </td>

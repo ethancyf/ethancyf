@@ -686,8 +686,6 @@ Namespace Text
 
                             udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(udtSchemeClaim, udtSmartIDContent.IdeasVersion)
 
-                            udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
-
                         Else
                             Dim udtCFD As IdeasRM.CardFaceData = ideasSamlResponse.CardFaceDate()
 
@@ -4581,7 +4579,7 @@ Namespace Text
                         Dim udtDocTypeBLL As New DocTypeBLL()
 
                         If Not strPerviousCodeCode Is Nothing Then
-                            udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(strScheme)
+                            udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(strScheme, SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
 
                             For Each udtSchemeDocType As SchemeDocTypeModel In udtSchemeDocTypeList
                                 If strPerviousCodeCode.Equals(udtSchemeDocType.DocCode) AndAlso Me.udcStep1ClaimSearch.IsEmpty(strPerviousCodeCode) Then
@@ -5921,7 +5919,8 @@ Namespace Text
 
             If Not udtSchemeClaim Is Nothing AndAlso Not strDocumentType Is Nothing Then
                 Dim udtDocTypeBLL As New DocTypeBLL()
-                Dim udtSchemeDocTypeModelCollection As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(udtSchemeClaim.SchemeCode.Trim())
+                Dim udtSchemeDocTypeModelCollection As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(udtSchemeClaim.SchemeCode.Trim(), _
+                                                                                                                                      SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
 
                 If Not udtSchemeDocTypeModelCollection Is Nothing Then
                     For Each udtSchemeDocTypeModel As SchemeDocTypeModel In udtSchemeDocTypeModelCollection
@@ -5942,7 +5941,7 @@ Namespace Text
             Dim strDocTypeCode As String = String.Empty
 
             Dim udtDocTypeBLL As New DocTypeBLL()
-            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(strScheme)
+            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(strScheme, SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
             For Each udtSchemeDocType As SchemeDocTypeModel In udtSchemeDocTypeList
                 If udtSchemeDocType.IsMajorDoc Then
                     strDocTypeCode = udtSchemeDocType.DocCode.Trim()
@@ -6007,7 +6006,7 @@ Namespace Text
             Dim udtSchemeClaim As SchemeClaimModel = SessionHandler.SchemeSelectedGetFromSession(FunctionCode)
             If Not udtSchemeClaim Is Nothing Then
                 Dim udtDocTypeBLL As New DocTypeBLL()
-                Return udtDocTypeBLL.getSchemeDocTypeByScheme(udtSchemeClaim.SchemeCode.Trim())
+                Return udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(udtSchemeClaim.SchemeCode.Trim(), SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
             Else
                 Return Nothing
             End If

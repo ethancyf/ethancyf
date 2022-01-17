@@ -257,7 +257,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="width: 250px; height: 50px">
+                            <td style="width: 250px; height: 30px">
                                 <asp:Label ID="lblDisplayStatusText" runat="server" CssClass="tableTitle" Text="<%$ Resources: Text, AccRectificationList %>"></asp:Label>
                             </td>
                             <td>
@@ -303,7 +303,7 @@
                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, Name %>">
                                 <ItemTemplate>
                                     <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label><br />
-                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
+                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' CssClass="TextChineseName" />
                                 </ItemTemplate>
                                 <ItemStyle Width="230px" />
                             </asp:TemplateField>

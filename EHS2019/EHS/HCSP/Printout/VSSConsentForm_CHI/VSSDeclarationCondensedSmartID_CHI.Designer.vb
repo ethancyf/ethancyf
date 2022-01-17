@@ -49,7 +49,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration1.Height = 0.25!
             Me.txtDeclaration1.Left = 0.0!
             Me.txtDeclaration1.Name = "txtDeclaration1"
-            Me.txtDeclaration1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left"
+            Me.txtDeclaration1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left"
             Me.txtDeclaration1.Text = "1."
             Me.txtDeclaration1.Top = 0.0!
             Me.txtDeclaration1.Width = 0.21875!
@@ -59,7 +59,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox1.Height = 0.21875!
             Me.TextBox1.Left = 0.0!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left"
+            Me.TextBox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left"
             Me.TextBox1.Text = "2."
             Me.TextBox1.Top = 0.34375!
             Me.TextBox1.Width = 0.22!
@@ -69,7 +69,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration2Value.Height = 0.53!
             Me.txtDeclaration2Value.Left = 0.244!
             Me.txtDeclaration2Value.Name = "txtDeclaration2Value"
-            Me.txtDeclaration2Value.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; text-justify: dist" & _
+            Me.txtDeclaration2Value.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; text-justify: dist" & _
         "ribute"
             Me.txtDeclaration2Value.Text = Nothing
             Me.txtDeclaration2Value.Top = 0.344!

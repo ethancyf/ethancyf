@@ -1,144 +1,148 @@
 Imports Common.DataAccess
 Imports System.Data.SqlClient
+Imports Common.ComObject
 
 
 Namespace Component.CCCode
 
     Public Class CCCodeBLL
 
-        'Get CCCode Desc
-        Public Function GetCCCodeDesc(ByVal strCCCode As String, ByRef strDisplay As String) As String
-            Dim udtdb As Database = New Database()
-            Dim intIdx As Integer
-            Dim dtRes As New DataTable
-            Dim ccc_tail As String = String.Empty
-            Dim big5 As String
-            Dim unicode As Integer
+#Region "Cache"
+        Public Function GetCCCodeChineseMappingCache() As DataTable
+            Dim dt As New DataTable
 
-            Try
-                Dim prams() As SqlParameter = { _
-                 udtdb.MakeInParam("@ccc_head ", SqlDbType.VarChar, 4, strCCCode)}
+            If HttpRuntime.Cache("CCCodeChineseMapping") Is Nothing Then
+                Try
+                    Dim udtDB As New Database
 
-                udtdb.RunProc("proc_ccc_big5_get_byCCCHeader", prams, dtRes)
+                    udtDB.RunProc("proc_CCCodeChineseMapping_get_all_cache", dt)
 
-                ' CRE15-014 HA_MingLiu UTF32 [Start][Winnie]
-                dtRes.Columns.Add("big5", GetType(String))
+                    CacheHandler.InsertCache("CCCodeChineseMapping", dt)
 
-                intIdx = 0
-                For Each dataRow As DataRow In dtRes.Rows
+                Catch ex As Exception
+                    Throw
+                End Try
+            Else
+                dt = CType(HttpRuntime.Cache("CCCodeChineseMapping"), DataTable)
+            End If
 
-                    unicode = CStr(IIf(dataRow("UniCode_Int") Is DBNull.Value, "", dataRow("UniCode_Int")))
-                    dataRow("big5") = Me.ConvertUnicode2Big5(unicode)
-
-                    ccc_tail = CStr(IIf(dataRow("ccc_tail") Is DBNull.Value, "", dataRow("ccc_tail")))
-                    big5 = CStr(IIf(dataRow("big5") Is DBNull.Value, "", dataRow("big5")))
-                    strDisplay += ccc_tail.Trim + "." + big5.Trim
-                    strDisplay += " "
-
-                    intIdx = intIdx + 1
-                Next
-                ' CRE15-014 HA_MingLiu UTF32 [End][Winnie]
-
-                If intIdx = 1 Then
-                    Return strCCCode.Trim + ccc_tail.Trim
-                Else
-                    Return strCCCode
-                End If
-            Catch ex As Exception
-                Throw ex
-            End Try
+            Return dt
         End Function
+#End Region
 
-        Public Function GetCCCodeDesc(ByVal strCCCode As String) As DataTable
-            Dim udtDB As Database = New Database
+#Region "Retrieve Function"
+        Public Function GetCCCodeChineseMappingByUnicode(ByVal strUnicode As String) As DataTable
             Dim dtRes As New DataTable
 
-            Dim prams() As SqlParameter = { _
-            udtDB.MakeInParam("@ccc_head ", SqlDbType.VarChar, 4, strCCCode)}
+            Dim dt As DataTable = GetCCCodeChineseMappingCache()
 
-            udtDB.RunProc("proc_ccc_big5_get_byCCCHeader", prams, dtRes)
+            If dt IsNot Nothing AndAlso dt.Select(String.Format("UniCode_Int = {0}", strUnicode)).Length > 0 Then
+                dtRes = dt.Select(String.Format("UniCode_Int = {0}", strUnicode)).CopyToDataTable
+            End If
 
-            ' CRE15-014 HA_MingLiu UTF32 [Start][Winnie]
-            dtRes.Columns.Add("big5", GetType(String))
+            dtRes.Columns.Add("ConvertedCharacter", GetType(String))
 
             For Each dataRow As DataRow In dtRes.Rows
-                dataRow("big5") = Me.ConvertUnicode2Big5(dataRow("UniCode_Int"))
+                dataRow("ConvertedCharacter") = Me.ConvertUnicodetoChar(dataRow("UniCode_Int"))
             Next
-            ' CRE15-014 HA_MingLiu UTF32 [End][Winnie]
+
+            Return dtRes
+
+        End Function
+
+        Public Function GetCCCodeChineseMappingByCCCode(ByVal strCCCode As String) As DataTable
+            Dim dtRes As New DataTable
+            Dim dt As DataTable = GetCCCodeChineseMappingCache()
+
+            If dt Is Nothing Then Return dtRes
+
+            dtRes = dt.Clone
+            dtRes.Columns.Add("ConvertedCharacter", GetType(String))
+
+            For Each dr As DataRow In dt.Select(String.Format("CCCode = {0}", strCCCode))
+                Dim intUnicode As Integer
+
+                If Not IsDBNull(dr("UniCode_Int")) AndAlso Integer.TryParse(dr("UniCode_Int"), intUnicode) Then
+                    dtRes.ImportRow(dr)
+                End If
+            Next
+
+            For Each dataRow As DataRow In dtRes.Rows
+                dataRow("ConvertedCharacter") = Me.ConvertUnicodetoChar(dataRow("UniCode_Int"))
+            Next
 
             Return dtRes
         End Function
 
+        Public Function GetCCCodeChineseMappingByCCCHead(ByVal strCCCHead As String) As DataTable
+            Dim dtRes As New DataTable
+            Dim dt As DataTable = GetCCCodeChineseMappingCache()
 
-        Public Function GetChiChar(ByVal strCCCode As String) As String
-            Dim udtdb As Database = New Database()
-            Dim strReturnValue As String
+            If dt Is Nothing Then Return dtRes
 
-            Try
-                Dim prams() As SqlParameter = { _
-                 udtdb.MakeInParam("@ccc", SqlDbType.Char, 5, strCCCode), _
-                 udtdb.MakeOutParam("@chi_character", SqlDbType.NVarChar, 4), _
-                 udtdb.MakeOutParam("@return_code", SqlDbType.Int, 4), _
-                 udtdb.MakeOutParam("@return_msg", SqlDbType.VarChar, 255)}
-                udtdb.RunProc("proc_ccc_big5_get_byCCCode", prams)
-                strReturnValue = CStr(IIf(prams(1).Value Is DBNull.Value, "", prams(1).Value))
-                Return strReturnValue
-            Catch ex As Exception
-                Throw ex
-            End Try
+            dtRes = dt.Clone
+            dtRes.Columns.Add("ConvertedCharacter", GetType(String))
+
+            For Each dr As DataRow In dt.Select(String.Format("CCC_Head = {0}", strCCCHead))
+                Dim intUnicode As Integer
+
+                If Not IsDBNull(dr("UniCode_Int")) AndAlso Integer.TryParse(dr("UniCode_Int"), intUnicode) Then
+                    dtRes.ImportRow(dr)
+                End If
+            Next
+
+            For Each dataRow As DataRow In dtRes.Rows
+                dataRow("ConvertedCharacter") = Me.ConvertUnicodetoChar(dataRow("UniCode_Int"))
+            Next
+
+            Return dtRes
 
         End Function
 
-        ' CRE15-014 HA_MingLiu UTF32 [Start][Winnie]
-        Public Function ConvertUnicode2Big5(ByVal intUniCode As Integer) As String
+        Public Function getChiCharByCCCode(ByVal strCCCode As String) As String
+            Dim strChar As String = String.Empty
+            Dim dtRes As DataTable
 
-            Dim strBig5 As String = String.Empty
-
-            Try
-                'Convert unicode to big5
-                strBig5 = Char.ConvertFromUtf32(intUniCode)
-
-                If strBig5 Is Nothing OrElse strBig5.Equals(String.Empty) Then
-                    Return "  "
-                Else
-                    Return strBig5
+            If Not strCCCode Is Nothing AndAlso strCCCode.Length > 0 Then
+                If strCCCode.Length <> 5 Then
+                    Return " "
                 End If
 
-            Catch ex As Exception
-                'Cannot convert to char
-                Return "  "
-            End Try
+                dtRes = GetCCCodeChineseMappingByCCCode(strCCCode)
 
+                If Not dtRes Is Nothing AndAlso dtRes.Rows.Count > 0 Then
+
+                    For Each dataRow As DataRow In dtRes.Rows
+                        Return dataRow("ConvertedCharacter").ToString()
+                    Next
+
+                    Return " "
+                Else
+                    Return " "
+                End If
+            End If
+
+            Return strChar
         End Function
-        ' CRE15-014 HA_MingLiu UTF32 [End][Winnie]
 
-        ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
         'Get CCCode 
-        Public Function GetCCCodeByChar(ByVal strChar As String) As String
+        Public Function getCCCodeByChar(ByVal strChar As String) As String
             Dim udtdb As Database = New Database()
 
             Dim dtRes As New DataTable
-            Dim ccc_head As String = String.Empty
-            Dim ccc_tail As String = String.Empty
             Dim strCCCode As String = String.Empty
             Dim intUnicode As Integer
 
             Try
-                intUnicode = ConvertBig5toUnicode(strChar)
+                ' Convert to Unicode 
+                intUnicode = ConvertChartoUnicode(strChar)
 
-                Dim prams() As SqlParameter = { _
-                 udtdb.MakeInParam("@UniCode_Int ", SqlDbType.Int, 4, intUnicode)}
-
-                udtdb.RunProc("proc_ccc_big5_get_byUnicode", prams, dtRes)
+                ' Find CCCode from Mapping by Unicode
+                dtRes = GetCCCodeChineseMappingByUnicode(intUnicode)
 
                 If dtRes.Rows.Count = 1 Then
                     Dim dr As DataRow = dtRes.Rows(0)
-
-                    ccc_head = CStr(IIf(dr("ccc_head") Is DBNull.Value, "", dr("ccc_head")))
-                    ccc_tail = CStr(IIf(dr("ccc_tail") Is DBNull.Value, "", dr("ccc_tail")))
-
-                    strCCCode = ccc_head + ccc_tail
+                    strCCCode = CStr(IIf(dr("CCCode") Is DBNull.Value, "", dr("CCCode")))
                 End If
 
                 Return strCCCode
@@ -148,13 +152,52 @@ Namespace Component.CCCode
             End Try
         End Function
 
-        Public Function ConvertBig5toUnicode(ByVal strBig5 As String) As Integer
+        Public Function getCCCodeForChiName(ByVal strChineseName As String, ByVal intPosition As Integer) As String
+            Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
+
+            If udtGeneralFunction.UTF32_Length(strChineseName) >= intPosition Then
+                Dim strCCCode As String = String.Empty
+
+                Dim strChar As String = udtGeneralFunction.UTF32_SubString(strChineseName, intPosition - 1, 1)
+                strCCCode = Me.getCCCodeByChar(strChar)
+
+                Return strCCCode
+            Else
+                Return String.Empty
+            End If
+        End Function
+
+#End Region
+
+        ' CRE20-023-68 (Remove HA MingLiu) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
+        Public Function ConvertUnicodetoChar(ByVal intUniCode As Integer) As String
+
+            Dim strChar As String = String.Empty
+
+            Try
+                strChar = Char.ConvertFromUtf32(intUniCode)
+
+                If strChar Is Nothing OrElse strChar.Equals(String.Empty) Then
+                    Return "  "
+                Else
+                    Return strChar
+                End If
+
+            Catch ex As Exception
+                'Cannot convert to char
+                Return "  "
+            End Try
+
+        End Function
+
+        Public Function ConvertChartoUnicode(ByVal strChar As String) As Integer
 
             Dim intUniCode As Integer = Nothing
 
             Try
-                'Convert big5 to unicode
-                intUniCode = Char.ConvertToUtf32(strBig5, 0)
+                'Convert Char to unicode
+                intUniCode = Char.ConvertToUtf32(strChar, 0)
 
                 Return intUniCode
 
@@ -164,7 +207,8 @@ Namespace Component.CCCode
             End Try
 
         End Function
-        ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Winnie]
+        ' CRE20-023-68 (Remove HA MingLiu) [End][Winnie SUEN]
+
     End Class
 
 End Namespace

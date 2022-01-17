@@ -53,6 +53,15 @@
             </td>
         </tr>
         <tr>
+            <td style="width: 200px;vertical-align:top" class="tableCellStyleLite">
+                <asp:Label ID="lblCName" runat="server" CssClass="tableTitle" Width="150px" />
+            </td>
+            <td style="padding-bottom: 5px; width: 350px;vertical-align:top" class="tableCellStyleLite">
+                <asp:TextBox ID="txtCName" runat="server" MaxLength="12" CssClass="TextBoxChineseName" onChange="convertToUpper(this);" Width="150px" />
+                <asp:Image ID="imgCNameError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" />
+            </td>
+        </tr>
+        <tr>
             <td valign="top" style="width: 200px" class="tableCellStyle">
                 <asp:Label ID="lblGender" runat="server" CssClass="tableTitle" Width="150px"></asp:Label></td>
             <td valign="top" style="width: 430px" class="tableCellStyle">

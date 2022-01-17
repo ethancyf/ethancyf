@@ -24,7 +24,7 @@
                 <asp:Label ID="lblENameText" runat="server" CssClass="tableTitle" Width="150px"></asp:Label></td>
             <td style="height: 19px;" valign="top" class="tableCellStyle">
                 <asp:Label ID="lblEName" runat="server" CssClass="tableText"></asp:Label>
-                <asp:Label ID="lblCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
+                <asp:Label ID="lblCName" runat="server" CssClass="tableText TextChineseName"></asp:Label></td>
         </tr>
         <tr>
             <td style="width: 200px;" valign="top" class="tableCellStyle">

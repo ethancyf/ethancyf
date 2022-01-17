@@ -1,4 +1,5 @@
-﻿
+﻿
+
 Namespace PrintOut.VoucherConsentForm_CN
 
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
@@ -173,7 +174,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeTo.Left = 0.5!
             Me.txtNoticeTo.Name = "txtNoticeTo"
             Me.txtNoticeTo.ShrinkToFit = True
-            Me.txtNoticeTo.Style = "font-family: HA_MingLiu; font-size: 15.75pt; text-align: left; text-decoration: u" & _
+            Me.txtNoticeTo.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 15.75pt; text-align: left; text-decoration: u" & _
         "nderline; ddo-char-set: 136; ddo-shrink-to-fit: true"
             Me.txtNoticeTo.Text = Nothing
             Me.txtNoticeTo.Top = 0.5!
@@ -184,7 +185,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeSPName.Height = 0.25!
             Me.txtNoticeSPName.Left = 3.3!
             Me.txtNoticeSPName.Name = "txtNoticeSPName"
-            Me.txtNoticeSPName.Style = "font-family: HA_MingLiu; font-size: 13pt; text-align: left; text-decoration: unde" & _
+            Me.txtNoticeSPName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 13pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 1"
             Me.txtNoticeSPName.Text = Nothing
             Me.txtNoticeSPName.Top = 0.979!
@@ -307,7 +308,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtToRemark.Height = 0.229!
             Me.txtToRemark.Left = 0.4!
             Me.txtToRemark.Name = "txtToRemark"
-            Me.txtToRemark.Style = "font-family: HA_MingLiu; font-size: 13pt; text-align: left; text-decoration: none" & _
+            Me.txtToRemark.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 13pt; text-align: left; text-decoration: none" & _
         "; ddo-char-set: 1"
             Me.txtToRemark.Text = "（医疗券使用者姓名）"
             Me.txtToRemark.Top = 0.7502499!

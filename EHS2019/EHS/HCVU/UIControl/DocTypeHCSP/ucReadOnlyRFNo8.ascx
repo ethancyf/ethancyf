@@ -61,7 +61,10 @@
                     <asp:Label ID="lblReadonlyNameText" runat="server" CssClass="tableTitle" 
                         Width="150px"></asp:Label></td>
                 <td valign="top" class="tableCellStyle">
-                    <asp:Label ID="lblReadonlyEName" runat="server" CssClass="tableText"></asp:Label></td>
+                    <asp:Label ID="lblReadonlyEName" runat="server" CssClass="tableText" />
+                    <asp:Label ID="lblReadonlyCName" runat="server" CssClass="tableText TextChineseName" />
+
+                </td>
             </tr>
             <tr>
                 <td valign="top"  runat="server" id="cellReadonlyGenderText" class="tableCellStyle">
@@ -87,7 +90,9 @@
                 <asp:Label ID="lblReadonlyHorizontalNameText" runat="server" CssClass="tableTitle"
                      Width="160px"></asp:Label></td>
             <td valign="top" style="width: 301px" class="tableCellStyleLite">
-                <asp:Label ID="lblReadonlyHorizontalEName" runat="server" CssClass="tableText" Width="300px"></asp:Label></td>
+                <asp:Label ID="lblReadonlyHorizontalEName" runat="server" CssClass="tableText" />
+                <asp:Label ID="lblReadonlyHorizontalCName" runat="server" CssClass="tableText TextChineseName" />
+            </td>
             <td valign="top"  runat="server" id="cellReadonlyHorizontalDOBGenderText" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalDOBGenderText" runat="server" CssClass="tableTitle"
                      Width="160px"></asp:Label></td>

@@ -112,9 +112,9 @@
                         <td style="vertical-align: top">
                             <asp:Label ID="lblCNameOriginalText" runat="server"></asp:Label></td>
                         <td style="height: 23">
-                            <asp:Label ID="lblCNameOriginal" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
+                            <asp:Label ID="lblCNameOriginal" runat="server" CssClass="tableText TextChineseName"></asp:Label></td>
                         <td>
-                            <asp:TextBox ID="txtCName" runat="server" Font-Names="HA_MingLiu" MaxLength="6"></asp:TextBox>
+                            <asp:TextBox ID="txtCName" runat="server" CssClass="TextBoxChineseName" MaxLength="12"></asp:TextBox>
                             <asp:Image ID="imgCName" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                                 ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
                         </td>
@@ -392,7 +392,7 @@
             <td style="width: 220px; height: 25px;" valign="top">
                 <asp:Label ID="lblNewCNameText" runat="server" Height="25px"></asp:Label></td>           
             <td style="width: 470px">
-                <asp:TextBox ID="txtNewCName" runat="server" MaxLength="6" Style="font-family: HA_MingLiu"></asp:TextBox>
+                <asp:TextBox ID="txtNewCName" runat="server" MaxLength="12" CssClass="TextBoxChineseName"></asp:TextBox>
                 <asp:Image ID="imgNewCNameErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                     ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
             </td>

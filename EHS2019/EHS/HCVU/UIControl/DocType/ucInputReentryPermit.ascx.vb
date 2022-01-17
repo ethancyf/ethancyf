@@ -23,6 +23,7 @@ Partial Public Class ucInputReentryPermit
         Me.lblDocumentTypeOriginalText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
         'Me.lblReentryPermitNoOriginalText.Text = Me.GetGlobalResourceObject("Text", "ReentryPermitNo")
         Me.lblNameOriginalText.Text = Me.GetGlobalResourceObject("Text", "Name")
+        Me.lblCNameOriginalText.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblGenderOriginalText.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOBOriginalText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblDOIOriginalText.Text = Me.GetGlobalResourceObject("Text", "DOILong")
@@ -45,6 +46,9 @@ Partial Public Class ucInputReentryPermit
         'Error Image
         Me.imgENameError.ImageUrl = strErrorImageURL
         Me.imgENameError.AlternateText = strErrorImageALT
+
+        Me.imgCNameError.ImageUrl = strErrorImageURL
+        Me.imgCNameError.AlternateText = strErrorImageALT
 
         Me.imgGenderError.ImageUrl = strErrorImageURL
         Me.imgGenderError.AlternateText = strErrorImageALT
@@ -78,6 +82,7 @@ Partial Public Class ucInputReentryPermit
         Me.lblNewENameSurnameTips.Text = Me.GetGlobalResourceObject("Text", "Surname")
         Me.lblNewENameGivenNameTips.Text = Me.GetGlobalResourceObject("Text", "Givenname")
         Me.lblNewEnameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+        Me.lblNewCNameText.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblNewGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblNewDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
         Me.lblNewDOIText.Text = Me.GetGlobalResourceObject("Text", "DateOfIssue")
@@ -92,6 +97,9 @@ Partial Public Class ucInputReentryPermit
 
         Me.imgNewENameErr.ImageUrl = strErrorImageURL
         Me.imgNewENameErr.AlternateText = strErrorImageALT
+
+        Me.imgNewCNameErr.ImageUrl = strErrorImageURL
+        Me.imgNewCNameErr.AlternateText = strErrorImageALT
 
         Me.imgNewGenderErr.ImageUrl = strErrorImageURL
         Me.imgNewGenderErr.AlternateText = strErrorImageALT
@@ -125,6 +133,7 @@ Partial Public Class ucInputReentryPermit
                 Me._strTravelDocNo = MyBase.Formatter.formatHKID(MyBase.EHSPersonalInfoAmend.IdentityNum, False)
                 Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
                 Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+                Me._strCName = MyBase.EHSPersonalInfoAmend.CName
                 Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
 
                 If MyBase.EHSPersonalInfoAmend.DateofIssue.HasValue Then
@@ -150,6 +159,7 @@ Partial Public Class ucInputReentryPermit
             Me._strTravelDocNo = MyBase.Formatter.FormatDocIdentityNoForDisplay(DocTypeCode.REPMT, MyBase.EHSPersonalInfoAmend.IdentityNum, False)
             Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfoAmend.CName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
 
@@ -166,6 +176,7 @@ Partial Public Class ucInputReentryPermit
             'Fill values
             Me.SetREPMTNo()
             Me.SetEName()
+            Me.SetCName()
             Me.SetDOB()
             Me.SetGender()
             Me.SetDOI()
@@ -185,6 +196,7 @@ Partial Public Class ucInputReentryPermit
             Me._strTravelDocNo = MyBase.Formatter.FormatDocIdentityNoForDisplay(DocTypeCode.REPMT, MyBase.EHSPersonalInfoAmend.IdentityNum, False)
             Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfoAmend.CName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
 
@@ -201,6 +213,7 @@ Partial Public Class ucInputReentryPermit
             'Mode related Settings
             Me.SetREPMTNo()
             Me.SetEName()
+            Me.SetCName()
             Me.SetDOB()
             Me.SetGender()
             Me.SetDOI()
@@ -217,6 +230,7 @@ Partial Public Class ucInputReentryPermit
                 Me.txtDOI.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.txtENameSurname.Enabled = True
+                Me.txtCName.Enabled = True
             Else
                 '--------------------------------------------------------
                 'Modify Read Only Mode
@@ -227,6 +241,7 @@ Partial Public Class ucInputReentryPermit
                 Me.txtDOI.Enabled = False
                 Me.txtENameFirstname.Enabled = False
                 Me.txtENameSurname.Enabled = False
+                Me.txtCName.Enabled = False
             End If
 
             If MyBase.ActiveViewChanged Then
@@ -245,11 +260,13 @@ Partial Public Class ucInputReentryPermit
         If mode = BuildMode.Creation Then
             SetREPMTNo()
             SetEName()
+            SetCName()
             SetDOB()
             SetDOI()
         Else
             SetREPMTNo()
             SetEName()
+            SetCName()
             SetGender()
             SetDOB()
             SetDOI()
@@ -292,6 +309,19 @@ Partial Public Class ucInputReentryPermit
             Me.lblNameOriginal.Text = MyBase.Formatter.formatEnglishName(MyBase.EHSPersonalInfoOriginal.ENameSurName, MyBase.EHSPersonalInfoOriginal.ENameFirstName)
         End If
 
+    End Sub
+
+    Public Sub SetCName()
+        If Mode = BuildMode.Creation Then
+            Me.txtNewCName.Text = Me._strCName
+        ElseIf Mode = BuildMode.Modification_OneSide Then
+            Me.txtNewCName.Text = Me._strCName
+        Else
+            'Amend
+            Me.txtCName.Text = Me._strCName
+            'Original
+            lblCNameOriginal.Text = MyBase.EHSPersonalInfoOriginal.CName
+        End If
     End Sub
 
     Public Sub SetDOB()
@@ -367,6 +397,7 @@ Partial Public Class ucInputReentryPermit
     '--------------------------------------------------------------------------------------------------------------
     Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
         Me.SetENameError(visible)
+        Me.SetCNameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
         Me.SetDOIError(visible)
@@ -380,6 +411,14 @@ Partial Public Class ucInputReentryPermit
             Me.imgENameError.Visible = visible
         End If
 
+    End Sub
+
+    Public Sub SetCNameError(ByVal visible As Boolean)
+        If Me.Mode = BuildMode.Creation Or Me.Mode = BuildMode.Modification_OneSide Then
+            Me.imgNewCNameErr.Visible = visible
+        Else
+            Me.imgCNameError.Visible = visible
+        End If
     End Sub
 
     Public Sub SetGenderError(ByVal visible As Boolean)
@@ -423,6 +462,7 @@ Partial Public Class ucInputReentryPermit
             Me._strTravelDocNo = Me.txtNewPermitNo.Text.Trim
             Me._strENameFirstName = Me.txtNewGivenName.Text.Trim
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
+            Me._strCName = Me.txtNewCName.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue
             Me._strDOB = Me.txtNewDOB.Text.Trim
             Me._strDOI = Me.txtNewDOI.Text.Trim
@@ -431,6 +471,7 @@ Partial Public Class ucInputReentryPermit
             'Permit No is read-only
             Me._strENameFirstName = Me.txtNewGivenName.Text.Trim
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
+            Me._strCName = Me.txtNewCName.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue
             Me._strDOB = Me.txtNewDOB.Text.Trim
             Me._strDOI = Me.txtNewDOI.Text.Trim
@@ -439,6 +480,7 @@ Partial Public Class ucInputReentryPermit
             'Permit No is read-only
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
+            Me._strCName = Me.txtCName.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue
             Me._strDOB = Me.txtDOB.Text.Trim
             Me._strDOI = Me.txtDOI.Text.Trim
@@ -463,6 +505,15 @@ Partial Public Class ucInputReentryPermit
         End Get
         Set(ByVal value As String)
             Me._strENameFirstName = value
+        End Set
+    End Property
+
+    Public Property CName() As String
+        Get
+            Return Me._strCName
+        End Get
+        Set(ByVal value As String)
+            Me._strCName = value
         End Set
     End Property
 

@@ -110,7 +110,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.txtNameChi.HyperLink = Nothing
             Me.txtNameChi.Left = 2.098!
             Me.txtNameChi.Name = "txtNameChi"
-            Me.txtNameChi.Style = "font-family: HA_MingLiu; font-size: 10pt; text-align: left; ddo-char-set: 1"
+            Me.txtNameChi.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; text-align: left; ddo-char-se" & _
+        "t: 0"
             Me.txtNameChi.Text = ""
             Me.txtNameChi.Top = 0.037!
             Me.txtNameChi.Width = 5.676!

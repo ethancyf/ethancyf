@@ -31,10 +31,8 @@ Namespace PrintOut.VSSConsentForm_CHI
 
         Private Sub LoadReport()
 
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
             ' Fill SP Name
-            txtDocumentExplainedBy.Text = GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+            txtDocumentExplainedBy.Text = _udtSP.ChineseName
         End Sub
 
 

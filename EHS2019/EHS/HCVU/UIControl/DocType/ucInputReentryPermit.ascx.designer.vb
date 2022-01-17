@@ -149,6 +149,42 @@ Partial Public Class ucInputReentryPermit
     Protected WithEvents imgENameError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblCNameOriginalText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCNameOriginalText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCNameOriginal control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCNameOriginal As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCName As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgCNameError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCNameError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''lblGenderOriginalText control.
     '''</summary>
     '''<remarks>
@@ -399,6 +435,33 @@ Partial Public Class ucInputReentryPermit
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNewENameGivenNameTips As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNewCNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewCNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtNewCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewCName As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgNewCNameErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgNewCNameErr As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''lblNewGenderText control.

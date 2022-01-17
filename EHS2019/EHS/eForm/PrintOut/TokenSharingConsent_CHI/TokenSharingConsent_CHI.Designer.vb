@@ -165,7 +165,7 @@
             Me.txtApplicantName.Height = 0.3125!
             Me.txtApplicantName.Left = 4.875!
             Me.txtApplicantName.Name = "txtApplicantName"
-            Me.txtApplicantName.Style = "font-family: HA_MingLiu; font-size: 15.75pt; text-decoration: underline; ddo-char" & _
+            Me.txtApplicantName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 15.75pt; text-decoration: underline; ddo-char" & _
         "-set: 136"
             Me.txtApplicantName.Text = Nothing
             Me.txtApplicantName.Top = 6.375!

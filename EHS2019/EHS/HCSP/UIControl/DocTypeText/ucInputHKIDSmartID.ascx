@@ -42,12 +42,12 @@
                     <tr>
                         <td class="tableCellStyle" style="height: 19px; " valign="top">
                             <asp:Label ID="lblEName" runat="server" CssClass="tableText"></asp:Label>
-                            <asp:Label ID="lblCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
+                            <asp:Label ID="lblCName" runat="server" CssClass="tableText TextChineseName"></asp:Label></td>
                         <td class="tableCellStyle" style="height: 19px" valign="top">
                             <asp:Panel ID="panEnameSmartID" runat="server" Width="100%">
                             <asp:Label ID="lblENameSmartID" runat="server" CssClass="tableText"></asp:Label>
                                 <asp:Label
-                                    ID="lblCNameSmartID" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></asp:Panel>
+                                    ID="lblCNameSmartID" runat="server" CssClass="tableText TextChineseName"></asp:Label></asp:Panel>
                         </td>
                     </tr>
                     <tr>

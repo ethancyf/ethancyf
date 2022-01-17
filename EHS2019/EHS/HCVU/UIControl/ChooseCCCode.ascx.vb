@@ -273,7 +273,7 @@ Partial Public Class ChooseCCCode
                 dtCCCode = udteHSAccountMaintBLL.getCCCTail(strCode)
                 If dtCCCode.Rows.Count > 0 Then
                     ddlCCCode.DataSource = dtCCCode
-                    ddlCCCode.DataTextField = "Big5"
+                    ddlCCCode.DataTextField = "ConvertedCharacter"
                     ddlCCCode.DataValueField = "CCC_Tail"
                     ddlCCCode.DataBind()
                     ddlCCCode.Enabled = True
@@ -451,21 +451,6 @@ Partial Public Class ChooseCCCode
             End If
         End If
     End Sub
-
-    Private Function getCCCTail(ByVal strcccode As String, ByRef strDisplay As String) As String
-        Dim strRes As String
-        Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-        strRes = String.Empty
-        strRes = udtCCCodeBLL.GetCCCodeDesc(strcccode, strDisplay)
-        Return strRes
-    End Function
-
-    Private Function getCCCTail(ByVal strcccode As String) As DataTable
-        Dim dtRes As DataTable
-        Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-        dtRes = udtCCCodeBLL.GetCCCodeDesc(strcccode)
-        Return dtRes
-    End Function
 
 
     ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [Start][Winnie] Step 1

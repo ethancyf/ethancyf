@@ -3958,11 +3958,14 @@ Partial Public Class VaccinationFileRectification ' 010414
         Dim dtPerm As DataTable = Session(SESS.DetailEntryDT)
         Dim dicClassNameNoCount As New Dictionary(Of String, Integer)
         Dim udtValidator As New Common.Validation.Validator
+        Dim udtGeneralFunction As GeneralFunction = New GeneralFunction
+
         Dim dtmNow As Date = (New GeneralFunction).GetSystemDateTime.Date
 
         ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[Start][Raiman]
         ' -------------------------------------------------------------------------------
-        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = (New DocTypeBLL).getSchemeDocTypeByScheme(udtStudentFileHeader.SchemeCode)
+        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = (New DocTypeBLL).getSchemeDocTypeBySchemeClaimType(udtStudentFileHeader.SchemeCode, _
+                                                                                                                      SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
         ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[End][Raiman]
 
         For Each n As StudentFileDocumentType In lstSFDocType
@@ -4137,18 +4140,31 @@ Partial Public Class VaccinationFileRectification ' 010414
             If udtValidator.ContainsFullWidthChar(dr("Name_CH_Excel")) Then
                 lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "ChineseName")))
             Else
-                Select Case strDocCode
-                    Case StudentFileBLL.StudentFileDocTypeCode.HKBC_IC,
-                        StudentFileBLL.StudentFileDocTypeCode.HKIC,
-                        StudentFileBLL.StudentFileDocTypeCode.EC,
-                        StudentFileBLL.StudentFileDocTypeCode.OTHER
-                        If dr("Name_CH_Excel") <> String.Empty AndAlso dr("Name_CH_Excel").ToString.Trim.Length > udtStudentFileSetting.Upload_NameCHLengthHardLimit Then
-                            lstUploadError.Add(udtStudentFileUploadErrorDesc.ChiName_ExceedMaxLength)
+                Dim strChineseName As String = String.Empty
+                If dr("Name_CH_Excel").ToString.Trim <> "*" Then
+                    strChineseName = dr("Name_CH_Excel").ToString.Trim
+                End If
+
+                If strChineseName <> String.Empty Then
+                    ' Length
+                    If udtGeneralFunction.UTF32_Length(strChineseName) > udtStudentFileSetting.Upload_NameCHLengthHardLimit Then
+                        lstUploadError.Add(udtStudentFileUploadErrorDesc.ChiName_ExceedMaxLength)
+
+                    Else
+                        'Invalid Character
+                        Dim lstInvalidChar As New List(Of String)
+                        Dim strAccountDocCode As String = dr("Doc_Code").ToString.Trim
+
+                        If dr("Doc_Code").ToString.Trim = StudentFileBLL.StudentFileDocTypeCode.HKBC_IC Then
+                            strAccountDocCode = DocTypeModel.DocTypeCode.HKIC
                         End If
 
-                    Case Else
-                        ' Do nothing
-                End Select
+                        If udtValidator.IsValidChiName(strChineseName, strAccountDocCode, lstInvalidChar) = False Then
+                            lstUploadWarning.Add(udtStudentFileUploadErrorDesc.ChiName_Invalid)
+                        End If
+
+                    End If
+                End If
 
             End If
 
@@ -4872,21 +4888,20 @@ Partial Public Class VaccinationFileRectification ' 010414
             ' Chinese name
             If drOut("Name_CH_Excel") = "*" Then drOut("Name_CH_Excel") = String.Empty
 
-            ' CRE19-001-01 (VSS 2019 - Batch Upload) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            Dim strDocCode As String = drOut("Doc_Code").ToString.Trim
+            Dim strStudentDocCode As String = drOut("Doc_Code").ToString.Trim
+            Dim strAccountDocCode As String = String.Empty
 
-            Select Case strDocCode
-                Case StudentFileBLL.StudentFileDocTypeCode.HKBC_IC,
-                    StudentFileBLL.StudentFileDocTypeCode.HKIC,
-                    StudentFileBLL.StudentFileDocTypeCode.EC,
-                    StudentFileBLL.StudentFileDocTypeCode.OTHER
-                    drOut("Name_CH") = drOut("Name_CH_Excel")
+            If strStudentDocCode = StudentFileBLL.StudentFileDocTypeCode.HKBC_IC Then
+                strAccountDocCode = DocTypeModel.DocTypeCode.HKIC
+            Else
+                strAccountDocCode = strStudentDocCode
+            End If
 
-                Case Else
-                    drOut("Name_CH") = String.Empty
-            End Select
-            ' CRE19-001-01 (VSS 2019 - Batch Upload) [End][Winnie]
+            If DocTypeBLL.IsChineseNameAvailable(strAccountDocCode) Then
+                drOut("Name_CH") = drOut("Name_CH_Excel")
+            Else
+                drOut("Name_CH") = String.Empty
+            End If
 
             ' English surname
             If drOut("Given_Name_EN") <> String.Empty Then
@@ -4930,7 +4945,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             ' ----------------------------------------------------------------------------------------
             ' Other Field
             ' Date of Issue
-            Select Case strDocCode
+            Select Case strStudentDocCode
                 Case StudentFileBLL.StudentFileDocTypeCode.HKIC,
                     StudentFileBLL.StudentFileDocTypeCode.DI,
                     StudentFileBLL.StudentFileDocTypeCode.REPMT,
@@ -4943,7 +4958,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
 
             ' Permit to Remain Until
-            Select Case strDocCode
+            Select Case strStudentDocCode
                 Case StudentFileBLL.StudentFileDocTypeCode.ID235B,
                     StudentFileBLL.StudentFileDocTypeCode.OTHER
                     ' Do nothing
@@ -4953,7 +4968,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
 
             ' Passport No.
-            Select Case strDocCode
+            Select Case strStudentDocCode
                 Case StudentFileBLL.StudentFileDocTypeCode.VISA,
                     StudentFileBLL.StudentFileDocTypeCode.OTHER
                     ' Do nothing
@@ -4963,7 +4978,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
 
             ' EC_Serial_No, EC_Reference_No
-            Select Case strDocCode
+            Select Case strStudentDocCode
                 Case StudentFileBLL.StudentFileDocTypeCode.EC,
                     StudentFileBLL.StudentFileDocTypeCode.OTHER
 
@@ -6586,11 +6601,17 @@ Partial Public Class VaccinationFileRectification ' 010414
         Dim udtDocTypeModelList As DocType.DocTypeModelCollection
 
         Dim udtStudentFileBLL As New StudentFileBLL
+        Dim udtCCCodeBLL As New CCCode.CCCodeBLL
         Dim dtSelected As DataTable = Nothing
         Dim drSelected As DataRow = Nothing
         Dim blnTSMP As Boolean = True
 
         Dim eStudentFileLocation As StudentFileBLL.StudentFileLocation = Session(SESS.AcctEditFileLocation)
+
+        ' --------------------
+        ' Set default value
+        ' --------------------
+        Me.lblRectifyInvalidCharacter.Visible = False
 
         ' --------------------
         ' Get entry by session
@@ -6930,12 +6951,12 @@ Partial Public Class VaccinationFileRectification ' 010414
                             .ENameSurName = CStr(drVaccFileRecord("Surname_EN")).Trim
                             .ENameFirstName = CStr(drVaccFileRecord("Given_Name_EN")).Trim
                             .CName = strCName
-                            .CCCode1 = getCCCode(strCName, 1)
-                            .CCCode2 = getCCCode(strCName, 2)
-                            .CCCode3 = getCCCode(strCName, 3)
-                            .CCCode4 = getCCCode(strCName, 4)
-                            .CCCode5 = getCCCode(strCName, 5)
-                            .CCCode6 = getCCCode(strCName, 6)
+                            .CCCode1 = udtCCCodeBLL.getCCCodeForChiName(strCName, 1)
+                            .CCCode2 = udtCCCodeBLL.getCCCodeForChiName(strCName, 2)
+                            .CCCode3 = udtCCCodeBLL.getCCCodeForChiName(strCName, 3)
+                            .CCCode4 = udtCCCodeBLL.getCCCodeForChiName(strCName, 4)
+                            .CCCode5 = udtCCCodeBLL.getCCCodeForChiName(strCName, 5)
+                            .CCCode6 = udtCCCodeBLL.getCCCodeForChiName(strCName, 6)
                             .DOB = IIf(IsDBNull(drVaccFileRecord("DOB")), Nothing, drVaccFileRecord("DOB"))
                             .ExactDOB = CStr(drVaccFileRecord("Exact_DOB")).Trim
                             .Gender = CStr(drVaccFileRecord("Sex")).Trim
@@ -7188,7 +7209,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     lblRectifyChiName.Text = String.Format("{0}", drVaccFileRecord("Name_CH_Excel"))
                     lblRectifyChiName.Style.Add("color", "#4d4d4d")
                     lblRectifyChiName.Style.Remove("font-style")
-                    lblRectifyChiName.Style.Add("font-family", "HA_MingLiu")
+                    lblRectifyChiName.Style.Remove("font-family")
                 Else
                     lblRectifyChiName.Text = String.Format("({0})", GetGlobalResourceObject("Text", "NotProvided"))
                     lblRectifyChiName.Style.Add("color", "#aaaaaa")
@@ -7375,6 +7396,17 @@ Partial Public Class VaccinationFileRectification ' 010414
         ' 4. Store EHSAccount object to session 
         ' ---------------------------------------------------------
         _udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctionCode)
+
+        ' ---------------------------------------------------------
+        ' 5. Check "Name in Chinese"
+        ' ---------------------------------------------------------
+        If CStr(drVaccFileRecord("Name_CH_Excel")).Trim <> String.Empty Then
+            Dim lstInvalidChar As New List(Of String)
+
+            If Not _udtValidator.IsValidChiName(String.Format("{0}", drVaccFileRecord("Name_CH_Excel")), strDocCode, lstInvalidChar) Then
+                lblRectifyInvalidCharacter.Visible = True
+            End If
+        End If
 
     End Sub
 
@@ -7681,8 +7713,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                         lbl.ID = "lblFieldDiff1_NameCH"
                         lbl.Text = strNameCH
                         lbl.Style.Add("font-size", "16px")
-                        lbl.Style.Add("font-family", "HA_MingLiu")
-                        lbl.CssClass = "tableText"
+                        lbl.CssClass = "tableText TextChineseName"
 
                         divFieldDiff1.Controls.Add(lbl)
                     End If
@@ -7738,14 +7769,9 @@ Partial Public Class VaccinationFileRectification ' 010414
                 tdAcctInfo.Width = "480px"
                 tdFieldDiff.Width = "320px"
 
-                'If Session("language") = Lang.TradChinese Or Session("language") = Lang.SimpChinese Then
-                '    divFieldDiff2.Style.Add("top", "77px")
-                '    divFieldDiff3.Style.Add("top", "82px")
-                'Else
-                divFieldDiff1.Style.Add("top", "71px")
-                divFieldDiff2.Style.Add("top", "76px")
-                divFieldDiff3.Style.Add("top", "81px")
-                'End If
+                divFieldDiff1.Style.Add("top", "56px")
+                divFieldDiff2.Style.Add("top", "61px")
+                divFieldDiff3.Style.Add("top", "66px")
 
                 If lstFieldDiff.Contains(FieldDifference.DOB) Then
                     Dim dtmDOB As Date = drUploadInfo("Original_DOB")
@@ -7758,8 +7784,25 @@ Partial Public Class VaccinationFileRectification ' 010414
                     divFieldDiff1.Controls.Add(span)
                 End If
 
-                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                If lstFieldDiff.Contains(FieldDifference.EngName) Or lstFieldDiff.Contains(FieldDifference.ChineseName) Then
+
+                    'English Name
                     lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+
+                    'Chinese Name
+                    Dim strNameCH As String = String.Empty
+                    If lstFieldDiff.Contains(FieldDifference.ChineseName) And CStr(drUploadInfo("Original_NameCN")).Trim <> String.Empty Then
+                        strNameCH = String.Format("({0})", drUploadInfo("Original_NameCN"))
+
+                        Dim lbl As New Label
+                        lbl.ID = "lblFieldDiff2_NameCH"
+                        lbl.Text = strNameCH
+                        lbl.Style.Add("font-size", "16px")
+                        lbl.CssClass = "tableText TextChineseName"
+
+                        divFieldDiff2.Controls.Add(lbl)
+                    End If
+
                     lblFieldDiff2.Visible = True
                 Else
                     span = New HtmlGenericControl("span")
@@ -7847,8 +7890,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                         lbl.ID = "lblFieldDiff1_NameCH"
                         lbl.Text = strNameCH
                         lbl.Style.Add("font-size", "16px")
-                        lbl.Style.Add("font-family", "HA_MingLiu")
-                        lbl.CssClass = "tableText"
+                        lbl.CssClass = "tableText TextChineseName"
 
                         divFieldDiff4.Controls.Add(lbl)
                     End If
@@ -7894,13 +7936,30 @@ Partial Public Class VaccinationFileRectification ' 010414
                 tdAcctInfo.Width = "480px"
                 tdFieldDiff.Width = "320px"
 
-                divFieldDiff1.Style.Add("top", "54px")
-                divFieldDiff2.Style.Add("top", "59px")
-                divFieldDiff3.Style.Add("top", "64px")
-                divFieldDiff4.Style.Add("top", "69px")
+                divFieldDiff1.Style.Add("top", "71px")
+                divFieldDiff2.Style.Add("top", "76px")
+                divFieldDiff3.Style.Add("top", "81px")
+                divFieldDiff4.Style.Add("top", "86px")
 
-                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                If lstFieldDiff.Contains(FieldDifference.EngName) Or lstFieldDiff.Contains(FieldDifference.ChineseName) Then
+
+                    'English Name
                     lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+
+                    'Chinese Name
+                    Dim strNameCH As String = String.Empty
+                    If lstFieldDiff.Contains(FieldDifference.ChineseName) And CStr(drUploadInfo("Original_NameCN")).Trim <> String.Empty Then
+                        strNameCH = String.Format("({0})", drUploadInfo("Original_NameCN"))
+
+                        Dim lbl As New Label
+                        lbl.ID = "lblFieldDiff1_NameCH"
+                        lbl.Text = strNameCH
+                        lbl.Style.Add("font-size", "16px")
+                        lbl.CssClass = "tableText TextChineseName"
+
+                        divFieldDiff1.Controls.Add(lbl)
+                    End If
+
                     lblFieldDiff1.Visible = True
                 Else
                     span = New HtmlGenericControl("span")
@@ -7960,9 +8019,25 @@ Partial Public Class VaccinationFileRectification ' 010414
                 divFieldDiff3.Style.Add("top", "64px")
                 divFieldDiff4.Style.Add("top", "69px")
 
-                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                If lstFieldDiff.Contains(FieldDifference.EngName) Or lstFieldDiff.Contains(FieldDifference.ChineseName) Then
+
                     'English Name
                     lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+
+                    'Chinese Name
+                    Dim strNameCH As String = String.Empty
+                    If lstFieldDiff.Contains(FieldDifference.ChineseName) And CStr(drUploadInfo("Original_NameCN")).Trim <> String.Empty Then
+                        strNameCH = String.Format("({0})", drUploadInfo("Original_NameCN"))
+
+                        Dim lbl As New Label
+                        lbl.ID = "lblFieldDiff1_NameCH"
+                        lbl.Text = strNameCH
+                        lbl.Style.Add("font-size", "16px")
+                        lbl.CssClass = "tableText TextChineseName"
+
+                        divFieldDiff1.Controls.Add(lbl)
+                    End If
+
                     lblFieldDiff1.Visible = True
                 Else
                     span = New HtmlGenericControl("span")
@@ -8019,9 +8094,25 @@ Partial Public Class VaccinationFileRectification ' 010414
                 divFieldDiff3.Style.Add("top", "64px")
                 divFieldDiff4.Style.Add("top", "69px")
 
-                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                If lstFieldDiff.Contains(FieldDifference.EngName) Or lstFieldDiff.Contains(FieldDifference.ChineseName) Then
+
                     'English Name
                     lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+
+                    'Chinese Name
+                    Dim strNameCH As String = String.Empty
+                    If lstFieldDiff.Contains(FieldDifference.ChineseName) And CStr(drUploadInfo("Original_NameCN")).Trim <> String.Empty Then
+                        strNameCH = String.Format("({0})", drUploadInfo("Original_NameCN"))
+
+                        Dim lbl As New Label
+                        lbl.ID = "lblFieldDiff1_NameCH"
+                        lbl.Text = strNameCH
+                        lbl.Style.Add("font-size", "16px")
+                        lbl.CssClass = "tableText TextChineseName"
+
+                        divFieldDiff1.Controls.Add(lbl)
+                    End If
+
                     lblFieldDiff1.Visible = True
                 Else
                     span = New HtmlGenericControl("span")
@@ -8088,9 +8179,25 @@ Partial Public Class VaccinationFileRectification ' 010414
                     divFieldDiff1.Controls.Add(span)
                 End If
 
-                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                If lstFieldDiff.Contains(FieldDifference.EngName) Or lstFieldDiff.Contains(FieldDifference.ChineseName) Then
+
                     'English Name
                     lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+
+                    'Chinese Name
+                    Dim strNameCH As String = String.Empty
+                    If lstFieldDiff.Contains(FieldDifference.ChineseName) And CStr(drUploadInfo("Original_NameCN")).Trim <> String.Empty Then
+                        strNameCH = String.Format("({0})", drUploadInfo("Original_NameCN"))
+
+                        Dim lbl As New Label
+                        lbl.ID = "lblFieldDiff2_NameCH"
+                        lbl.Text = strNameCH
+                        lbl.Style.Add("font-size", "16px")
+                        lbl.CssClass = "tableText TextChineseName"
+
+                        divFieldDiff2.Controls.Add(lbl)
+                    End If
+
                     lblFieldDiff2.Visible = True
                 Else
                     span = New HtmlGenericControl("span")
@@ -8135,13 +8242,30 @@ Partial Public Class VaccinationFileRectification ' 010414
                 '    divFieldDiff2.Style.Add("top", "77px")
                 '    divFieldDiff3.Style.Add("top", "82px")
                 'Else
-                divFieldDiff1.Style.Add("top", "67px")
-                divFieldDiff2.Style.Add("top", "73px")
-                divFieldDiff3.Style.Add("top", "78px")
+                divFieldDiff1.Style.Add("top", "90px")
+                divFieldDiff2.Style.Add("top", "95px")
+                divFieldDiff3.Style.Add("top", "100px")
                 'End If
 
-                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                If lstFieldDiff.Contains(FieldDifference.EngName) Or lstFieldDiff.Contains(FieldDifference.ChineseName) Then
+
+                    'English Name
                     lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+
+                    'Chinese Name
+                    Dim strNameCH As String = String.Empty
+                    If lstFieldDiff.Contains(FieldDifference.ChineseName) And CStr(drUploadInfo("Original_NameCN")).Trim <> String.Empty Then
+                        strNameCH = String.Format("({0})", drUploadInfo("Original_NameCN"))
+
+                        Dim lbl As New Label
+                        lbl.ID = "lblFieldDiff1_NameCH"
+                        lbl.Text = strNameCH
+                        lbl.Style.Add("font-size", "16px")
+                        lbl.CssClass = "tableText TextChineseName"
+
+                        divFieldDiff1.Controls.Add(lbl)
+                    End If
+
                     lblFieldDiff1.Visible = True
                 Else
                     span = New HtmlGenericControl("span")
@@ -8229,9 +8353,9 @@ Partial Public Class VaccinationFileRectification ' 010414
                 tdAcctInfo.Width = "480px"
                 tdFieldDiff.Width = "320px"
 
-                divFieldDiff1.Style.Add("top", "54px")
-                divFieldDiff2.Style.Add("top", "59px")
-                divFieldDiff3.Style.Add("top", "64px")
+                divFieldDiff1.Style.Add("top", "86px")
+                divFieldDiff2.Style.Add("top", "91px")
+                divFieldDiff3.Style.Add("top", "96px")
 
                 If lstFieldDiff.Contains(FieldDifference.DOB) Then
                     Dim dtmDOB As Date = drUploadInfo("Original_DOB")
@@ -8291,9 +8415,25 @@ Partial Public Class VaccinationFileRectification ' 010414
                     divFieldDiff1.Controls.Add(span)
                 End If
 
-                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                If lstFieldDiff.Contains(FieldDifference.EngName) Or lstFieldDiff.Contains(FieldDifference.ChineseName) Then
+
                     'English Name
                     lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+
+                    'Chinese Name
+                    Dim strNameCH As String = String.Empty
+                    If lstFieldDiff.Contains(FieldDifference.ChineseName) And CStr(drUploadInfo("Original_NameCN")).Trim <> String.Empty Then
+                        strNameCH = String.Format("({0})", drUploadInfo("Original_NameCN"))
+
+                        Dim lbl As New Label
+                        lbl.ID = "lblFieldDiff2_NameCH"
+                        lbl.Text = strNameCH
+                        lbl.Style.Add("font-size", "16px")
+                        lbl.CssClass = "tableText TextChineseName"
+
+                        divFieldDiff2.Controls.Add(lbl)
+                    End If
+
                     lblFieldDiff2.Visible = True
                 Else
                     span = New HtmlGenericControl("span")
@@ -8329,18 +8469,28 @@ Partial Public Class VaccinationFileRectification ' 010414
     Private Function CheckFieldDiff(ByVal udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, ByVal drUploadInfo As DataRow) As List(Of FieldDifference)
         Dim lstFieldDiff As New List(Of FieldDifference)
 
+        'EName
+        If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
+            lstFieldDiff.Add(FieldDifference.EngName)
+        End If
+
+        'CName
+        If DocTypeBLL.IsChineseNameAvailable(udtPersonalInfo.DocCode) Then
+            If drUploadInfo("Original_NameCN") <> String.Empty Then
+                If udtPersonalInfo.CName <> drUploadInfo("Original_NameCN") Then
+                    lstFieldDiff.Add(FieldDifference.ChineseName)
+                End If
+            End If
+        End If
+
+        'Gender
+        If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
+            lstFieldDiff.Add(FieldDifference.Sex)
+        End If
+
+
         Select Case udtPersonalInfo.DocCode
             Case DocTypeModel.DocTypeCode.HKIC
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
-
-                'If Not IsDBNull(drUploadInfo("Original_NameCN")) AndAlso CStr(drUploadInfo("Original_NameCN")) <> String.Empty Then
-                If drUploadInfo("Original_NameCN") <> String.Empty Then
-                    If udtPersonalInfo.CName <> drUploadInfo("Original_NameCN") Then
-                        lstFieldDiff.Add(FieldDifference.ChineseName)
-                    End If
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8350,10 +8500,6 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
                 If Not IsDBNull(drUploadInfo("Original_DateOfIssue")) Then
@@ -8365,9 +8511,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
             Case DocTypeModel.DocTypeCode.HKBC
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8379,21 +8522,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     lstFieldDiff.Add(FieldDifference.DOB)
                 End If
 
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
-                End If
-
             Case DocTypeModel.DocTypeCode.EC
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
-
-                'If Not IsDBNull(drUploadInfo("Original_NameCN")) AndAlso CStr(drUploadInfo("Original_NameCN")) <> String.Empty Then
-                If drUploadInfo("Original_NameCN") <> String.Empty Then
-                    If udtPersonalInfo.CName <> drUploadInfo("Original_NameCN") Then
-                        lstFieldDiff.Add(FieldDifference.ChineseName)
-                    End If
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8416,10 +8545,6 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 End If
 
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
-                End If
-
                 If Not IsDBNull(drUploadInfo("Original_DateOfIssue")) Then
                     Dim dtmDOI As Date = drUploadInfo("Original_DateOfIssue")
 
@@ -8439,10 +8564,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                     Dim _udtValidator As New Validator
                     Dim blnValid As Boolean = True
                     Dim strECReferenceNo As String = String.Empty
-
-                    'If Not _udtValidator.chkReferenceNo(drUploadInfo("Original_ECReferenceNo"), False) Is Nothing Then
-                    '    blnValid = False
-                    'End If
 
                     'Checking Rules 1:
                     If IsDBNull(drUploadInfo("Original_EC_ReferenceNoOtherFormat")) AndAlso udtPersonalInfo.ECReferenceNoOtherFormat = True Then
@@ -8477,9 +8598,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
             Case DocTypeModel.DocTypeCode.DI
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8489,10 +8607,6 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
                 If Not IsDBNull(drUploadInfo("Original_DateOfIssue")) Then
@@ -8504,9 +8618,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
             Case DocTypeModel.DocTypeCode.REPMT
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8516,10 +8627,6 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
                 If Not IsDBNull(drUploadInfo("Original_DateOfIssue")) Then
@@ -8531,9 +8638,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
             Case DocTypeModel.DocTypeCode.ID235B
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8543,10 +8647,6 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
                 If Not IsDBNull(drUploadInfo("Original_PermitToRemainUntil")) Then
@@ -8558,9 +8658,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
             Case DocTypeModel.DocTypeCode.VISA
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8570,10 +8667,6 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
                 If Not IsDBNull(drUploadInfo("Original_ForeignPassportNo")) AndAlso CStr(drUploadInfo("Original_ForeignPassportNo")) <> String.Empty Then
@@ -8585,9 +8678,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
             Case DocTypeModel.DocTypeCode.ADOPC
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8597,16 +8687,9 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
             Case DocTypeModel.DocTypeCode.OW
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8616,16 +8699,9 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
             Case DocTypeModel.DocTypeCode.TW
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8635,16 +8711,9 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
             Case DocTypeModel.DocTypeCode.RFNo8
-                If udtPersonalInfo.EName <> drUploadInfo("Original_NameEN") Then
-                    lstFieldDiff.Add(FieldDifference.EngName)
-                End If
 
                 Dim dtmDOB As Date = CDate(drUploadInfo("Original_DOB"))
                 Dim strUploadExactDOB As String = CStr(drUploadInfo("Original_Exact_DOB"))
@@ -8654,10 +8723,6 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                 If strDOB <> strUploadDOB Or udtPersonalInfo.ExactDOB <> strUploadExactDOB Then
                     lstFieldDiff.Add(FieldDifference.DOB)
-                End If
-
-                If udtPersonalInfo.Gender <> CStr(drUploadInfo("Original_SEX")).Trim Then
-                    lstFieldDiff.Add(FieldDifference.Sex)
                 End If
 
             Case Else
@@ -8694,6 +8759,14 @@ Partial Public Class VaccinationFileRectification ' 010414
             lstFieldDiff.Add(FieldDifference.Sex)
         End If
 
+        If DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode) Then
+            If udtTempPersonalInfo.CName <> String.Empty Then
+                If udtTempPersonalInfo.CName.Trim <> udtEHSPersonalInfo.CName.Trim Then
+                    lstFieldDiff.Add(FieldDifference.ChineseName)
+                End If
+            End If
+        End If
+
         Select Case udtEHSPersonalInfo.DocCode
             Case DocTypeModel.DocTypeCode.ID235B
                 If Not IsNothing(udtTempPersonalInfo.PermitToRemainUntil) Then
@@ -8710,12 +8783,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
             Case DocTypeModel.DocTypeCode.EC
-                If udtTempPersonalInfo.CName <> String.Empty Then
-                    If udtTempPersonalInfo.CName.Trim <> udtEHSPersonalInfo.CName.Trim Then
-                        lstFieldDiff.Add(FieldDifference.ChineseName)
-                    End If
-                End If
-
                 If udtTempPersonalInfo.ECSerialNo <> String.Empty Then
                     If udtTempPersonalInfo.ECSerialNo.Trim <> udtEHSPersonalInfo.ECSerialNo.Trim Then
                         lstFieldDiff.Add(FieldDifference.ECSerialNo)
@@ -8738,12 +8805,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
             Case DocTypeModel.DocTypeCode.HKIC
-                If udtTempPersonalInfo.CName <> String.Empty Then
-                    If udtTempPersonalInfo.CName.Trim <> udtEHSPersonalInfo.CName.Trim Then
-                        lstFieldDiff.Add(FieldDifference.ChineseName)
-                    End If
-                End If
-
                 If Not IsNothing(udtTempPersonalInfo.DateofIssue) Then
                     If Not udtTempPersonalInfo.DateofIssue.Equals(udtEHSPersonalInfo.DateofIssue) Then
                         lstFieldDiff.Add(FieldDifference.DOI)
@@ -8980,14 +9041,8 @@ Partial Public Class VaccinationFileRectification ' 010414
 
         SetAccountField(udtStudentAcctField, udtEHSAccount.SearchDocCode.Trim)
 
-        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
         ' Remove unused fields according to Doc Code
         RemoveUnnecessaryField(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim))
-
-        'If udtEHSAccount.VoucherAccID = String.Empty Then
-        'RemoveUnnecessaryField(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim))
-        'End If
-        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         Select Case udtEHSAccount.SearchDocCode.Trim
 
@@ -9772,7 +9827,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                             udtStudent.NameEN = udtInputPersonalInfo.EName
                             udtStudent.SurnameENOriginal = udtInputPersonalInfo.ENameSurName
                             udtStudent.GivenNameENOriginal = udtInputPersonalInfo.ENameFirstName
-                            If udtInputPersonalInfo.DocCode = DocTypeModel.DocTypeCode.HKIC Or udtInputPersonalInfo.DocCode = DocTypeModel.DocTypeCode.EC Then
+
+                            If DocTypeBLL.IsChineseNameAvailable(udtInputPersonalInfo.DocCode) Then
                                 udtStudent.NameCH = udtInputPersonalInfo.CName
                                 If udtInputPersonalInfo.CName <> String.Empty Then
                                     udtStudent.NameCHExcel = udtInputPersonalInfo.CName
@@ -9782,6 +9838,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                                 udtStudent.NameCH = String.Empty
                                 blnUpdateExcelChiName = False
                             End If
+
                             udtStudent.DOB = udtInputPersonalInfo.DOB
                             udtStudent.Exact_DOB = udtInputPersonalInfo.ExactDOB
                             udtStudent.Sex = udtInputPersonalInfo.Gender
@@ -9944,7 +10001,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                             udtEHSAccountBLL.UpdateEHSAccountRectify(udtOrgEHSAccount, udtEHSAccount, strUpdateBy, dtmCurrentDate, udtDB)
 
 
-                            If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+                            If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                                 If udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
                                     'Permanence
                                     udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
@@ -9980,7 +10037,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                             sm = udtEHSClaimBLL.CreateRectifyAccount(udtStudentFileHeader.SPID, udtOrgEHSAccount, udtNew_EHSAccount, udtDB)
 
-                            If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+                            If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                                 If IsNothing(sm) AndAlso udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
                                     'Permanence
                                     udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
@@ -10082,7 +10139,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                     End If
 
-                    If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+                    If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                         If IsNothing(sm) AndAlso udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
                             'Permanence
                             udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
@@ -10317,7 +10374,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                         drFull.Item("Surname_EN") = udtPersonalInfo.ENameSurName
                         drFull.Item("Given_Name_EN") = udtPersonalInfo.ENameFirstName
                         drFull.Item("Name_CH") = udtPersonalInfo.CName
-                        If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+
+                        If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                             If Not udtInputStudentFile Is Nothing Then
                                 If udtInputStudentFile.NameCHExcel <> String.Empty Then
                                     drFull.Item("Name_CH_Excel") = udtInputStudentFile.NameCHExcel
@@ -10351,7 +10409,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                         dr.Item("Surname_EN") = udtPersonalInfo.ENameSurName
                         dr.Item("Given_Name_EN") = udtPersonalInfo.ENameFirstName
                         dr.Item("Name_CH") = udtPersonalInfo.CName
-                        If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+
+                        If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                             If Not udtInputStudentFile Is Nothing Then
                                 If udtInputStudentFile.NameCHExcel <> String.Empty Then
                                     dr.Item("Name_CH_Excel") = udtInputStudentFile.NameCHExcel
@@ -10532,7 +10591,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                         drFull.Item("Name_CH") = udtPersonalInfo.CName
                         drFull.Item("NameEN_NameCH") = udtPersonalInfo.EName + udtPersonalInfo.CName
                         drFull.Item("Name_CH_Excel") = String.Empty
-                        If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+
+                        If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                             If Not udtInputStudentFile Is Nothing Then
                                 If udtInputStudentFile.NameCHExcel <> String.Empty Then
                                     drFull.Item("Name_CH_Excel") = udtInputStudentFile.NameCHExcel
@@ -10598,7 +10658,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                         dr.Item("Name_CH") = udtPersonalInfo.CName
                         dr.Item("NameEN_NameCH") = udtPersonalInfo.EName + udtPersonalInfo.CName
                         dr.Item("Name_CH_Excel") = String.Empty
-                        If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+
+                        If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                             If Not udtInputStudentFile Is Nothing Then
                                 If udtInputStudentFile.NameCHExcel <> String.Empty Then
                                     dr.Item("Name_CH_Excel") = udtInputStudentFile.NameCHExcel
@@ -11121,7 +11182,8 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtStudent.SurnameENOriginal = udtPersonalInfo.ENameSurName
             udtStudent.GivenNameENOriginal = udtPersonalInfo.ENameFirstName
 
-            If udtPersonalInfo.DocCode = DocTypeModel.DocTypeCode.HKIC Or udtPersonalInfo.DocCode = DocTypeModel.DocTypeCode.EC Then
+
+            If DocTypeBLL.IsChineseNameAvailable(udtPersonalInfo.DocCode) Then
                 udtStudent.NameCH = udtPersonalInfo.CName
                 If udtPersonalInfo.CName <> String.Empty Then
                     udtStudent.NameCHExcel = udtPersonalInfo.CName
@@ -11216,7 +11278,8 @@ Partial Public Class VaccinationFileRectification ' 010414
             drFull.Item("Surname_EN") = udtPersonalInfo.ENameSurName
             drFull.Item("Given_Name_EN") = udtPersonalInfo.ENameFirstName
             drFull.Item("Name_CH") = udtPersonalInfo.CName
-            If udtPersonalInfo.DocCode = DocTypeModel.DocTypeCode.HKIC Or udtPersonalInfo.DocCode = DocTypeModel.DocTypeCode.EC Then
+
+            If DocTypeBLL.IsChineseNameAvailable(udtPersonalInfo.DocCode) Then
                 drFull.Item("Name_CH") = udtPersonalInfo.CName
                 If udtPersonalInfo.CName <> String.Empty Then
                     drFull.Item("Name_CH_Excel") = udtPersonalInfo.CName
@@ -11224,6 +11287,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             Else
                 drFull.Item("Name_CH") = String.Empty
             End If
+
             drFull.Item("DOB") = udtPersonalInfo.DOB
             drFull.Item("Sex") = udtPersonalInfo.Gender
             drFull.Item("Date_of_Issue") = IIf(udtPersonalInfo.DateofIssue Is Nothing, DBNull.Value, udtPersonalInfo.DateofIssue)
@@ -11282,7 +11346,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             dr.Item("Surname_EN") = udtPersonalInfo.ENameSurName
             dr.Item("Given_Name_EN") = udtPersonalInfo.ENameFirstName
             dr.Item("Name_CH") = udtPersonalInfo.CName
-            If udtPersonalInfo.DocCode = DocTypeModel.DocTypeCode.HKIC Or udtPersonalInfo.DocCode = DocTypeModel.DocTypeCode.EC Then
+            If DocTypeBLL.IsChineseNameAvailable(udtPersonalInfo.DocCode) Then
                 dr.Item("Name_CH") = udtPersonalInfo.CName
                 If udtPersonalInfo.CName <> String.Empty Then
                     dr.Item("Name_CH_Excel") = udtPersonalInfo.CName
@@ -11403,7 +11467,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11451,7 +11515,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11475,7 +11539,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11499,7 +11563,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11523,7 +11587,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11547,7 +11611,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11571,7 +11635,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11595,7 +11659,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11619,7 +11683,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     '.IdentityNum = String.Empty
                     '.ENameSurName = String.Empty
                     '.ENameFirstName = String.Empty
-                    .CName = String.Empty
+                    '.CName = String.Empty
                     .CCCode1 = String.Empty
                     .CCCode2 = String.Empty
                     .CCCode3 = String.Empty
@@ -11641,6 +11705,19 @@ Partial Public Class VaccinationFileRectification ' 010414
             Case Else
 
         End Select
+
+        If DocTypeBLL.IsChineseNameAvailable(udtPersonalInfo.DocCode) = False Then
+            With udtPersonalInfo
+                .CName = String.Empty
+                .CCCode1 = String.Empty
+                .CCCode2 = String.Empty
+                .CCCode3 = String.Empty
+                .CCCode4 = String.Empty
+                .CCCode5 = String.Empty
+                .CCCode6 = String.Empty
+            End With
+        End If
+
     End Sub
 
     Private Sub SetAccountField(ByRef udtStudentAcctField As StudentAcctFieldModel, ByVal strDocCode As String)
@@ -11704,7 +11781,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.RegistrationNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    .CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11733,7 +11810,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.HKID
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    .CName = udcInput.CName
+                    .CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11773,7 +11850,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.TravelDocNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    .CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11802,7 +11879,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.REPMTNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    .CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11831,7 +11908,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.BirthEntryNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    .CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11860,7 +11937,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.VISANo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    .CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11889,7 +11966,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.IdentityNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    .CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11918,7 +11995,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.DocumentNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    '.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11947,7 +12024,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.DocumentNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    '.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -11976,7 +12053,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.DocumentNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    .CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -12005,7 +12082,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .IdentityNum = udcInput.DocumentNo
                     .ENameSurName = udcInput.ENameSurName
                     .ENameFirstName = udcInput.ENameFirstName
-                    '.CName = String.Empty
+                    '.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), udcInput.CName, String.Empty)
                     '.CCCode1 = String.Empty
                     '.CCCode2 = String.Empty
                     '.CCCode3 = String.Empty
@@ -12027,6 +12104,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             Case Else
 
         End Select
+
     End Sub
 
     Private Sub GetAccountField(ByRef udtStudentAcctField As StudentAcctFieldModel, ByVal strDocCode As String)
@@ -12089,6 +12167,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.RegistrationNo = _udtFormatter.formatHKID(.IdentityNum.Replace("(", "").Replace(")", ""), False)
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.IsExactDOB = strExactDOB
                     udcInput.DOB = .DOB
                     udcInput.Gender = .Gender
@@ -12183,7 +12262,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.HKID = _udtFormatter.formatHKID(.IdentityNum.Replace("(", "").Replace(")", ""), False)
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
-                    udcInput.CName = .CName
+                    udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
 
                     udcInput.DOB = .DOB
                     udcInput.IsExactDOB = strExactDOB
@@ -12216,6 +12295,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.TravelDocNo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DOB = .DOB
                     udcInput.Gender = .Gender
                     udcInput.DateOfIssue = .DateofIssue
@@ -12230,6 +12310,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.REPMTNo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DateOfBirth = .DOB
                     udcInput.Gender = .Gender
                     udcInput.DateOfIssue = .DateofIssue
@@ -12244,6 +12325,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.BirthEntryNo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DateOfBirth = .DOB
                     udcInput.Gender = .Gender
                     udcInput.PermitRemain = .PermitToRemainUntil
@@ -12258,6 +12340,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.VISANo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DOB = .DOB
                     udcInput.Gender = .Gender
                     udcInput.PassportNo = .Foreign_Passport_No
@@ -12272,6 +12355,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.IdentityNo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DOB = .DOB
                     udcInput.IsExactDOB = "D"
                     udcInput.Gender = .Gender
@@ -12287,6 +12371,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.DocumentNo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    'udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DOB = .DOB
                     udcInput.IsExactDOB = "D"
                     udcInput.Gender = .Gender
@@ -12301,6 +12386,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.DocumentNo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    'udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DOB = .DOB
                     udcInput.IsExactDOB = "D"
                     udcInput.Gender = .Gender
@@ -12315,6 +12401,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.DocumentNo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DOB = .DOB
                     udcInput.IsExactDOB = "D"
                     udcInput.Gender = .Gender
@@ -12329,6 +12416,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     udcInput.DocumentNo = .IdentityNum.Replace("(", "").Replace(")", "")
                     udcInput.ENameSurName = .ENameSurName
                     udcInput.ENameFirstName = .ENameFirstName
+                    'udcInput.CName = IIf(DocTypeBLL.IsChineseNameAvailable(strDocCode), .CName, udcInput.CName)
                     udcInput.DOB = .DOB
                     udcInput.IsExactDOB = "D"
                     udcInput.Gender = .Gender
@@ -12526,7 +12614,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                                 .ValidatedAccFound = udtCurrentStudent.ValidatedAccFound
                             End With
 
-                            If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+                            If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                                 If udtStudent.NameCH <> String.Empty Then
                                     blnUpdateExcelChiName = True
                                 End If
@@ -12768,7 +12856,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                 '6. Update Vaccination File Entry - Name_CH_Excel
                 '==============================================
                 If blnUpdateStudentTempAccInfo Or blnDirectUpdateExistingAccount Then
-                    If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+                    If DocTypeBLL.IsChineseNameAvailable(strDocCode) Then
                         If udtCurrentEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
 
                             'Permanence
@@ -12810,7 +12898,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         _udtAuditLogEntry.AddDescripton("DOB", udcInputHKIC.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputHKIC.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputHKIC.ENameFirstName)
-        _udtAuditLogEntry.AddDescripton("Chiname", udcInputHKIC.CName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputHKIC.CName)
         _udtAuditLogEntry.AddDescripton("CCCode1", udcInputHKIC.CCCode1)
         _udtAuditLogEntry.AddDescripton("CCCode2", udcInputHKIC.CCCode2)
         _udtAuditLogEntry.AddDescripton("CCCode3", udcInputHKIC.CCCode3)
@@ -13195,7 +13283,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'Chinese Name
-        sm = Me._udtValidator.chkChiName(udcInputEC.CName)
+        sm = Me._udtValidator.chkChiName(udcInputEC.CName, DocTypeModel.DocTypeCode.EC)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputEC.SetCNameError(True)
@@ -13266,6 +13354,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         _udtAuditLogEntry.AddDescripton("DOB", udcInputHKBC.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputHKBC.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputHKBC.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputHKBC.CName)
         _udtAuditLogEntry.AddDescripton("DOBInWord", udcInputHKBC.DOBInWord)
         _udtAuditLogEntry.AddDescripton("DOBInWordCase", udcInputHKBC.DOBInWordCase.ToString())
         _udtAuditLogEntry.AddDescripton("ExactDOB", udcInputHKBC.IsExactDOB)
@@ -13365,6 +13454,14 @@ Partial Public Class VaccinationFileRectification ' 010414
             Me.udcAcctEditErrorMessage.AddMessage(sm)
         End If
 
+        'Chinese Name
+        sm = Me._udtValidator.chkChiName(udcInputHKBC.CName, DocTypeModel.DocTypeCode.HKBC)
+        If Not IsNothing(sm) Then
+            isValid = False
+            udcInputHKBC.SetCNameError(True)
+            Me.udcAcctEditErrorMessage.AddMessage(sm)
+        End If
+
         'Gender
         sm = Me._udtValidator.chkGender(udcInputHKBC.Gender)
         If Not IsNothing(sm) Then
@@ -13377,6 +13474,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtEHSAccountPersonalInfo.IdentityNum = udcInputHKBC.RegistrationNo.Replace("(", "").Replace(")", "")
             udtEHSAccountPersonalInfo.ENameSurName = udcInputHKBC.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputHKBC.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputHKBC.CName
             udtEHSAccountPersonalInfo.Gender = udcInputHKBC.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB 'udcInputHKBC.IsExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtFormatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
@@ -13401,6 +13499,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         _udtAuditLogEntry.AddDescripton("DOB", udcInputAdopt.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputAdopt.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputAdopt.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputAdopt.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputAdopt.Gender)
         _udtAuditLogEntry.AddDescripton("DOBInWord", udcInputAdopt.DOBInWord)
         _udtAuditLogEntry.AddDescripton("DOBInWordCase", udcInputAdopt.DOBInWordCase.ToString())
@@ -13441,6 +13540,14 @@ Partial Public Class VaccinationFileRectification ' 010414
         If Not IsNothing(sm) Then
             isValid = False
             udcInputAdopt.SetENameError(True)
+            Me.udcAcctEditErrorMessage.AddMessage(sm)
+        End If
+
+        'Chinese Name
+        sm = Me._udtValidator.chkChiName(udcInputAdopt.CName, DocTypeModel.DocTypeCode.ADOPC)
+        If Not IsNothing(sm) Then
+            isValid = False
+            udcInputAdopt.SetCNameError(True)
             Me.udcAcctEditErrorMessage.AddMessage(sm)
         End If
 
@@ -13513,6 +13620,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtEHSAccountPersonalInfo.AdoptionPrefixNum = udcInputAdopt.PerfixNo
             udtEHSAccountPersonalInfo.ENameSurName = udcInputAdopt.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputAdopt.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputAdopt.CName
             udtEHSAccountPersonalInfo.Gender = udcInputAdopt.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB 'udcInputAdopt.IsExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtFormatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
@@ -13536,6 +13644,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         _udtAuditLogEntry.AddDescripton("DOB", udcInputDI.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputDI.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputDI.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputDI.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputDI.Gender)
         _udtAuditLogEntry.AddDescripton("DOI", udcInputDI.DateOfIssue)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputDI.DOB)
@@ -13575,6 +13684,14 @@ Partial Public Class VaccinationFileRectification ' 010414
         If Not IsNothing(sm) Then
             isValid = False
             udcInputDI.SetENameError(True)
+            Me.udcAcctEditErrorMessage.AddMessage(sm)
+        End If
+
+        'Chinese Name
+        sm = Me._udtValidator.chkChiName(udcInputDI.CName, DocTypeModel.DocTypeCode.DI)
+        If Not IsNothing(sm) Then
+            isValid = False
+            udcInputDI.SetCNameError(True)
             Me.udcAcctEditErrorMessage.AddMessage(sm)
         End If
 
@@ -13622,6 +13739,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtEHSAccountPersonalInfo.IdentityNum = udcInputDI.TravelDocNo
             udtEHSAccountPersonalInfo.ENameSurName = udcInputDI.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputDI.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputDI.CName
             udtEHSAccountPersonalInfo.Gender = udcInputDI.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
@@ -13645,6 +13763,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         _udtAuditLogEntry.AddDescripton("BirthEntryNo", udcInputID235B.BirthEntryNo)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputID235B.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputID235B.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputID235B.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputID235B.Gender)
         _udtAuditLogEntry.AddDescripton("RemainUntil", udcInputID235B.PermitRemain)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputID235B.DateOfBirth)
@@ -13684,6 +13803,14 @@ Partial Public Class VaccinationFileRectification ' 010414
         If Not IsNothing(sm) Then
             isValid = False
             udcInputID235B.SetENameError(True)
+            Me.udcAcctEditErrorMessage.AddMessage(sm)
+        End If
+
+        'Chinese Name
+        sm = Me._udtValidator.chkChiName(udcInputID235B.CName, DocTypeModel.DocTypeCode.ID235B)
+        If Not IsNothing(sm) Then
+            isValid = False
+            udcInputID235B.SetCNameError(True)
             Me.udcAcctEditErrorMessage.AddMessage(sm)
         End If
 
@@ -13727,6 +13854,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtEHSAccountPersonalInfo.IdentityNum = udcInputID235B.BirthEntryNo
             udtEHSAccountPersonalInfo.ENameSurName = udcInputID235B.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputID235B.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputID235B.CName
             udtEHSAccountPersonalInfo.Gender = udcInputID235B.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
@@ -13749,6 +13877,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         _udtAuditLogEntry.AddDescripton("REPMTNo", udcInputReentryPermit.REPMTNo)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputReentryPermit.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputReentryPermit.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputReentryPermit.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputReentryPermit.Gender)
         _udtAuditLogEntry.AddDescripton("DOI", udcInputReentryPermit.DateOfIssue)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputReentryPermit.DateOfBirth)
@@ -13788,6 +13917,14 @@ Partial Public Class VaccinationFileRectification ' 010414
         If Not IsNothing(sm) Then
             isValid = False
             udcInputReentryPermit.SetENameError(True)
+            Me.udcAcctEditErrorMessage.AddMessage(sm)
+        End If
+
+        'Chinese Name
+        sm = Me._udtValidator.chkChiName(udcInputReentryPermit.CName, DocTypeModel.DocTypeCode.REPMT)
+        If Not IsNothing(sm) Then
+            isValid = False
+            udcInputReentryPermit.SetCNameError(True)
             Me.udcAcctEditErrorMessage.AddMessage(sm)
         End If
 
@@ -13835,6 +13972,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtEHSAccountPersonalInfo.IdentityNum = udcInputReentryPermit.REPMTNo
             udtEHSAccountPersonalInfo.ENameSurName = udcInputReentryPermit.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputReentryPermit.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputReentryPermit.CName
             udtEHSAccountPersonalInfo.Gender = udcInputReentryPermit.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtFormatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
@@ -13857,6 +13995,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         _udtAuditLogEntry.AddDescripton("VISANo", udcInputVisa.VISANo)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputVisa.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputVisa.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputVisa.CName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputVisa.Gender)
         _udtAuditLogEntry.AddDescripton("PassportNo", udcInputVisa.PassportNo)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputVisa.DOB)
@@ -13906,6 +14045,14 @@ Partial Public Class VaccinationFileRectification ' 010414
             Me.udcAcctEditErrorMessage.AddMessage(sm)
         End If
 
+        'Chinese Name
+        sm = Me._udtValidator.chkChiName(udcInputVisa.CName, DocTypeModel.DocTypeCode.VISA)
+        If Not IsNothing(sm) Then
+            isValid = False
+            udcInputVisa.SetCNameError(True)
+            Me.udcAcctEditErrorMessage.AddMessage(sm)
+        End If
+
         'Gender
         sm = Me._udtValidator.chkGender(udcInputVisa.Gender)
         If Not IsNothing(sm) Then
@@ -13931,6 +14078,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtEHSAccountPersonalInfo.IdentityNum = udcInputVisa.VISANo
             udtEHSAccountPersonalInfo.ENameSurName = udcInputVisa.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputVisa.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputVisa.CName
             udtEHSAccountPersonalInfo.Gender = udcInputVisa.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB 'CDate(Me.udtFormatter.convertDate(strDOB, Common.Component.CultureLanguage.English))
@@ -14128,6 +14276,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         _udtAuditLogEntry.AddDescripton("DocumentNo", udcInputRFNo8.DocumentNo)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputRFNo8.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputRFNo8.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Chiname", udcInputRFNo8.CName)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputRFNo8.DOB)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputRFNo8.Gender)
         _udtAuditLogEntry.WriteLog(LogID.LOG00031, AuditLogDesc.Msg00031)
@@ -14181,6 +14330,14 @@ Partial Public Class VaccinationFileRectification ' 010414
             Me.udcAcctEditErrorMessage.AddMessage(sm)
         End If
 
+        'Chinese Name
+        sm = Me._udtValidator.chkChiName(udcInputRFNo8.CName, DocTypeModel.DocTypeCode.RFNo8)
+        If Not IsNothing(sm) Then
+            isValid = False
+            udcInputRFNo8.SetCNameError(True)
+            Me.udcAcctEditErrorMessage.AddMessage(sm)
+        End If
+
         'Gender
         sm = Me._udtValidator.chkGender(udcInputRFNo8.Gender)
         If Not IsNothing(sm) Then
@@ -14193,6 +14350,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtEHSAccountPersonalInfo.IdentityNum = udcInputRFNo8.DocumentNo
             udtEHSAccountPersonalInfo.ENameSurName = udcInputRFNo8.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputRFNo8.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputRFNo8.CName
             udtEHSAccountPersonalInfo.Gender = udcInputRFNo8.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
@@ -14468,20 +14626,6 @@ Partial Public Class VaccinationFileRectification ' 010414
 
         End Select
     End Sub
-
-    Private Function getCCCode(ByVal strChineseName As String, ByVal intPosition As Integer) As String
-
-        If strChineseName.Length >= intPosition Then
-            Dim udtCCCodeBLL As New CCCode.CCCodeBLL
-            Dim strCCCode As String = String.Empty
-
-            strCCCode = udtCCCodeBLL.GetCCCodeByChar(strChineseName.Substring(intPosition - 1, 1))
-
-            Return strCCCode
-        Else
-            Return String.Empty
-        End If
-    End Function
 
     Private Function IsPreCheck() As Boolean
         Dim blnRes As Boolean = False

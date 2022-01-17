@@ -54,7 +54,9 @@
                     <asp:Label ID="lblReadonlyNameText" runat="server" CssClass="tableTitle" 
                         Width="150px"></asp:Label></td>
                 <td valign="top" class="tableCellStyle">
-                    <asp:Label ID="lblReadonlyEName" runat="server" CssClass="tableText"></asp:Label></td>
+                    <asp:Label ID="lblReadonlyEName" runat="server" CssClass="tableText" />
+                    <asp:Label ID="lblReadonlyCName" runat="server" CssClass="tableText TextChineseName" />
+                </td>
             </tr>
             <tr>
                 <td valign="top"  runat="server" id="cellReadonlyGenderText" class="tableCellStyle">
@@ -95,14 +97,17 @@
                 <asp:Label ID="lblReadonlyHorizontalNameText" runat="server" CssClass="tableTitle"
                      Width="160px"></asp:Label></td>
             <td style="width: 300px; word-wrap: break-word; word-break:break-all" valign="top" class="tableCellStyleLite">
-                <asp:Label ID="lblReadonlyHorizontalEName" runat="server" CssClass="tableText" Width="300px"></asp:Label></td>
+                <asp:Label ID="lblReadonlyHorizontalEName" runat="server" CssClass="tableText" />
+                <asp:Label ID="lblReadonlyHorizontalCName" runat="server" CssClass="tableText TextChineseName" />
+            </td>
             <td valign="top"  runat="server" id="cellReadonlyHorizontalDOBGenderText" class="tableCellStyleLite">
-                <asp:Label ID="lblReadonlyHorizontalDOBGenderText" runat="server" CssClass="tableTitle"
-                     Width="160px"></asp:Label></td>
+                <asp:Label ID="lblReadonlyHorizontalDOBGenderText" runat="server" CssClass="tableTitle" Width="160px"></asp:Label>
+            </td>
             <td valign="top" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalDOB" runat="server" CssClass="tableText"></asp:Label>
                 <asp:Label ID="lblReadonlyHorizontalDOBGender" runat="server" CssClass="tableText">/</asp:Label>
-                <asp:Label ID="lblReadonlyHorizontalGender" runat="server" CssClass="tableText"></asp:Label></td>
+                <asp:Label ID="lblReadonlyHorizontalGender" runat="server" CssClass="tableText"></asp:Label>
+            </td>
         </tr>
         <tr>
             <td valign="top" style="padding-bottom: 10px"  runat="server" id="cellReadonlyHorizontalTravelDocNoText" class="tableCellStyleLite">

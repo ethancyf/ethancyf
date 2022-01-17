@@ -2476,7 +2476,7 @@ Partial Public Class RecordConfirmation
 
             If LCase(Session("language")) = TradChinese Then
                 lblTransactionStatus.Text = strTmpTxChi
-                lblTransactionStatus.Font.Name = "HA_MingLiu"
+                lblTransactionStatus.Font.Name = "MingLiU_HKSCS-ExtB"
             ElseIf LCase(Session("language")) = SimpChinese Then
                 lblTransactionStatus.Text = strTmpTxCN
             Else

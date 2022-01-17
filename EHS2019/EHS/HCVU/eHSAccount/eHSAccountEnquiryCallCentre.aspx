@@ -85,7 +85,7 @@
                                             <asp:Label ID="lblSearchCNameText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, AccountNameInChinese %>"></asp:Label>
                                         </td>
                                         <td valign="top">
-                                            <asp:TextBox ID="txtSearchCName" runat="server" Width="200px" MaxLength="6" ></asp:TextBox>
+                                            <asp:TextBox ID="txtSearchCName" runat="server" Width="200px" MaxLength="12" ></asp:TextBox>
                                             <asp:Image ID="imgCNameError" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
                                                 Visible="False" ImageAlign="AbsMiddle" />
                                         </td>
@@ -250,7 +250,7 @@
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label>
                                                     <br></br>
-                                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
+                                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' CssClass="TextChineseName"></asp:Label>
                                                 </ItemTemplate>
                                                 <ItemStyle Width="270px" VerticalAlign="Top" />
                                             </asp:TemplateField>

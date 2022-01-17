@@ -243,7 +243,7 @@
             Me.txtRecipientHKID.Height = 0.1885827!
             Me.txtRecipientHKID.Left = 3.396!
             Me.txtRecipientHKID.Name = "txtRecipientHKID"
-            Me.txtRecipientHKID.Style = "font-family: HA_MingLiu; font-size: 11pt; text-align: left; text-decoration: unde" & _
+            Me.txtRecipientHKID.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 1"
             Me.txtRecipientHKID.Text = Nothing
             Me.txtRecipientHKID.Top = 2.205!
@@ -254,7 +254,7 @@
             Me.txtRecipientDate.Height = 0.1885827!
             Me.txtRecipientDate.Left = 5.75!
             Me.txtRecipientDate.Name = "txtRecipientDate"
-            Me.txtRecipientDate.Style = "font-family: HA_MingLiu; font-size: 11pt; text-align: left; ddo-char-set: 1"
+            Me.txtRecipientDate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11pt; text-align: left; ddo-char-set: 1"
             Me.txtRecipientDate.Text = Nothing
             Me.txtRecipientDate.Top = 2.424!
             Me.txtRecipientDate.Width = 1.561811!
@@ -265,7 +265,7 @@
             Me.txtRecipientName.Left = 3.396063!
             Me.txtRecipientName.Name = "txtRecipientName"
             Me.txtRecipientName.ShrinkToFit = True
-            Me.txtRecipientName.Style = "font-family: HA_MingLiu; font-size: 11pt; text-align: left; text-decoration: none" & _
+            Me.txtRecipientName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11pt; text-align: left; text-decoration: none" & _
         "; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.txtRecipientName.Text = Nothing
             Me.txtRecipientName.Top = 1.995158!

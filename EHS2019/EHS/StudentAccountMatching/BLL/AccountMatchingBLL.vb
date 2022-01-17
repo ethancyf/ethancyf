@@ -114,38 +114,49 @@ Public Class AccountMatchingBLL
 
         Dim udtStudentAccountMatchField As StudentAccountMatchField = Me.GetStudentAccountMatchField
 
+        'Doc Type
         If blnCheckDocCode AndAlso udtStudentPersonalInfo.DocCode.Trim <> udtEHSPersonalInfo.DocCode.Trim Then
             blnAllMatch = False
             strUnmatchField.Add(udtStudentAccountMatchField.Field_DocType)
         End If
 
+        'ID No.
         If udtStudentPersonalInfo.IdentityNum.Trim <> udtEHSPersonalInfo.IdentityNum.Trim Then
             blnAllMatch = False
             strUnmatchField.Add(udtStudentAccountMatchField.Field_DocNo)
         End If
 
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        ' Add checking on [ExactDOB]
+        ' ExactDOB
         If udtStudentPersonalInfo.DOB <> udtEHSPersonalInfo.DOB OrElse udtStudentPersonalInfo.ExactDOB <> udtEHSPersonalInfo.ExactDOB Then
             blnAllMatch = False
             strUnmatchField.Add(udtStudentAccountMatchField.Field_DOB)
         End If
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
 
+        'EName
         If udtStudentPersonalInfo.EName.Trim <> udtEHSPersonalInfo.EName.Trim Then
             blnAllMatch = False
             strUnmatchField.Add(udtStudentAccountMatchField.Field_EName)
         End If
 
+        'Gender
         If udtStudentPersonalInfo.Gender.Trim <> udtEHSPersonalInfo.Gender.Trim Then
             blnAllMatch = False
             strUnmatchField.Add(udtStudentAccountMatchField.Field_Sex)
         End If
 
+        'CName
+        If DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode) Then
+            If udtStudentPersonalInfo.CName <> String.Empty Then
+                If udtStudentPersonalInfo.CName.Trim <> udtEHSPersonalInfo.CName.Trim Then
+                    blnAllMatch = False
+                    strUnmatchField.Add(udtStudentAccountMatchField.Field_CName)
+                End If
+            End If
+        End If
+
+
         Select Case udtEHSPersonalInfo.DocCode
             Case DocTypeModel.DocTypeCode.ADOPC
-
                 If udtStudentPersonalInfo.AdoptionPrefixNum.Trim <> udtEHSPersonalInfo.AdoptionPrefixNum.Trim Then
                     blnAllMatch = False
                     strUnmatchField.Add(udtStudentAccountMatchField.Field_AdoptionPrefixNum)
@@ -168,13 +179,7 @@ Public Class AccountMatchingBLL
                 End If
 
             Case DocTypeModel.DocTypeCode.EC
-                If udtStudentPersonalInfo.CName <> String.Empty Then
-                    If udtStudentPersonalInfo.CName.Trim <> udtEHSPersonalInfo.CName.Trim Then
-                        blnAllMatch = False
-                        strUnmatchField.Add(udtStudentAccountMatchField.Field_CName)
-                    End If
-                End If
-
+                'EC Serial No.
                 If udtStudentPersonalInfo.ECSerialNo <> String.Empty Then
                     If udtStudentPersonalInfo.ECSerialNo.Trim <> udtEHSPersonalInfo.ECSerialNo.Trim Then
                         blnAllMatch = False
@@ -182,16 +187,11 @@ Public Class AccountMatchingBLL
                     End If
                 End If
 
+                'EC Ref No
                 If udtStudentPersonalInfo.ECReferenceNo <> String.Empty Then
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
-                    'If udtEHSPersonalInfo.ECReferenceNo Is Nothing OrElse _
-                    '    udtStudentPersonalInfo.ECReferenceNo.Trim <> udtEHSPersonalInfo.ECReferenceNo.Trim Then
                     If udtEHSPersonalInfo.ECReferenceNo Is Nothing OrElse _
                         udtStudentPersonalInfo.ECReferenceNo.Trim <> udtEHSPersonalInfo.ECReferenceNo.Trim OrElse _
                         udtStudentPersonalInfo.ECReferenceNoOtherFormat <> udtEHSPersonalInfo.ECReferenceNoOtherFormat Then
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
-
                         blnAllMatch = False
                         strUnmatchField.Add(udtStudentAccountMatchField.Field_ECRefNo)
                     End If
@@ -205,13 +205,6 @@ Public Class AccountMatchingBLL
                 End If
 
             Case DocTypeModel.DocTypeCode.HKIC
-                If udtStudentPersonalInfo.CName <> String.Empty Then
-                    If udtStudentPersonalInfo.CName.Trim <> udtEHSPersonalInfo.CName.Trim Then
-                        blnAllMatch = False
-                        strUnmatchField.Add(udtStudentAccountMatchField.Field_CName)
-                    End If
-                End If
-
                 If Not IsNothing(udtStudentPersonalInfo.DateofIssue) Then
                     If Not udtStudentPersonalInfo.DateofIssue.Equals(udtEHSPersonalInfo.DateofIssue) Then
                         blnAllMatch = False
@@ -236,6 +229,7 @@ Public Class AccountMatchingBLL
                 End If
 
         End Select
+
 
         Return String.Join(", ", strUnmatchField)
 
@@ -473,20 +467,6 @@ Public Class AccountMatchingBLL
 
     End Sub
     ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
-
-    Private Function getCCCode(ByVal strChineseName As String, ByVal intPosition As Integer) As String
-
-        If strChineseName.Length >= intPosition Then
-            Dim udtCCCodeBLL As New CCCode.CCCodeBLL
-            Dim strCCCode As String = String.Empty
-
-            strCCCode = udtCCCodeBLL.GetCCCodeByChar(strChineseName.Substring(intPosition - 1, 1))
-
-            Return strCCCode
-        Else
-            Return ""
-        End If
-    End Function
 
 #End Region
 
@@ -813,7 +793,7 @@ Public Class AccountMatchingBLL
                 blnIsValid = Validate_Visa(udtEHSPersonalInfo)
 
             Case DocTypeModel.DocTypeCode.ADOPC
-                blnIsValid = Validate_ADOPT(udtEHSPersonalInfo)
+                blnIsValid = Validate_ADOPC(udtEHSPersonalInfo)
 
             Case DocTypeModel.DocTypeCode.EC
                 blnIsValid = Validate_EC(udtEHSPersonalInfo)
@@ -897,6 +877,8 @@ Public Class AccountMatchingBLL
         Dim strIdentityNumFull() As String
         Dim strAdoptionPrefixNo As String = String.Empty
         Dim udtValidator As New Common.Validation.Validator
+        Dim udtCCCodeBLL As New CCCode.CCCodeBLL
+
         Dim udtSM As SystemMessage = Nothing
 
         Dim udtEHSPersonalInfo As New EHSPersonalInformationModel
@@ -968,6 +950,7 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.AdoptionPrefixNum = strAdoptionPrefixNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
@@ -977,6 +960,7 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
@@ -986,7 +970,7 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
-                    udtEHSPersonalInfo.CName = udtStudent.NameCH
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
@@ -996,29 +980,21 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.ECReferenceNo = udtStudent.ECReferenceNo
                     udtEHSPersonalInfo.ECReferenceNoOtherFormat = udtStudent.ECReferenceNoOtherFormat
 
-                    'If IsNothing(udtValidator.chkReferenceNo(udtStudent.ECReferenceNo, False)) Then
-                    '    ' EC Reference is valid, set Other Format as false
-                    '    udtEHSPersonalInfo.ECReferenceNoOtherFormat = False
-                    'Else
-                    '    udtEHSPersonalInfo.ECReferenceNoOtherFormat = True
-                    'End If
-
-                    'If Not udtEHSPersonalInfo.ECReferenceNoOtherFormat Then
-                    '    udtEHSPersonalInfo.ECReferenceNo = udtStudent.ECReferenceNo.Replace("-", String.Empty).Replace("(", String.Empty).Replace(")", String.Empty)
-                    'End If
 
                 Case DocTypeModel.DocTypeCode.HKIC
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
-                    udtEHSPersonalInfo.CName = udtStudent.NameCH
 
-                    udtEHSPersonalInfo.CCCode1 = getCCCode(udtStudent.NameCH, 1)
-                    udtEHSPersonalInfo.CCCode2 = getCCCode(udtStudent.NameCH, 2)
-                    udtEHSPersonalInfo.CCCode3 = getCCCode(udtStudent.NameCH, 3)
-                    udtEHSPersonalInfo.CCCode4 = getCCCode(udtStudent.NameCH, 4)
-                    udtEHSPersonalInfo.CCCode5 = getCCCode(udtStudent.NameCH, 5)
-                    udtEHSPersonalInfo.CCCode6 = getCCCode(udtStudent.NameCH, 6)
+                    If DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode) Then
+                        udtEHSPersonalInfo.CName = udtStudent.NameCH
+                        udtEHSPersonalInfo.CCCode1 = udtCCCodeBLL.getCCCodeForChiName(udtStudent.NameCH, 1)
+                        udtEHSPersonalInfo.CCCode2 = udtCCCodeBLL.getCCCodeForChiName(udtStudent.NameCH, 2)
+                        udtEHSPersonalInfo.CCCode3 = udtCCCodeBLL.getCCCodeForChiName(udtStudent.NameCH, 3)
+                        udtEHSPersonalInfo.CCCode4 = udtCCCodeBLL.getCCCodeForChiName(udtStudent.NameCH, 4)
+                        udtEHSPersonalInfo.CCCode5 = udtCCCodeBLL.getCCCodeForChiName(udtStudent.NameCH, 5)
+                        udtEHSPersonalInfo.CCCode6 = udtCCCodeBLL.getCCCodeForChiName(udtStudent.NameCH, 6)
+                    End If
 
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
@@ -1029,6 +1005,7 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
@@ -1038,6 +1015,7 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
@@ -1047,6 +1025,7 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
@@ -1056,10 +1035,20 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
                     udtEHSPersonalInfo.Foreign_Passport_No = udtStudent.ForeignPassportNo
+
+                Case DocTypeModel.DocTypeCode.RFNo8
+                    udtEHSPersonalInfo.IdentityNum = strIdentityNo
+                    udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
+                    udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
+                    udtEHSPersonalInfo.DOB = udtStudent.DOB
+                    udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
+                    udtEHSPersonalInfo.Gender = udtStudent.Sex
 
                     ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
                     ' -------------------------------------------------------------------------------
@@ -1069,7 +1058,6 @@ Public Class AccountMatchingBLL
                     DocTypeModel.DocTypeCode.TW,
                     DocTypeModel.DocTypeCode.IR,
                     DocTypeModel.DocTypeCode.HKP,
-                    DocTypeModel.DocTypeCode.RFNo8,
                     DocTypeModel.DocTypeCode.OTHER,
                     DocTypeModel.DocTypeCode.CCIC,
                     DocTypeModel.DocTypeCode.ROP140,
@@ -1079,11 +1067,10 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
                     udtEHSPersonalInfo.ENameFirstName = udtStudent.GivenNameENOriginal
+                    udtEHSPersonalInfo.CName = IIf(DocTypeBLL.IsChineseNameAvailable(udtEHSPersonalInfo.DocCode), udtStudent.NameCH, String.Empty)
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
-
-              
 
                 Case Else
                     blnFillAll = True
@@ -1108,16 +1095,23 @@ Public Class AccountMatchingBLL
             udtEHSPersonalInfo.ECReferenceNo = udtStudent.ECReferenceNo.Trim
             udtEHSPersonalInfo.ECReferenceNoOtherFormat = udtStudent.ECReferenceNoOtherFormat
 
-            'If IsNothing(udtValidator.chkReferenceNo(udtStudent.ECReferenceNo, False)) Then
-            '    ' EC Reference is valid, set Other Format as false
-            '    udtEHSPersonalInfo.ECReferenceNoOtherFormat = False
-            'Else
-            '    udtEHSPersonalInfo.ECReferenceNoOtherFormat = True
-            'End If
+        End If
 
-            'If Not udtEHSPersonalInfo.ECReferenceNoOtherFormat Then
-            '    udtEHSPersonalInfo.ECReferenceNo = udtStudent.ECReferenceNo.Replace("-", String.Empty).Replace("(", String.Empty).Replace(")", String.Empty)
-            'End If
+
+        'Chinese Name
+        If udtEHSPersonalInfo IsNot Nothing AndAlso udtEHSPersonalInfo.CName <> String.Empty Then
+            Dim sm As SystemMessage = Nothing
+            sm = udtValidator.chkChiName(udtEHSPersonalInfo.CName, udtEHSPersonalInfo.DocCode)
+            If Not IsNothing(sm) Then
+                'If Chinese name is invalid, remove it from model
+                udtEHSPersonalInfo.CName = String.Empty
+                udtEHSPersonalInfo.CCCode1 = String.Empty
+                udtEHSPersonalInfo.CCCode2 = String.Empty
+                udtEHSPersonalInfo.CCCode3 = String.Empty
+                udtEHSPersonalInfo.CCCode4 = String.Empty
+                udtEHSPersonalInfo.CCCode5 = String.Empty
+                udtEHSPersonalInfo.CCCode6 = String.Empty
+            End If
         End If
 
         udtEHSPersonalInfo.TSMP = udtNewEHSAccount.EHSPersonalInformationList(0).TSMP
@@ -1246,17 +1240,7 @@ Public Class AccountMatchingBLL
             Dim udtEHSPersonalInfo As EHSPersonalInformationModel
             udtEHSPersonalInfo = udtValidatedAccount.getPersonalInformation(strDocCode)
 
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            ' No checking on Doc Type
-            'Select Case udtStudent.DocCode
-            '    Case StudentFileBLL.StudentFileDocTypeCode.HKBC, StudentFileBLL.StudentFileDocTypeCode.HKIC
-            '        blnCheckDocType = True
-            '    Case Else
-            '        blnCheckDocType = False
-            'End Select
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
-
+            ' VA Found, Compare field difference 
             strUnmatchField = CheckPersonalInfoMatch(blnCheckDocType, udtNewEHSPersonalInfo, udtEHSPersonalInfo)
 
             ' CRE19-001 (VSS 2019) [Start][Winnie]
@@ -1614,7 +1598,7 @@ Public Class AccountMatchingBLL
         End If
 
         'Chinese Name
-        udtSM = udtValidator.chkChiName(udtEHSPersonalInfo.CName)
+        udtSM = udtValidator.chkChiName(udtEHSPersonalInfo.CName, DocTypeModel.DocTypeCode.EC)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1685,6 +1669,12 @@ Public Class AccountMatchingBLL
             isValid = False
         End If
 
+        'Chinese Name
+        udtSM = udtValidator.chkChiName(udtEHSPersonalInfo.CName, DocTypeModel.DocTypeCode.HKBC)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
         'Gender
         udtSM = Me.udtValidator.chkGender(udtEHSPersonalInfo.Gender)
         If Not IsNothing(udtSM) Then
@@ -1695,7 +1685,7 @@ Public Class AccountMatchingBLL
     End Function
 
     'Adoption
-    Private Function Validate_ADOPT(ByRef udtEHSPersonalInfo As EHSPersonalInformationModel) As Boolean
+    Private Function Validate_ADOPC(ByRef udtEHSPersonalInfo As EHSPersonalInformationModel) As Boolean
         Dim isValid As Boolean = True
         Dim udtSM As SystemMessage = Nothing
         Dim udtformatter As New Common.Format.Formatter
@@ -1708,6 +1698,12 @@ Public Class AccountMatchingBLL
 
         'English Name
         udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocType.DocTypeModel.DocTypeCode.ADOPC)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'Chinese Name
+        udtSM = udtValidator.chkChiName(udtEHSPersonalInfo.CName, DocTypeModel.DocTypeCode.ADOPC)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1759,6 +1755,12 @@ Public Class AccountMatchingBLL
             isValid = False
         End If
 
+        'Chinese Name
+        udtSM = udtValidator.chkChiName(udtEHSPersonalInfo.CName, DocTypeModel.DocTypeCode.DI)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
         'Gender
         udtSM = Me.udtValidator.chkGender(udtEHSPersonalInfo.Gender)
         If Not IsNothing(udtSM) Then
@@ -1772,7 +1774,7 @@ Public Class AccountMatchingBLL
             Dim strDOI As String = String.Empty
             strDOI = udtformatter.formatInputDate(udtEHSPersonalInfo.DateofIssue.Value)
 
-            udtSM = udtValidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.REPMT, strDOI, dtmDOB)
+            udtSM = udtValidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.DI, strDOI, dtmDOB)
             If Not IsNothing(udtSM) Then
                 isValid = False
             End If
@@ -1804,6 +1806,12 @@ Public Class AccountMatchingBLL
 
         'English Name
         udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.ID235B)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'Chinese Name
+        udtSM = udtValidator.chkChiName(udtEHSPersonalInfo.CName, DocTypeModel.DocTypeCode.ID235B)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1854,6 +1862,12 @@ Public Class AccountMatchingBLL
 
         'English Name
         udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.REPMT)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'Chinese Name
+        udtSM = udtValidator.chkChiName(udtEHSPersonalInfo.CName, DocTypeModel.DocTypeCode.REPMT)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1909,6 +1923,12 @@ Public Class AccountMatchingBLL
 
         'English Name
         udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.VISA)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'Chinese Name
+        udtSM = udtValidator.chkChiName(udtEHSPersonalInfo.CName, DocTypeModel.DocTypeCode.VISA)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If

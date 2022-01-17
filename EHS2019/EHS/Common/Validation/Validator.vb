@@ -1123,33 +1123,105 @@ Namespace Validation
             Return sm
         End Function
 
-        ' CRE15-014 HA_MingLiu UTF32 [Start][Winnie]
-        Public Function chkChiName(ByVal strChiName As String) As ComObject.SystemMessage
-            Dim sm As ComObject.SystemMessage
+
+        Public Function chkChiName(ByVal strChiName As String, ByVal strDocCode As String) As ComObject.SystemMessage
+            Dim sm As ComObject.SystemMessage = Nothing
             Dim strFunctCode, strSeverity, strMsgCode As String
             Dim strErrMsg As String
+            Dim lstInvalidChar As New List(Of String)
+
             strFunctCode = "990000"
             strSeverity = "E"
             strMsgCode = ""
             strErrMsg = ""
 
             If Not IsEmpty(strChiName) Then
-                'Transform to byte (4 byte for each char)
-                Dim bytChiName As Byte() = System.Text.Encoding.UTF32.GetBytes(strChiName)
-                If bytChiName.Length > 24 Then ' Maximum 6 char
-                    strMsgCode = "00363"
-                End If
-            End If
 
-            If strMsgCode = "" Then
-                sm = Nothing
-            Else
-                sm = New ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+                ' CRE20-023-68 (Remove HA MingLiu) [Start][Winnie SUEN]
+                ' -------------------------------------------------------------
+                ' Check Length
+                If IsExceedChiNameLength(strChiName) Then
+                    strMsgCode = "00363"
+                    sm = New ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+                End If
+
+                ' Check contains invalid character
+                If Not IsValidChiName(strChiName, strDocCode, lstInvalidChar) Then
+                    strMsgCode = "00511"
+                    sm = New ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+                    sm.AddReplaceMessage("%s", String.Join(",", lstInvalidChar.ToArray))
+                End If
+                ' CRE20-023-68 (Remove HA MingLiu) [End][Winnie SUEN]
             End If
 
             Return sm
         End Function
-        ' CRE15-014 HA_MingLiu UTF32 [End][Winnie]
+
+        ' CRE20-023-68 (Remove HA MingLiu) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
+        Public Function IsExceedChiNameLength(ByVal strChiName As String) As Boolean
+            Dim udtGeneralFunction As ComFunction.GeneralFunction = New ComFunction.GeneralFunction
+
+            If udtGeneralFunction.UTF32_Length(strChiName.Trim) > 6 Then
+                Return True
+            Else
+                Return False
+            End If
+        End Function
+
+        Public Function IsValidChiName(ByVal strChiName As String, ByVal strDocCode As String, ByRef lstInvalidChar As List(Of String)) As Boolean
+            Dim blnRes As Boolean = False
+            Dim i As Integer = 0
+
+            Dim udtCCCodeBLL As New Component.CCCode.CCCodeBLL
+            Dim udtGeneralFunction As ComFunction.GeneralFunction = New ComFunction.GeneralFunction
+
+            While i < udtGeneralFunction.UTF32_Length(strChiName)
+                Dim blnInvalidChar As Boolean = False
+
+                ' Check each character is valid
+                Dim strChar As String = udtGeneralFunction.UTF32_SubString(strChiName, i, 1)
+
+
+                Select Case strDocCode
+                    Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.ROP140
+                        'For Doc with CCCode input, Check Chi Name able to convert to CCCode 
+
+                        If udtCCCodeBLL.GetCCCodeByChar(strChar) = String.Empty Then
+                            blnInvalidChar = True
+                        End If
+
+                    Case Else
+                        'Free Text 
+
+                        '1. Symbol & alphanumeric (Sync with eHR)
+                        If New Regex("[0-9a-zA-Z~`! ¡@@#\|\$%\^&*\(\)-_\+=\{\}\[\]\?<>\/\.,;:'\""]").Matches(strChar).Count > 0 Then
+                            blnInvalidChar = True
+                        End If
+
+                        '2. PUA Char
+                        If New Regex("[\uE000-\uF8FF]").Matches(strChar).Count > 0 Then
+                            blnInvalidChar = True
+                        End If
+
+                End Select
+
+                If blnInvalidChar Then
+                    If Not lstInvalidChar.Contains(strChar) Then lstInvalidChar.Add(strChar)
+                End If
+
+                i = i + 1
+            End While
+
+            If lstInvalidChar.Count > 0 Then
+                blnRes = False
+            Else
+                blnRes = True
+            End If
+
+            Return blnRes
+        End Function
+        ' CRE20-023-68 (Remove HA MingLiu) [End][Winnie SUEN]
 
         'INT15-0015 (Fix date format checking in HCVU) [Start][Chris YIM]
         '-----------------------------------------------------------------------------------------

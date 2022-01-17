@@ -248,6 +248,15 @@ Partial Public Class ucReadOnlyHKBC
     Protected WithEvents lblReadonlyEName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblReadonlyCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyCName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''cellReadonlyGenderText control.
     '''</summary>
     '''<remarks>
@@ -336,6 +345,15 @@ Partial Public Class ucReadOnlyHKBC
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblReadonlyHorizontalEName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblReadonlyHorizontalCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyHorizontalCName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''cellReadonlyHorizontalDOBGenderText control.

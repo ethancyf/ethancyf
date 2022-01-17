@@ -29,6 +29,7 @@ Namespace UIControl.DocTypeHCSP
             Me.lblBENoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language)
             Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
             Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+            Me.lblCName.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
             Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
             Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
             Me.lblPermitRemain.Text = Me.GetGlobalResourceObject("Text", "PermitToRemain")
@@ -43,6 +44,9 @@ Namespace UIControl.DocTypeHCSP
             'Error Image
             Me.imgENameError.ImageUrl = strErrorImageURL
             Me.imgENameError.AlternateText = strErrorImageALT
+
+            Me.imgCNameError.ImageUrl = strErrorImageURL
+            Me.imgCNameError.AlternateText = strErrorImageALT
 
             Me.imgGenderError.ImageUrl = strErrorImageURL
             Me.imgGenderError.AlternateText = strErrorImageALT
@@ -69,6 +73,7 @@ Namespace UIControl.DocTypeHCSP
             Me._strBENo = MyBase.Formatter.FormatDocIdentityNoForDisplay(DocTypeCode.ID235B, MyBase.EHSPersonalInfo.IdentityNum, False)
             Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfo.CName
             Me._strGender = MyBase.EHSPersonalInfo.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
 
@@ -111,6 +116,8 @@ Namespace UIControl.DocTypeHCSP
 
                 End If
 
+                Me.txtCName.Enabled = True
+
             Else
                 Me.lblPermitRemainTip.Visible = False
                 Me.lblBENoTip.Visible = False
@@ -131,6 +138,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtPermitRemain.Enabled = True
                     Me.txtENameSurname.Enabled = True
                     Me.txtENameFirstname.Enabled = True
+                    Me.txtCName.Enabled = True
                     Me.rbGender.Enabled = True
                     Me.txtDOB.Enabled = True
                 Else
@@ -148,6 +156,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtPermitRemain.Enabled = False
                     Me.txtENameSurname.Enabled = False
                     Me.txtENameFirstname.Enabled = False
+                    Me.txtCName.Enabled = False
                     Me.rbGender.Enabled = False
                     Me.txtDOB.Enabled = False
                 End If
@@ -157,10 +166,12 @@ Namespace UIControl.DocTypeHCSP
             If MyBase.ActiveViewChanged Then
                 Me.SetDOBError(False)
                 Me.SetENameError(False)
+                Me.SetCNameError(False)
                 Me.SetGenderError(False)
                 Me.SetPermitRemainError(False)
                 Me.SetBirthEntryNoError(False)
             End If
+
         End Sub
 
 #Region "Set Up Text Box Value"
@@ -170,6 +181,7 @@ Namespace UIControl.DocTypeHCSP
         Public Overrides Sub SetValue(ByVal mode As ucInputDocTypeBase.BuildMode)
             Me.SetBirthEntryNo()
             Me.SetEName()
+            Me.SetCName()
             Me.SetDOB()
             Me.SetGender()
             Me.SetPermitRemain()
@@ -187,6 +199,11 @@ Namespace UIControl.DocTypeHCSP
             'Fill Data - English only
             Me.txtENameSurname.Text = Me._strENameSurName
             Me.txtENameFirstname.Text = Me._strENameFirstName
+        End Sub
+
+        Public Sub SetCName()
+            'Fill Data - Chinese name only
+            Me.txtCName.Text = Me._strCName
         End Sub
 
         Public Sub SetDOB()
@@ -235,6 +252,7 @@ Namespace UIControl.DocTypeHCSP
         '--------------------------------------------------------------------------------------------------------------
         Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
             Me.SetENameError(visible)
+            Me.SetCNameError(visible)
             Me.SetGenderError(visible)
             Me.SetDOBError(visible)
             Me.SetPermitRemainError(visible)
@@ -243,6 +261,10 @@ Namespace UIControl.DocTypeHCSP
 
         Public Sub SetENameError(ByVal visible As Boolean)
             Me.imgENameError.Visible = visible
+        End Sub
+
+        Public Sub SetCNameError(ByVal visible As Boolean)
+            Me.imgCNameError.Visible = visible
         End Sub
 
         Public Sub SetGenderError(ByVal visible As Boolean)
@@ -265,14 +287,13 @@ Namespace UIControl.DocTypeHCSP
 #Region "Property"
 
         Public Overrides Sub SetProperty(ByVal mode As BuildMode)
-            ' I-CRP16-002 Fix invalid input on English name [Start][Lawrence]
             Me._strBENo = Me.txtBENo.Text.Trim
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
+            Me._strCName = Me.txtCName.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue
             Me._strDOB = Me.txtDOB.Text.Trim
             Me._strPmtRemain = Me.txtPermitRemain.Text.Trim
-            ' I-CRP16-002 Fix invalid input on English name [End][Lawrence]
         End Sub
 
         Public Property ENameSurName() As String
@@ -290,6 +311,15 @@ Namespace UIControl.DocTypeHCSP
             End Get
             Set(ByVal value As String)
                 Me._strENameFirstName = value
+            End Set
+        End Property
+
+        Public Property CName() As String
+            Get
+                Return Me._strCName
+            End Get
+            Set(ByVal value As String)
+                Me._strCName = value
             End Set
         End Property
 

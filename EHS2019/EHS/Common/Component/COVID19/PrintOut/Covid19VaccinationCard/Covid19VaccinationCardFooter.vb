@@ -77,13 +77,17 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 txtNameChi.Visible = True
             End If
 
-            If patientInformation.DocCode = DocTypeModel.DocTypeCode.ROP140 Then
-                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocNameChi
-                txtDocType.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocName
-            Else
-                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
-                txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
-            End If
+            'Document
+            Select Case patientInformation.DocCode
+                Case DocTypeModel.DocTypeCode.ROP140
+                    txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocNameChi
+                    txtDocType.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocName
+
+                Case Else
+                    txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
+                    txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
+
+            End Select
 
             If txtDocTypeChi.Text = txtDocType.Text Then
                 txtDocType.Visible = False

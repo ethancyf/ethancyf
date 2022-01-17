@@ -15,7 +15,7 @@
                     <asp:Label ID="lblHNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHEName" runat="server" CssClass="tableText"></asp:Label>
-                    <asp:Label ID="lblHCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
+                    <asp:Label ID="lblHCName" runat="server" CssClass="tableText TextChineseName"></asp:Label></td>
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHECSerialNoText" runat="server" Text="<%$ Resources:Text, ECSerialNo %>"></asp:Label></td>
                 <td style="vertical-align: top">
@@ -103,7 +103,7 @@
                     <asp:Label ID="lblVNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
                 <td style="vertical-align: top">
                     <asp:Label ID="lblVEName" runat="server" CssClass="tableText"></asp:Label>
-                    <asp:Label ID="lblVCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
+                    <asp:Label ID="lblVCName" runat="server" CssClass="tableText TextChineseName"></asp:Label></td>
             </tr>
             <tr>
                 <td style="vertical-align: top">

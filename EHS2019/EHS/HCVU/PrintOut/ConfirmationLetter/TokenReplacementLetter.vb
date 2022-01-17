@@ -107,10 +107,8 @@ Namespace PrintOut.ConfirmationLetter
 
             'Chinese Page
             If Not _udtSP.ChineseName Is Nothing AndAlso Not _udtSP.ChineseName.Equals(String.Empty) Then
-                ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
-                Dim strSPChineseName = GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName)
+                Dim strSPChineseName = _udtSP.ChineseName
                 rptLetterHeaderChi = New PrintOut.ConfirmationLetter.LetterHeader(strTelNo_Header_Chi, strFaxNo_Header_Chi, strRecipientAddress, strSPChineseName, True)
-                ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
             Else
                 rptLetterHeaderChi = New PrintOut.ConfirmationLetter.LetterHeader(strTelNo_Header_Chi, strFaxNo_Header_Chi, strRecipientAddress, _udtSP.EnglishName, False)
             End If

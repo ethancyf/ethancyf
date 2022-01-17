@@ -63,9 +63,7 @@ Namespace Printout.EnrolmentInformation.Component
             ' Name (in Chinese)
             udtPrintoutHelper.RenderResource(txtNameCHText, "NameInChinese", blnColon:=True)
 
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
-            udtPrintoutHelper.RenderValue(txtNameCH, GeneralFunction.ReplaceString_HAMingLiu(udtProvider.ChineseName), blnMultiLingual:=True)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+            udtPrintoutHelper.RenderValue(txtNameCH, udtProvider.ChineseName, blnMultiLingual:=True)
 
             ' Email
             udtPrintoutHelper.RenderResource(txtEmailText, "PCDEmail", blnAddNotDiscloseNotation:=True, blnColon:=True)

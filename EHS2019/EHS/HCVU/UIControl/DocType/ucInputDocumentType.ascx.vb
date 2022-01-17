@@ -252,24 +252,21 @@ Partial Public Class ucInputDocumentType
                 udcInputADOPC.UseDefaultAmendingHeader = _useDefaultAmendingHeader
                 Me.Built(udcInputADOPC)
 
-                ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
-            Case DocTypeModel.DocTypeCode.OW,
-                DocTypeModel.DocTypeCode.RFNo8
+            Case DocTypeModel.DocTypeCode.OW
 
                 Dim udcInputOW As ucInputOW = Me.LoadControl("~/UIControl/DocType/ucInputOW.ascx")
                 udcInputOW.ID = DocumentControlID.OW
                 If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
                     udcInputOW.UpdateValue = Me._fillValue
-                    udcInputOW.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(Me._docType)
+                    udcInputOW.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.OW)
                     If IsNothing(Me._udtEHSAccountAmend) Then
-                        udcInputOW.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(Me._docType)
+                        udcInputOW.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.OW)
                     Else
-                        udcInputOW.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(Me._docType)
+                        udcInputOW.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.OW)
                     End If
                 Else
                     If Not IsNothing(Me._udtEHSAccountAmend) Then
-                        udcInputOW.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(Me._docType)
+                        udcInputOW.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.OW)
                     End If
                 End If
                 udcInputOW.Mode = Me._mode
@@ -298,28 +295,27 @@ Partial Public Class ucInputDocumentType
                 udcInputTW.UseDefaultAmendingHeader = _useDefaultAmendingHeader
                 Me.Built(udcInputTW)
 
-                'Case DocTypeModel.DocTypeCode.RFNo8
-                '    Dim udcInputRFNo8 As ucInputRFNo8 = Me.LoadControl("~/UIControl/DocType/ucInputRFNo8.ascx")
-                '    udcInputRFNo8.ID = DocumentControlID.RFNo8
-                '    If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
-                '        udcInputRFNo8.UpdateValue = Me._fillValue
-                '        udcInputRFNo8.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
-                '        If IsNothing(Me._udtEHSAccountAmend) Then
-                '            udcInputRFNo8.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
-                '        Else
-                '            udcInputRFNo8.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
-                '        End If
-                '    Else
-                '        If Not IsNothing(Me._udtEHSAccountAmend) Then
-                '            udcInputRFNo8.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
-                '        End If
-                '    End If
-                '    udcInputRFNo8.Mode = Me._mode
-                '    udcInputRFNo8.ActiveViewChanged = Me.ActiveViewChanged
-                '    udcInputRFNo8.UseDefaultAmendingHeader = _useDefaultAmendingHeader
-                '    Me.Built(udcInputRFNo8)
+            Case DocTypeModel.DocTypeCode.RFNo8
+                Dim udcInputRFNo8 As ucInputRFNo8 = Me.LoadControl("~/UIControl/DocType/ucInputRFNo8.ascx")
+                udcInputRFNo8.ID = DocumentControlID.RFNo8
+                If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputRFNo8.UpdateValue = Me._fillValue
+                    udcInputRFNo8.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
+                    If IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputRFNo8.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
+                    Else
+                        udcInputRFNo8.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
+                    End If
+                Else
+                    If Not IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputRFNo8.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
+                    End If
+                End If
+                udcInputRFNo8.Mode = Me._mode
+                udcInputRFNo8.ActiveViewChanged = Me.ActiveViewChanged
+                udcInputRFNo8.UseDefaultAmendingHeader = _useDefaultAmendingHeader
+                Me.Built(udcInputRFNo8)
 
-                ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
                 ' CRE19-001 (VSS 2019) [Start][Winnie]
                 ' ----------------------------------------------------------------------------------------
@@ -579,8 +575,6 @@ Partial Public Class ucInputDocumentType
         End If
     End Function
 
-    ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public Function GetOWControl() As ucInputOW
         Dim control As Control = Me.FindControl(DocumentControlID.OW)
         If Not control Is Nothing Then
@@ -589,9 +583,7 @@ Partial Public Class ucInputDocumentType
             Return Nothing
         End If
     End Function
-    ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
-    ' CRE20-0023 (Immu record) [Start][Martin]
     Public Function GetTWControl() As ucInputTW
         Dim control As Control = Me.FindControl(DocumentControlID.TW)
         If Not control Is Nothing Then
@@ -600,7 +592,15 @@ Partial Public Class ucInputDocumentType
             Return Nothing
         End If
     End Function
-    ' CRE20-0023 (Immu record) [Start][Martin]
+
+    Public Function GetRFNo8Control() As ucInputRFNo8
+        Dim control As Control = Me.FindControl(DocumentControlID.RFNo8)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputRFNo8)
+        Else
+            Return Nothing
+        End If
+    End Function
 
     ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
     Public Function GetOTHERControl() As ucInputOTHER

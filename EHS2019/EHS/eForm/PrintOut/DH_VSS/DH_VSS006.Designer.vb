@@ -694,7 +694,7 @@
             Me.txtBank.Height = 0.1875!
             Me.txtBank.Left = 0.563!
             Me.txtBank.Name = "txtBank"
-            Me.txtBank.Style = "font-family: HA_MingLiu; font-size: 10.5pt; vertical-align: top; ddo-char-set: 1"
+            Me.txtBank.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; vertical-align: top; ddo-char-set: 1"
             Me.txtBank.Text = Nothing
             Me.txtBank.Top = 2.54!
             Me.txtBank.Width = 6.5625!
@@ -705,7 +705,7 @@
             Me.txtBranch.Height = 0.1875!
             Me.txtBranch.Left = 0.563!
             Me.txtBranch.Name = "txtBranch"
-            Me.txtBranch.Style = "font-family: HA_MingLiu; font-size: 10.5pt; vertical-align: top; ddo-char-set: 1"
+            Me.txtBranch.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; vertical-align: top; ddo-char-set: 1"
             Me.txtBranch.Text = Nothing
             Me.txtBranch.Top = 2.8!
             Me.txtBranch.Width = 6.5625!

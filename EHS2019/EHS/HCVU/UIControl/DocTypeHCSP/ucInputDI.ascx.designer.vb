@@ -150,6 +150,33 @@ Namespace UIControl.DocTypeHCSP
         Protected WithEvents lblGivenName As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
+        '''lblCName control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblCName As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''txtCName control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents txtCName As Global.System.Web.UI.WebControls.TextBox
+
+        '''<summary>
+        '''imgCNameError control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents imgCNameError As Global.System.Web.UI.WebControls.Image
+
+        '''<summary>
         '''lblGender control.
         '''</summary>
         '''<remarks>

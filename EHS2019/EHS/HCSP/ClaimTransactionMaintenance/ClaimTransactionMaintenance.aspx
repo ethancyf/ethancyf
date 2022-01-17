@@ -309,7 +309,7 @@
                                                         <ItemStyle Width="220px" />
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblTranListEname" runat="server" Text='<%# Bind("Eng_Name") %>'></asp:Label><br />
-                                                            <asp:Label ID="lblTranListCname" runat="server" Text='<%# Bind("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
+                                                            <asp:Label ID="lblTranListCname" runat="server" Text='<%# Bind("Chi_Name") %>' CssClass="TextChineseName" />
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, VRAcctType %>" SortExpression="AccountType">

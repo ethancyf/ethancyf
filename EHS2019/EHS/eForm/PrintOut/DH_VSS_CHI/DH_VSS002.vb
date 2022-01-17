@@ -129,9 +129,7 @@ Namespace PrintOut.DH_VSS_CHI
 
             ' ----------------------- Part II (A) -----------------------
             udtReportFunction.formatUnderLineTextBox(_udtSP.EnglishName, txtPartIIaEName)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
-            udtReportFunction.formatUnderLineTextBox(GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName), txtPartIIaCName)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+            udtReportFunction.formatUnderLineTextBox(_udtSP.ChineseName, txtPartIIaCName)
             udtReportFunction.formatUnderLineTextBox(udtFormatter.formatHKID(_udtSP.HKID, False), txtPartIIaHKIDNo)
             udtReportFunction.formatUnderLineTextBox(_udtSP.Phone, txtPartIIaTelNo)
             udtReportFunction.formatUnderLineTextBox(_udtSP.Email, txtPartIIaEmail)
@@ -206,9 +204,7 @@ Namespace PrintOut.DH_VSS_CHI
 
             ' ----------------------- Part V (A) -----------------------
             udtReportFunction.formatUnderLineTextBox(_udtSP.EnglishName, txtPartVaEngName, 3.0!)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
-            udtReportFunction.formatUnderLineTextBox(GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName), txtPartVaChiName, 3.0!)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+            udtReportFunction.formatUnderLineTextBox(_udtSP.ChineseName, txtPartVaChiName, 3.0!)
 
             ' CRE16-025-04 (Lowering voucher eligibility age - Static Doc) [Start][Winnie]
             txtDeclaration2.Text = "我／我們亦同意，在簽署此申請表格後，與第一部分列明登記參加的計劃相關的"

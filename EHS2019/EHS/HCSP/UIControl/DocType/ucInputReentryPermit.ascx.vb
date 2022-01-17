@@ -33,6 +33,7 @@ Partial Public Class ucInputReentryPermit
         'Me.lblTravelDocNo.Text = Me.GetGlobalResourceObject("Text", "TravelDocNo")
         Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+        Me.lblCName.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
@@ -49,6 +50,9 @@ Partial Public Class ucInputReentryPermit
         'Error Image
         Me.imgENameError.ImageUrl = strErrorImageURL
         Me.imgENameError.AlternateText = strErrorImageALT
+
+        Me.imgCNameError.ImageUrl = strErrorImageURL
+        Me.imgCNameError.AlternateText = strErrorImageALT
 
         Me.imgGenderError.ImageUrl = strErrorImageURL
         Me.imgGenderError.AlternateText = strErrorImageALT
@@ -76,6 +80,7 @@ Partial Public Class ucInputReentryPermit
 
         Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
         Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+        Me._strCName = MyBase.EHSPersonalInfo.CName
         Me._strGender = MyBase.EHSPersonalInfo.Gender
         Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
         'Me._strIsExactDOB = Me._udtEHSAccountPersonalInfo.ExactDOB
@@ -97,6 +102,7 @@ Partial Public Class ucInputReentryPermit
             'Creation Mode
             Me.SetREPMTNo()
             Me.SetEName()
+            Me.SetCName()
             Me.SetDOB(True)
             Me.SetGender()
             Me.SetDOI()
@@ -121,9 +127,12 @@ Partial Public Class ucInputReentryPermit
 
             End If
 
+            Me.txtCName.Enabled = True
+
         Else
             Me.SetREPMTNo()
             Me.SetEName()
+            Me.SetCName()
             Me.SetDOB(False)
             Me.SetGender()
             Me.SetDOI()
@@ -149,6 +158,7 @@ Partial Public Class ucInputReentryPermit
                 Me.txtDOI.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.txtENameSurname.Enabled = True
+                Me.txtCName.Enabled = True
             Else
                 'Modification Read-Only Mode
                 Me.lblTravelDocNo.Visible = True
@@ -160,15 +170,16 @@ Partial Public Class ucInputReentryPermit
                 Me.txtDOI.Enabled = False
                 Me.txtENameFirstname.Enabled = False
                 Me.txtENameSurname.Enabled = False
+                Me.txtCName.Enabled = False
             End If
 
         End If
         ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
         If MyBase.ActiveViewChanged Then
-
             Me.SetDOBError(False)
             Me.SetENameError(False)
+            Me.SetCNameError(False)
             Me.SetGenderError(False)
             Me.SetDOIError(False)
             Me.SetREPMTNoError(False)
@@ -204,6 +215,11 @@ Partial Public Class ucInputReentryPermit
         'Fill Data - English only
         Me.txtENameSurname.Text = Me._strENameSurName
         Me.txtENameFirstname.Text = Me._strENameFirstName
+    End Sub
+
+    Public Sub SetCName()
+        'Fill Data - Chinese name only
+        Me.txtCName.Text = Me._strCName
     End Sub
 
     Public Sub SetDOB(ByVal enable As Boolean)
@@ -255,15 +271,20 @@ Partial Public Class ucInputReentryPermit
     'Set Up Error Image
     '--------------------------------------------------------------------------------------------------------------
     Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
+        Me.SetREPMTNoError(visible)
         Me.SetENameError(visible)
+        Me.SetCNameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
         Me.SetDOIError(visible)
-        Me.SetREPMTNoError(visible)
     End Sub
 
     Public Sub SetENameError(ByVal visible As Boolean)
         Me.imgENameError.Visible = visible
+    End Sub
+
+    Public Sub SetCNameError(ByVal visible As Boolean)
+        Me.imgCNameError.Visible = visible
     End Sub
 
     Public Sub SetGenderError(ByVal visible As Boolean)
@@ -326,16 +347,14 @@ Partial Public Class ucInputReentryPermit
 #Region "Property"
 
     Public Overrides Sub SetProperty(ByVal mode As BuildMode)
-        ' I-CRP16-002 Fix invalid input on English name [Start][Lawrence]
         Me._strTravelDocNo = Me.txtTravelDocNo.Text.Trim
         Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
         Me._strENameSurName = Me.txtENameSurname.Text.Trim
+        Me._strCName = Me.txtCName.Text.Trim
         Me._strGender = Me.rbGender.SelectedValue
-
         Me._strDOB = Me.txtDOB.Text.Trim
-
         Me._strDOI = Me.txtDOI.Text.Trim
-        ' I-CRP16-002 Fix invalid input on English name [End][Lawrence]
+
     End Sub
 
     Public Property ENameSurName() As String
@@ -353,6 +372,15 @@ Partial Public Class ucInputReentryPermit
         End Get
         Set(ByVal value As String)
             Me._strENameFirstName = value
+        End Set
+    End Property
+
+    Public Property CName() As String
+        Get
+            Return Me._strCName
+        End Get
+        Set(ByVal value As String)
+            Me._strCName = value
         End Set
     End Property
 

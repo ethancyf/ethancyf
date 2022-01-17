@@ -12,6 +12,7 @@ Namespace UIControl.DocTypeHCSP
         Private _strTDNumber As String
         Private _strENameFirstName As String
         Private _strENameSurName As String
+        Private _strCName As String
         Private _strGender As String
         Private _strDOB As String
         Private _strDOI As String
@@ -28,6 +29,7 @@ Namespace UIControl.DocTypeHCSP
             Me.lblTDNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language)
             Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
             Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+            Me.lblCName.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
             Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
             Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
             Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
@@ -45,6 +47,9 @@ Namespace UIControl.DocTypeHCSP
 
             Me.imgEName.ImageUrl = strErrorImageURL
             Me.imgEName.AlternateText = strErrorImageALT
+
+            Me.imgCNameError.ImageUrl = strErrorImageURL
+            Me.imgCNameError.AlternateText = strErrorImageALT
 
             Me.imgGender.ImageUrl = strErrorImageURL
             Me.imgGender.AlternateText = strErrorImageALT
@@ -64,6 +69,7 @@ Namespace UIControl.DocTypeHCSP
             Me._strTDNumber = MyBase.Formatter.FormatDocIdentityNoForDisplay(DocTypeCode.DI, MyBase.EHSPersonalInfo.IdentityNum, False)
             Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfo.CName
             Me._strGender = MyBase.EHSPersonalInfo.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
 
@@ -102,6 +108,8 @@ Namespace UIControl.DocTypeHCSP
 
                 End If
 
+                Me.txtCName.Enabled = True
+
             Else
                 If modeType = ucInputDocTypeBase.BuildMode.Modification Then
                     'Modification Mode
@@ -118,6 +126,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtDOB.Enabled = True
                     Me.txtENameSurname.Enabled = True
                     Me.txtENameFirstname.Enabled = True
+                    Me.txtCName.Enabled = True
                     Me.rbGender.Enabled = True
                     Me.txtDOI.Enabled = True
                 Else
@@ -134,6 +143,7 @@ Namespace UIControl.DocTypeHCSP
 
                     Me.txtENameSurname.Enabled = False
                     Me.txtENameFirstname.Enabled = False
+                    Me.txtCName.Enabled = False
                     Me.rbGender.Enabled = False
                     Me.txtDOB.Enabled = False
                     Me.txtDOI.Enabled = False
@@ -145,6 +155,7 @@ Namespace UIControl.DocTypeHCSP
             If MyBase.ActiveViewChanged Then
                 Me.SetTDError(False)
                 Me.SetENameError(False)
+                Me.SetCNameError(False)
                 Me.SetGenderError(False)
                 Me.SetDOBError(False)
                 Me.SetDOIError(False)
@@ -158,6 +169,7 @@ Namespace UIControl.DocTypeHCSP
             SetupTDNumber()
             SetupENameFirstName()
             SetupENameSurName()
+            SetupCName()
             SetupGender()
             SetupDOB()
             SetupDOI()
@@ -176,6 +188,10 @@ Namespace UIControl.DocTypeHCSP
 
         Public Sub SetupENameSurName()
             Me.txtENameSurname.Text = Me._strENameSurName
+        End Sub
+
+        Public Sub SetupCName()
+            Me.txtCName.Text = Me._strCName
         End Sub
 
         Public Sub SetupGender()
@@ -221,6 +237,7 @@ Namespace UIControl.DocTypeHCSP
         Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
             Me.SetTDError(visible)
             Me.SetENameError(visible)
+            Me.SetCNameError(visible)
             Me.SetGenderError(visible)
             Me.SetDOBError(visible)
             Me.SetDOIError(visible)
@@ -232,6 +249,10 @@ Namespace UIControl.DocTypeHCSP
 
         Public Sub SetENameError(ByVal blnVisible As Boolean)
             Me.imgEName.Visible = blnVisible
+        End Sub
+
+        Public Sub SetCNameError(ByVal blnVisible As Boolean)
+            Me.imgCNameError.Visible = blnVisible
         End Sub
 
         Public Sub SetGenderError(ByVal visible As Boolean)
@@ -254,6 +275,7 @@ Namespace UIControl.DocTypeHCSP
             Me._strTDNumber = Me.txtTDNo.Text.Trim
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
+            Me._strCName = Me.txtCName.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue.Trim
             Me._strDOI = Me.txtDOI.Text.Trim
             Me._strDOB = Me.txtDOB.Text.Trim
@@ -283,6 +305,15 @@ Namespace UIControl.DocTypeHCSP
             End Get
             Set(ByVal value As String)
                 Me._strENameSurName = value
+            End Set
+        End Property
+
+        Public Property CName() As String
+            Get
+                Return Me._strCName
+            End Get
+            Set(ByVal value As String)
+                Me._strCName = value
             End Set
         End Property
 

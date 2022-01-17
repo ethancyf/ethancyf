@@ -1,4 +1,4 @@
-Namespace PrintOut.VSSConsentForm_CHI
+ï»¿Namespace PrintOut.VSSConsentForm_CHI
 
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
     Partial Public Class VSSDeclarationSmartID_CHI
@@ -49,8 +49,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             txtDeclaration4Value.Height = 0.406!
             txtDeclaration4Value.Left = 0.25!
             txtDeclaration4Value.Name = "txtDeclaration4Value"
-            txtDeclaration4Value.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; ddo-char-set: 0"
-            txtDeclaration4Value.Text = "¦¹¦P·N®Ñ¨ü­»´ä¯S§O¦æ¬F°Ïªk«ßºŞ­­¡A¨Ã¶·«ö·Ó­»´ä¯S§O¦æ¬F°Ïªk«ß¸ÑÄÀ¡F¥»¤H¤Î¬F©²¶·¤£¥iºM¾P¦a±µ¨ü­»´ä¯S§O¦æ¬F°Ïªk°|ªº±MÄİ¥qªkºŞÁÒÅvºŞÁÒ¡C"
+            txtDeclaration4Value.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; ddo-char-set: 0"
+            txtDeclaration4Value.Text = "æ­¤åŒæ„æ›¸å—é¦™æ¸¯ç‰¹åˆ¥è¡Œæ”¿å€æ³•å¾‹ç®¡é™ï¼Œä¸¦é ˆæŒ‰ç…§é¦™æ¸¯ç‰¹åˆ¥è¡Œæ”¿å€æ³•å¾‹è§£é‡‹ï¼›æœ¬äººåŠæ”¿åºœé ˆä¸å¯æ’¤éŠ·åœ°æ¥å—é¦™æ¸¯ç‰¹åˆ¥è¡Œæ”¿å€æ³•é™¢çš„å°ˆå±¬å¸æ³•ç®¡è½„æ¬Šç®¡è½„ã€‚"
             txtDeclaration4Value.Top = 1.96875!
             txtDeclaration4Value.Width = 7.03125!
             '
@@ -65,7 +65,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration2Value.Height = 0.8125!
             Me.txtDeclaration2Value.Left = 0.25!
             Me.txtDeclaration2Value.Name = "txtDeclaration2Value"
-            Me.txtDeclaration2Value.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; text-justify: dist" & _
+            Me.txtDeclaration2Value.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; text-justify: dist" & _
         "ribute; ddo-char-set: 0"
             Me.txtDeclaration2Value.Text = Nothing
             Me.txtDeclaration2Value.Top = 0.5!
@@ -76,9 +76,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationTitle.Height = 0.21875!
             Me.txtDeclarationTitle.Left = 0.0!
             Me.txtDeclarationTitle.Name = "txtDeclarationTitle"
-            Me.txtDeclarationTitle.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; font-weight: bold; " & _
+            Me.txtDeclarationTitle.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; font-weight: bold; " & _
         "text-align: left; ddo-char-set: 0"
-            Me.txtDeclarationTitle.Text = "©Ó¿Õ¤ÎÁn©ú"
+            Me.txtDeclarationTitle.Text = "æ‰¿è«¾åŠè²æ˜"
             Me.txtDeclarationTitle.Top = 0.0!
             Me.txtDeclarationTitle.Width = 7.375!
             '
@@ -87,7 +87,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration1.Height = 0.21875!
             Me.txtDeclaration1.Left = 0.0!
             Me.txtDeclaration1.Name = "txtDeclaration1"
-            Me.txtDeclaration1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 0"
+            Me.txtDeclaration1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 0"
             Me.txtDeclaration1.Text = "1."
             Me.txtDeclaration1.Top = 0.25!
             Me.txtDeclaration1.Width = 0.22!
@@ -97,7 +97,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration2.Height = 0.21875!
             Me.txtDeclaration2.Left = 0.0!
             Me.txtDeclaration2.Name = "txtDeclaration2"
-            Me.txtDeclaration2.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 0"
+            Me.txtDeclaration2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 0"
             Me.txtDeclaration2.Text = "2."
             Me.txtDeclaration2.Top = 0.5!
             Me.txtDeclaration2.Width = 0.22!
@@ -107,7 +107,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration3.Height = 0.21875!
             Me.txtDeclaration3.Left = 0.0!
             Me.txtDeclaration3.Name = "txtDeclaration3"
-            Me.txtDeclaration3.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 0"
+            Me.txtDeclaration3.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 0"
             Me.txtDeclaration3.Text = "3."
             Me.txtDeclaration3.Top = 1.34375!
             Me.txtDeclaration3.Width = 0.22!
@@ -117,7 +117,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration4.Height = 0.21875!
             Me.txtDeclaration4.Left = 0.0!
             Me.txtDeclaration4.Name = "txtDeclaration4"
-            Me.txtDeclaration4.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 0"
+            Me.txtDeclaration4.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 0"
             Me.txtDeclaration4.Text = "4."
             Me.txtDeclaration4.Top = 1.96875!
             Me.txtDeclaration4.Width = 0.22!
@@ -127,9 +127,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration5Value.Height = 0.1875!
             Me.txtDeclaration5Value.Left = 0.25!
             Me.txtDeclaration5Value.Name = "txtDeclaration5Value"
-            Me.txtDeclaration5Value.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; white-space: inher" & _
+            Me.txtDeclaration5Value.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; white-space: inher" & _
         "it; ddo-char-set: 0"
-            Me.txtDeclaration5Value.Text = "¥»¤H¤w¥J²Ó¾\Åª¦¹¦P·N®Ñ¤Î§¹¥ş²z¸Ñ¦¹¦P·N®Ñ¤¤¥»¤Hªº¸q°È©M³d¥ô¡C"
+            Me.txtDeclaration5Value.Text = "æœ¬äººå·²ä»”ç´°é–±è®€æ­¤åŒæ„æ›¸åŠå®Œå…¨ç†è§£æ­¤åŒæ„æ›¸ä¸­æœ¬äººçš„ç¾©å‹™å’Œè²¬ä»»ã€‚"
             Me.txtDeclaration5Value.Top = 2.40625!
             Me.txtDeclaration5Value.Width = 7.03125!
             '
@@ -138,8 +138,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration1Value.Height = 0.21875!
             Me.txtDeclaration1Value.Left = 0.25!
             Me.txtDeclaration1Value.Name = "txtDeclaration1Value"
-            Me.txtDeclaration1Value.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 0"
-            Me.txtDeclaration1Value.Text = "¥»¤H¯S¦¹Án©ú¡A¥»¤H¦b¦¹¦P·N®Ñ¤¤©Ò´£¨Ñªº¤@¤Á¸ê®Æ¡A¥şÄİ¯u½T¡C"
+            Me.txtDeclaration1Value.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 0"
+            Me.txtDeclaration1Value.Text = "æœ¬äººç‰¹æ­¤è²æ˜ï¼Œæœ¬äººåœ¨æ­¤åŒæ„æ›¸ä¸­æ‰€æä¾›çš„ä¸€åˆ‡è³‡æ–™ï¼Œå…¨å±¬çœŸç¢ºã€‚"
             Me.txtDeclaration1Value.Top = 0.25!
             Me.txtDeclaration1Value.Width = 7.0!
             '
@@ -148,7 +148,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclaration3Value.Height = 0.59375!
             Me.txtDeclaration3Value.Left = 0.25!
             Me.txtDeclaration3Value.Name = "txtDeclaration3Value"
-            Me.txtDeclaration3Value.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; text-justify: dist" & _
+            Me.txtDeclaration3Value.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; text-justify: dist" & _
         "ribute; ddo-char-set: 0"
             Me.txtDeclaration3Value.Text = Nothing
             Me.txtDeclaration3Value.Top = 1.34375!
@@ -159,7 +159,7 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox4.Height = 0.21875!
             Me.TextBox4.Left = 0.0!
             Me.TextBox4.Name = "TextBox4"
-            Me.TextBox4.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 0"
+            Me.TextBox4.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 0"
             Me.TextBox4.Text = "5."
             Me.TextBox4.Top = 2.40625!
             Me.TextBox4.Width = 0.22!

@@ -111,6 +111,9 @@ Namespace Component.Printout
             Return blnResult
         End Function
 
+        Public Shared Function FallbackFont() As String
+            Return "MingLiu_HKSCS,MingLiU_HKSCS-ExtB"
+        End Function
 
 #Region "Cache"
 

@@ -8,6 +8,14 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023-68 (Add Chinese Name)
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Dec 2021
+-- Description:		1. Change [@Chi_Name] nvarchar(6) -> nvarchar(30)
+--					2. Use Collate "Chinese_Taiwan_Stroke_90_CI_AS_SC" for comparing chinese name
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
 -- Modified by:		Winnie SUEN
 -- Modified date:	02 Sep 2021
@@ -78,7 +86,7 @@ CREATE PROCEDURE [dbo].[proc_VoucherAccountListForMaint_byParticular_get]
 	@IdentityNum varchar(20),
 	@Adoption_Prefix_Num char(7),
 	@Eng_Name varchar(100),
-	@Chi_Name nvarchar(6),
+	@Chi_Name nvarchar(30),
 	@DOB datetime,
 	@Voucher_Acc_ID char(15),
 	@ReferenceNo char(15),
@@ -292,7 +300,7 @@ BEGIN
 				OR (@IdentityNum3 = ''
 					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
-		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
+		and (@Chi_Name = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
 		and (@Gender = '' or TP.Sex = @Gender)
 		and (@Voucher_Acc_ID = '')
@@ -426,7 +434,7 @@ BEGIN
 					OR (@IdentityNum3 = ''
 						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))				
 			and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
-			and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
+			and (@Chi_Name = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 			and (@DOB is NULL or TP.DOB = @DOB)
 			and (@Gender = '' or TP.Sex = @Gender)
 			and (@Voucher_Acc_ID = '')
@@ -537,7 +545,7 @@ BEGIN
 						OR (@IdentityNum3 = ''
 							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))					
 				and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
-				and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
+				and (@Chi_Name = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 				and (@DOB is NULL or TP.DOB = @DOB)
 				and (@Gender = '' or TP.Sex = @Gender)
 				and (@Voucher_Acc_ID = '')
@@ -669,7 +677,7 @@ BEGIN
 		OR (@IdentityNum3 = ''
 			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
-	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
+	and (@Chi_Name = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
 	and (@Gender = '' or P.Sex = @Gender)
 	and (@Voucher_Acc_ID = '' or VA.Voucher_Acc_ID=@Voucher_Acc_ID)
@@ -802,7 +810,7 @@ BEGIN
 				OR (@IdentityNum3 = ''
 					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))			
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
-		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
+		and (@Chi_Name = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
 		and (@Gender = '' or TP.Sex = @Gender)
 		and (@Voucher_Acc_ID = '')
@@ -935,7 +943,7 @@ BEGIN
 		OR (@IdentityNum3 = ''
 			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
-	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
+	and (@Chi_Name = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
 	and (@Gender = '' or P.Sex = @Gender)
 	and (@Voucher_Acc_ID = '' or VA.Voucher_Acc_ID=@Voucher_Acc_ID)
@@ -1070,7 +1078,7 @@ BEGIN
 				OR (@IdentityNum3 = ''
 					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))			
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
-		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
+		and (@Chi_Name = '' COLLATE Chinese_Taiwan_Stroke_90_CI_AS_SC or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
 		and (@Gender = '' or TP.Sex = @Gender)
 		and (@Voucher_Acc_ID = '')

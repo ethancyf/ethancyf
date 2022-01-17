@@ -511,7 +511,7 @@ Partial Public Class ucInputHKID
                     Me.txtNewCCCode1.Text = String.Empty
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode1)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode1)
             End If
 
             If Not Me._strCCCode2 Is Nothing Then
@@ -521,7 +521,7 @@ Partial Public Class ucInputHKID
                     Me.txtNewCCCode2.Text = String.Empty
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode2)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode2)
             End If
 
             If Not Me._strCCCode3 Is Nothing Then
@@ -531,7 +531,7 @@ Partial Public Class ucInputHKID
                     Me.txtNewCCCode3.Text = String.Empty
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode3)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode3)
             End If
 
             If Not Me._strCCCode4 Is Nothing Then
@@ -541,7 +541,7 @@ Partial Public Class ucInputHKID
                     Me.txtNewCCCode4.Text = String.Empty
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode4)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode4)
             End If
 
             If Not Me._strCCCode5 Is Nothing Then
@@ -551,7 +551,7 @@ Partial Public Class ucInputHKID
                     Me.txtNewCCCode5.Text = String.Empty
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode5)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode5)
             End If
 
             If Not Me._strCCCode6 Is Nothing Then
@@ -561,7 +561,7 @@ Partial Public Class ucInputHKID
                     Me.txtNewCCCode6.Text = String.Empty
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode6)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode6)
             End If
             ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 
@@ -583,12 +583,12 @@ Partial Public Class ucInputHKID
             ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
             If Not Me._strCCCode1Amend Is Nothing Then
                 If Me._strCCCode1Amend.Length > 4 Then
-                    Me.txtCCCode1.Text = Me._strCCCode1Amend.Substring(0, 4)                    
+                    Me.txtCCCode1.Text = Me._strCCCode1Amend.Substring(0, 4)
                 Else
                     Me.txtCCCode1.Text = String.Empty
                 End If
 
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode1Amend)
+                strDBCNameAmend += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode1Amend)
             End If
 
 
@@ -599,7 +599,7 @@ Partial Public Class ucInputHKID
                     Me.txtCCCode2.Text = String.Empty
                 End If
 
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode2Amend)
+                strDBCNameAmend += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode2Amend)
             End If
 
             If Not Me._strCCCode3Amend Is Nothing Then
@@ -609,7 +609,7 @@ Partial Public Class ucInputHKID
                     Me.txtCCCode3.Text = String.Empty
                 End If
 
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode3Amend)
+                strDBCNameAmend += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode3Amend)
             End If
 
             If Not Me._strCCCode4Amend Is Nothing Then
@@ -619,7 +619,7 @@ Partial Public Class ucInputHKID
                     Me.txtCCCode4.Text = String.Empty
                 End If
 
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode4Amend)
+                strDBCNameAmend += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode4Amend)
             End If
 
             If Not Me._strCCCode5Amend Is Nothing Then
@@ -629,7 +629,7 @@ Partial Public Class ucInputHKID
                     Me.txtCCCode5.Text = String.Empty
                 End If
 
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode5Amend)
+                strDBCNameAmend += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode5Amend)
             End If
 
             If Not Me._strCCCode6Amend Is Nothing Then
@@ -639,7 +639,7 @@ Partial Public Class ucInputHKID
                     Me.txtCCCode6.Text = String.Empty
                 End If
 
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode6Amend)
+                strDBCNameAmend += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode6Amend)
             End If
             ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 
@@ -661,10 +661,10 @@ Partial Public Class ucInputHKID
             ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
             If Not Me._strCCCode1 Is Nothing Then
                 If Me._strCCCode1.Length > 4 Then
-                    strCNameCode += Me._strCCCode1.Substring(0, 4) + " "                    
+                    strCNameCode += Me._strCCCode1.Substring(0, 4) + " "
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode1)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode1)
             End If
 
             If Not Me._strCCCode2 Is Nothing Then
@@ -672,7 +672,7 @@ Partial Public Class ucInputHKID
                     strCNameCode += Me._strCCCode2.Substring(0, 4) + " "
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode2)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode2)
             End If
 
             If Not Me._strCCCode3 Is Nothing Then
@@ -680,7 +680,7 @@ Partial Public Class ucInputHKID
                     strCNameCode += Me._strCCCode3.Substring(0, 4) + " "
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode3)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode3)
             End If
 
             If Not Me._strCCCode4 Is Nothing Then
@@ -688,7 +688,7 @@ Partial Public Class ucInputHKID
                     strCNameCode += Me._strCCCode4.Substring(0, 4) + " "
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode4)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode4)
             End If
 
             If Not Me._strCCCode5 Is Nothing Then
@@ -696,7 +696,7 @@ Partial Public Class ucInputHKID
                     strCNameCode += Me._strCCCode5.Substring(0, 4) + " "
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode5)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode5)
             End If
 
             If Not Me._strCCCode6 Is Nothing Then
@@ -704,7 +704,7 @@ Partial Public Class ucInputHKID
                     strCNameCode += Me._strCCCode6.Substring(0, 4) + " "
                 End If
 
-                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode6)
+                strDBCName += udtCCCodeBLL.getChiCharByCCCode(Me._strCCCode6)
             End If
             ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 

@@ -223,7 +223,7 @@
                                             <asp:Label ID="lblSearchCNameR2Text" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, AccountNameInChinese %>"></asp:Label>
                                         </td>
                                         <td valign="top">
-                                            <asp:TextBox ID="txtSearchCNameR2" runat="server" Width="200px" MaxLength="6" ></asp:TextBox>
+                                            <asp:TextBox ID="txtSearchCNameR2" runat="server" Width="200px" MaxLength="12" ></asp:TextBox>
                                         </td>
                                     </tr>
                                     <tr>
@@ -747,8 +747,9 @@
                                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, VRName %>"
                                                 HeaderStyle-VerticalAlign="Top">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label></br>
-                                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
+                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>' />
+                                                    <br />
+                                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' CssClass="TextChineseName" />
                                                 </ItemTemplate>
                                                 <ItemStyle Width="270px" VerticalAlign="Top" />
                                             </asp:TemplateField>
@@ -956,8 +957,9 @@
                                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, VRName %>"
                                                 HeaderStyle-VerticalAlign="Top">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label></br>
-                                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
+                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>' />
+                                                    <br />
+                                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' CssClass="TextChineseName" />
                                                 </ItemTemplate>
                                                 <ItemStyle Width="270px" VerticalAlign="Top" />
                                             </asp:TemplateField>
@@ -1278,8 +1280,9 @@
                             </asp:TemplateField>
                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, Name %>">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label></br>
-                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
+                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>' />
+                                    <br />
+                                    <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' CssClass="TextChineseName" />
                                 </ItemTemplate>
                                 <ItemStyle Width="270px" VerticalAlign="Top" />
                             </asp:TemplateField>
@@ -1419,8 +1422,9 @@
                                                 <HeaderStyle CssClass="GridViewHeaderPadding" VerticalAlign="top" />
                                                 <ItemStyle CssClass="GridViewItemPadding" VerticalAlign="top" />
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>' /></br>
-                                                <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu" />
+                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>' />
+                                                    <br />
+                                                	<asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' CssClass="TextChineseName" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="<%$ Resources:Text, DOB %>" SortExpression="DOB">
@@ -1691,8 +1695,9 @@
                                             <HeaderStyle CssClass="GridViewHeaderPadding" VerticalAlign="top" />
                                             <ItemStyle CssClass="GridViewItemPadding" VerticalAlign="top" />
                                             <ItemTemplate>
-                                                <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>' /></br>
-                                                <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu" />
+                                                <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>' />
+                                                <br />
+                                                <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' CssClass="TextChineseName" />
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="<%$ Resources:Text, DOB %>" SortExpression="DOB">

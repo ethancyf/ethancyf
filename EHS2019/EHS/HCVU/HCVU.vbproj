@@ -347,6 +347,7 @@
     <Content Include="UIControl\DocType\ucInputID235B.ascx" />
     <Content Include="UIControl\DocType\ucInputISSHK.ascx" />
     <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
+    <Content Include="UIControl\DocType\ucInputRFNo8.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
     <Content Include="UIControl\DocType\ucInputPASS.ascx" />
     <Content Include="UIControl\DocType\ucInputReentryPermit.ascx" />
@@ -365,6 +366,7 @@
     <Content Include="UIControl\DocType\ucReadOnlyID235B.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyISSHK.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOTHER.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyRFNo8.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyPASS.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyREPMT.ascx" />
@@ -1160,6 +1162,13 @@
       <DependentUpon>ucInputOTHER.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocType\ucInputRFNo8.ascx.designer.vb">
+      <DependentUpon>ucInputRFNo8.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputRFNo8.ascx.vb">
+      <DependentUpon>ucInputRFNo8.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocType\ucInputOW.ascx.designer.vb">
       <DependentUpon>ucInputOW.ascx</DependentUpon>
     </Compile>
@@ -1284,6 +1293,13 @@
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyOTHER.ascx.vb">
       <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyRFNo8.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyRFNo8.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyRFNo8.ascx.vb">
+      <DependentUpon>ucReadOnlyRFNo8.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyOW.ascx.designer.vb">
@@ -2997,7 +3013,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1817</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/HCVU_Dev</IISUrl>
+          <IISUrl>https://localhost/HCVU</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

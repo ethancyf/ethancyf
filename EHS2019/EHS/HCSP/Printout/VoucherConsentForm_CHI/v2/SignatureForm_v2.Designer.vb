@@ -100,8 +100,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientEngNameText.Left = 0.0!
             Me.txtRecipientEngNameText.LineSpacing = 3.0!
             Me.txtRecipientEngNameText.Name = "txtRecipientEngNameText"
-            Me.txtRecipientEngNameText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
-            Me.txtRecipientEngNameText.Text = "ÂåÀø¨é¨Ï¥ÎªÌ©m¦W¡G"
+            Me.txtRecipientEngNameText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
+            Me.txtRecipientEngNameText.Text = "é†«ç™‚åˆ¸ä½¿ç”¨è€…å§“åï¼š"
             Me.txtRecipientEngNameText.Top = 1.0!
             Me.txtRecipientEngNameText.Width = 3.625!
             '
@@ -111,8 +111,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientSignatureText.Left = 0.0!
             Me.txtRecipientSignatureText.LineSpacing = 3.0!
             Me.txtRecipientSignatureText.Name = "txtRecipientSignatureText"
-            Me.txtRecipientSignatureText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
-            Me.txtRecipientSignatureText.Text = "ÂåÀø¨é¨Ï¥ÎªÌÃ±¸p#¡G"
+            Me.txtRecipientSignatureText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
+            Me.txtRecipientSignatureText.Text = "é†«ç™‚åˆ¸ä½¿ç”¨è€…ç°½ç½²#ï¼š"
             Me.txtRecipientSignatureText.Top = 0.53125!
             Me.txtRecipientSignatureText.Width = 3.625!
             '
@@ -122,9 +122,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientSignatureNote.Left = 5.125!
             Me.txtRecipientSignatureNote.LineSpacing = 3.0!
             Me.txtRecipientSignatureNote.Name = "txtRecipientSignatureNote"
-            Me.txtRecipientSignatureNote.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.txtRecipientSignatureNote.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.txtRecipientSignatureNote.Text = "¡]¦p¤£·|Åª¼g¡A½Ğ¦L¤W«ü¼Ò¡^"
+            Me.txtRecipientSignatureNote.Text = "ï¼ˆå¦‚ä¸æœƒè®€å¯«ï¼Œè«‹å°ä¸ŠæŒ‡æ¨¡ï¼‰"
             Me.txtRecipientSignatureNote.Top = 0.5!
             Me.txtRecipientSignatureNote.Width = 2.3125!
             '
@@ -134,7 +134,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientHKIDText.Left = 0.0!
             Me.txtRecipientHKIDText.LineSpacing = 3.0!
             Me.txtRecipientHKIDText.Name = "txtRecipientHKIDText"
-            Me.txtRecipientHKIDText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
+            Me.txtRecipientHKIDText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
             Me.txtRecipientHKIDText.Text = Nothing
             Me.txtRecipientHKIDText.Top = 1.275591!
             Me.txtRecipientHKIDText.Width = 3.625!
@@ -145,8 +145,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientDateText.Left = 5.249804!
             Me.txtRecipientDateText.LineSpacing = 3.0!
             Me.txtRecipientDateText.Name = "txtRecipientDateText"
-            Me.txtRecipientDateText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
-            Me.txtRecipientDateText.Text = "¤é´Á¡G"
+            Me.txtRecipientDateText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
+            Me.txtRecipientDateText.Text = "æ—¥æœŸï¼š"
             Me.txtRecipientDateText.Top = 1.551181!
             Me.txtRecipientDateText.Width = 0.625!
             '
@@ -156,9 +156,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientIlliterateComplete.Left = 0.0!
             Me.txtRecipientIlliterateComplete.LineSpacing = 3.0!
             Me.txtRecipientIlliterateComplete.Name = "txtRecipientIlliterateComplete"
-            Me.txtRecipientIlliterateComplete.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: justify; t" & _
+            Me.txtRecipientIlliterateComplete.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: justify; t" & _
         "ext-decoration: underline; vertical-align: middle; ddo-char-set: 1"
-            Me.txtRecipientIlliterateComplete.Text = "¦pÂåÀø¨é¨Ï¥ÎªÌºë¯«¤W¦³¦æ¬°¯à¤O¦ı¤£·|Åª¼g¡A¤~¶·¶ñ¼g¦¹Äæ"
+            Me.txtRecipientIlliterateComplete.Text = "å¦‚é†«ç™‚åˆ¸ä½¿ç”¨è€…ç²¾ç¥ä¸Šæœ‰è¡Œç‚ºèƒ½åŠ›ä½†ä¸æœƒè®€å¯«ï¼Œæ‰é ˆå¡«å¯«æ­¤æ¬„"
             Me.txtRecipientIlliterateComplete.Top = 1.9375!
             Me.txtRecipientIlliterateComplete.Width = 7.40625!
             '
@@ -168,9 +168,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtWitnessSignatureText.Left = 0.0!
             Me.txtWitnessSignatureText.LineSpacing = 3.0!
             Me.txtWitnessSignatureText.Name = "txtWitnessSignatureText"
-            Me.txtWitnessSignatureText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.txtWitnessSignatureText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.txtWitnessSignatureText.Text = "¨£ÃÒ¤HÃ±¸p¡G"
+            Me.txtWitnessSignatureText.Text = "è¦‹è­‰äººç°½ç½²ï¼š"
             Me.txtWitnessSignatureText.Top = 2.703249!
             Me.txtWitnessSignatureText.Width = 3.625!
             '
@@ -180,9 +180,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtWitnessNameText.Left = 0.0!
             Me.txtWitnessNameText.LineSpacing = 3.0!
             Me.txtWitnessNameText.Name = "txtWitnessNameText"
-            Me.txtWitnessNameText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.txtWitnessNameText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.txtWitnessNameText.Text = "¨£ÃÒ¤H©m¦W¡G"
+            Me.txtWitnessNameText.Text = "è¦‹è­‰äººå§“åï¼š"
             Me.txtWitnessNameText.Top = 2.978839!
             Me.txtWitnessNameText.Width = 3.625!
             '
@@ -192,9 +192,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtWitnessHKIDText.Left = 0.0!
             Me.txtWitnessHKIDText.LineSpacing = 3.0!
             Me.txtWitnessHKIDText.Name = "txtWitnessHKIDText"
-            Me.txtWitnessHKIDText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.txtWitnessHKIDText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.txtWitnessHKIDText.Text = "­»´ä¨­¥÷ÃÒ¸¹½X¡G"
+            Me.txtWitnessHKIDText.Text = "é¦™æ¸¯èº«ä»½è­‰è™Ÿç¢¼ï¼š"
             Me.txtWitnessHKIDText.Top = 3.254429!
             Me.txtWitnessHKIDText.Width = 3.625!
             '
@@ -204,9 +204,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtWitnessDateText.Left = 5.25!
             Me.txtWitnessDateText.LineSpacing = 3.0!
             Me.txtWitnessDateText.Name = "txtWitnessDateText"
-            Me.txtWitnessDateText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.txtWitnessDateText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.txtWitnessDateText.Text = "¤é´Á¡G"
+            Me.txtWitnessDateText.Text = "æ—¥æœŸï¼š"
             Me.txtWitnessDateText.Top = 3.254429!
             Me.txtWitnessDateText.Width = 0.625!
             '
@@ -217,7 +217,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientSignature.Height = 0.21875!
             Me.txtRecipientSignature.Left = 3.625!
             Me.txtRecipientSignature.Name = "txtRecipientSignature"
-            Me.txtRecipientSignature.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.txtRecipientSignature.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.txtRecipientSignature.Text = Nothing
             Me.txtRecipientSignature.Top = 0.6875!
             Me.txtRecipientSignature.Width = 3.78125!
@@ -227,7 +227,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientHKID.Height = 0.21875!
             Me.txtRecipientHKID.Left = 3.625197!
             Me.txtRecipientHKID.Name = "txtRecipientHKID"
-            Me.txtRecipientHKID.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; text-decoration: unde" & _
+            Me.txtRecipientHKID.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 136"
             Me.txtRecipientHKID.Text = Nothing
             Me.txtRecipientHKID.Top = 1.275591!
@@ -238,7 +238,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientDate.Height = 0.21875!
             Me.txtRecipientDate.Left = 5.874804!
             Me.txtRecipientDate.Name = "txtRecipientDate"
-            Me.txtRecipientDate.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.txtRecipientDate.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.txtRecipientDate.Text = Nothing
             Me.txtRecipientDate.Top = 1.551181!
             Me.txtRecipientDate.Width = 1.5313!
@@ -250,7 +250,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtWitnessSignature.Height = 0.21875!
             Me.txtWitnessSignature.Left = 3.625!
             Me.txtWitnessSignature.Name = "txtWitnessSignature"
-            Me.txtWitnessSignature.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.txtWitnessSignature.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.txtWitnessSignature.Text = Nothing
             Me.txtWitnessSignature.Top = 2.703249!
             Me.txtWitnessSignature.Width = 3.78125!
@@ -262,7 +262,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtWitnessHKID.Height = 0.21875!
             Me.txtWitnessHKID.Left = 3.625197!
             Me.txtWitnessHKID.Name = "txtWitnessHKID"
-            Me.txtWitnessHKID.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.txtWitnessHKID.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.txtWitnessHKID.Text = Nothing
             Me.txtWitnessHKID.Top = 3.254429!
             Me.txtWitnessHKID.Width = 1.53125!
@@ -274,7 +274,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtWitnessDate.Height = 0.21875!
             Me.txtWitnessDate.Left = 5.875197!
             Me.txtWitnessDate.Name = "txtWitnessDate"
-            Me.txtWitnessDate.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.txtWitnessDate.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.txtWitnessDate.Text = Nothing
             Me.txtWitnessDate.Top = 3.254429!
             Me.txtWitnessDate.Width = 1.529922!
@@ -284,7 +284,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtRecipientChiName.Height = 0.21875!
             Me.txtRecipientChiName.Left = 3.625!
             Me.txtRecipientChiName.Name = "txtRecipientChiName"
-            Me.txtRecipientChiName.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; text-decoration: none" & _
+            Me.txtRecipientChiName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; text-decoration: none" & _
         "; ddo-char-set: 136"
             Me.txtRecipientChiName.Text = Nothing
             Me.txtRecipientChiName.Top = 1.0!
@@ -296,8 +296,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtTelephoneNoText.Left = 0.0!
             Me.txtTelephoneNoText.LineSpacing = 3.0!
             Me.txtTelephoneNoText.Name = "txtTelephoneNoText"
-            Me.txtTelephoneNoText.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
-            Me.txtTelephoneNoText.Text = "Ápµ¸¹q¸Ü¸¹½X¡G"
+            Me.txtTelephoneNoText.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: right; ddo-char-set: 1"
+            Me.txtTelephoneNoText.Text = "è¯çµ¡é›»è©±è™Ÿç¢¼ï¼š"
             Me.txtTelephoneNoText.Top = 1.551181!
             Me.txtTelephoneNoText.Width = 3.625!
             '
@@ -308,7 +308,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtTelephoneNo.Height = 0.18875!
             Me.txtTelephoneNo.Left = 3.625197!
             Me.txtTelephoneNo.Name = "txtTelephoneNo"
-            Me.txtTelephoneNo.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.txtTelephoneNo.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.txtTelephoneNo.Text = Nothing
             Me.txtTelephoneNo.Top = 1.551181!
             Me.txtTelephoneNo.Width = 1.53125!
@@ -319,9 +319,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox6.Left = 0.0!
             Me.TextBox6.LineSpacing = 3.0!
             Me.TextBox6.Name = "TextBox6"
-            Me.TextBox6.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: justify; t" & _
+            Me.TextBox6.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: justify; t" & _
         "ext-decoration: underline; vertical-align: top; ddo-char-set: 1"
-            Me.TextBox6.Text = "#¦pÂåÀø¨é¨Ï¥ÎªÌ¬Oºë¯«¤WµL¦æ¬°¯à¤O¤H¤h¡A ¤~¶·¶ñ¼g¦¹Äæ"
+            Me.TextBox6.Text = "#å¦‚é†«ç™‚åˆ¸ä½¿ç”¨è€…æ˜¯ç²¾ç¥ä¸Šç„¡è¡Œç‚ºèƒ½åŠ›äººå£«ï¼Œ æ‰é ˆå¡«å¯«æ­¤æ¬„"
             Me.TextBox6.Top = 3.567028!
             Me.TextBox6.Width = 7.40625!
             '
@@ -331,9 +331,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox7.Left = 0.0!
             Me.TextBox7.LineSpacing = 3.0!
             Me.TextBox7.Name = "TextBox7"
-            Me.TextBox7.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.TextBox7.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.TextBox7.Text = "ºÊÅ@¤HÃ±¸p¡G"
+            Me.TextBox7.Text = "ç›£è­·äººç°½ç½²ï¼š"
             Me.TextBox7.Top = 4.301772!
             Me.TextBox7.Width = 3.625!
             '
@@ -343,9 +343,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox8.Left = 0.0!
             Me.TextBox8.LineSpacing = 3.0!
             Me.TextBox8.Name = "TextBox8"
-            Me.TextBox8.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.TextBox8.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.TextBox8.Text = "ºÊÅ@¤H©m¦W¡G"
+            Me.TextBox8.Text = "ç›£è­·äººå§“åï¼š"
             Me.TextBox8.Top = 4.577264!
             Me.TextBox8.Width = 3.625!
             '
@@ -355,9 +355,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox9.Left = 0.0!
             Me.TextBox9.LineSpacing = 3.0!
             Me.TextBox9.Name = "TextBox9"
-            Me.TextBox9.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.TextBox9.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.TextBox9.Text = "­»´ä¨­¥÷ÃÒ¸¹½X¡G"
+            Me.TextBox9.Text = "é¦™æ¸¯èº«ä»½è­‰è™Ÿç¢¼ï¼š"
             Me.TextBox9.Top = 4.852854!
             Me.TextBox9.Width = 3.625!
             '
@@ -367,9 +367,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox10.Left = 5.25!
             Me.TextBox10.LineSpacing = 3.0!
             Me.TextBox10.Name = "TextBox10"
-            Me.TextBox10.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
+            Me.TextBox10.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; font-style: italic; text-align: right; ddo" & _
         "-char-set: 1"
-            Me.TextBox10.Text = "¤é´Á¡G"
+            Me.TextBox10.Text = "æ—¥æœŸï¼š"
             Me.TextBox10.Top = 4.852854!
             Me.TextBox10.Width = 0.625!
             '
@@ -380,7 +380,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox11.Height = 0.21875!
             Me.TextBox11.Left = 3.625!
             Me.TextBox11.Name = "TextBox11"
-            Me.TextBox11.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.TextBox11.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.TextBox11.Text = Nothing
             Me.TextBox11.Top = 4.301772!
             Me.TextBox11.Width = 3.78125!
@@ -392,7 +392,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox12.Height = 0.21875!
             Me.TextBox12.Left = 3.625197!
             Me.TextBox12.Name = "TextBox12"
-            Me.TextBox12.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.TextBox12.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.TextBox12.Text = Nothing
             Me.TextBox12.Top = 4.852854!
             Me.TextBox12.Width = 1.53125!
@@ -404,7 +404,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox13.Height = 0.21875!
             Me.TextBox13.Left = 5.875197!
             Me.TextBox13.Name = "TextBox13"
-            Me.TextBox13.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.TextBox13.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.TextBox13.Text = Nothing
             Me.TextBox13.Top = 4.852854!
             Me.TextBox13.Width = 1.5313!
@@ -415,9 +415,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox1.Left = 0.0!
             Me.TextBox1.LineSpacing = 3.0!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: ·s²Ó©úÅé; font-size: 10.5pt; font-style: italic; text-align: justify; te" & _
+            Me.TextBox1.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 10.5pt; font-style: italic; text-align: justify; te" & _
         "xt-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.TextBox1.Text = "¥»¤H¨£ÃÒ¥»¦P·N®Ñ©M¡uÂåÀø¨é¨Ï¥ÎªÌ¦P·NÂà¥æ­Ó¤H¸ê®Æ¡v¤å¥ó¤Î¨äªş¿ı¤w¦b¥»¤H­±«e¦VÂåÀø¨é¨Ï¥ÎªÌÅª¥X©M¸ÑÄÀ¡C"
+            Me.TextBox1.Text = "æœ¬äººè¦‹è­‰æœ¬åŒæ„æ›¸å’Œã€Œé†«ç™‚åˆ¸ä½¿ç”¨è€…åŒæ„è½‰äº¤å€‹äººè³‡æ–™ã€æ–‡ä»¶åŠå…¶é™„éŒ„å·²åœ¨æœ¬äººé¢å‰å‘é†«ç™‚åˆ¸ä½¿ç”¨è€…è®€å‡ºå’Œè§£é‡‹ã€‚"
             Me.TextBox1.Top = 2.1875!
             Me.TextBox1.Width = 7.40625!
             '
@@ -450,7 +450,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtWitnessName.Height = 0.2188976!
             Me.txtWitnessName.Left = 3.625197!
             Me.txtWitnessName.Name = "txtWitnessName"
-            Me.txtWitnessName.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.txtWitnessName.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.txtWitnessName.Text = Nothing
             Me.txtWitnessName.Top = 2.978839!
             Me.txtWitnessName.Width = 3.779921!
@@ -462,7 +462,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox14.Height = 0.2188976!
             Me.TextBox14.Left = 3.625197!
             Me.TextBox14.Name = "TextBox14"
-            Me.TextBox14.Style = "font-family: ·s²Ó©úÅé; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
+            Me.TextBox14.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12.25pt; text-align: left; ddo-char-set: 136"
             Me.TextBox14.Text = Nothing
             Me.TextBox14.Top = 4.577264!
             Me.TextBox14.Width = 3.779921!
@@ -473,9 +473,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox2.Left = 0.0!
             Me.TextBox2.LineSpacing = 3.0!
             Me.TextBox2.Name = "TextBox2"
-            Me.TextBox2.Style = "font-family: ·s²Ó©úÅé; font-size: 10.5pt; font-style: italic; text-align: justify; te" & _
+            Me.TextBox2.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 10.5pt; font-style: italic; text-align: justify; te" & _
         "xt-decoration: none; vertical-align: top; ddo-char-set: 136"
-            Me.TextBox2.Text = "¥»¤H¥ç¤w¾\Åª¡u¨£ÃÒ¤H¡şºÊÅ@¤H¦P·NÂà¥æ­Ó¤H¸ê®Æ¡v¤å¥ó¡A¨ÃÂÔ¦¹µ¹¤©·í¤¤©Ò­zªº¦P·N¡C"
+            Me.TextBox2.Text = "æœ¬äººäº¦å·²é–±è®€ã€Œè¦‹è­‰äººï¼ç›£è­·äººåŒæ„è½‰äº¤å€‹äººè³‡æ–™ã€æ–‡ä»¶ï¼Œä¸¦è¬¹æ­¤çµ¦äºˆç•¶ä¸­æ‰€è¿°çš„åŒæ„ã€‚"
             Me.TextBox2.Top = 2.453249!
             Me.TextBox2.Width = 7.40625!
             '
@@ -485,9 +485,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox3.Left = 0.0!
             Me.TextBox3.LineSpacing = 3.0!
             Me.TextBox3.Name = "TextBox3"
-            Me.TextBox3.Style = "font-family: ·s²Ó©úÅé; font-size: 10.5pt; font-style: italic; text-align: justify; te" & _
+            Me.TextBox3.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 10.5pt; font-style: italic; text-align: justify; te" & _
         "xt-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.TextBox3.Text = "¥»¤H½T»{¥HºÊÅ@¤Hªº¨­¤À¥NªíÂåÀø¨é¨Ï¥ÎªÌµ¹¤©¦P·N©MÃ±¸p¡C"
+            Me.TextBox3.Text = "æœ¬äººç¢ºèªä»¥ç›£è­·äººçš„èº«åˆ†ä»£è¡¨é†«ç™‚åˆ¸ä½¿ç”¨è€…çµ¦äºˆåŒæ„å’Œç°½ç½²ã€‚"
             Me.TextBox3.Top = 3.785925!
             Me.TextBox3.Width = 7.40625!
             '
@@ -497,9 +497,9 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox4.Left = 0.0!
             Me.TextBox4.LineSpacing = 3.0!
             Me.TextBox4.Name = "TextBox4"
-            Me.TextBox4.Style = "font-family: ·s²Ó©úÅé; font-size: 10.5pt; font-style: italic; text-align: justify; te" & _
+            Me.TextBox4.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 10.5pt; font-style: italic; text-align: justify; te" & _
         "xt-decoration: none; vertical-align: top; ddo-char-set: 136"
-            Me.TextBox4.Text = "¥»¤H¥ç¤w¾\Åª¡u¨£ÃÒ¤H¡şºÊÅ@¤H¦P·NÂà¥æ­Ó¤H¸ê®Æ¡v¤å¥ó¡A¨ÃÂÔ¦¹µ¹¤©·í¤¤©Ò­zªº¦P·N¡C"
+            Me.TextBox4.Text = "æœ¬äººäº¦å·²é–±è®€ã€Œè¦‹è­‰äººï¼ç›£è­·äººåŒæ„è½‰äº¤å€‹äººè³‡æ–™ã€æ–‡ä»¶ï¼Œä¸¦è¬¹æ­¤çµ¦äºˆç•¶ä¸­æ‰€è¿°çš„åŒæ„ã€‚"
             Me.TextBox4.Top = 4.051673!
             Me.TextBox4.Width = 7.40625!
             '

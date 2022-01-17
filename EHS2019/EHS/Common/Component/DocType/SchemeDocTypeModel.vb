@@ -1,4 +1,5 @@
 Imports System.Data.SqlClient
+Imports System.ComponentModel
 
 Namespace Component.DocType
     <Serializable()> Public Class SchemeDocTypeModel
@@ -23,6 +24,18 @@ Namespace Component.DocType
         Private _intAge_UpperLimit As Nullable(Of Integer)
         Private _strAge_UpperLimitUnit As String
         Private _strAge_CalMethod As String
+
+        Private _intDisplaySeq As Nullable(Of Integer)
+        Private _strClaimType As String
+
+#End Region
+
+#Region "Constant"
+        Public Enum ClaimTypeEnumClass
+            <Description("NORMAL")> Normal
+            <Description("COVID19")> COVID19
+        End Enum
+
 #End Region
 
 #Region "SQL Data Type"
@@ -119,6 +132,24 @@ Namespace Component.DocType
                 Me._strAge_CalMethod = value
             End Set
         End Property
+
+        Public Property DisplaySeq() As Nullable(Of Integer)
+            Get
+                Return Me._intDisplaySeq
+            End Get
+            Set(ByVal value As Nullable(Of Integer))
+                Me._intDisplaySeq = value
+            End Set
+        End Property
+
+        Public Property ClaimType() As String
+            Get
+                Return Me._strClaimType
+            End Get
+            Set(ByVal value As String)
+                Me._strClaimType = value
+            End Set
+        End Property
 #End Region
 
 #Region "Constructor"
@@ -138,11 +169,15 @@ Namespace Component.DocType
             Me._strAge_UpperLimitUnit = udtSchemeDocTypeModel._strAge_UpperLimitUnit
             Me._strAge_CalMethod = udtSchemeDocTypeModel._strAge_CalMethod
 
+            Me._intDisplaySeq = udtSchemeDocTypeModel.DisplaySeq
+            Me._strClaimType = udtSchemeDocTypeModel.ClaimType
+
         End Sub
 
         Public Sub New(ByVal strSchemeCode As String, ByVal strDocCode As String, ByVal strMajorDoc As String, _
-            ByVal intAgeLowerLimit As Nullable(Of Integer), ByVal strAgeLowerLimitUnit As String, ByVal intAgeUpperLimit As Nullable(Of Integer), _
-            ByVal strAgeUpperLimitUnit As String, ByVal strAgeCalMethod As String)
+                       ByVal intAgeLowerLimit As Nullable(Of Integer), ByVal strAgeLowerLimitUnit As String, _
+                       ByVal intAgeUpperLimit As Nullable(Of Integer), ByVal strAgeUpperLimitUnit As String, ByVal strAgeCalMethod As String, _
+                       ByVal intDisplaySeq As Nullable(Of Integer), ByVal strClaimType As String)
 
             Me._intAge_LowerLimit = intAgeLowerLimit
             Me._strAge_LowerLimitUnit = strAgeLowerLimitUnit
@@ -153,6 +188,10 @@ Namespace Component.DocType
             Me._strScheme_Code = strSchemeCode
             Me._strDoc_Code = strDocCode
             Me._strMajor_Doc = strMajorDoc
+
+            Me._intDisplaySeq = intDisplaySeq
+            Me._strClaimType = strClaimType
+
         End Sub
 
 #End Region

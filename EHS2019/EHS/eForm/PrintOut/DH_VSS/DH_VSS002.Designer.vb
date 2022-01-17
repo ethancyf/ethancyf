@@ -1041,7 +1041,7 @@
             Me.txtPartIIaCName.HyperLink = Nothing
             Me.txtPartIIaCName.Left = 1.437!
             Me.txtPartIIaCName.Name = "txtPartIIaCName"
-            Me.txtPartIIaCName.Style = "font-family: HA_MingLiu; font-size: 10.5pt; font-weight: normal; text-align: left" & _
+            Me.txtPartIIaCName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; font-weight: normal; text-align: left" & _
         "; text-decoration: none; vertical-align: top; ddo-char-set: 1"
             Me.txtPartIIaCName.Text = Nothing
             Me.txtPartIIaCName.Top = 6.971999!
@@ -1284,7 +1284,7 @@
             Me.txtPartIIcCName.HyperLink = Nothing
             Me.txtPartIIcCName.Left = 1.4375!
             Me.txtPartIIcCName.Name = "txtPartIIcCName"
-            Me.txtPartIIcCName.Style = "font-family: HA_MingLiu; font-size: 10.5pt; font-weight: normal; text-align: left" & _
+            Me.txtPartIIcCName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; font-weight: normal; text-align: left" & _
         "; text-decoration: none; vertical-align: middle; ddo-char-set: 1"
             Me.txtPartIIcCName.Text = Nothing
             Me.txtPartIIcCName.Top = 11.67654!
@@ -1564,7 +1564,7 @@
             Me.txtApplicatSignature.Height = 0.188!
             Me.txtApplicatSignature.Left = 2.03125!
             Me.txtApplicatSignature.Name = "txtApplicatSignature"
-            Me.txtApplicatSignature.Style = "font-family: HA_MingLiu; font-size: 10.5pt; vertical-align: middle"
+            Me.txtApplicatSignature.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; vertical-align: middle"
             Me.txtApplicatSignature.Text = Nothing
             Me.txtApplicatSignature.Top = 34.30225!
             Me.txtApplicatSignature.Width = 3.0!
@@ -1584,7 +1584,7 @@
             Me.txtPartVaChiName.Height = 0.1875!
             Me.txtPartVaChiName.Left = 2.031!
             Me.txtPartVaChiName.Name = "txtPartVaChiName"
-            Me.txtPartVaChiName.Style = "font-family: HA_MingLiu; font-size: 10pt; vertical-align: top; ddo-char-set: 1"
+            Me.txtPartVaChiName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10pt; vertical-align: top; ddo-char-set: 1"
             Me.txtPartVaChiName.Text = Nothing
             Me.txtPartVaChiName.Top = 35.09225!
             Me.txtPartVaChiName.Width = 5.0625!
@@ -1595,7 +1595,7 @@
             Me.txrPartVaDate.Height = 0.188!
             Me.txrPartVaDate.Left = 2.03125!
             Me.txrPartVaDate.Name = "txrPartVaDate"
-            Me.txrPartVaDate.Style = "font-family: HA_MingLiu; font-size: 10.5pt; vertical-align: middle"
+            Me.txrPartVaDate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; vertical-align: middle"
             Me.txrPartVaDate.Text = Nothing
             Me.txrPartVaDate.Top = 35.30225!
             Me.txrPartVaDate.Width = 2.0!
@@ -1691,7 +1691,7 @@
             Me.txtPartVbName.HyperLink = Nothing
             Me.txtPartVbName.Left = 2.78125!
             Me.txtPartVbName.Name = "txtPartVbName"
-            Me.txtPartVbName.Style = "font-family: HA_MingLiu; font-size: 10.5pt; font-weight: normal; text-align: left" & _
+            Me.txtPartVbName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; font-weight: normal; text-align: left" & _
         "; text-decoration: none; vertical-align: middle; ddo-char-set: 1"
             Me.txtPartVbName.Text = Nothing
             Me.txtPartVbName.Top = 38.3335!
@@ -1715,7 +1715,7 @@
             Me.txtPartVbPosition.Height = 0.188!
             Me.txtPartVbPosition.Left = 2.78125!
             Me.txtPartVbPosition.Name = "txtPartVbPosition"
-            Me.txtPartVbPosition.Style = "font-family: HA_MingLiu; font-size: 10.5pt; vertical-align: middle; ddo-char-set:" & _
+            Me.txtPartVbPosition.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; vertical-align: middle; ddo-char-set:" & _
         " 1"
             Me.txtPartVbPosition.Text = Nothing
             Me.txtPartVbPosition.Top = 38.5835!
@@ -1740,7 +1740,7 @@
             Me.txtPartVbCompanyName.HyperLink = Nothing
             Me.txtPartVbCompanyName.Left = 2.78125!
             Me.txtPartVbCompanyName.Name = "txtPartVbCompanyName"
-            Me.txtPartVbCompanyName.Style = "font-family: HA_MingLiu; font-size: 10.5pt; font-weight: normal; text-align: left" & _
+            Me.txtPartVbCompanyName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; font-weight: normal; text-align: left" & _
         "; text-decoration: none; vertical-align: middle; ddo-char-set: 1"
             Me.txtPartVbCompanyName.Text = Nothing
             Me.txtPartVbCompanyName.Top = 38.8335!
@@ -1764,7 +1764,7 @@
             Me.txtPartVbDate.Height = 0.188!
             Me.txtPartVbDate.Left = 2.78125!
             Me.txtPartVbDate.Name = "txtPartVbDate"
-            Me.txtPartVbDate.Style = "font-family: HA_MingLiu; font-size: 10.5pt; vertical-align: middle; ddo-char-set:" & _
+            Me.txtPartVbDate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 10.5pt; vertical-align: middle; ddo-char-set:" & _
         " 1"
             Me.txtPartVbDate.Text = Nothing
             Me.txtPartVbDate.Top = 39.0835!

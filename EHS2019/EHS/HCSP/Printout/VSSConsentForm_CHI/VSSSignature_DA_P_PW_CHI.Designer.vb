@@ -1,4 +1,4 @@
-Namespace PrintOut.VSSConsentForm_CHI
+ÔªøNamespace PrintOut.VSSConsentForm_CHI
 
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
     Partial Public Class VSSSignature_DA_P_PW_CHI
@@ -58,9 +58,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox14.Height = 0.19!
             Me.TextBox14.Left = 0.0!
             Me.TextBox14.Name = "TextBox14"
-            Me.TextBox14.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: right; " & _
+            Me.TextBox14.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: right; " & _
         "ddo-char-set: 0"
-            Me.TextBox14.Text = "¡pµ∏πq∏‹∏πΩX°G"
+            Me.TextBox14.Text = "ËÅØÁµ°ÈõªË©±ËôüÁ¢ºÔºö"
             Me.TextBox14.Top = 0.753!
             Me.TextBox14.Width = 1.864!
             '
@@ -71,8 +71,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtRecipientTelNumber.Height = 0.1875!
             Me.txtRecipientTelNumber.Left = 1.896!
             Me.txtRecipientTelNumber.Name = "txtRecipientTelNumber"
-            Me.txtRecipientTelNumber.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 0"
-            Me.txtRecipientTelNumber.Text = "°@"
+            Me.txtRecipientTelNumber.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 0"
+            Me.txtRecipientTelNumber.Text = "„ÄÄ"
             Me.txtRecipientTelNumber.Top = 0.7530001!
             Me.txtRecipientTelNumber.Width = 1.771!
             '
@@ -83,9 +83,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtRecipientDate.Height = 0.1875!
             Me.txtRecipientDate.Left = 5.53!
             Me.txtRecipientDate.Name = "txtRecipientDate"
-            Me.txtRecipientDate.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; text-decoration: unde" & _
+            Me.txtRecipientDate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 0"
-            Me.txtRecipientDate.Text = "°@"
+            Me.txtRecipientDate.Text = "„ÄÄ"
             Me.txtRecipientDate.Top = 0.7530001!
             Me.txtRecipientDate.Width = 1.8445!
             '
@@ -94,9 +94,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox33.Height = 0.1875!
             Me.TextBox33.Left = 0.0!
             Me.TextBox33.Name = "TextBox33"
-            Me.TextBox33.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: left; t" & _
+            Me.TextBox33.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: left; t" & _
         "ext-decoration: underline; ddo-char-set: 0"
-            Me.TextBox33.Text = "¶p™A∞»®œ•Œ™Ã¨O∫ÎØ´§WµL¶Ê¨∞Ø‡§O©Œ•º∫°18∑≥§H§h°A§~∂∑∂Òºg¶πƒÊ"
+            Me.TextBox33.Text = "Â¶ÇÊúçÂãô‰ΩøÁî®ËÄÖÊòØÁ≤æÁ•û‰∏äÁÑ°Ë°åÁÇ∫ËÉΩÂäõÊàñÊú™Êªø18Ê≠≤‰∫∫Â£´ÔºåÊâçÈ†àÂ°´ÂØ´Ê≠§Ê¨Ñ"
             Me.TextBox33.Top = 0.0!
             Me.TextBox33.Width = 7.375!
             '
@@ -105,9 +105,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox34.Height = 0.19!
             Me.TextBox34.Left = 0.0!
             Me.TextBox34.Name = "TextBox34"
-            Me.TextBox34.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: right; " & _
+            Me.TextBox34.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: right; " & _
         "ddo-char-set: 0"
-            Me.TextBox34.Text = "√±¶W°G"
+            Me.TextBox34.Text = "Á∞ΩÂêçÔºö"
             Me.TextBox34.Top = 0.22!
             Me.TextBox34.Width = 1.864!
             '
@@ -116,9 +116,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox35.Height = 0.19!
             Me.TextBox35.Left = 0.0!
             Me.TextBox35.Name = "TextBox35"
-            Me.TextBox35.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: right; " & _
+            Me.TextBox35.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: right; " & _
         "ddo-char-set: 0"
-            Me.TextBox35.Text = "©m¶W(≠^§Â)°G"
+            Me.TextBox35.Text = "ÂßìÂêç(Ëã±Êñá)Ôºö"
             Me.TextBox35.Top = 0.4825002!
             Me.TextBox35.Width = 1.864!
             '
@@ -129,8 +129,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox38.Height = 0.1875!
             Me.TextBox38.Left = 1.896!
             Me.TextBox38.Name = "TextBox38"
-            Me.TextBox38.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 0"
-            Me.TextBox38.Text = "°@"
+            Me.TextBox38.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 0"
+            Me.TextBox38.Text = "„ÄÄ"
             Me.TextBox38.Top = 0.2200001!
             Me.TextBox38.Width = 1.771!
             '
@@ -141,8 +141,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox39.Height = 0.1875!
             Me.TextBox39.Left = 1.896!
             Me.TextBox39.Name = "TextBox39"
-            Me.TextBox39.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 0"
-            Me.TextBox39.Text = "°@"
+            Me.TextBox39.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 0"
+            Me.TextBox39.Text = "„ÄÄ"
             Me.TextBox39.Top = 0.483!
             Me.TextBox39.Width = 1.771!
             '
@@ -151,9 +151,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox15.Height = 0.1875!
             Me.TextBox15.Left = 4.98!
             Me.TextBox15.Name = "TextBox15"
-            Me.TextBox15.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: right; " & _
+            Me.TextBox15.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: right; " & _
         "ddo-char-set: 0"
-            Me.TextBox15.Text = "§È¥¡°G"
+            Me.TextBox15.Text = "Êó•ÊúüÔºö"
             Me.TextBox15.Top = 0.753!
             Me.TextBox15.Width = 0.55!
             '
@@ -162,8 +162,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.TextBox1.Height = 0.19!
             Me.TextBox1.Left = 0.0!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 136"
-            Me.TextBox1.Text = "ªP¨Ã≠]±µ∫ÿ™Ã™∫√ˆ´Y°G"
+            Me.TextBox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 136"
+            Me.TextBox1.Text = "ËàáÁñ´ËãóÊé•Á®ÆËÄÖÁöÑÈóú‰øÇÔºö"
             Me.TextBox1.Top = 1.007!
             Me.TextBox1.Width = 1.864!
             '
@@ -172,8 +172,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.CheckBox1.Height = 0.22!
             Me.CheckBox1.Left = 1.896!
             Me.CheckBox1.Name = "CheckBox1"
-            Me.CheckBox1.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
-            Me.CheckBox1.Text = "§˜"
+            Me.CheckBox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
+            Me.CheckBox1.Text = "Áà∂"
             Me.CheckBox1.Top = 1.007!
             Me.CheckBox1.Width = 0.351!
             '
@@ -182,8 +182,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.CheckBox2.Height = 0.22!
             Me.CheckBox2.Left = 2.396!
             Me.CheckBox2.Name = "CheckBox2"
-            Me.CheckBox2.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
-            Me.CheckBox2.Text = "•¿"
+            Me.CheckBox2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
+            Me.CheckBox2.Text = "ÊØç"
             Me.CheckBox2.Top = 1.007!
             Me.CheckBox2.Width = 0.351!
             '
@@ -192,8 +192,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.CheckBox3.Height = 0.22!
             Me.CheckBox3.Left = 2.896!
             Me.CheckBox3.Name = "CheckBox3"
-            Me.CheckBox3.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
-            Me.CheckBox3.Text = "∫ ≈@§H"
+            Me.CheckBox3.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
+            Me.CheckBox3.Text = "Áõ£Ë≠∑‰∫∫"
             Me.CheckBox3.Top = 1.007!
             Me.CheckBox3.Width = 0.738!
             '

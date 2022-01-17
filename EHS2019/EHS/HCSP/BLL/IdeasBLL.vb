@@ -51,11 +51,13 @@ Namespace BLL
         Shared Function GetCardFaceDataEHSAccount(ByVal cfData As IdeasRM.CardFaceData, ByVal strSchemeClaim As String, ByVal strFunctionCode As String, ByVal udtSmartIDContent As BLL.SmartIDContentModel) As EHSAccountModel
             ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
             Dim isValid As Boolean = True
+            Dim blnIsAllCCCodeValid As Boolean = True
 
             Dim udtFormatter As Formatter = New Formatter
             Dim udtValidator As Validator = New Validator
             Dim udtGeneralFunction As GeneralFunction = New GeneralFunction
             Dim udtVAMaintBLL As VoucherAccountMaintenanceBLL = New VoucherAccountMaintenanceBLL()
+            Dim udtCCCodeBLL As New CCCode.CCCodeBLL
 
             ' English Name: Card Face Data Only Contain 1 EName Field, and put in UnstructureName
             Dim strSurName As String = String.Empty
@@ -109,38 +111,40 @@ Namespace BLL
 
                     If cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode.Length > 0 Then
                         strCCCode1 = cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(0).FourDigitCode.Value + cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(0).ExtensionNumber.Value
-                        'strCName += udtVAMaintBLL.getCCCTail(strCCCode1.Substring(0, 4)).Rows(Integer.Parse(strCCCode1.Substring(4, 1)) - 1)("Big5").ToString()
-                        strCName += udtVAMaintBLL.getCCCodeBig5(strCCCode1)
+                        strCName += udtCCCodeBLL.getChiCharByCCCode(strCCCode1)
                     End If
                     If cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode.Length > 1 Then
                         strCCCode2 = cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(1).FourDigitCode.Value + cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(1).ExtensionNumber.Value
-                        'strCName += udtVAMaintBLL.getCCCTail(strCCCode2.Substring(0, 4)).Rows(Integer.Parse(strCCCode2.Substring(4, 1)) - 1)("Big5").ToString()
-                        strCName += udtVAMaintBLL.getCCCodeBig5(strCCCode2)
+                        strCName += udtCCCodeBLL.getChiCharByCCCode(strCCCode2)
                     End If
                     If cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode.Length > 2 Then
                         strCCCode3 = cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(2).FourDigitCode.Value + cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(2).ExtensionNumber.Value
-                        'strCName += udtVAMaintBLL.getCCCTail(strCCCode3.Substring(0, 4)).Rows(Integer.Parse(strCCCode3.Substring(4, 1)) - 1)("Big5").ToString()
-                        strCName += udtVAMaintBLL.getCCCodeBig5(strCCCode3)
+                        strCName += udtCCCodeBLL.getChiCharByCCCode(strCCCode3)
                     End If
                     If cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode.Length > 3 Then
                         strCCCode4 = cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(3).FourDigitCode.Value + cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(3).ExtensionNumber.Value
-                        'strCName += udtVAMaintBLL.getCCCTail(strCCCode4.Substring(0, 4)).Rows(Integer.Parse(strCCCode4.Substring(4, 1)) - 1)("Big5").ToString()
-                        strCName += udtVAMaintBLL.getCCCodeBig5(strCCCode4)
+                        strCName += udtCCCodeBLL.getChiCharByCCCode(strCCCode4)
                     End If
                     If cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode.Length > 4 Then
                         strCCCode5 = cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(4).FourDigitCode.Value + cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(4).ExtensionNumber.Value
-                        'strCName += udtVAMaintBLL.getCCCTail(strCCCode5.Substring(0, 4)).Rows(Integer.Parse(strCCCode5.Substring(4, 1)) - 1)("Big5").ToString()
-                        strCName += udtVAMaintBLL.getCCCodeBig5(strCCCode5)
+                        strCName += udtCCCodeBLL.getChiCharByCCCode(strCCCode5)
                     End If
                     If cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode.Length > 5 Then
                         strCCCode6 = cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(5).FourDigitCode.Value + cfData.PersonalChineseNameHKSCSEncodeDetails.ChineseCommercialCode(5).ExtensionNumber.Value
-                        'strCName += udtVAMaintBLL.getCCCTail(strCCCode6.Substring(0, 4)).Rows(Integer.Parse(strCCCode6.Substring(4, 1)) - 1)("Big5").ToString()
-                        strCName += udtVAMaintBLL.getCCCodeBig5(strCCCode6)
+                        strCName += udtCCCodeBLL.getChiCharByCCCode(strCCCode6)
                     End If
 
                     If Not udtValidator.chkCCCode_UsingDDL(strCCCode1, strCCCode2, strCCCode3, strCCCode4, strCCCode5, strCCCode6) Is Nothing Then
                         isValid = False
                     End If
+
+                    ' CRE20-023-68 (Remove HA MingLiu) [Start][Winnie SUEN]
+                    ' -------------------------------------------------------------
+                    If strCName.Contains(" ") Then
+                        blnIsAllCCCodeValid = False
+                    End If
+                    ' CRE20-023-68 (Remove HA MingLiu) [End][Winnie SUEN]
+
                 End If
             End If
 
@@ -172,13 +176,22 @@ Namespace BLL
 
                 udtEHSPersonalInfo.ENameSurName = strSurName
                 udtEHSPersonalInfo.ENameFirstName = strFirstName
-                udtEHSPersonalInfo.CCCode1 = strCCCode1
-                udtEHSPersonalInfo.CCCode2 = strCCCode2
-                udtEHSPersonalInfo.CCCode3 = strCCCode3
-                udtEHSPersonalInfo.CCCode4 = strCCCode4
-                udtEHSPersonalInfo.CCCode5 = strCCCode5
-                udtEHSPersonalInfo.CCCode6 = strCCCode6
-                udtEHSPersonalInfo.CName = strCName
+
+                ' CRE20-023-68 (Remove HA MingLiu) [Start][Winnie SUEN]
+                ' -------------------------------------------------------------
+                If blnIsAllCCCodeValid Then
+                    udtEHSPersonalInfo.CCCode1 = strCCCode1
+                    udtEHSPersonalInfo.CCCode2 = strCCCode2
+                    udtEHSPersonalInfo.CCCode3 = strCCCode3
+                    udtEHSPersonalInfo.CCCode4 = strCCCode4
+                    udtEHSPersonalInfo.CCCode5 = strCCCode5
+                    udtEHSPersonalInfo.CCCode6 = strCCCode6
+                    udtEHSPersonalInfo.CName = strCName
+                Else
+                    PrintCardFaceData(cfData, strFunctionCode)
+                End If
+                ' CRE20-023-68 (Remove HA MingLiu) [End][Winnie SUEN]
+
                 udtEHSPersonalInfo.DateofIssue = cfData.DateOfIssue
 
                 udtEHSPersonalInfo.CreateBySmartID = True

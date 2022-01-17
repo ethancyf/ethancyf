@@ -804,7 +804,6 @@ Partial Public Class ReprintVaccinationRecord
                 Try
                     If udtSmartIDContent.IsDemonVersion Then
                         udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(String.Empty, udtSmartIDContent.IdeasVersion)
-                        udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = VoucherAccountBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
 
                     Else
                         Dim udtCFD As IdeasRM.CardFaceData
@@ -1172,8 +1171,6 @@ Partial Public Class ReprintVaccinationRecord
                 ' dummy account for smart id
                 ' ----------------------------------------------------------------------------------------
                 udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(String.Empty, udtSmartIDContent.IdeasVersion)
-                udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = VoucherAccountBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
-                'udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).DateofIssue = Convert.ToDateTime("2016-07-28")
 
             Catch ex As Exception
                 udtSmartIDContent.EHSAccount = Nothing

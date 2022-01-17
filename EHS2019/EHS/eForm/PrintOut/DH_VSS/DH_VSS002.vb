@@ -129,8 +129,7 @@ Namespace PrintOut.DH_VSS
 
             ' ----------------------- Part II (A) -----------------------
             udtReportFunction.formatUnderLineTextBox(_udtSP.EnglishName, txtPartIIaEName)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
-            udtReportFunction.formatUnderLineTextBox(GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName), txtPartIIaCName)
+            udtReportFunction.formatUnderLineTextBox(_udtSP.ChineseName, txtPartIIaCName)
             ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
             udtReportFunction.formatUnderLineTextBox(udtFormatter.formatHKID(_udtSP.HKID, False), txtPartIIaHKIDNo)
             udtReportFunction.formatUnderLineTextBox(_udtSP.Phone, txtPartIIaTelNo)
@@ -207,7 +206,7 @@ Namespace PrintOut.DH_VSS
             ' ----------------------- Part V (A) -----------------------
             udtReportFunction.formatUnderLineTextBox(_udtSP.EnglishName, txtPartVaEngName, 3.0!)
             ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
-            udtReportFunction.formatUnderLineTextBox(GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName), txtPartVaChiName, 3.0!)
+            udtReportFunction.formatUnderLineTextBox(_udtSP.ChineseName, txtPartVaChiName, 3.0!)
             ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
 
             ' CRE16-025-04 (Lowering voucher eligibility age - Static Doc) [Start][Winnie]

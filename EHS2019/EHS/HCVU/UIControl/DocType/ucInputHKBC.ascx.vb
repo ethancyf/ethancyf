@@ -25,6 +25,7 @@ Partial Public Class ucInputHKBC
     Protected Overrides Sub RenderLanguage(ByVal strErrorImageURL As String, ByVal strErrorImageALT As String)
         Me.lblDocumentTypeOriginalText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
         Me.lblNameOriginalText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
+        Me.lblCNameOriginalText.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblDOBOriginalText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblRegNoOriginalText.Text = Me.GetGlobalResourceObject("Text", "BCRegNo")
         Me.lblGenderOriginalText.Text = Me.GetGlobalResourceObject("Text", "Gender")
@@ -51,6 +52,9 @@ Partial Public Class ucInputHKBC
         'Error Image
         Me.imgENameError.ImageUrl = strErrorImageURL
         Me.imgENameError.AlternateText = strErrorImageALT
+
+        Me.imgCNameError.ImageUrl = strErrorImageURL
+        Me.imgCNameError.AlternateText = strErrorImageALT
 
         Me.imgGenderError.ImageUrl = strErrorImageURL
         Me.imgGenderError.AlternateText = strErrorImageALT
@@ -80,6 +84,7 @@ Partial Public Class ucInputHKBC
         Me.lblNewNameText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblNewENameSurnameTips.Text = Me.GetGlobalResourceObject("Text", "Surname")
         Me.lblNewENameGivenNameTips.Text = Me.GetGlobalResourceObject("Text", "Givenname")
+        Me.lblNewCNameText.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblNewGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblNewDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
         Me.rboNewDOBInWord.Text = Me.GetGlobalResourceObject("Text", "DOBInWordShort")
@@ -98,6 +103,9 @@ Partial Public Class ucInputHKBC
 
         Me.imgNewENameErr.ImageUrl = strErrorImageURL
         Me.imgNewENameErr.AlternateText = strErrorImageALT
+
+        Me.imgNewCNameErr.ImageUrl = strErrorImageURL
+        Me.imgNewCNameErr.AlternateText = strErrorImageALT
 
         Me.imgNewGenderErr.ImageUrl = strErrorImageURL
         Me.imgNewGenderErr.AlternateText = strErrorImageALT
@@ -133,6 +141,7 @@ Partial Public Class ucInputHKBC
                 Me._strRegistrationNo = MyBase.Formatter.formatHKID(MyBase.EHSPersonalInfoAmend.IdentityNum, False)
                 Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
                 Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+                Me._strCName = MyBase.EHSPersonalInfoAmend.CName
                 Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
 
                 ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
@@ -165,6 +174,7 @@ Partial Public Class ucInputHKBC
             Me._strRegistrationNo = Formatter.formatHKID(MyBase.EHSPersonalInfoAmend.IdentityNum, False)
             Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfoAmend.CName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
             Me._strIsExactDOB = MyBase.EHSPersonalInfoAmend.ExactDOB
@@ -193,6 +203,7 @@ Partial Public Class ucInputHKBC
             Me._strRegistrationNo = MyBase.EHSPersonalInfoAmend.IdentityNum
             Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfoAmend.CName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
             Me._strIsExactDOB = MyBase.EHSPersonalInfoAmend.ExactDOB
@@ -218,6 +229,7 @@ Partial Public Class ucInputHKBC
                 Me.ddlDOBinWordType.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.txtENameSurname.Enabled = True
+                Me.txtCName.Enabled = True
                 Me.rbGender.Enabled = True
             Else
                 '--------------------------------------------------------
@@ -230,22 +242,11 @@ Partial Public Class ucInputHKBC
                 Me.ddlDOBinWordType.Enabled = False
                 Me.txtENameFirstname.Enabled = False
                 Me.txtENameSurname.Enabled = False
+                Me.txtCName.Enabled = False
                 Me.rbGender.Enabled = False
             End If
 
-            'If MyBase.UpdateValue Then
-            '    Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
-            '    Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
-            '    Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
-
-            '    Me.SetEName()
-            '    If Not Me._strGender Is Nothing AndAlso Not Me._strGender.Equals(String.Empty) Then
-            '        Me.SetGender()
-            '    End If
-            'End If
-
         End If
-
 
     End Sub
 
@@ -457,6 +458,7 @@ Partial Public Class ucInputHKBC
             'For Creation Mode
             Me.SetRegistrationNo()
             Me.SetEName()
+            Me.SetCName()
             'Me.SetGender()
             Me.SetDOB()
             If Me._blnDOBTypeSelected Then
@@ -468,6 +470,7 @@ Partial Public Class ucInputHKBC
             'For Modification One Side Mode
             Me.SetRegistrationNo()
             Me.SetEName()
+            Me.SetCName()
             Me.SetGender()
             Me.SetDOB()
             'Me.SetDOBType()
@@ -478,6 +481,7 @@ Partial Public Class ucInputHKBC
             'For Modification Mode
             Me.SetRegistrationNo()
             Me.SetEName()
+            Me.SetCName()
             Me.SetGender()
             Me.SetDOB()
         End If
@@ -504,19 +508,30 @@ Partial Public Class ucInputHKBC
 
     Public Sub SetEName()
         If Mode = BuildMode.Creation Then
-            Me.txtNewGivenName.Text = Me._strENameFirstName
             Me.txtNewSurname.Text = Me._strENameSurName
-
+            Me.txtNewGivenName.Text = Me._strENameFirstName
         ElseIf Mode = BuildMode.Modification_OneSide Then
             Me.txtNewSurname.Text = Me._strENameSurName
             Me.txtNewGivenName.Text = Me._strENameFirstName
-
         Else
             'Amend
             Me.txtENameSurname.Text = Me._strENameSurName
             Me.txtENameFirstname.Text = Me._strENameFirstName
             'Original
             lblNameOriginal.Text = MyBase.Formatter.formatEnglishName(MyBase.EHSPersonalInfoOriginal.ENameSurName, MyBase.EHSPersonalInfoOriginal.ENameFirstName)
+        End If
+    End Sub
+
+    Public Sub SetCName()
+        If Mode = BuildMode.Creation Then
+            Me.txtNewCName.Text = Me._strCName
+        ElseIf Mode = BuildMode.Modification_OneSide Then
+            Me.txtNewCName.Text = Me._strCName
+        Else
+            'Amend
+            Me.txtCName.Text = Me._strCName
+            'Original
+            lblCNameOriginal.Text = MyBase.EHSPersonalInfoOriginal.CName
         End If
     End Sub
 
@@ -686,6 +701,7 @@ Partial Public Class ucInputHKBC
     Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
         Me.SetRegNoError(visible)
         Me.SetENameError(visible)
+        Me.SetCNameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBTypeError(visible)
         Me.SetDOBError(visible)
@@ -704,6 +720,14 @@ Partial Public Class ucInputHKBC
             Me.imgENameError.Visible = visible
         End If
 
+    End Sub
+
+    Public Sub SetCNameError(ByVal visible As Boolean)
+        If Me.Mode = BuildMode.Creation Or Me.Mode = BuildMode.Modification_OneSide Then
+            Me.imgNewCNameErr.Visible = visible
+        Else
+            Me.imgCNameError.Visible = visible
+        End If
     End Sub
 
     Public Sub SetGenderError(ByVal visible As Boolean)
@@ -752,6 +776,7 @@ Partial Public Class ucInputHKBC
 
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
             Me._strENameFirstName = Me.txtNewGivenName.Text.Trim
+            Me._strCName = Me.txtNewCName.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue.Trim
             Me._strDOB = Me.txtNewDOB.Text.Trim
             Me._strDOBInWord = Me.ddlNewDOBInWord.SelectedValue.Trim
@@ -792,6 +817,7 @@ Partial Public Class ucInputHKBC
             Me._strRegistrationNo = Me.txtRegistrationNo.Text.Trim
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
+            Me._strCName = Me.txtCName.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue
             Me._strDOB = Me.txtDOB.Text.Trim
 
@@ -848,6 +874,15 @@ Partial Public Class ucInputHKBC
         End Get
         Set(ByVal value As String)
             Me._strENameFirstName = value
+        End Set
+    End Property
+
+    Public Property CName() As String
+        Get
+            Return Me._strCName
+        End Get
+        Set(ByVal value As String)
+            Me._strCName = value
         End Set
     End Property
 

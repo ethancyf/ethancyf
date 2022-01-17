@@ -9,31 +9,22 @@
                     <tbody>
                         <tr >
                             <td>
-                                <asp:DropDownList ID="ddlCCCode1" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
-                                </asp:DropDownList>
-            
-                                <asp:DropDownList ID="ddlCCCode2" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
-                                </asp:DropDownList>
-               
-                                <asp:DropDownList ID="ddlCCCode3" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
-                                </asp:DropDownList>
-                           
-                                <asp:DropDownList ID="ddlCCCode4" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
-                                </asp:DropDownList>
-                            
-                                <asp:DropDownList ID="ddlCCCode5" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
-                                </asp:DropDownList>
-                          
-                                <asp:DropDownList ID="ddlCCCode6" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
-                                </asp:DropDownList>
+                                <asp:DropDownList ID="ddlCCCode1" runat="server" Width="50px" style="font-size:18px" CssClass="TextChineseName" />           
+                                <asp:DropDownList ID="ddlCCCode2" runat="server" Width="50px" style="font-size:18px" CssClass="TextChineseName" />               
+                                <asp:DropDownList ID="ddlCCCode3" runat="server" Width="50px" style="font-size:18px" CssClass="TextChineseName" />                            
+                                <asp:DropDownList ID="ddlCCCode4" runat="server" Width="50px" style="font-size:18px" CssClass="TextChineseName" />                             
+                                <asp:DropDownList ID="ddlCCCode5" runat="server" Width="50px" style="font-size:18px" CssClass="TextChineseName" />                            
+                                <asp:DropDownList ID="ddlCCCode6" runat="server" Width="50px" style="font-size:18px" CssClass="TextChineseName" />   
                             </td>
                        </tr>
                     </tbody>
                 </table>
                 <br />
-                <asp:Label ID="lblClick" runat="server" Text="<%$ Resources:Text, Click %>"></asp:Label>
-                <asp:LinkButton ID="lnkHere" runat="server" Text="<%$ Resources:Text, here %>"></asp:LinkButton>
-                <asp:Label ID="lblChkCCCode" runat="server" Text="<%$ Resources:Text, CheckInstallCCCode %>"></asp:Label>
+                <asp:Panel ID="panCheckCCCode" runat="server" Visible="false">
+                    <asp:Label ID="lblClick" runat="server" Text="<%$ Resources:Text, Click %>"></asp:Label>
+                    <asp:LinkButton ID="lnkHere" runat="server" Text="<%$ Resources:Text, here %>"></asp:LinkButton>
+                    <asp:Label ID="lblChkCCCode" runat="server" Text="<%$ Resources:Text, CheckInstallCCCode %>"></asp:Label>
+                </asp:Panel>
             </td>
         </tr>
         <tr>

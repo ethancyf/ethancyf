@@ -41,8 +41,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox6.Height = 0.188!
             Me.TextBox6.Left = 0.0000002384186!
             Me.TextBox6.Name = "TextBox6"
-            Me.TextBox6.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.TextBox6.Text = "®≠•˜√“©˙§Â•Û°G"
+            Me.TextBox6.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.TextBox6.Text = "Ë∫´‰ªΩË≠âÊòéÊñá‰ª∂Ôºö"
             Me.TextBox6.Top = 0.0!
             Me.TextBox6.Width = 1.701575!
             '
@@ -52,7 +52,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.txtECNo.Height = 0.1875!
             Me.txtECNo.Left = 1.742913!
             Me.txtECNo.Name = "txtECNo"
-            Me.txtECNo.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 0"
+            Me.txtECNo.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 0"
             Me.txtECNo.Text = Nothing
             Me.txtECNo.Top = 0.281!
             Me.txtECNo.Width = 3.996851!
@@ -62,8 +62,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox8.Height = 0.1875!
             Me.TextBox8.Left = 0.0!
             Me.TextBox8.Name = "TextBox8"
-            Me.TextBox8.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.TextBox8.Text = "¡≈ßKµn∞O√“©˙Æ—Ωs∏π°G"
+            Me.TextBox8.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.TextBox8.Text = "Ë±ÅÂÖçÁôªË®òË≠âÊòéÊõ∏Á∑®ËôüÔºö"
             Me.TextBox8.Top = 0.281!
             Me.TextBox8.Width = 1.701575!
             '
@@ -73,10 +73,10 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox10.Height = 0.1875!
             Me.TextBox10.Left = 1.742913!
             Me.TextBox10.Name = "TextBox10"
-            Me.TextBox10.Style = "color: Black; font-family: HA_MingLiu; font-size: 12pt; text-decoration: underlin" & _
+            Me.TextBox10.Style = "color: Black; font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-decoration: underlin" & _
         "e; ddo-char-set: 0"
             Me.TextBox10.SummaryGroup = ""
-            Me.TextBox10.Text = "¡≈ßKµn∞O√“©˙Æ—"
+            Me.TextBox10.Text = "Ë±ÅÂÖçÁôªË®òË≠âÊòéÊõ∏"
             Me.TextBox10.Top = 0.0!
             Me.TextBox10.Width = 3.986221!
             '

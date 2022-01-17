@@ -2901,7 +2901,7 @@ Partial Public Class VaccinationFileUpload ' 010413
         Dim blnAbnormal As Boolean = False
         Dim udtStudentFileSetting As StudentFileBLL.StudentFileSetting = StudentFileBLL.GetSetting(strScheme)
 
-        If Not dtmReportDate <= DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_ReportGenerationDateBefore, dtmVaccineDate) Then
+        If Not dtmReportDate <= DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_ReportGenerationDateBefore, dtmVaccineDate) Then            
             blnAbnormal = True
         End If
 
@@ -3569,7 +3569,8 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[Start][Raiman]
         ' -------------------------------------------------------------------------------
-        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = (New DocTypeBLL).getSchemeDocTypeByScheme(hfScheme.Value)
+        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = (New DocTypeBLL).getSchemeDocTypeBySchemeClaimType(hfScheme.Value, _
+                                                                                                                      SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
         ' CRE20-003 (Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Agelimit[End][Raiman]
 
 
@@ -3585,6 +3586,8 @@ Partial Public Class VaccinationFileUpload ' 010413
         ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         Dim udtValidator As New Common.Validation.Validator
+        Dim udtGeneralFunction As GeneralFunction = New GeneralFunction
+
         Dim dtmNow As Date = (New GeneralFunction).GetSystemDateTime.Date
 
         For Each n As StudentFileDocumentType In lstSFDocType
@@ -3713,20 +3716,30 @@ Partial Public Class VaccinationFileUpload ' 010413
             If udtValidator.ContainsFullWidthChar(dr("Name_CH_Excel")) Then
                 lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "ChineseName")))
             Else
-                Select Case dr("Doc_Code").ToString.Trim
-                    Case StudentFileBLL.StudentFileDocTypeCode.HKBC_IC,
-                        StudentFileBLL.StudentFileDocTypeCode.HKIC,
-                        StudentFileBLL.StudentFileDocTypeCode.EC,
-                        StudentFileBLL.StudentFileDocTypeCode.OTHER
+                Dim strChineseName As String = String.Empty
+                If dr("Name_CH_Excel").ToString.Trim <> "*" Then
+                    strChineseName = dr("Name_CH_Excel").ToString.Trim
+                End If
+                
+                ' Length
+                If udtGeneralFunction.UTF32_Length(strChineseName) > udtStudentFileSetting.Upload_NameCHLengthHardLimit Then
+                    lstUploadError.Add(udtStudentFileUploadErrorDesc.ChiName_ExceedMaxLength)
 
-                        If dr("Name_CH_Excel").ToString.Trim.Length > udtStudentFileSetting.Upload_NameCHLengthHardLimit Then
-                            lstUploadError.Add(udtStudentFileUploadErrorDesc.ChiName_ExceedMaxLength)
-                        End If
+                Else
+                    'Invalid Character
+                    Dim lstInvalidChar As New List(Of String)
+                    Dim strAccountDocCode As String = dr("Doc_Code").ToString.Trim
 
-                    Case Else
-                        ' Do nothing
+                    If dr("Doc_Code").ToString.Trim = StudentFileBLL.StudentFileDocTypeCode.HKBC_IC Then
+                        strAccountDocCode = DocTypeModel.DocTypeCode.HKIC
+                    End If
 
-                End Select
+                    If udtValidator.IsValidChiName(strChineseName, strAccountDocCode, lstInvalidChar) = False Then
+                        lstUploadWarning.Add(udtStudentFileUploadErrorDesc.ChiName_Invalid)
+                    End If
+
+                End If
+
             End If
 
             '-------------------
@@ -4487,25 +4500,24 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         For Each drOut As DataRow In dtOut.Rows
 
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
             ' Chinese name
             If drOut("Name_CH_Excel") = "*" Then drOut("Name_CH_Excel") = String.Empty
 
-            Dim strDocCode As String = drOut("Doc_Code").ToString.Trim
+            Dim strStudentDocCode As String = drOut("Doc_Code").ToString.Trim
+            Dim strAccountDocCode As String = String.Empty
 
-            Select Case strDocCode
-                Case StudentFileBLL.StudentFileDocTypeCode.HKBC_IC,
-                    StudentFileBLL.StudentFileDocTypeCode.HKIC,
-                    StudentFileBLL.StudentFileDocTypeCode.EC,
-                    StudentFileBLL.StudentFileDocTypeCode.OTHER
+            If strStudentDocCode = StudentFileBLL.StudentFileDocTypeCode.HKBC_IC Then
+                strAccountDocCode = DocTypeModel.DocTypeCode.HKIC
+            Else
+                strAccountDocCode = strStudentDocCode
+            End If
 
-                    drOut("Name_CH") = drOut("Name_CH_Excel")
+            If DocTypeBLL.IsChineseNameAvailable(strAccountDocCode) Then
+                drOut("Name_CH") = drOut("Name_CH_Excel")
+            Else
+                drOut("Name_CH") = String.Empty
+            End If
 
-                Case Else
-                    drOut("Name_CH") = String.Empty
-            End Select
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
 
             ' English surname
             If drOut("Given_Name_EN") <> String.Empty Then
@@ -4545,7 +4557,7 @@ Partial Public Class VaccinationFileUpload ' 010413
 
 
             ' EC Ref No. & Other Format
-            Select Case strDocCode
+            Select Case strStudentDocCode
                 Case StudentFileBLL.StudentFileDocTypeCode.EC,
                     StudentFileBLL.StudentFileDocTypeCode.OTHER
 

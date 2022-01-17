@@ -39,8 +39,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConfirmDeclaration2.Height = 0.1875!
             Me.txtConfirmDeclaration2.Left = 3.077559!
             Me.txtConfirmDeclaration2.Name = "txtConfirmDeclaration2"
-            Me.txtConfirmDeclaration2.Style = "font-family: ·s²Ó©úÅé; font-size: 12pt; text-align: left; ddo-char-set: 136"
-            Me.txtConfirmDeclaration2.Text = "¤w¦V¥»¤HÅª¥X©M¸ÑÄÀ¡uÂåÀø¨é¨Ï¥ÎªÌ¦P·NÂà¥æ­Ó¤H¸ê®Æ¡v"
+            Me.txtConfirmDeclaration2.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.txtConfirmDeclaration2.Text = "å·²å‘æœ¬äººè®€å‡ºå’Œè§£é‡‹ã€Œé†«ç™‚åˆ¸ä½¿ç”¨è€…åŒæ„è½‰äº¤å€‹äººè³‡æ–™ã€"
             Me.txtConfirmDeclaration2.Top = 0.0!
             Me.txtConfirmDeclaration2.Width = 4.205513!
             '
@@ -51,7 +51,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConfirmDeclarationSPName.Height = 0.1874016!
             Me.txtConfirmDeclarationSPName.Left = 0.0!
             Me.txtConfirmDeclarationSPName.Name = "txtConfirmDeclarationSPName"
-            Me.txtConfirmDeclarationSPName.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; text-decoration: no" & _
+            Me.txtConfirmDeclarationSPName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; text-decoration: no" & _
         "ne; ddo-char-set: 136"
             Me.txtConfirmDeclarationSPName.Text = Nothing
             Me.txtConfirmDeclarationSPName.Top = 0.0!
@@ -62,8 +62,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConfirmDeclaration3.Height = 0.1875!
             Me.txtConfirmDeclaration3.Left = 0.0!
             Me.txtConfirmDeclaration3.Name = "txtConfirmDeclaration3"
-            Me.txtConfirmDeclaration3.Style = "font-family: ·s²Ó©úÅé; font-size: 12pt; text-align: left; ddo-char-set: 136"
-            Me.txtConfirmDeclaration3.Text = "¤å¥ó¤Î¨äªş¿ıªº¤º®e¡C¥»¤H©ú¥Õ¨ä¸ÑÄÀªº¤º®e¡A¨ÃÂÔ¦¹µ¹¤©¦³Ãö¤å¥ó©Ò­zªº¦P·N¡C"
+            Me.txtConfirmDeclaration3.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.txtConfirmDeclaration3.Text = "æ–‡ä»¶åŠå…¶é™„éŒ„çš„å…§å®¹ã€‚æœ¬äººæ˜ç™½å…¶è§£é‡‹çš„å…§å®¹ï¼Œä¸¦è¬¹æ­¤çµ¦äºˆæœ‰é—œæ–‡ä»¶æ‰€è¿°çš„åŒæ„ã€‚"
             Me.txtConfirmDeclaration3.Top = 0.2047244!
             Me.txtConfirmDeclaration3.Width = 7.283072!
             '

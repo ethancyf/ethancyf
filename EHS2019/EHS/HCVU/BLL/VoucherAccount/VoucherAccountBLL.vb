@@ -23,99 +23,41 @@ Public Class VoucherAccountBLL
         End Try
     End Function
 
-    Public Function getCCCTail(ByVal strcccode As String, ByRef strDisplay As String) As String
-        Dim strRes As String
-        Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-        strRes = String.Empty
-        strRes = udtCCCodeBLL.GetCCCodeDesc(strcccode, strDisplay)
-        Return strRes
-    End Function
 
-    Public Function getCCCTail(ByVal strcccode As String) As DataTable
-        Dim dtRes As DataTable
-        Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-        dtRes = udtCCCodeBLL.GetCCCodeDesc(strcccode)
-        Return dtRes
-    End Function
-
-    Public Function getChiChar(ByVal strcccode As String) As String
-        Dim strRes As String
-        Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-        strRes = String.Empty
-        strRes = udtCCCodeBLL.GetChiChar(strcccode)
-        Return strRes
-    End Function
-
-    Public Function getCCCodeBig5(ByVal strCCCode As String) As String
-        Dim strCCCodeBig5 As String = String.Empty
-        Dim dtRes As DataTable
-        Dim strTail As String
-
-        If Not strCCCode Is Nothing AndAlso strCCCode.Length > 0 Then
-            If strCCCode.Length <> 5 Then
-                Return " "
-            End If
-
-            dtRes = Me.getCCCTail(strCCCode.Substring(0, 4))
-            strTail = strCCCode.Substring(4, 1)
-            If Not dtRes Is Nothing AndAlso dtRes.Rows.Count > 0 Then
-
-                For Each dataRow As DataRow In dtRes.Rows
-                    If dataRow("ccc_tail").ToString().Equals(strTail) Then
-                        Return dataRow("Big5").ToString()
-                    End If
-                Next
-
-                Return " "
-            Else
-                Return " "
-            End If
-        End If
-
-        Return strCCCodeBig5
-    End Function
-
-    Public Function getChiChar(ByVal strcccode As String, ByVal strTail As String) As String
-        Dim dataTable As DataTable = getCCCTail(strcccode)
-
-        For Each dataRow As DataRow In dataTable.Rows
-            If dataRow("ccc_tail").ToString().Equals(strTail) Then
-                Return dataRow("Big5").ToString()
-            End If
-        Next
-        Return String.Empty
-    End Function
+#Region "CCCode Supporting Function"
 
     Public Shared Function GetCName(ByVal udtEHSPersonalInformation As EHSAccountModel.EHSPersonalInformationModel) As String
-        Dim udtVoucherAccountBLL As VoucherAccountBLL = New VoucherAccountBLL()
+        Dim udtCCCodeBLL As New CCCodeBLL
         Dim strCName As String = String.Empty
 
         If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode1) Then
-            strCName += udtVoucherAccountBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode1)
+            strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode1)
         End If
 
         If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode2) Then
-            strCName += udtVoucherAccountBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode2)
+            strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode2)
         End If
 
         If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode3) Then
-            strCName += udtVoucherAccountBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode3)
+            strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode3)
         End If
 
         If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode4) Then
-            strCName += udtVoucherAccountBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode4)
+            strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode4)
         End If
 
         If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode5) Then
-            strCName += udtVoucherAccountBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode5)
+            strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode5)
         End If
 
         If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode6) Then
-            strCName += udtVoucherAccountBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode6)
+            strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode6)
         End If
 
         Return strCName
     End Function
+
+#End Region
 
     ' EHS Temp Voucher Account -----------------------
 

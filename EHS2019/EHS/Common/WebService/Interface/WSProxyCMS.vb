@@ -730,6 +730,12 @@ Namespace WebService.Interface
             Dim strPrimary As String = String.Empty
             Dim strSecondary As String = String.Empty
 
+            Dim strCustomPath As String = ConfigurationManager.AppSettings("CMS_Emulator_Custom_Path")
+
+            If Not String.IsNullOrEmpty(strCustomPath) Then
+                Return strCustomPath
+            End If
+
             oGenFunc.getSystemParameter(SYS_PARAM_EMULATE_URL, strPrimary, strSecondary)
 
             Select Case eEndpointSite

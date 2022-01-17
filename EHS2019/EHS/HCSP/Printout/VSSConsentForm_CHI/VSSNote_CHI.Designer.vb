@@ -40,7 +40,7 @@
             Me.txtNote.Height = 0.21875!
             Me.txtNote.Left = 0.0!
             Me.txtNote.Name = "txtNote"
-            Me.txtNote.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left"
+            Me.txtNote.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left"
             Me.txtNote.Text = "註："
             Me.txtNote.Top = 0.033!
             Me.txtNote.Width = 0.469!
@@ -50,7 +50,7 @@
             Me.txtNote1.Height = 0.1875!
             Me.txtNote1.Left = 0.469!
             Me.txtNote1.Name = "txtNote1"
-            Me.txtNote1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left"
+            Me.txtNote1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left"
             Me.txtNote1.Text = "必須清楚填寫此表格方為有效。"
             Me.txtNote1.Top = 0.033!
             Me.txtNote1.Width = 6.625!
@@ -60,7 +60,7 @@
             Me.txtNote2.Height = 0.1875!
             Me.txtNote2.Left = 0.469!
             Me.txtNote2.Name = "txtNote2"
-            Me.txtNote2.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: left; d" & _
+            Me.txtNote2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: left; d" & _
         "do-char-set: 1"
             Me.txtNote2.Top = 0.22!
             Me.txtNote2.Width = 6.625!
@@ -70,7 +70,7 @@
             Me.txtDelete.Height = 0.1875!
             Me.txtDelete.Left = 0.031!
             Me.txtDelete.Name = "txtDelete"
-            Me.txtDelete.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: left; d" & _
+            Me.txtDelete.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: left; d" & _
         "do-char-set: 1"
             Me.txtDelete.Text = "* 將不適用者删除"
             Me.txtDelete.Top = 0.4385!

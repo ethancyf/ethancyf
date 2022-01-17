@@ -52,7 +52,7 @@
             Me.textbox1.Height = 0.188!
             Me.textbox1.Left = 0.171!
             Me.textbox1.Name = "textbox1"
-            Me.textbox1.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: left; t" & _
+            Me.textbox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: left; t" & _
         "ext-justify: distribute; vertical-align: top; ddo-char-set: 1; ddo-font-vertical" & _
         ": none"
             Me.textbox1.Text = "由登記參與計劃的主診醫生確認服務使用者正在懷孕"
@@ -64,7 +64,7 @@
             Me.TextBox3.Height = 0.188!
             Me.TextBox3.Left = 4.506!
             Me.TextBox3.Name = "TextBox3"
-            Me.TextBox3.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: center;" & _
+            Me.TextBox3.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: center;" & _
         " text-justify: distribute; vertical-align: top; ddo-char-set: 1; ddo-font-vertic" & _
         "al: none"
             Me.TextBox3.Text = "(登記參與計劃的主診醫生簽署)"

@@ -363,7 +363,7 @@ Public Class eHSAccountMaintBLL
                             db.MakeInParam("@IdentityNum", SqlDbType.VarChar, 20, strIdentityNum), _
                             db.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, strAdoptionPrefixNum), _
                             db.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, strEname), _
-                            db.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 6, strCname), _
+                            db.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 30, strCname), _
                             db.MakeInParam("@DOB", SqlDbType.DateTime, 8, IIf(Not dtDOB.HasValue, DBNull.Value, dtDOB)), _
                             db.MakeInParam("@Voucher_Acc_ID", SqlDbType.VarChar, 500, strAccountID), _
                             db.MakeInParam("@ReferenceNo", SqlDbType.Char, 15, strRefNo), _
@@ -2047,51 +2047,14 @@ Public Class eHSAccountMaintBLL
 #End Region
 
 #Region "Supporting functions - CCC Code"
-    Public Function getCCCTail(ByVal strcccode As String, ByRef strDisplay As String) As String
-        Dim strRes As String
-        Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-        strRes = String.Empty
-        strRes = udtCCCodeBLL.GetCCCodeDesc(strcccode, strDisplay)
-        Return strRes
-    End Function
 
     Public Function getCCCTail(ByVal strcccode As String) As DataTable
         Dim dtRes As DataTable
         Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-        dtRes = udtCCCodeBLL.GetCCCodeDesc(strcccode)
+        dtRes = udtCCCodeBLL.GetCCCodeChineseMappingByCCCHead(strcccode)
         Return dtRes
     End Function
 
-    ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
-    Public Function getCCCodeBig5(ByVal strCCCode As String) As String
-        Dim strCCCodeBig5 As String = String.Empty
-        Dim dtRes As DataTable
-        Dim strTail As String
-
-        If Not strCCCode Is Nothing AndAlso strCCCode.Length > 0 Then
-            If strCCCode.Length <> 5 Then
-                Return " "
-            End If
-
-            dtRes = Me.getCCCTail(strCCCode.Substring(0, 4))
-            strTail = strCCCode.Substring(4, 1)
-            If Not dtRes Is Nothing AndAlso dtRes.Rows.Count > 0 Then
-
-                For Each dataRow As DataRow In dtRes.Rows
-                    If dataRow("ccc_tail").ToString().Equals(strTail) Then
-                        Return dataRow("Big5").ToString()
-                    End If
-                Next
-
-                Return " "
-            Else
-                Return " "
-            End If
-        End If
-
-        Return strCCCodeBig5
-    End Function
-    ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 #End Region
 
 #Region "Search / Save EHS account"

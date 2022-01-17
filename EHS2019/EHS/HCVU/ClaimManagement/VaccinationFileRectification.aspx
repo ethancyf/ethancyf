@@ -965,7 +965,7 @@
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="<%$ Resources: Text, ChineseName %>" ItemStyle-Width="60">
                                     <ItemTemplate>
-                                        <asp:Label ID="lblGChineseName" runat="server" Text='<%# Eval("Name_CH_Excel") %>' Font-Names="HA_MingLiu"></asp:Label>
+                                        <asp:Label ID="lblGChineseName" runat="server" Text='<%# Eval("Name_CH_Excel") %>' CssClass="TextChineseName"></asp:Label>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="<%$ Resources: Text, EnglishSurname %>" ItemStyle-Width="50">
@@ -1375,7 +1375,9 @@
                                                     <span style="font-size:16px">)</span>
                                                 </td>
                                                 <td valign="top">
-                                                    <asp:Label ID="lblRectifyChiName" runat="server" CssClass="tableText" />
+                                                    <asp:Label ID="lblRectifyChiName" runat="server" CssClass="tableText TextChineseName" />
+                                                    &nbsp;
+                                                    <asp:Label ID="lblRectifyInvalidCharacter" runat="server" CssClass="tableText" style="color:red" Text="<%$ Resources:Text, InvalidCharacter %>" />
                                                 </td>
                                             </tr>
                                             <tr>

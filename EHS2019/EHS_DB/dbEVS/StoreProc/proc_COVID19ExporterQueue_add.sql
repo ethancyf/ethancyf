@@ -17,6 +17,21 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023-68 (Add Chinese Name)
+-- Modified by:		Winnie SUEN
+-- Modified date:	07 Dec 2021
+-- Description:		1. Revise Reserved field 12 for Patient's Chinese Name
+--					2. Add Column [COVID19ExporterQueue].[Encrypt_Field10] to store Patient's Chinese Name sent to Central DB
+--					3. Encrypt formatted data with NVARCHAR instead of VARCHAR and Store new formatted data to [Encrypt_Field1_Uni]
+--					4. Add Doc_Type 
+--						22 ¡V Document of Identity for Visa Purposes
+--						23 - Permit to Remain in the HKSAR (ID235B)
+--						24 - Certificate issued by the Birth Registry for Adopted Children
+--						25 - Hong Kong SAR Re-entry Permit
+--						26 - Non-Hong Kong Travel Document
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-0023-60 (3rd Dose)
 -- Modified by:		Winnie SUEN
 -- Modified date:	08 Oct 2021
@@ -187,6 +202,8 @@ CREATE PROCEDURE [dbo].[proc_COVID19ExporterQueue_add] @Period_From DATETIME = N
 AS
     BEGIN
 
+		EXEC [proc_SymmetricKey_open];
+
         DECLARE @In_Period_From DATETIME= @Period_From;
         DECLARE @In_Period_To DATETIME= @Period_To;
         DECLARE @VBar AS CHAR(1)= '|';
@@ -215,7 +232,9 @@ AS
         DECLARE @ValidAccountType AS TINYINT= 1;
         DECLARE @TempAccountType AS TINYINT= 2;
 
-        EXEC [proc_SymmetricKey_open];
+		DECLARE @EmptyStringVarbinary AS VARBINARY(MAX) = ENCRYPTBYKEY(KEY_GUID('sym_Key'), N'')
+		-----------------------------------------------------------------
+		    
 
         --check COVID19ExporterForceSendList
         SELECT CASE
@@ -430,6 +449,16 @@ AS
                             THEN '20'
                             WHEN pinfo.Doc_Code = 'DS'
                             THEN '21'
+							WHEN pinfo.Doc_Code = 'Doc/I'
+							THEN '22'
+							WHEN pinfo.Doc_Code = 'ID235B'
+							THEN '23'
+							WHEN pinfo.Doc_Code = 'ADOPC'
+							THEN '24'
+							WHEN pinfo.Doc_Code = 'REPMT'
+							THEN '25'
+							WHEN pinfo.Doc_Code = 'VISA'
+							THEN '26'
                             ELSE '8' --others
                         END
                    ELSE CASE
@@ -477,6 +506,16 @@ AS
                             THEN '20'
                             WHEN tpi.Doc_Code = 'DS'
                             THEN '21'
+							WHEN tpi.Doc_Code = 'Doc/I'
+							THEN '22'
+							WHEN tpi.Doc_Code = 'ID235B'
+							THEN '23'
+							WHEN tpi.Doc_Code = 'ADOPC'
+							THEN '24'
+							WHEN tpi.Doc_Code = 'REPMT'
+							THEN '25'
+							WHEN tpi.Doc_Code = 'VISA'
+							THEN '26'
                             ELSE '8' --others
                         END
                END AS 'Doc_Type',
@@ -487,16 +526,18 @@ AS
                             THEN NULL
                             WHEN 'EC'
                             THEN ENCRYPTBYKEY(KEY_GUID('sym_Key'), REPLACE(LTRIM(RTRIM(pinfo.EC_Reference_No)), @VBar, @VBarWithQuote))
-                            ELSE ENCRYPTBYKEY(KEY_GUID('sym_Key'), CONVERT(VARCHAR(MAX), REPLACE(LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(pinfo
-                            .Encrypt_Field1))) + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(pinfo.Encrypt_Field11))))), @VBar, @VBarWithQuote)))
+                            ELSE ENCRYPTBYKEY(KEY_GUID('sym_Key'), CONVERT(VARCHAR(MAX), REPLACE(
+									LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(pinfo.Encrypt_Field11)),''))) + 
+									LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(pinfo.Encrypt_Field1)))), @VBar, @VBarWithQuote)))
                         END
                    ELSE CASE tpi.Doc_Code
                             WHEN 'HKIC'
                             THEN NULL
                             WHEN 'EC'
                             THEN ENCRYPTBYKEY(KEY_GUID('sym_Key'), REPLACE(LTRIM(RTRIM(tpi.EC_Reference_No)), @VBar, @VBarWithQuote))
-                            ELSE ENCRYPTBYKEY(KEY_GUID('sym_Key'), CONVERT(VARCHAR(MAX), REPLACE(LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(tpi.
-                            Encrypt_Field1))) + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(tpi.Encrypt_Field11))))), @VBar, @VBarWithQuote)))
+                            ELSE ENCRYPTBYKEY(KEY_GUID('sym_Key'), CONVERT(VARCHAR(MAX), REPLACE(
+									LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(tpi.Encrypt_Field11)),''))) + 
+									LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(tpi.Encrypt_Field1)))), @VBar, @VBarWithQuote)))
                         END
                END AS 'otherDocID',
                CASE
@@ -579,6 +620,11 @@ AS
                    THEN pinfo.Encrypt_Field9
                    ELSE tpi.Encrypt_Field9
                END AS 'ccc6', 
+               CASE
+                   WHEN rwt.AccountType = @ValidAccountType
+                   THEN pinfo.Encrypt_Field3
+                   ELSE tpi.Encrypt_Field3
+               END AS 'Encrypted_CName',
                REPLACE(LTRIM(RTRIM(ISNULL(CASE
                                               WHEN vt.Scheme_Code IN(@SchemeCodeVSS, @SchemeCodeCOVID19OR, @SchemeCodeCOVID19RVP, @SchemeCodeRVP)
                                               THEN ContactNo.AdditionalFieldValueCode
@@ -800,7 +846,13 @@ AS
                                       THEN '001'
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_11', -- non-local recovered indicator
-               '' AS 'Reserved_field_12', 
+
+               REPLACE(LTRIM(RTRIM(ISNULL(CONVERT(NVARCHAR(MAX), DECRYPTBYKEY(
+												CASE
+													WHEN rwt.AccountType = @ValidAccountType
+													THEN pinfo.Encrypt_Field3
+													ELSE tpi.Encrypt_Field3
+												END)),''))), @VBar, @VBarWithQuote) AS 'Reserved_field_12', -- Patient's Chinese Name
                '' AS 'Reserved_field_13', 
                '' AS 'Reserved_field_14', 
                '' AS 'Reserved_field_15', 
@@ -906,7 +958,8 @@ AS
                ceq.Encrypt_Field7, 
                ceq.Encrypt_Field8, 
                ceq.Encrypt_Field9, 
-               ceq.PASS_Issue_Region
+               ceq.PASS_Issue_Region,
+			   ceq.Encrypt_Field10
         INTO #ResultsLatestByTransaction
         FROM
             (
@@ -925,6 +978,7 @@ AS
                        c.Encrypt_Field8, 
                        c.Encrypt_Field9, 
                        c.PASS_Issue_Region, 
+					   c.Encrypt_Field10,
                        ROW_NUMBER() OVER(PARTITION BY c.Transaction_ID
                        ORDER BY c.Update_Dtm DESC) AS rn
                 FROM COVID19ExporterQueue AS c WITH(NOLOCK)--which is using a filtered index "IX_COVID19ExporterQueue"
@@ -939,7 +993,9 @@ AS
         --the Record_Status is complete(C) and
         --personal information is different
 
-        UPDATE r
+
+		-- Mark status as 'Skipped' (S) if personal info has not been changed
+		UPDATE r
           SET transaction_Type = @Update, 
               Record_Status = CASE
                                   WHEN ISNULL(r.HKICDocID, r.otherDocID) = ctecq.Encrypt_Field2
@@ -955,6 +1011,10 @@ AS
                                        AND r.ccc5 = ctecq.Encrypt_Field8
                                        AND r.ccc6 = ctecq.Encrypt_Field9
                                        AND r.Reserved_field_10 = ISNULL(ctecq.PASS_Issue_Region, '')
+										-- Not to check Chinese name for Old Record that not yet include Chinese Name to Central DB
+										-- and document with CCCode e.g. HKIC & ROP140)
+									   AND ((ctecq.Encrypt_Field10 IS NULL AND (r.Doc_Type = '0' OR r.Doc_Type = '3'))
+											OR (ISNULL(r.Encrypted_CName, @EmptyStringVarbinary) = ISNULL(ctecq.Encrypt_Field10, @EmptyStringVarbinary)))
                                   THEN @SkipedStatus
                                   ELSE @PendingStatus
                               END
@@ -1015,7 +1075,8 @@ AS
                (Batch_ID, 
                 Transaction_ID, 
                 Record_File_ID, 
-                Encrypt_Field1, 
+                Encrypt_Field1,
+				Encrypt_Field1_Uni,
                 Encrypt_Field2, 
                 Doc_Type, 
                 Sex, 
@@ -1033,12 +1094,14 @@ AS
                 Update_Dtm, 
                 From_Dtm, 
                 To_Dtm, 
-                PASS_Issue_Region
+                PASS_Issue_Region,
+				Encrypt_Field10
                )
         SELECT CONVERT(VARCHAR(6), @CurrentTime, 12) + REPLACE(CONVERT(VARCHAR(8), @CurrentTime, 108), ':', ''), 
                Transaction_ID, 
                NULL, 
-               ENCRYPTBYKEY(KEY_GUID('sym_Key'), CONVERT(VARCHAR(MAX), LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(HKICDocID)), ''))) +
+			   @EmptyStringVarbinary,	-- For new record, no longer look at this column as it uses VARCHAR for decryption
+               ENCRYPTBYKEY(KEY_GUID('sym_Key'), CONVERT(NVARCHAR(MAX), LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(HKICDocID)), ''))) +
                @VBar + Doc_Type + @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(otherDocID)), ''))) + @VBar + Sex + @VBar + DOB +
                @VBar + Exact_DOB + @VBar + Surname + @VBar + given_name + @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(full_name)))) +
                @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc1)))) + @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc2)))) +
@@ -1056,8 +1119,8 @@ AS
                @VBar + Route_of_administration_local_description + @VBar + Site_of_administration_local_description + @VBar + eHRSS_Consent + @VBar
                + Source_record_create_datetime + @VBar + Reserved_field_1 + @VBar + Reserved_field_2 + @VBar + Reserved_field_3 + @VBar +
                Reserved_field_4 + @VBar + Reserved_field_5 + @VBar + Reserved_field_6 + @VBar + Reserved_field_7 + @VBar + Reserved_field_8 + @VBar
-               + Reserved_field_9 + @VBar + Reserved_field_10 + @VBar + Reserved_field_11 + @VBar + Reserved_field_12 + @VBar + Reserved_field_13 +
-               @VBar + Reserved_field_14 + @VBar + Reserved_field_15 + @VBar + Reserved_field_16 + @VBar + Reserved_field_17 + @VBar +
+               + Reserved_field_9 + @VBar + Reserved_field_10 + @VBar + Reserved_field_11 + @VBar + Reserved_field_12 + @VBar + Reserved_field_13 + 
+			   @VBar + Reserved_field_14 + @VBar + Reserved_field_15 + @VBar + Reserved_field_16 + @VBar + Reserved_field_17 + @VBar +
                Reserved_field_18 + @VBar + Reserved_field_19 + @VBar + Reserved_field_20)), 
                ISNULL(HKICDocID, otherDocID), 
                Doc_Type, 
@@ -1076,7 +1139,8 @@ AS
                GETDATE(), 
                @In_Period_From, 
                @In_Period_To, 
-               IIF(Reserved_field_10 = '', NULL, Reserved_field_10)
+               IIF(Reserved_field_10 = '', NULL, Reserved_field_10),
+			   Encrypted_CName
         FROM #Results;
 
         EXEC [proc_SymmetricKey_close];

@@ -13,7 +13,9 @@
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
                 <td style="vertical-align: top">
-                    <asp:Label ID="lblHEName" runat="server" CssClass="tableText"></asp:Label></td>
+                    <asp:Label ID="lblHEName" runat="server" CssClass="tableText" />
+                    <asp:Label ID="lblHCName" runat="server" CssClass="tableText TextChineseName" />
+                </td>
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHDOBGenderText" runat="server" Text="<%$ Resources:Text, DOBLongGender %>"></asp:Label></td>
                 <td style="vertical-align: top">
@@ -51,7 +53,9 @@
                 <td valign="top">
                     <asp:Label ID="lblVNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
                 <td valign="top">
-                    <asp:Label ID="lblVEName" runat="server" CssClass="tableText"></asp:Label></td>
+                    <asp:Label ID="lblVEName" runat="server" CssClass="tableText" />
+                    <asp:Label ID="lblVCName" runat="server" CssClass="tableText TextChineseName"/>
+                </td>
             </tr>
             <tr>
                 <td valign="top">

@@ -2660,7 +2660,7 @@ Namespace ComFunction
                 If listSystem IsNot Nothing Then
                     ' Replace character that can display by HA_MingLiu font
                     For Each udtCodeMap As CodeMappingModel In listSystem
-                        strOutput = strOutput.Replace(udtCodeBLL.ConvertUnicode2Big5(udtCodeMap.CodeSource), udtCodeBLL.ConvertUnicode2Big5(udtCodeMap.CodeTarget))
+                        strOutput = strOutput.Replace(udtCodeBLL.ConvertUnicodetoChar(udtCodeMap.CodeSource), udtCodeBLL.ConvertUnicodetoChar(udtCodeMap.CodeTarget))
                     Next
 
                 End If

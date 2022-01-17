@@ -71,7 +71,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeEngName.HyperLink = Nothing
             Me.txtPracticeEngName.Left = 1.25!
             Me.txtPracticeEngName.Name = "txtPracticeEngName"
-            Me.txtPracticeEngName.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPracticeEngName.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
             Me.txtPracticeEngName.Text = Nothing
             Me.txtPracticeEngName.Top = 0.302!
@@ -83,9 +83,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPartIIePracticeTeleNoText.HyperLink = Nothing
             Me.txtPartIIePracticeTeleNoText.Left = 0.0!
             Me.txtPartIIePracticeTeleNoText.Name = "txtPartIIePracticeTeleNoText"
-            Me.txtPartIIePracticeTeleNoText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPartIIePracticeTeleNoText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.txtPartIIePracticeTeleNoText.Text = "πq∏‹∏πΩX°G"
+            Me.txtPartIIePracticeTeleNoText.Text = "ÈõªË©±ËôüÁ¢ºÔºö"
             Me.txtPartIIePracticeTeleNoText.Top = 1.552!
             Me.txtPartIIePracticeTeleNoText.Width = 1.25!
             '
@@ -94,7 +94,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeEngAddress.Height = 0.1875!
             Me.txtPracticeEngAddress.Left = 1.25!
             Me.txtPracticeEngAddress.Name = "txtPracticeEngAddress"
-            Me.txtPracticeEngAddress.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; vertical-align: middle; ddo-char-set: 136"
+            Me.txtPracticeEngAddress.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; vertical-align: middle; ddo-char-set: 136"
             Me.txtPracticeEngAddress.Text = Nothing
             Me.txtPracticeEngAddress.Top = 0.802!
             Me.txtPracticeEngAddress.Width = 5.875!
@@ -104,7 +104,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeTeleNo.Height = 0.1875!
             Me.txtPracticeTeleNo.Left = 1.25!
             Me.txtPracticeTeleNo.Name = "txtPracticeTeleNo"
-            Me.txtPracticeTeleNo.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; vertical-align: middle; ddo-char-set: 136"
+            Me.txtPracticeTeleNo.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; vertical-align: middle; ddo-char-set: 136"
             Me.txtPracticeTeleNo.Text = Nothing
             Me.txtPracticeTeleNo.Top = 1.552!
             Me.txtPracticeTeleNo.Width = 5.875!
@@ -115,9 +115,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPartIIePracticeChiNameText.HyperLink = Nothing
             Me.txtPartIIePracticeChiNameText.Left = 0.375!
             Me.txtPartIIePracticeChiNameText.Name = "txtPartIIePracticeChiNameText"
-            Me.txtPartIIePracticeChiNameText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPartIIePracticeChiNameText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.txtPartIIePracticeChiNameText.Text = "°]§§§Â°^°G"
+            Me.txtPartIIePracticeChiNameText.Text = "Ôºà‰∏≠ÊñáÔºâÔºö"
             Me.txtPartIIePracticeChiNameText.Top = 0.552!
             Me.txtPartIIePracticeChiNameText.Width = 0.875!
             '
@@ -127,7 +127,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeChiName.HyperLink = Nothing
             Me.txtPracticeChiName.Left = 1.25!
             Me.txtPracticeChiName.Name = "txtPracticeChiName"
-            Me.txtPracticeChiName.Style = "font-family: HA_MingLiu; font-size: 11.25pt; font-weight: normal; text-align: lef" & _
+            Me.txtPracticeChiName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; font-weight: normal; text-align: lef" & _
         "t; text-decoration: none; vertical-align: middle; ddo-char-set: 136"
             Me.txtPracticeChiName.Text = Nothing
             Me.txtPracticeChiName.Top = 0.552!
@@ -139,9 +139,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPartIIePracticeEngAddressText.HyperLink = Nothing
             Me.txtPartIIePracticeEngAddressText.Left = 0.375!
             Me.txtPartIIePracticeEngAddressText.Name = "txtPartIIePracticeEngAddressText"
-            Me.txtPartIIePracticeEngAddressText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPartIIePracticeEngAddressText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.txtPartIIePracticeEngAddressText.Text = "°]≠^§Â°^°G"
+            Me.txtPartIIePracticeEngAddressText.Text = "ÔºàËã±ÊñáÔºâÔºö"
             Me.txtPartIIePracticeEngAddressText.Top = 0.802!
             Me.txtPartIIePracticeEngAddressText.Width = 0.875!
             '
@@ -151,9 +151,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPartIIePracticeChiAddressText.HyperLink = Nothing
             Me.txtPartIIePracticeChiAddressText.Left = 0.375!
             Me.txtPartIIePracticeChiAddressText.Name = "txtPartIIePracticeChiAddressText"
-            Me.txtPartIIePracticeChiAddressText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPartIIePracticeChiAddressText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.txtPartIIePracticeChiAddressText.Text = "°]§§§Â°^°G"
+            Me.txtPartIIePracticeChiAddressText.Text = "Ôºà‰∏≠ÊñáÔºâÔºö"
             Me.txtPartIIePracticeChiAddressText.Top = 1.052!
             Me.txtPartIIePracticeChiAddressText.Width = 0.875!
             '
@@ -162,7 +162,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeChiAddress.Height = 0.1875!
             Me.txtPracticeChiAddress.Left = 1.25!
             Me.txtPracticeChiAddress.Name = "txtPracticeChiAddress"
-            Me.txtPracticeChiAddress.Style = "font-family: HA_MingLiu; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
+            Me.txtPracticeChiAddress.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
         ": 136"
             Me.txtPracticeChiAddress.Text = Nothing
             Me.txtPracticeChiAddress.Top = 1.052!
@@ -174,9 +174,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPartIIePracticeEngNameText.HyperLink = Nothing
             Me.txtPartIIePracticeEngNameText.Left = 0.375!
             Me.txtPartIIePracticeEngNameText.Name = "txtPartIIePracticeEngNameText"
-            Me.txtPartIIePracticeEngNameText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPartIIePracticeEngNameText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.txtPartIIePracticeEngNameText.Text = "°]≠^§Â°^°G"
+            Me.txtPartIIePracticeEngNameText.Text = "ÔºàËã±ÊñáÔºâÔºö"
             Me.txtPartIIePracticeEngNameText.Top = 0.302!
             Me.txtPartIIePracticeEngNameText.Width = 0.875!
             '
@@ -185,7 +185,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeDistrict.Height = 0.1875!
             Me.txtPracticeDistrict.Left = 1.25!
             Me.txtPracticeDistrict.Name = "txtPracticeDistrict"
-            Me.txtPracticeDistrict.Style = "font-family: HA_MingLiu; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
+            Me.txtPracticeDistrict.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; vertical-align: middle; ddo-char-set" & _
         ": 136"
             Me.txtPracticeDistrict.Text = Nothing
             Me.txtPracticeDistrict.Top = 1.302!
@@ -197,9 +197,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPartIIePracticeNameText.HyperLink = Nothing
             Me.txtPartIIePracticeNameText.Left = 0.0!
             Me.txtPartIIePracticeNameText.Name = "txtPartIIePracticeNameText"
-            Me.txtPartIIePracticeNameText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPartIIePracticeNameText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.txtPartIIePracticeNameText.Text = "¶W∫Ÿ"
+            Me.txtPartIIePracticeNameText.Text = "ÂêçÁ®±"
             Me.txtPartIIePracticeNameText.Top = 0.302!
             Me.txtPartIIePracticeNameText.Width = 0.375!
             '
@@ -209,9 +209,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPartIIePracticeAddressText.HyperLink = Nothing
             Me.txtPartIIePracticeAddressText.Left = 0.0!
             Me.txtPartIIePracticeAddressText.Name = "txtPartIIePracticeAddressText"
-            Me.txtPartIIePracticeAddressText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPartIIePracticeAddressText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.txtPartIIePracticeAddressText.Text = "¶aß}"
+            Me.txtPartIIePracticeAddressText.Text = "Âú∞ÂùÄ"
             Me.txtPartIIePracticeAddressText.Top = 0.802!
             Me.txtPartIIePracticeAddressText.Width = 0.375!
             '
@@ -221,9 +221,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeJoinedSchemeText.HyperLink = Nothing
             Me.txtPracticeJoinedSchemeText.Left = 0.0!
             Me.txtPracticeJoinedSchemeText.Name = "txtPracticeJoinedSchemeText"
-            Me.txtPracticeJoinedSchemeText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.txtPracticeJoinedSchemeText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.txtPracticeJoinedSchemeText.Text = "•”Ω–≠pπ∫°G"
+            Me.txtPracticeJoinedSchemeText.Text = "Áî≥Ë´ãË®àÂäÉÔºö"
             Me.txtPracticeJoinedSchemeText.Top = 1.802!
             Me.txtPracticeJoinedSchemeText.Width = 1.25!
             '
@@ -232,7 +232,7 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeJoinedScheme.Height = 0.1875!
             Me.txtPracticeJoinedScheme.Left = 1.25!
             Me.txtPracticeJoinedScheme.Name = "txtPracticeJoinedScheme"
-            Me.txtPracticeJoinedScheme.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; vertical-align: middle; ddo-char-set: 136"
+            Me.txtPracticeJoinedScheme.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; vertical-align: middle; ddo-char-set: 136"
             Me.txtPracticeJoinedScheme.Text = Nothing
             Me.txtPracticeJoinedScheme.Top = 1.802!
             Me.txtPracticeJoinedScheme.Width = 5.875!
@@ -242,8 +242,8 @@ Namespace PrintOut.DH_VSS_CHI
             Me.txtPracticeNoText.Height = 0.25!
             Me.txtPracticeNoText.Left = 0.0!
             Me.txtPracticeNoText.Name = "txtPracticeNoText"
-            Me.txtPracticeNoText.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; text-align: justify; ddo-char-set: 0"
-            Me.txtPracticeNoText.Text = "∞ı∑~¶a¬I°]2°^°G(Ω–¥£®—∞ı∑~¶aß}™∫√“©˙§Â•Û°A®“¶p§Ω¶@®∆∑~æ˜∫c≥Êæ⁄©Œª»¶Êµ≤≥Ê™∫∞∆•ª°C)"
+            Me.txtPracticeNoText.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; text-align: justify; ddo-char-set: 0"
+            Me.txtPracticeNoText.Text = "Âü∑Ê•≠Âú∞ÈªûÔºà2ÔºâÔºö(Ë´ãÊèê‰æõÂü∑Ê•≠Âú∞ÂùÄÁöÑË≠âÊòéÊñá‰ª∂Ôºå‰æãÂ¶ÇÂÖ¨ÂÖ±‰∫ãÊ•≠Ê©üÊßãÂñÆÊìöÊàñÈäÄË°åÁµêÂñÆÁöÑÂâØÊú¨„ÄÇ)"
             Me.txtPracticeNoText.Top = 0.05200002!
             Me.txtPracticeNoText.Width = 7.125!
             '
@@ -252,9 +252,9 @@ Namespace PrintOut.DH_VSS_CHI
             Me.TextBox1.Height = 0.25!
             Me.TextBox1.Left = 0.0!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: ∑s≤”©˙≈È; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
+            Me.TextBox1.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 11.25pt; font-weight: normal; text-align: left; tex" & _
         "t-decoration: none; vertical-align: middle; ddo-char-set: 136"
-            Me.TextBox1.Text = "¶a∞œ°G"
+            Me.TextBox1.Text = "Âú∞ÂçÄÔºö"
             Me.TextBox1.Top = 1.302!
             Me.TextBox1.Width = 1.25!
             '

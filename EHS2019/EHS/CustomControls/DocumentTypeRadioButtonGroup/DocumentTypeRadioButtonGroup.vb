@@ -26,6 +26,7 @@ Public Class DocumentTypeRadioButtonGroup
         VSS_COVID19
         VSS_NIA_MMR
         COVID19OR
+        RVP_COVID19
     End Enum
 
 #End Region
@@ -71,7 +72,7 @@ Public Class DocumentTypeRadioButtonGroup
 
     ' CRE20-0022 (Immu record) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    Private _blnCOVID19 As Boolean = False
+    Private _enumClaimMode As Common.Component.ClaimMode = Common.Component.ClaimMode.All
     ' CRE20-0022 (Immu record) [End][Chris YIM]
 #End Region
 
@@ -195,6 +196,7 @@ Public Class DocumentTypeRadioButtonGroup
 
         Dim udtDocTypeBLL As New DocTypeBLL()
         Dim udtDocTypeModelList As DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
+        Dim enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass = GetClaimType()
 
         Me.EnableFilterDocCode = enumFilterDocCodeForVRE
 
@@ -204,17 +206,19 @@ Public Class DocumentTypeRadioButtonGroup
 
             Case FilterDocCode.Scheme_WithDisabled
                 If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 OrElse (Me._udtSchemeDocTypeList.Count > 0 AndAlso Me._udtSchemeDocTypeList(0).SchemeCode <> Me._strScheme.Trim()) Then
-                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), enumClaimType)
                 End If
 
             Case FilterDocCode.Scheme
                 If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 OrElse (Me._udtSchemeDocTypeList.Count > 0 AndAlso Me._udtSchemeDocTypeList(0).SchemeCode <> Me._strScheme.Trim()) Then
-                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), enumClaimType)
                 End If
+
+                _udtSchemeDocTypeList = _udtSchemeDocTypeList.SortByDisplaySeq()
 
                 udtDocTypeModelList = udtDocTypeModelList.FilterBySchemeDocTypeList(_udtSchemeDocTypeList)
 
-                udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
+                'udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
 
             Case FilterDocCode.VSS_NIA_MMR
                 Dim udtDocTypeHKIC As DocTypeModel = udtDocTypeModelList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC)
@@ -227,30 +231,39 @@ Public Class DocumentTypeRadioButtonGroup
 
                 udtDocTypeModelList = udtDocTypeList.SortByDisplaySeq()
 
-            Case FilterDocCode.VSS
-                If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
-                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
-                End If
+                'Case FilterDocCode.VSS
+                '    If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
+                '        Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), enumClaimType)
+                '    End If
 
-                udtDocTypeModelList = udtDocTypeModelList.FilterForVSSClaim()
+                '    udtDocTypeModelList = udtDocTypeModelList.FilterForVSSClaim()
 
-            Case FilterDocCode.VSS_COVID19
-                If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
-                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
-                End If
+                'Case FilterDocCode.VSS_COVID19
+                '    If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
+                '        Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), enumClaimType)
+                '    End If
 
-                udtDocTypeModelList = udtDocTypeModelList.FilterForVSSCOVID19Claim()
+                '    udtDocTypeModelList = udtDocTypeModelList.FilterForVSSCOVID19Claim()
+
+                'Case FilterDocCode.RVP_COVID19
+                '    If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
+                '        Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), enumClaimType)
+                '    End If
+
+                '    udtDocTypeModelList = udtDocTypeModelList.FilterForRVPCOVID19Claim()
 
             Case FilterDocCode.COVID19OR
                 If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
-                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), enumClaimType)
                 End If
+
+                _udtSchemeDocTypeList = _udtSchemeDocTypeList.SortByDisplaySeq()
 
                 udtDocTypeModelList = udtDocTypeModelList.FilterBySchemeDocTypeList(_udtSchemeDocTypeList)
 
                 udtDocTypeModelList = udtDocTypeModelList.FilterForCOVID19ORClaim()
 
-                udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
+                'udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
 
             Case FilterDocCode.None
                 'Nothing to do
@@ -265,8 +278,10 @@ Public Class DocumentTypeRadioButtonGroup
             ' Scheme Selected
             ' Change Scheme, Cached old scheme value from Page Load 
             If Me._udtSchemeDocTypeList Is Nothing OrElse (Me._udtSchemeDocTypeList.Count > 0 AndAlso Me._udtSchemeDocTypeList(0).SchemeCode <> Me._strScheme.Trim()) Then
-                Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+                Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), enumClaimType)
             End If
+
+            _udtSchemeDocTypeList = _udtSchemeDocTypeList.SortByDisplaySeq()
 
             ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
@@ -284,7 +299,7 @@ Public Class DocumentTypeRadioButtonGroup
 
                 Next
 
-                udtDocTypeModelList = udtDocTypeList.SortByDisplaySeq()
+                'udtDocTypeModelList = udtDocTypeList.SortByDisplaySeq()
             End If
             ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
@@ -314,7 +329,7 @@ Public Class DocumentTypeRadioButtonGroup
 
         If Not Me._strScheme Is Nothing AndAlso Me._strScheme.Trim() <> "" Then
             ' Scheme Selected
-            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), GetClaimType())
             Me.Build(udtDocTypeModelList, udtSchemeDocTypeList)
         Else
             ' No Scheme Selected, Disable all document type status
@@ -458,12 +473,12 @@ Public Class DocumentTypeRadioButtonGroup
         End If
 
         ' Scheme Selected
-        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
+        udtSchemeDocTypeList = udtSchemeDocTypeList.SortByDisplaySeq()
 
         udtDocTypeModelList = udtDocTypeModelList.FilterBySchemeDocTypeList(udtSchemeDocTypeList)
 
-        udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
-
+        'udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
 
         For Each udtDocType As DocTypeModel In udtDocTypeModelList
             documentInfo = New DocumentInfo(udtDocType)
@@ -868,6 +883,14 @@ Public Class DocumentTypeRadioButtonGroup
         End Get
     End Property
 
+    Public Property ClaimMode() As Common.Component.ClaimMode
+        Get
+            Return Me._enumClaimMode
+        End Get
+        Set(ByVal value As Common.Component.ClaimMode)
+            Me._enumClaimMode = value
+        End Set
+    End Property
 
 #End Region
 
@@ -903,6 +926,20 @@ Public Class DocumentTypeRadioButtonGroup
             End If
         Next
         Return String.Empty
+    End Function
+
+    Private Function GetClaimType() As SchemeDocTypeModel.ClaimTypeEnumClass
+        Dim enumClaimType As SchemeDocTypeModel.ClaimTypeEnumClass = SchemeDocTypeModel.ClaimTypeEnumClass.Normal
+
+        Select Case Me._enumClaimMode
+            Case Common.Component.ClaimMode.All
+                enumClaimType = SchemeDocTypeModel.ClaimTypeEnumClass.Normal
+            Case Common.Component.ClaimMode.COVID19
+                enumClaimType = SchemeDocTypeModel.ClaimTypeEnumClass.COVID19
+        End Select
+
+        Return enumClaimType
+
     End Function
 
 #End Region

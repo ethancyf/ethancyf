@@ -52,8 +52,8 @@ Namespace PrintOut.Common.Lite.DocType
             Me.TextBox1.Height = 0.15625!
             Me.TextBox1.Left = 0.0!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: HA_MingLiu; "
-            Me.TextBox1.Text = "≠ª¥‰ØSßO¶Ê¨F∞œ√±√“®≠•˜Æ—"
+            Me.TextBox1.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; "
+            Me.TextBox1.Text = "È¶ôÊ∏ØÁâπÂà•Ë°åÊîøÂçÄÁ∞ΩË≠âË∫´‰ªΩÊõ∏"
             Me.TextBox1.Top = 0.0!
             Me.TextBox1.Width = 7.09375!
             '
@@ -70,7 +70,7 @@ Namespace PrintOut.Common.Lite.DocType
             Me.txtDINo.Height = 0.15625!
             Me.txtDINo.Left = 1.0!
             Me.txtDINo.Name = "txtDINo"
-            Me.txtDINo.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: HA_MingLiu; "
+            Me.txtDINo.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; "
             Me.txtDINo.Text = Nothing
             Me.txtDINo.Top = 0.1875!
             Me.txtDINo.Width = 3.15625!
@@ -88,7 +88,7 @@ Namespace PrintOut.Common.Lite.DocType
             Me.txtDateOfIssue.Height = 0.15625!
             Me.txtDateOfIssue.Left = 5.1875!
             Me.txtDateOfIssue.Name = "txtDateOfIssue"
-            Me.txtDateOfIssue.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: HA_MingLiu; "
+            Me.txtDateOfIssue.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; "
             Me.txtDateOfIssue.Text = Nothing
             Me.txtDateOfIssue.Top = 0.1875!
             Me.txtDateOfIssue.Width = 1.90625!
@@ -106,8 +106,8 @@ Namespace PrintOut.Common.Lite.DocType
             Me.TextBox2.Height = 0.15625!
             Me.TextBox2.Left = 0.0!
             Me.TextBox2.Name = "TextBox2"
-            Me.TextBox2.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: HA_MingLiu; "
-            Me.TextBox2.Text = "- √“•Û∏πΩX°G"
+            Me.TextBox2.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; "
+            Me.TextBox2.Text = "- Ë≠â‰ª∂ËôüÁ¢ºÔºö"
             Me.TextBox2.Top = 0.1875!
             Me.TextBox2.Width = 0.96875!
             '
@@ -124,8 +124,8 @@ Namespace PrintOut.Common.Lite.DocType
             Me.TextBox3.Height = 0.15625!
             Me.TextBox3.Left = 4.1875!
             Me.TextBox3.Name = "TextBox3"
-            Me.TextBox3.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: HA_MingLiu; "
-            Me.TextBox3.Text = "- √±µo§È¥¡°G"
+            Me.TextBox3.Style = "ddo-char-set: 1; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; "
+            Me.TextBox3.Text = "- Á∞ΩÁôºÊó•ÊúüÔºö"
             Me.TextBox3.Top = 0.1875!
             Me.TextBox3.Width = 0.96875!
             '

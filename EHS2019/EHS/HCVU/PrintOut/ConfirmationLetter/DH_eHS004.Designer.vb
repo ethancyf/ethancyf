@@ -628,7 +628,7 @@
             Me.txtNameOfServiceProviderChi.Height = 0.1875!
             Me.txtNameOfServiceProviderChi.Left = 0.0!
             Me.txtNameOfServiceProviderChi.Name = "txtNameOfServiceProviderChi"
-            Me.txtNameOfServiceProviderChi.Style = "font-family: HA_MingLiu; font-size: 14.25pt; font-weight: normal; text-align: cen" & _
+            Me.txtNameOfServiceProviderChi.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 14.25pt; font-weight: normal; text-align: cen" & _
         "ter; text-decoration: none; vertical-align: top; ddo-char-set: 136"
             Me.txtNameOfServiceProviderChi.Text = "<ServiceProviderName>"
             Me.txtNameOfServiceProviderChi.Top = 7.2695!

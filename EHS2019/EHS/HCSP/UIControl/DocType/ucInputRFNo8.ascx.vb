@@ -14,12 +14,8 @@ Partial Public Class ucInputRFNo8
     Private _strCName As String
     Private _strGender As String
     Private _strDOB As String
-    Private _strDOBInWord As String
-    Private _strIsExactDOB As String
     Private _strReferenceNo As String = String.Empty
     Private _strTransNo As String = String.Empty
-    Private _blnDOBTypeSelected As Boolean
-    Private _blnDOBInWordCase As Boolean
 
     Private udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
 
@@ -32,10 +28,10 @@ Partial Public Class ucInputRFNo8
         Me.lblDocumentNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language)
 
         Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
+        Me.lblCName.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
         Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
-        Me.rbDOBInWord.Text = Me.GetGlobalResourceObject("Text", "DOBInWordShort")
 
         Me.lblReferenceNoText_M.Text = Me.GetGlobalResourceObject("Text", "RefNo")
         Me.lblTransactionNoText_M.Text = Me.GetGlobalResourceObject("Text", "TransactionNo")
@@ -54,9 +50,6 @@ Partial Public Class ucInputRFNo8
         Me.imgGenderError.ImageUrl = strErrorImageURL
         Me.imgGenderError.AlternateText = strErrorImageALT
 
-        Me.imgDOBInWordError.ImageUrl = strErrorImageURL
-        Me.imgDOBInWordError.AlternateText = strErrorImageALT
-
         Me.imgDOBError.ImageUrl = strErrorImageURL
         Me.imgDOBError.AlternateText = strErrorImageALT
 
@@ -74,9 +67,6 @@ Partial Public Class ucInputRFNo8
 
         Me._strDocumentNo = MyBase.EHSPersonalInfo.IdentityNum
         Me._strDOB = Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language, MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
-        Me._blnDOBTypeSelected = MyBase.EHSPersonalInfo.DOBTypeSelected
-        Me._strIsExactDOB = MyBase.EHSPersonalInfo.ExactDOB
-        Me._strDOBInWord = MyBase.EHSPersonalInfo.OtherInfo
 
         Me.SetDocumentNo()
         Me.SetDOB()
@@ -84,6 +74,7 @@ Partial Public Class ucInputRFNo8
         If MyBase.UpdateValue Then
             Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfo.CName
             Me._strGender = MyBase.EHSPersonalInfo.Gender
 
             Me.SetEName()
@@ -106,13 +97,16 @@ Partial Public Class ucInputRFNo8
                 txtENameSurname.Enabled = True
                 txtENameFirstname.Enabled = True
                 SetGenderReadOnlyStyle(False)
-
             End If
+
+            Me.txtCName.Enabled = True
+            Me.txtDOB.Enabled = False
 
         Else
             'Fill Data
             Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfo.CName
             Me._strGender = MyBase.EHSPersonalInfo.Gender
 
             Me.SetEName()
@@ -130,13 +124,11 @@ Partial Public Class ucInputRFNo8
                     Me.txtDocumentNo.Enabled = False
                 End If
 
-
-                Me.rbDOB.Enabled = True
-                Me.rbDOBInWord.Enabled = True
-                Me.ddlDOBinWordType.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.txtENameSurname.Enabled = True
+                Me.txtCName.Enabled = True
                 SetGenderReadOnlyStyle(False)
+                Me.txtDOB.Enabled = True
 
             Else
                 'Modification Read-Only Mode
@@ -144,12 +136,11 @@ Partial Public Class ucInputRFNo8
                 Me.txtDocumentNo.Visible = False
                 Me.txtDocumentNo.Enabled = False
 
-                Me.rbDOB.Enabled = False
-                Me.rbDOBInWord.Enabled = False
-                Me.ddlDOBinWordType.Enabled = False
                 Me.txtENameFirstname.Enabled = False
                 Me.txtENameSurname.Enabled = False
+                Me.txtCName.Enabled = False
                 SetGenderReadOnlyStyle(True)
+                Me.txtDOB.Enabled = False
 
             End If
 
@@ -158,15 +149,10 @@ Partial Public Class ucInputRFNo8
         Me.SetReferenceNo()
         Me.SetTransactionNo()
 
-        'Set DOB In word Drop Down list
-        'Me.rbDOBInWord.Checked  is correctly set in setDOB()
-        Me.DOBInWordOption(Me.rbDOBInWord.Checked)
-
         If MyBase.ActiveViewChanged Then
-
             Me.SetENameError(False)
+            Me.SetCNameError(False)
             Me.SetGenderError(False)
-            Me.SetDOBTypeError(False)
             Me.SetDOBError(False)
         End If
 
@@ -178,101 +164,6 @@ Partial Public Class ucInputRFNo8
         divMale.Attributes.Add("onmouseout", "document.getElementById('" & divMale.ClientID & "').style.left='0px'; document.getElementById('" & divMale.ClientID & "').style.top='0px'; ")
 
     End Sub
-
-    Private Sub DOBInWordOption(ByVal enable As Boolean)
-        Dim udtStaticDataBLL As StaticDataBLL = New StaticDataBLL()
-        Dim dataTable As DataTable
-        Dim dtDOBinWorType As DataTable = New DataTable
-        Dim dataRow As DataRow
-
-        If enable Then
-            dataTable = udtStaticDataBLL.GetStaticDataList("DOBInWordType")
-
-            ' in readonly only.  The drop down list is disabled
-            If Not MyBase.Mode = ucInputDocTypeBase.BuildMode.ModifyReadOnly Then
-                Me.ddlDOBinWordType.Enabled = True
-                Me.ddlDOBinWordType.BackColor = Drawing.Color.White
-            End If
-
-            dataRow = dataTable.NewRow
-            dataRow(StaticDataModel.Column_Name) = 0
-            dataRow(StaticDataModel.Item_No) = String.Empty
-            dataRow(StaticDataModel.Data_Value) = Me.GetGlobalResourceObject("Text", "ClaimPleaseSelect")
-            dataRow(StaticDataModel.Data_Value_Chi) = Me.GetGlobalResourceObject("Text", "ClaimPleaseSelect_Chi")
-            dataRow(StaticDataModel.Data_Value_CN) = Me.GetGlobalResourceObject("Text", "ClaimPleaseSelect_CN")
-            dataTable.Rows.InsertAt(dataRow, 0)
-
-            Me.ddlDOBinWordType.DataSource = dataTable
-            If MyBase.SessionHandler.Language() = Common.Component.CultureLanguage.TradChinese Then
-                Me.ddlDOBinWordType.DataTextField = StaticDataModel.Data_Value_Chi
-            ElseIf MyBase.SessionHandler.Language() = Common.Component.CultureLanguage.SimpChinese Then
-                Me.ddlDOBinWordType.DataTextField = StaticDataModel.Data_Value_CN
-            Else
-                Me.ddlDOBinWordType.DataTextField = StaticDataModel.Data_Value
-            End If
-            Me.ddlDOBinWordType.DataValueField = StaticDataModel.Item_No
-            Me.ddlDOBinWordType.DataBind()
-
-            If Me.ActiveViewChanged Then
-                Me.ddlDOBinWordType.SelectedValue = Me._strDOBInWord
-            End If
-        Else
-            Me.ddlDOBinWordType.Enabled = False
-
-            Me.ddlDOBinWordType.Items.Clear()
-
-            Me.ddlDOBinWordType.Items.Add(New ListItem(Me.GetGlobalResourceObject("Text", "EHSClaimPleaseSelect"), String.Empty))
-        End If
-
-    End Sub
-
-    Private Sub ChangeDOBOption(ByVal enable As Boolean)
-        If Not enable Then
-            Me.txtDOB.Enabled = True
-
-            Me.txtDOBInWord.Enabled = False
-
-            Me.ddlDOBinWordType.Enabled = False
-            'Me.ddlDOBinWordType.BackColor = Drawing.Color.Silver
-
-            If MyBase.Mode = ucInputDocTypeBase.BuildMode.Modification Then
-                Me.txtDOBInWord.Text = String.Empty
-            End If
-        Else
-            Me.txtDOB.Enabled = False
-
-            Me.txtDOBInWord.Enabled = True
-
-            Me.ddlDOBinWordType.Enabled = True
-            Me.ddlDOBinWordType.BackColor = Drawing.Color.White
-
-            If MyBase.Mode = ucInputDocTypeBase.BuildMode.Modification Then
-                Me.txtDOB.Text = String.Empty
-            End If
-        End If
-    End Sub
-
-#Region "Events"
-
-    Protected Sub rbDOB_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbDOB.CheckedChanged, rbDOBInWord.CheckedChanged
-        If MyBase.Mode = ucInputDocTypeBase.BuildMode.Modification Then
-            txtDOB.Text = String.Empty
-            txtDOBInWord.Text = String.Empty
-            ddlDOBinWordType.SelectedIndex = 0
-        End If
-
-        'Update DOB Options
-        Me.ChangeDOBOption(Me.rbDOBInWord.Checked)
-        'Update Drop Down List (DOB in word)
-        Me.DOBInWordOption(Me.rbDOBInWord.Checked)
-
-        If MyBase.Mode = ucInputDocTypeBase.BuildMode.Creation Then
-            Me.txtDOB.Enabled = False
-            Me.txtDOBInWord.Enabled = False
-        End If
-    End Sub
-
-#End Region
 
 #Region "Set Up Text Box Value"
     '--------------------------------------------------------------------------------------------------------------
@@ -297,6 +188,8 @@ Partial Public Class ucInputRFNo8
         'Fill Data - English only
         Me.txtENameSurname.Text = Me._strENameSurName
         Me.txtENameFirstname.Text = Me._strENameFirstName
+        Me.txtCName.Text = Me._strCName
+
     End Sub
 
     Public Sub SetDOB()
@@ -308,57 +201,10 @@ Partial Public Class ucInputRFNo8
 
         Else
             'Modification Mode
-            If Me._strIsExactDOB = "Y" Or Me._strIsExactDOB = "M" Or Me._strIsExactDOB = "D" Then
+            Me.txtDOB.Text = Me._strDOB
 
-                If Not Me.rbDOBInWord.Checked Then
-                    Me.rbDOB.Checked = True
-                    If MyBase.Mode = ucInputDocTypeBase.BuildMode.Modification Then
-                        Me.txtDOB.Enabled = True
-                    Else
-                        Me.txtDOB.Enabled = False
-                    End If
-                    Me.txtDOB.Text = Me._strDOB
-
-                    Me.rbDOBInWord.Checked = False
-                    Me.txtDOBInWord.Enabled = False
-                    Me.ddlDOBinWordType.Enabled = False
-                End If
-
-                'ElseIf Me._strIsExactDOB = "T" Or Me._strIsExactDOB = "U" Or Me._strIsExactDOB = "V" Then
-
-                '    If Not Me.rbDOB.Checked Then
-                '        Me.rbDOBInWord.Checked = True
-
-                '        If MyBase.Mode = ucInputDocTypeBase.BuildMode.Modification Then
-                '            Me.txtDOBInWord.Enabled = True
-                '        Else
-                '            Me.txtDOBInWord.Enabled = False
-                '        End If
-                '        Me.txtDOBInWord.Text = Me._strDOB
-
-                '        Me.rbDOB.Checked = False
-                '        Me.txtDOB.Enabled = False
-                '        Me.ddlDOBinWordType.Enabled = True
-                '        Me.ddlDOBinWordType.BackColor = Drawing.Color.White
-                '    End If
-            End If
         End If
 
-        Me.ShowDOBInWordOption(False)
-    End Sub
-
-    Public Sub ShowDOBInWordOption(ByVal blnShow As Boolean)
-        If blnShow Then
-            Me.rbDOB.Visible = True
-            Me.trDOBInWord.Visible = True
-        Else
-            ' Hide DOB In Word Option, choose DOB as default
-            Me.rbDOB.Checked = True
-            Me.rbDOB.Visible = False
-
-            Me.trDOBInWord.Visible = False
-            Me.rbDOBInWord.Checked = False
-        End If
     End Sub
 
     Public Sub SetGender()
@@ -403,8 +249,8 @@ Partial Public Class ucInputRFNo8
     '--------------------------------------------------------------------------------------------------------------
     Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
         Me.SetENameError(visible)
+        Me.SetCNameError(visible)
         Me.SetGenderError(visible)
-        Me.SetDOBTypeError(visible)
         Me.SetDOBError(visible)
         Me.SetDocumentNoError(visible)
     End Sub
@@ -413,12 +259,12 @@ Partial Public Class ucInputRFNo8
         Me.imgENameError.Visible = visible
     End Sub
 
-    Public Sub SetGenderError(ByVal visible As Boolean)
-        Me.imgGenderError.Visible = visible
+    Public Sub SetCNameError(ByVal visible As Boolean)
+        Me.imgCNameError.Visible = visible
     End Sub
 
-    Public Sub SetDOBTypeError(ByVal visible As Boolean)
-        Me.imgDOBInWordError.Visible = visible
+    Public Sub SetGenderError(ByVal visible As Boolean)
+        Me.imgGenderError.Visible = visible
     End Sub
 
     Public Sub SetDOBError(ByVal visible As Boolean)
@@ -474,51 +320,12 @@ Partial Public Class ucInputRFNo8
 #Region "Property"
 
     Public Overrides Sub SetProperty(ByVal mode As BuildMode)
-        Dim commfunct As Common.ComFunction.GeneralFunction = New Common.ComFunction.GeneralFunction()
-        Dim dtDOB As DateTime
-        Dim strDOBtype As String = String.Empty
-
         Me._strDocumentNo = Me.txtDocumentNo.Text.Trim
         Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
         Me._strENameSurName = Me.txtENameSurname.Text.Trim
+        Me._strCName = Me.txtCName.Text.Trim
         Me._strGender = Me.rbGender.SelectedValue
         Me._strDOB = Me.txtDOB.Text.Trim
-
-        Me._strDOBInWord = Me.ddlDOBinWordType.SelectedValue
-
-        If Me.rbDOB.Checked Then
-            commfunct.chkDOBtype(Me._strDOB, dtDOB, strDOBtype, False)
-
-            If Not strDOBtype.Trim.Equals(String.Empty) Then
-                Me._strIsExactDOB = strDOBtype
-            Else
-                'in case of empty DOB
-                Me._strIsExactDOB = "D"
-            End If
-
-            Me._blnDOBInWordCase = False
-        Else
-            If Me.rbDOBInWord.Checked Then
-                ' I-CRP16-002 Fix invalid input on English name [Start][Lawrence]
-                Me._strDOB = Me.txtDOBInWord.Text.Trim
-                ' I-CRP16-002 Fix invalid input on English name [End][Lawrence]
-
-                commfunct.chkDOBtype(Me._strDOB, dtDOB, strDOBtype, True)
-
-                If Not strDOBtype.Trim.Equals(String.Empty) Then
-                    Me._strIsExactDOB = strDOBtype
-                Else
-                    'in case of empty DOB
-                    Me._strIsExactDOB = "T"
-                End If
-
-                Me._blnDOBInWordCase = True
-            Else
-                Me._strIsExactDOB = String.Empty
-                Me._blnDOBInWordCase = False
-            End If
-        End If
-
     End Sub
 
     Public Property ENameSurName() As String
@@ -539,21 +346,21 @@ Partial Public Class ucInputRFNo8
         End Set
     End Property
 
+    Public Property CName() As String
+        Get
+            Return Me._strCName
+        End Get
+        Set(ByVal value As String)
+            Me._strCName = value
+        End Set
+    End Property
+
     Public Property DOB() As String
         Get
             Return Me._strDOB
         End Get
         Set(ByVal value As String)
             Me._strDOB = value
-        End Set
-    End Property
-
-    Public Property IsExactDOB() As String
-        Get
-            Return Me._strIsExactDOB
-        End Get
-        Set(ByVal value As String)
-            Me._strIsExactDOB = value
         End Set
     End Property
 
@@ -572,24 +379,6 @@ Partial Public Class ucInputRFNo8
         End Get
         Set(ByVal value As String)
             Me._strDocumentNo = value
-        End Set
-    End Property
-
-    Public Property DOBInWordCase() As Boolean
-        Get
-            Return Me._blnDOBInWordCase
-        End Get
-        Set(ByVal value As Boolean)
-            Me._blnDOBInWordCase = value
-        End Set
-    End Property
-
-    Public Property DOBInWord() As String
-        Get
-            Return Me._strDOBInWord
-        End Get
-        Set(ByVal value As String)
-            Me._strDOBInWord = value
         End Set
     End Property
 

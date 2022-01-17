@@ -1,4 +1,4 @@
-Namespace PrintOut.VSSConsentForm_CHI
+ÔªøNamespace PrintOut.VSSConsentForm_CHI
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
     Partial Public Class VSSSignature_C_CHI
         Inherits GrapeCity.ActiveReports.SectionReport
@@ -55,8 +55,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationSignature.Height = 0.21875!
             Me.txtDeclarationSignature.Left = 0.0!
             Me.txtDeclarationSignature.Name = "txtDeclarationSignature"
-            Me.txtDeclarationSignature.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 136"
-            Me.txtDeclarationSignature.Text = "√±¶W°G"
+            Me.txtDeclarationSignature.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 136"
+            Me.txtDeclarationSignature.Text = "Á∞ΩÂêçÔºö"
             Me.txtDeclarationSignature.Top = 0.0!
             Me.txtDeclarationSignature.Width = 1.5!
             '
@@ -67,9 +67,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationSignatureValue.Height = 0.13575!
             Me.txtDeclarationSignatureValue.Left = 1.4995!
             Me.txtDeclarationSignatureValue.Name = "txtDeclarationSignatureValue"
-            Me.txtDeclarationSignatureValue.Style = "font-family: HA_MingLiu; font-size: 11.25pt; text-align: center; ddo-char-set: 13" & _
+            Me.txtDeclarationSignatureValue.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; text-align: center; ddo-char-set: 13" & _
         "6"
-            Me.txtDeclarationSignatureValue.Text = "°@"
+            Me.txtDeclarationSignatureValue.Text = "„ÄÄ"
             Me.txtDeclarationSignatureValue.Top = 0.063!
             Me.txtDeclarationSignatureValue.Width = 1.8125!
             '
@@ -78,8 +78,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationName.Height = 0.21875!
             Me.txtDeclarationName.Left = 0.0!
             Me.txtDeclarationName.Name = "txtDeclarationName"
-            Me.txtDeclarationName.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 136"
-            Me.txtDeclarationName.Text = "©m¶W°G"
+            Me.txtDeclarationName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 136"
+            Me.txtDeclarationName.Text = "ÂßìÂêçÔºö"
             Me.txtDeclarationName.Top = 0.3125!
             Me.txtDeclarationName.Width = 1.5!
             '
@@ -90,9 +90,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationNameValue.Height = 0.12525!
             Me.txtDeclarationNameValue.Left = 1.4995!
             Me.txtDeclarationNameValue.Name = "txtDeclarationNameValue"
-            Me.txtDeclarationNameValue.Style = "font-family: HA_MingLiu; font-size: 11.25pt; text-align: center; ddo-char-set: 13" & _
+            Me.txtDeclarationNameValue.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; text-align: center; ddo-char-set: 13" & _
         "6"
-            Me.txtDeclarationNameValue.Text = "°@"
+            Me.txtDeclarationNameValue.Text = "„ÄÄ"
             Me.txtDeclarationNameValue.Top = 0.386!
             Me.txtDeclarationNameValue.Width = 1.8125!
             '
@@ -101,8 +101,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationTelephoneNo.Height = 0.21875!
             Me.txtDeclarationTelephoneNo.Left = 0.0!
             Me.txtDeclarationTelephoneNo.Name = "txtDeclarationTelephoneNo"
-            Me.txtDeclarationTelephoneNo.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 136"
-            Me.txtDeclarationTelephoneNo.Text = "¡pµ∏πq∏‹∏πΩX°G"
+            Me.txtDeclarationTelephoneNo.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 136"
+            Me.txtDeclarationTelephoneNo.Text = "ËÅØÁµ°ÈõªË©±ËôüÁ¢ºÔºö"
             Me.txtDeclarationTelephoneNo.Top = 0.625!
             Me.txtDeclarationTelephoneNo.Width = 1.5!
             '
@@ -113,9 +113,9 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationTelephoneNoValue.Height = 0.11475!
             Me.txtDeclarationTelephoneNoValue.Left = 1.4995!
             Me.txtDeclarationTelephoneNoValue.Name = "txtDeclarationTelephoneNoValue"
-            Me.txtDeclarationTelephoneNoValue.Style = "font-family: HA_MingLiu; font-size: 11.25pt; text-align: center; ddo-char-set: 13" & _
+            Me.txtDeclarationTelephoneNoValue.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; text-align: center; ddo-char-set: 13" & _
         "6"
-            Me.txtDeclarationTelephoneNoValue.Text = "°@"
+            Me.txtDeclarationTelephoneNoValue.Text = "„ÄÄ"
             Me.txtDeclarationTelephoneNoValue.Top = 0.7090001!
             Me.txtDeclarationTelephoneNoValue.Width = 1.8125!
             '
@@ -124,8 +124,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationDate.Height = 0.219!
             Me.txtDeclarationDate.Left = 3.75!
             Me.txtDeclarationDate.Name = "txtDeclarationDate"
-            Me.txtDeclarationDate.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 136"
-            Me.txtDeclarationDate.Text = "§È¥¡°G"
+            Me.txtDeclarationDate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 136"
+            Me.txtDeclarationDate.Text = "Êó•ÊúüÔºö"
             Me.txtDeclarationDate.Top = 0.0!
             Me.txtDeclarationDate.Width = 1.731!
             '
@@ -134,8 +134,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationRelationship.Height = 0.219!
             Me.txtDeclarationRelationship.Left = 3.75!
             Me.txtDeclarationRelationship.Name = "txtDeclarationRelationship"
-            Me.txtDeclarationRelationship.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 136"
-            Me.txtDeclarationRelationship.Text = "ªP¨Ã≠]±µ∫ÿ™Ã™∫√ˆ´Y°G"
+            Me.txtDeclarationRelationship.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 136"
+            Me.txtDeclarationRelationship.Text = "ËàáÁñ´ËãóÊé•Á®ÆËÄÖÁöÑÈóú‰øÇÔºö"
             Me.txtDeclarationRelationship.Top = 0.3125!
             Me.txtDeclarationRelationship.Width = 1.731!
             '
@@ -144,8 +144,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationRelationshipFather.Height = 0.22!
             Me.txtDeclarationRelationshipFather.Left = 5.5625!
             Me.txtDeclarationRelationshipFather.Name = "txtDeclarationRelationshipFather"
-            Me.txtDeclarationRelationshipFather.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
-            Me.txtDeclarationRelationshipFather.Text = "§˜"
+            Me.txtDeclarationRelationshipFather.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
+            Me.txtDeclarationRelationshipFather.Text = "Áà∂"
             Me.txtDeclarationRelationshipFather.Top = 0.3125!
             Me.txtDeclarationRelationshipFather.Width = 0.351!
             '
@@ -154,8 +154,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationRelationshipMother.Height = 0.22!
             Me.txtDeclarationRelationshipMother.Left = 6.0625!
             Me.txtDeclarationRelationshipMother.Name = "txtDeclarationRelationshipMother"
-            Me.txtDeclarationRelationshipMother.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
-            Me.txtDeclarationRelationshipMother.Text = "•¿"
+            Me.txtDeclarationRelationshipMother.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
+            Me.txtDeclarationRelationshipMother.Text = "ÊØç"
             Me.txtDeclarationRelationshipMother.Top = 0.3125!
             Me.txtDeclarationRelationshipMother.Width = 0.351!
             '
@@ -164,8 +164,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationRelationshipGuardian.Height = 0.22!
             Me.txtDeclarationRelationshipGuardian.Left = 6.5625!
             Me.txtDeclarationRelationshipGuardian.Name = "txtDeclarationRelationshipGuardian"
-            Me.txtDeclarationRelationshipGuardian.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
-            Me.txtDeclarationRelationshipGuardian.Text = "∫ ≈@§H"
+            Me.txtDeclarationRelationshipGuardian.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
+            Me.txtDeclarationRelationshipGuardian.Text = "Áõ£Ë≠∑‰∫∫"
             Me.txtDeclarationRelationshipGuardian.Top = 0.3125!
             Me.txtDeclarationRelationshipGuardian.Width = 0.738!
             '
@@ -176,8 +176,8 @@ Namespace PrintOut.VSSConsentForm_CHI
             Me.txtDeclarationDateValue.Height = 0.167!
             Me.txtDeclarationDateValue.Left = 5.562!
             Me.txtDeclarationDateValue.Name = "txtDeclarationDateValue"
-            Me.txtDeclarationDateValue.Style = "font-family: HA_MingLiu; font-size: 11.25pt; text-align: left; ddo-char-set: 136"
-            Me.txtDeclarationDateValue.Text = "°@"
+            Me.txtDeclarationDateValue.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; text-align: left; ddo-char-set: 136"
+            Me.txtDeclarationDateValue.Text = "„ÄÄ"
             Me.txtDeclarationDateValue.Top = 0.003!
             Me.txtDeclarationDateValue.Width = 1.8125!
             '

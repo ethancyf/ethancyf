@@ -423,7 +423,7 @@
             Me.txtTransactionTo.Height = 0.21875!
             Me.txtTransactionTo.Left = 0.4375!
             Me.txtTransactionTo.Name = "txtTransactionTo"
-            Me.txtTransactionTo.Style = "color: Black; font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 136"
+            Me.txtTransactionTo.Style = "color: Black; font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 136"
             Me.txtTransactionTo.Text = Nothing
             Me.txtTransactionTo.Top = 0.59375!
             Me.txtTransactionTo.Width = 6.875!
@@ -575,7 +575,7 @@
             Me.txtPageTotalBText.HyperLink = Nothing
             Me.txtPageTotalBText.Left = 7.125!
             Me.txtPageTotalBText.Name = "txtPageTotalBText"
-            Me.txtPageTotalBText.Style = "font-family: HA_MingLiu; font-size: 9.75pt; ddo-char-set: 136"
+            Me.txtPageTotalBText.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; ddo-char-set: 136"
             Me.txtPageTotalBText.Text = "頁"
             Me.txtPageTotalBText.Top = 0.0625!
             Me.txtPageTotalBText.Width = 0.1875!
@@ -585,7 +585,7 @@
             Me.txtTotalPageNo.Height = 0.1875!
             Me.txtTotalPageNo.Left = 6.875!
             Me.txtTotalPageNo.Name = "txtTotalPageNo"
-            Me.txtTotalPageNo.Style = "font-family: HA_MingLiu; font-size: 9.75pt; text-align: center; ddo-char-set: 136" & _
+            Me.txtTotalPageNo.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; text-align: center; ddo-char-set: 136" & _
         ""
             Me.txtTotalPageNo.SummaryType = GrapeCity.ActiveReports.SectionReportModel.SummaryType.PageCount
             Me.txtTotalPageNo.Text = "PageCount"
@@ -598,7 +598,7 @@
             Me.txtPageBText.HyperLink = Nothing
             Me.txtPageBText.Left = 6.375!
             Me.txtPageBText.Name = "txtPageBText"
-            Me.txtPageBText.Style = "font-family: HA_MingLiu; font-size: 9.75pt; ddo-char-set: 136"
+            Me.txtPageBText.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; ddo-char-set: 136"
             Me.txtPageBText.Text = "頁，"
             Me.txtPageBText.Top = 0.0625!
             Me.txtPageBText.Width = 0.3125!
@@ -619,7 +619,7 @@
             Me.txtPageNo.Height = 0.1875!
             Me.txtPageNo.Left = 6.125!
             Me.txtPageNo.Name = "txtPageNo"
-            Me.txtPageNo.Style = "font-family: HA_MingLiu; font-size: 9.75pt; text-align: center; ddo-char-set: 136" & _
+            Me.txtPageNo.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; text-align: center; ddo-char-set: 136" & _
         ""
             Me.txtPageNo.SummaryRunning = GrapeCity.ActiveReports.SectionReportModel.SummaryRunning.All
             Me.txtPageNo.SummaryType = GrapeCity.ActiveReports.SectionReportModel.SummaryType.PageCount
@@ -633,7 +633,7 @@
             Me.txtPageAText.HyperLink = Nothing
             Me.txtPageAText.Left = 5.9375!
             Me.txtPageAText.Name = "txtPageAText"
-            Me.txtPageAText.Style = "font-family: HA_MingLiu; font-size: 9.75pt; ddo-char-set: 136"
+            Me.txtPageAText.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; ddo-char-set: 136"
             Me.txtPageAText.Text = "第"
             Me.txtPageAText.Top = 0.0625!
             Me.txtPageAText.Width = 0.1875!

@@ -77,6 +77,9 @@ Partial Public Class DPAViewer
         ' Create the PDF export object
         Dim pdf As New GrapeCity.ActiveReports.Export.Pdf.Section.PdfExport()
 
+        ' Set fallback font
+        pdf.FontFallback = Common.Component.Printout.PrintoutBLL.FallbackFont()
+
         'CRE17-004 Generate a new DPAR on EHCP basis [Start][Martin]
         pdf.Security.Encrypt = True
         pdf.Security.UserPassword = Session("ReportPassword").ToString.Trim

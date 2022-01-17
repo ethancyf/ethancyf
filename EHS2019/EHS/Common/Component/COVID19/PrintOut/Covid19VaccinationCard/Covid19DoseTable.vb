@@ -115,17 +115,6 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     HideCenterEngOnlyLabel(SecondDoseVaccinationCenter, SecondDoseVaccinationCenterChi, SecondDoseVaccinationCenterEngOnly)
                 End If
 
-            Else
-                ' w/o Second Dose + Discharged / Non-local Recovered
-                If _blnDischarge OrElse _
-                    (_udtVaccinationRecord.FirstDose IsNot Nothing AndAlso _udtVaccinationRecord.FirstDose.NonLocalRecoveredHistory) Then
-
-                    SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
-                    SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
-                                           Environment.NewLine & _
-                                           Environment.NewLine & _
-                                           HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
-                End If
             End If
 
             '===== Third Dose =====

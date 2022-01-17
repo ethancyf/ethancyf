@@ -220,9 +220,7 @@
             Me.txtNameChi.Left = 1.417!
             Me.txtNameChi.Name = "txtNameChi"
             Me.txtNameChi.ShrinkToFit = True
-            Me.txtNameChi.Style = "font-family: HA_MingLiu; font-size: 10pt; text-justify: auto; vertical-align: bot" & _
-        "tom; white-space: inherit; ddo-char-set: 1; ddo-font-vertical: none; ddo-shrink-" & _
-        "to-fit: true; ddo-wrap-mode: inherit"
+            Me.txtNameChi.Style = resources.GetString("txtNameChi.Style")
             Me.txtNameChi.Text = ""
             Me.txtNameChi.Top = 0.522!
             Me.txtNameChi.Width = 0.9579999!

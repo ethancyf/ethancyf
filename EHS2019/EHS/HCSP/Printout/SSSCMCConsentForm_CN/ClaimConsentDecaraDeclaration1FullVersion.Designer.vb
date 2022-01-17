@@ -64,7 +64,7 @@
             Me.txtConsent2MOName.Height = 0.1732284!
             Me.txtConsent2MOName.Left = 0.96063!
             Me.txtConsent2MOName.Name = "txtConsent2MOName"
-            Me.txtConsent2MOName.Style = "font-family: HA_MingLiu; font-size: 11pt; text-align: center; ddo-char-set: 1"
+            Me.txtConsent2MOName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11pt; text-align: center; ddo-char-set: 1"
             Me.txtConsent2MOName.Text = Nothing
             Me.txtConsent2MOName.Top = 0.0!
             Me.txtConsent2MOName.Width = 3.607874!

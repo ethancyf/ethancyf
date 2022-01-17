@@ -48,9 +48,9 @@ Namespace PrintOut.Common
             Me.txtNameEngTitle.Height = 0.188!
             Me.txtNameEngTitle.Left = 0.0!
             Me.txtNameEngTitle.Name = "txtNameEngTitle"
-            Me.txtNameEngTitle.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: right; " & _
+            Me.txtNameEngTitle.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: right; " & _
         "ddo-char-set: 0"
-            Me.txtNameEngTitle.Text = "™A∞»®œ•Œ™Ã©m¶W(≠^§Â)°G"
+            Me.txtNameEngTitle.Text = "ÊúçÂãô‰ΩøÁî®ËÄÖÂßìÂêç(Ëã±Êñá)Ôºö"
             Me.txtNameEngTitle.Top = 0.0!
             Me.txtNameEngTitle.Width = 2.251!
             '
@@ -60,9 +60,9 @@ Namespace PrintOut.Common
             Me.txtNameEng.Height = 0.1875!
             Me.txtNameEng.Left = 2.275!
             Me.txtNameEng.Name = "txtNameEng"
-            Me.txtNameEng.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; text-decoration: unde" & _
+            Me.txtNameEng.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 0"
-            Me.txtNameEng.Text = "°@"
+            Me.txtNameEng.Text = "„ÄÄ"
             Me.txtNameEng.Top = 0.0!
             Me.txtNameEng.Width = 3.3125!
             '
@@ -71,9 +71,9 @@ Namespace PrintOut.Common
             Me.txtNameChiTitle.Height = 0.1875!
             Me.txtNameChiTitle.Left = 0.0!
             Me.txtNameChiTitle.Name = "txtNameChiTitle"
-            Me.txtNameChiTitle.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: right; " & _
+            Me.txtNameChiTitle.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: right; " & _
         "ddo-char-set: 0"
-            Me.txtNameChiTitle.Text = "(§§§Â)°G"
+            Me.txtNameChiTitle.Text = "(‰∏≠Êñá)Ôºö"
             Me.txtNameChiTitle.Top = 0.281!
             Me.txtNameChiTitle.Width = 2.251!
             '
@@ -84,9 +84,9 @@ Namespace PrintOut.Common
             Me.txtNameChi.Height = 0.188!
             Me.txtNameChi.Left = 2.275!
             Me.txtNameChi.Name = "txtNameChi"
-            Me.txtNameChi.Style = "font-family: HA_MingLiu; font-size: 11.25pt; text-align: left; text-decoration: u" & _
+            Me.txtNameChi.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; text-align: left; text-decoration: u" & _
         "nderline; ddo-char-set: 0"
-            Me.txtNameChi.Text = "°@"
+            Me.txtNameChi.Text = "„ÄÄ"
             Me.txtNameChi.Top = 0.281!
             Me.txtNameChi.Width = 1.406!
             '
@@ -95,9 +95,9 @@ Namespace PrintOut.Common
             Me.txtGenderTitle.Height = 0.1875!
             Me.txtGenderTitle.Left = 0.0!
             Me.txtGenderTitle.Name = "txtGenderTitle"
-            Me.txtGenderTitle.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: right; " & _
+            Me.txtGenderTitle.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: right; " & _
         "ddo-char-set: 0"
-            Me.txtGenderTitle.Text = "© ßO°G"
+            Me.txtGenderTitle.Text = "ÊÄßÂà•Ôºö"
             Me.txtGenderTitle.Top = 0.562!
             Me.txtGenderTitle.Width = 2.251!
             '
@@ -108,9 +108,9 @@ Namespace PrintOut.Common
             Me.txtGender.Height = 0.188!
             Me.txtGender.Left = 2.275!
             Me.txtGender.Name = "txtGender"
-            Me.txtGender.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; text-decoration: unde" & _
+            Me.txtGender.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 0"
-            Me.txtGender.Text = "°@"
+            Me.txtGender.Text = "„ÄÄ"
             Me.txtGender.Top = 0.562!
             Me.txtGender.Width = 1.406!
             '
@@ -119,9 +119,9 @@ Namespace PrintOut.Common
             Me.txtDOBTitle.Height = 0.1875!
             Me.txtDOBTitle.Left = 0.0!
             Me.txtDOBTitle.Name = "txtDOBTitle"
-            Me.txtDOBTitle.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: right; " & _
+            Me.txtDOBTitle.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: right; " & _
         "ddo-char-set: 0"
-            Me.txtDOBTitle.Text = "•X•Õ§È¥¡°G"
+            Me.txtDOBTitle.Text = "Âá∫ÁîüÊó•ÊúüÔºö"
             Me.txtDOBTitle.Top = 0.843!
             Me.txtDOBTitle.Width = 2.251!
             '
@@ -132,9 +132,9 @@ Namespace PrintOut.Common
             Me.txtDOB.Height = 0.1875!
             Me.txtDOB.Left = 2.275!
             Me.txtDOB.Name = "txtDOB"
-            Me.txtDOB.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; text-decoration: unde" & _
+            Me.txtDOB.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 0"
-            Me.txtDOB.Text = "°@"
+            Me.txtDOB.Text = "„ÄÄ"
             Me.txtDOB.Top = 0.8430001!
             Me.txtDOB.Width = 3.3125!
             '

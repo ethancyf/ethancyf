@@ -41,6 +41,10 @@ Partial Public Class PCD_EnrolmentForm
             Response.AddHeader("content-disposition", "inline; filename=MyPDF.PDF")
 
             Dim pdf As New GrapeCity.ActiveReports.Export.Pdf.Section.PdfExport()
+
+            ' Set fallback font
+            pdf.FontFallback = Common.Component.Printout.PrintoutBLL.FallbackFont()
+
             pdf.NeverEmbedFonts = ""
 
             Dim memStream As New System.IO.MemoryStream()

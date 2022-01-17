@@ -57,10 +57,8 @@ Partial Public Class ucReadOnlyCommon
             lblVEName.Text = udtFormatter.formatEnglishName(udtEHSPersonalInformation.ENameSurName, udtEHSPersonalInformation.ENameFirstName)
 
             Select Case udtEHSPersonalInformation.DocCode
-                ' CRE19-001 (VSS 2019) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 ' Add new document type for student file upload
-                Case DocTypeCode.HKIC, DocTypeCode.EC,
+                Case DocTypeCode.HKIC, DocTypeCode.EC, DocTypeCode.HKBC,
                     DocTypeCode.OC,
                     DocTypeCode.OW,
                     DocTypeCode.TW,
@@ -69,8 +67,18 @@ Partial Public Class ucReadOnlyCommon
                     DocTypeCode.RFNo8,
                     DocTypeCode.ROP140,
                     DocTypeCode.OTHER
-                    ' CRE19-001 (VSS 2019) [End][Winnie]
+
                     lblVCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
+
+                    ' Support Chinese name
+                Case DocTypeCode.ADOPC,
+                    DocTypeCode.ID235B,
+                    DocTypeCode.VISA,
+                    DocTypeCode.REPMT,
+                    DocTypeCode.DI
+
+                    lblVCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
+
             End Select
 
             ' Gender
@@ -158,10 +166,8 @@ Partial Public Class ucReadOnlyCommon
             ' Name
             lblHEName.Text = udtFormatter.formatEnglishName(udtEHSPersonalInformation.ENameSurName, udtEHSPersonalInformation.ENameFirstName)
             Select Case udtEHSPersonalInformation.DocCode
-                ' CRE19-001 (VSS 2019) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 ' Add new document type for student file upload
-                Case DocTypeCode.HKIC, DocTypeCode.EC,
+                Case DocTypeCode.HKIC, DocTypeCode.EC, DocTypeCode.HKBC,
                     DocTypeCode.OC,
                     DocTypeCode.OW,
                     DocTypeCode.TW,
@@ -170,8 +176,18 @@ Partial Public Class ucReadOnlyCommon
                     DocTypeCode.RFNo8,
                     DocTypeCode.ROP140,
                     DocTypeCode.OTHER
-                    ' CRE19-001 (VSS 2019) [End][Winnie]
+
                     lblHCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
+
+                    ' Support Chinese name
+                Case DocTypeCode.ADOPC,
+                    DocTypeCode.ID235B,
+                    DocTypeCode.VISA,
+                    DocTypeCode.REPMT,
+                    DocTypeCode.DI
+
+                    lblHCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
+
             End Select
 
             ' Date of Birth

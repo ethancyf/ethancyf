@@ -56,6 +56,18 @@
                         </td>
                     </tr>
                     <tr>
+                        <td style="height: 25px;vertical-align:top">
+                            <asp:label ID="lblCNameOriginalText" runat="server"/>
+                        </td>
+                        <td style="width: 350px;vertical-align:top; word-wrap: break-word; word-break:break-all;">
+                            <asp:Label ID="lblCNameOriginal" runat="server" CssClass="tableText" />
+                        </td>
+                        <td style="padding-bottom: 5px; width: 350px;vertical-align:top">
+                            <asp:TextBox ID="txtCName" runat="server" MaxLength="12" CssClass="TextBoxChineseName" onChange="convertToUpper(this);" Width="150px" />
+                            <asp:Image ID="imgCNameError" runat="server" ImageAlign="Top" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
+                        </td>
+                    </tr>
+                    <tr>
                         <td valign="top">
                             <asp:Label ID="lblGenderOriginalText" runat="server"></asp:Label>
                         </td>
@@ -159,6 +171,15 @@
                         </td>
                     </tr>
                 </table>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 220px; height: 25px">
+                <asp:Label ID="lblNewCNameText" runat="server" Text="<%$ Resources:Text, Name %>" Height="25px" />
+            </td>
+            <td style="width: 470px;">
+                <asp:TextBox ID="txtNewCName" runat="server" MaxLength="12" CssClass="TextBoxChineseName" onChange="convertToUpper(this);" Width="150px" />
+                <asp:Image ID="imgNewCNameErr" runat="server" ImageAlign="Top" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
             </td>
         </tr>
         <tr>

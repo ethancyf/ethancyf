@@ -66,7 +66,7 @@
             Me.txtTransactionNumberText.Height = 0.21875!
             Me.txtTransactionNumberText.Left = 3.906!
             Me.txtTransactionNumberText.Name = "txtTransactionNumberText"
-            Me.txtTransactionNumberText.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 136"
+            Me.txtTransactionNumberText.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 136"
             Me.txtTransactionNumberText.Text = "交易號碼："
             Me.txtTransactionNumberText.Top = 0.147!
             Me.txtTransactionNumberText.Width = 1.59375!
@@ -76,7 +76,7 @@
             Me.txtVoidTransactionNumberText.Height = 0.21875!
             Me.txtVoidTransactionNumberText.Left = 3.906!
             Me.txtVoidTransactionNumberText.Name = "txtVoidTransactionNumberText"
-            Me.txtVoidTransactionNumberText.Style = "color: Gray; font-family: HA_MingLiu; font-size: 12pt; font-weight: normal; text-" & _
+            Me.txtVoidTransactionNumberText.Style = "color: Gray; font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-weight: normal; text-" & _
         "align: right; ddo-char-set: 136"
             Me.txtVoidTransactionNumberText.Text = "取消交易編號："
             Me.txtVoidTransactionNumberText.Top = 0.397!
@@ -88,7 +88,7 @@
             Me.txtTransactionNumber.Height = 0.21875!
             Me.txtTransactionNumber.Left = 5.5!
             Me.txtTransactionNumber.Name = "txtTransactionNumber"
-            Me.txtTransactionNumber.Style = "font-family: HA_MingLiu; font-size: 11.25pt; text-align: justify; ddo-char-set: 0" & _
+            Me.txtTransactionNumber.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; text-align: justify; ddo-char-set: 0" & _
         ""
             Me.txtTransactionNumber.Text = Nothing
             Me.txtTransactionNumber.Top = 0.147!
@@ -101,7 +101,7 @@
             Me.txtVoidTransactionNumber.Height = 0.21875!
             Me.txtVoidTransactionNumber.Left = 5.5!
             Me.txtVoidTransactionNumber.Name = "txtVoidTransactionNumber"
-            Me.txtVoidTransactionNumber.Style = "color: Gray; font-family: HA_MingLiu; font-size: 11.25pt; text-align: justify; dd" & _
+            Me.txtVoidTransactionNumber.Style = "color: Gray; font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; text-align: justify; dd" & _
         "o-char-set: 0"
             Me.txtVoidTransactionNumber.Text = Nothing
             Me.txtVoidTransactionNumber.Top = 0.397!
@@ -124,7 +124,7 @@
             Me.TextBox6.Height = 0.21875!
             Me.TextBox6.Left = 0.0!
             Me.TextBox6.Name = "TextBox6"
-            Me.TextBox6.Style = "font-family: HA_MingLiu; font-size: 11.25pt; font-style: normal; text-align: left" & _
+            Me.TextBox6.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 11.25pt; font-style: normal; text-align: left" & _
         "; ddo-char-set: 1"
             Me.TextBox6.Text = "(由家長或監護人填寫)"
             Me.TextBox6.Top = 1.51!
@@ -135,7 +135,7 @@
             Me.txtChildDetail.Height = 0.21875!
             Me.txtChildDetail.Left = 0.0!
             Me.txtChildDetail.Name = "txtChildDetail"
-            Me.txtChildDetail.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: left; d" & _
+            Me.txtChildDetail.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: left; d" & _
         "do-char-set: 136"
             Me.txtChildDetail.Text = "本人子女/受監護者個人資料："
             Me.txtChildDetail.Top = 2.1975!
@@ -212,7 +212,7 @@
             Me.txtDept.Height = 0.21875!
             Me.txtDept.Left = 0.0!
             Me.txtDept.Name = "txtDept"
-            Me.txtDept.Style = "font-family: HA_MingLiu; font-size: 12pt; font-weight: bold; text-align: center; " & _
+            Me.txtDept.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-weight: bold; text-align: center; " & _
         "text-decoration: none; ddo-char-set: 0"
             Me.txtDept.Text = "衞生署"
             Me.txtDept.Top = 0.0!
@@ -223,7 +223,7 @@
             Me.txtSubTitle.Height = 0.21875!
             Me.txtSubTitle.Left = 0.0!
             Me.txtSubTitle.Name = "txtSubTitle"
-            Me.txtSubTitle.Style = "font-family: HA_MingLiu; font-size: 12pt; font-weight: bold; text-align: center; " & _
+            Me.txtSubTitle.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-weight: bold; text-align: center; " & _
         "text-decoration: none; ddo-char-set: 136"
             Me.txtSubTitle.Text = "疫苗資助計劃"
             Me.txtSubTitle.Top = 0.21875!
@@ -234,7 +234,7 @@
             Me.txtTitle.Height = 0.21875!
             Me.txtTitle.Left = 0.0!
             Me.txtTitle.Name = "txtTitle"
-            Me.txtTitle.Style = "font-family: HA_MingLiu; font-size: 12pt; font-weight: bold; text-align: center; " & _
+            Me.txtTitle.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-weight: bold; text-align: center; " & _
         "text-decoration: none; ddo-char-set: 136"
             Me.txtTitle.Text = "使用疫苗資助同意書"
             Me.txtTitle.Top = 0.437!
@@ -280,7 +280,7 @@
             Me.txtPrintDetail.HyperLink = Nothing
             Me.txtPrintDetail.Left = 1.35425!
             Me.txtPrintDetail.Name = "txtPrintDetail"
-            Me.txtPrintDetail.Style = "font-family: HA_MingLiu; font-size: 9.75pt; text-align: center; ddo-char-set: 1"
+            Me.txtPrintDetail.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 9.75pt; text-align: center; ddo-char-set: 1"
             Me.txtPrintDetail.Text = Nothing
             Me.txtPrintDetail.Top = 0.06770834!
             Me.txtPrintDetail.Width = 4.8125!

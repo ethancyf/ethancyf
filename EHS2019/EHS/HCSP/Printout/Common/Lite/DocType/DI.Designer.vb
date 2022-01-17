@@ -53,7 +53,7 @@ Namespace PrintOut.Common.Lite.DocType
             Me.TextBox1.Left = 0.0!
             Me.TextBox1.Name = "TextBox1"
             Me.TextBox1.Style = "ddo-char-set: 1; font-size: 10pt; "
-            Me.TextBox1.Text = "Document of Identity"
+            Me.TextBox1.Text = "Document of Identity for Visa Purposes"
             Me.TextBox1.Top = 0.0!
             Me.TextBox1.Width = 7.09375!
             '

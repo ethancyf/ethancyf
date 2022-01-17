@@ -77,6 +77,15 @@ Partial Public Class ucReadOnlyHKBC
     Protected WithEvents lblHEName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblHCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHCName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblHDOBGenderText control.
     '''</summary>
     '''<remarks>
@@ -246,6 +255,15 @@ Partial Public Class ucReadOnlyHKBC
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblVEName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVCName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblVGenderText control.

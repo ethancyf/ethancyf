@@ -238,9 +238,9 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField SortExpression="Eng_name" HeaderText="<%$ Resources:Text, VRName %>">
                                         <ItemTemplate>
-                                            <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_name") %>'></asp:Label>
-                                            <br></br>
-                                            <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
+                                            <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_name") %>' />
+                                            <br />
+                                            <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' CssClass="TextChineseName" />
                                         </ItemTemplate>
                                         <ItemStyle Width="270px" VerticalAlign="Top" />
                                     </asp:TemplateField>

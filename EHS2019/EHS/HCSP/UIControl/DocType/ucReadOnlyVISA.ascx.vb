@@ -56,6 +56,7 @@ Partial Public Class ucReadOnlyVISA
             End If
 
             Me.lblReadonlyEName.Text = formatter.formatEnglishName(MyBase.EHSAccountPersonalInfo.ENameSurName, MyBase.EHSAccountPersonalInfo.ENameFirstName)
+            Me.lblReadonlyCName.Text = formatter.formatChineseName(MyBase.EHSAccountPersonalInfo.CName)
             Me.lblReadonlyVISANo.Text = formatter.FormatDocIdentityNoForDisplay(DocTypeCode.VISA, MyBase.EHSAccountPersonalInfo.IdentityNum, MyBase.MaskIdentityNumber)
             Me.lblReadonlyDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, udtSessionHandler.Language(), Nothing, Nothing)
             Me.lblReadonlyGender.Text = Me.GetGlobalResourceObject("Text", strGender)
@@ -67,6 +68,7 @@ Partial Public Class ucReadOnlyVISA
             Me.panReadonlyHorizontalVISA.Visible = True
 
             Me.lblReadonlyHorizontalEName.Text = formatter.formatEnglishName(MyBase.EHSAccountPersonalInfo.ENameSurName, MyBase.EHSAccountPersonalInfo.ENameFirstName)
+            Me.lblReadonlyHorizontalCName.Text = formatter.formatChineseName(MyBase.EHSAccountPersonalInfo.CName)
             Me.lblReadonlyHorizontalVISANo.Text = formatter.FormatDocIdentityNoForDisplay(DocTypeCode.VISA, MyBase.EHSAccountPersonalInfo.IdentityNum, MyBase.MaskIdentityNumber)
             Me.lblReadonlyHorizontalDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, Session("language"), Nothing, Nothing)
             Me.lblReadonlyHorizontalDocumentType.Text = strDocumentTypeFullName

@@ -27,7 +27,7 @@
                             <tbody>
                                 <tr>
                                     <td valign="bottom">
-                                        &nbsp;&nbsp;<asp:Label ID="lblCName" runat="server" CssClass="largeText" Font-Names="HA_MingLiu"></asp:Label></td>
+                                        &nbsp;&nbsp;<asp:Label ID="lblCName" runat="server" CssClass="largeText TextChineseName"></asp:Label></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -69,7 +69,7 @@
                                             Width="40px"></asp:TextBox>&nbsp;
                                         <asp:Image ID="imgCCCodeError" runat="server"  Visible="False" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
                                         <asp:ImageButton ID="btnSearchCCCode" runat="server"  />
-                                        <asp:Label ID="lblCCCTail" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label>
+                                        <asp:Label ID="lblCCCTail" runat="server" CssClass="tableText TextChineseName"></asp:Label>
                                     </td>
                                 </tr>
                                 <tr>
@@ -273,7 +273,7 @@
                             <asp:Label ID="lblCNameModificationText" runat="server" CssClass="tableTitle"
                                 Width="150px"></asp:Label></td>
                         <td valign="top" style="width: 350px" class="tableCellStyle">
-                            <asp:Label ID="lblCNameModification" runat="server" MaxLength="10" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
+                            <asp:Label ID="lblCNameModification" runat="server" MaxLength="10" CssClass="tableText TextChineseName"></asp:Label></td>
                     </tr>
                                    
                    <%-- <tr>

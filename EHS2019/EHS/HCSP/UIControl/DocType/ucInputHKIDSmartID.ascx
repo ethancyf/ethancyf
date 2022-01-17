@@ -36,10 +36,10 @@
                             <asp:Label ID="lblENameText" runat="server" CssClass="tableTitle" Width="150px"></asp:Label></td>
                         <td style="height: 19px; width: 280px; word-wrap: break-word; word-break:break-all;" valign="top" class="tableCellStyle">
                             <asp:Label ID="lblEName" runat="server" CssClass="tableText"></asp:Label>
-                            <asp:Label ID="lblCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
+                            <asp:Label ID="lblCName" runat="server" CssClass="tableText TextChineseName"></asp:Label></td>
                         <td class="tableCellStyle" style="width: 400px; height: 19px; word-wrap: break-word; word-break:break-all;" valign="top">
                             <asp:Label ID="lblENameSmartID" runat="server" CssClass="tableText"></asp:Label>
-                            <asp:Label ID="lblCNameSmartID" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
+                            <asp:Label ID="lblCNameSmartID" runat="server" CssClass="tableText TextChineseName"></asp:Label></td>
                     </tr>
                     <tr>
                         <td style="width: 209px;" valign="top" class="tableCellStyle">

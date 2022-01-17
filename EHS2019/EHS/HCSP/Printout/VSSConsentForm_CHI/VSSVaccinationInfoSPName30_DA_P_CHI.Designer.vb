@@ -40,7 +40,7 @@
             Me.TextBox3.Height = 0.438!
             Me.TextBox3.Left = 0.0!
             Me.TextBox3.Name = "TextBox3"
-            Me.TextBox3.Style = "font-family: HA_MingLiu; font-size: 12pt; font-style: normal; text-align: justify" & _
+            Me.TextBox3.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; font-style: normal; text-align: justify" & _
         "; ddo-char-set: 0"
             Me.TextBox3.Text = "本人同意 / 本人同意以下服務使者* 使用下列政府資助，由                               " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "                   " & _
         "    於                     接種疫苗：       "
@@ -54,7 +54,7 @@
             Me.txtSPName2.Height = 0.1875!
             Me.txtSPName2.Left = 0.0!
             Me.txtSPName2.Name = "txtSPName2"
-            Me.txtSPName2.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 0"
+            Me.txtSPName2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 0"
             Me.txtSPName2.Text = Nothing
             Me.txtSPName2.Top = 0.199!
             Me.txtSPName2.Width = 1.916!
@@ -66,7 +66,7 @@
             Me.txtServiceDate.Height = 0.1875!
             Me.txtServiceDate.Left = 2.137!
             Me.txtServiceDate.Name = "txtServiceDate"
-            Me.txtServiceDate.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 0"
+            Me.txtServiceDate.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 0"
             Me.txtServiceDate.Text = Nothing
             Me.txtServiceDate.Top = 0.199!
             Me.txtServiceDate.Width = 1.65625!
@@ -78,7 +78,7 @@
             Me.txtSPName1.Height = 0.1875!
             Me.txtSPName1.Left = 4.476!
             Me.txtSPName1.Name = "txtSPName1"
-            Me.txtSPName1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 0"
+            Me.txtSPName1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 0"
             Me.txtSPName1.Text = Nothing
             Me.txtSPName1.Top = 0.011!
             Me.txtSPName1.Width = 2.899!

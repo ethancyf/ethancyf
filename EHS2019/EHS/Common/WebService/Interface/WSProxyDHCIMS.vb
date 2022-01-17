@@ -669,9 +669,21 @@ Namespace WebService.Interface
         ''' <remarks></remarks>
         Private Function CreateWebServiceEmulateEndPoint(ByVal enumEndpointSite As EndpointSite) As HKIPVREnqService
             Dim ws As New HKIPVREnqService()
-            ws = CreateWebServiceEmulateEndPoint(GetWS_Url(enumEndpointSite))
+            Dim path As String = String.Empty
+
+            Dim strCustomPath As String = ConfigurationManager.AppSettings("CIMS_Emulator_Custom_Path")
+
+            If Not String.IsNullOrEmpty(strCustomPath) Then
+                path = strCustomPath
+            Else
+                path = GetWS_Url(enumEndpointSite)
+            End If
+
+
+            ws = CreateWebServiceEmulateEndPoint(path)
 
             Return ws
+
         End Function
 
         ''' <summary>

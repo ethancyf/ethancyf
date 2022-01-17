@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023-68 (Add Chinese Name)
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Dec 2021
+-- Description:		Change @eHA_chi_name nvarchar(6) -> nvarchar(30)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			INT21-0022 (HCVU Claim Transaction Performance Tuning)
 -- Modified by:		Winnie SUEN
 -- Modified date:	02 Sep 2021
@@ -101,7 +108,7 @@ CREATE PROCEDURE [dbo].[proc_VoucherTransaction_get_byEHAAspect]
     @SchoolOrRCH_code             CHAR(50), 
     @user_id                      VARCHAR(20), 
     @eHA_name                     VARCHAR(100), 
-    @eHA_chi_name                 NVARCHAR(6), 
+    @eHA_chi_name                 NVARCHAR(30), 
     @result_limit_1st_enable      BIT, 
     @result_limit_override_enable BIT, 
     @override_result_limit        BIT,

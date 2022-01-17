@@ -40,7 +40,7 @@
             Me.txtConfirmDeclaration1.Height = 0.21875!
             Me.txtConfirmDeclaration1.Left = 0.0!
             Me.txtConfirmDeclaration1.Name = "txtConfirmDeclaration1"
-            Me.txtConfirmDeclaration1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; ddo-char-set: 136"
+            Me.txtConfirmDeclaration1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; ddo-char-set: 136"
             Me.txtConfirmDeclaration1.Text = "本人同意授权上文提及的已登记服务提供者读取储存在本人智能身份证晶片内的个人资料"
             Me.txtConfirmDeclaration1.Top = 0.0!
             Me.txtConfirmDeclaration1.Width = 6.583!
@@ -50,7 +50,7 @@
             Me.txtDeclaration5.Height = 0.406!
             Me.txtDeclaration5.Left = 0.0!
             Me.txtDeclaration5.Name = "txtDeclaration5"
-            Me.txtDeclaration5.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; ddo-char-set: 136"
+            Me.txtDeclaration5.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; ddo-char-set: 136"
             Me.txtDeclaration5.Text = "以供政府于「支援计划服务使用者同意转交个人资料」内的附录  －「收集个人资料之目的」所述的用途。"
             Me.txtDeclaration5.Top = 0.21875!
             Me.txtDeclaration5.Width = 7.063!
@@ -60,7 +60,7 @@
             Me.TextBox2.Height = 0.25!
             Me.TextBox2.Left = 6.583!
             Me.TextBox2.Name = "TextBox2"
-            Me.TextBox2.Style = "font-family: HA_MingLiu; font-size: 8pt; text-align: justify; ddo-char-set: 136"
+            Me.TextBox2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 8pt; text-align: justify; ddo-char-set: 136"
             Me.TextBox2.Text = "注"
             Me.TextBox2.Top = 0.0!
             Me.TextBox2.Width = 0.177!
@@ -70,7 +70,7 @@
             Me.TextBox1.Height = 0.2394584!
             Me.TextBox1.Left = 6.76!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; ddo-char-set: 136"
+            Me.TextBox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; ddo-char-set: 136"
             Me.TextBox1.Text = "，"
             Me.TextBox1.Top = 0.0!
             Me.TextBox1.Width = 0.2709999!

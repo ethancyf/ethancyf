@@ -345,7 +345,7 @@ Public Class DocumentTypeRadioButtonGroupText
 
         If Not Me._strScheme Is Nothing AndAlso Me._strScheme.Trim() <> "" Then
             ' Scheme Selected
-            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
             Me.Build(udtDocTypeModelList, udtSchemeDocTypeList)
         Else
             ' No Scheme Selected, Disable all document type status
@@ -365,7 +365,7 @@ Public Class DocumentTypeRadioButtonGroupText
 
         If Not Me._strScheme Is Nothing AndAlso Me._strScheme.Trim() <> "" Then
             ' Scheme Selected
-            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(Me._strScheme.Trim(), SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
             Me.Build(udtDocTypeModelList, udtSchemeDocTypeList)
         Else
             ' No Scheme Selected, Disable all document type status

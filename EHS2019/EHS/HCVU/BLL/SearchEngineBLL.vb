@@ -1579,7 +1579,7 @@ Public Class SearchEngineBLL
                                                     db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)), _
                                                     db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID), _
                                                     db.MakeInParam("@eHA_name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientName), DBNull.Value, udtSearchCriteria.VoucherRecipientName)), _
-                                                    db.MakeInParam("@eHA_chi_name", SqlDbType.NVarChar, 6, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientChiName), DBNull.Value, udtSearchCriteria.VoucherRecipientChiName)), _
+                                                    db.MakeInParam("@eHA_chi_name", SqlDbType.NVarChar, 30, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientChiName), DBNull.Value, udtSearchCriteria.VoucherRecipientChiName)), _
                                                     db.MakeInParam("@RawIdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.RawIdentityNum), DBNull.Value, udtSearchCriteria.RawIdentityNum)) _
                                                     }
 

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023-68 (Add Chinese Name)
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Dec 2021
+-- Description:		Change [Name_CH] nvarchar(6) -> nvarchar(12)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023-52
 -- Modified by:		Winnie SUEN
 -- Modified date:	30 Jun 2021
@@ -41,8 +48,8 @@ CREATE PROCEDURE [dbo].[proc_StudentFileEntry_upd_OverWriteByValidatedAcct]
 	@Name_EN						VARCHAR(100),
 	@Surname_EN						VARCHAR(100),
 	@Given_Name_EN					VARCHAR(100),
-	@Name_CH						NVARCHAR(6),
-	@Name_CH_Excel					NVARCHAR(6),
+	@Name_CH						NVARCHAR(12),
+	@Name_CH_Excel					NVARCHAR(12),
 	@DOB							Datetime,
 	@Exact_DOB						CHAR(1),
 	@Sex							CHAR(1),

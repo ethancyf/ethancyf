@@ -35,6 +35,7 @@ Namespace UIControl.DocTypeHCSP
             Me.lblRegistrationNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language)
 
             Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
+            Me.lblCName.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
             Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
             Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
             Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
@@ -53,6 +54,9 @@ Namespace UIControl.DocTypeHCSP
             'Error Image
             Me.imgENameError.ImageUrl = strErrorImageURL
             Me.imgENameError.AlternateText = strErrorImageALT
+
+            Me.imgCNameError.ImageUrl = strErrorImageURL
+            Me.imgCNameError.AlternateText = strErrorImageALT
 
             Me.imgGenderError.ImageUrl = strErrorImageURL
             Me.imgGenderError.AlternateText = strErrorImageALT
@@ -86,9 +90,11 @@ Namespace UIControl.DocTypeHCSP
             If MyBase.UpdateValue Then
                 Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
                 Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+                Me._strCName = MyBase.EHSPersonalInfo.CName
                 Me._strGender = MyBase.EHSPersonalInfo.Gender
 
                 Me.SetEName()
+                Me.SetCName()
                 If Not Me._strGender Is Nothing AndAlso Not Me._strGender.Equals(String.Empty) Then
                     Me.SetGender()
                 End If
@@ -97,12 +103,8 @@ Namespace UIControl.DocTypeHCSP
             If Not modeType = ucInputDocTypeBase.BuildMode.Creation Then
                 'Handle Modification Mode and Modification Read-Only Mode
 
-                'Fill Data
-                Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
-                Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
-                Me._strGender = MyBase.EHSPersonalInfo.Gender
-
                 Me.SetEName()
+                Me.SetCName()
                 Me.SetGender()
 
                 If modeType = ucInputDocTypeBase.BuildMode.Modification Then
@@ -123,6 +125,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.ddlDOBinWordType.Enabled = True
                     Me.txtENameFirstname.Enabled = True
                     Me.txtENameSurname.Enabled = True
+                    Me.txtCName.Enabled = True
                     Me.rbGender.Enabled = True
 
                 Else
@@ -139,6 +142,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.ddlDOBinWordType.Enabled = False
                     Me.txtENameFirstname.Enabled = False
                     Me.txtENameSurname.Enabled = False
+                    Me.txtCName.Enabled = False
                     Me.rbGender.Enabled = False
 
                 End If
@@ -161,6 +165,8 @@ Namespace UIControl.DocTypeHCSP
 
                 End If
 
+                txtCName.Enabled = True
+
             End If
 
             Me.SetReferenceNo()
@@ -171,12 +177,13 @@ Namespace UIControl.DocTypeHCSP
             Me.DOBInWordOption(Me.rbDOBInWord.Checked)
 
             If MyBase.ActiveViewChanged Then
-
                 Me.SetENameError(False)
+                Me.SetCNameError(False)
                 Me.SetGenderError(False)
                 Me.SetDOBTypeError(False)
                 Me.SetDOBError(False)
             End If
+
         End Sub
 
         Private Sub DOBInWordOption(ByVal enable As Boolean)
@@ -281,25 +288,28 @@ Namespace UIControl.DocTypeHCSP
         Public Overrides Sub SetValue(ByVal mode As ucInputDocTypeBase.BuildMode)
             Me.SetRegistrationNo()
             Me.SetEName()
+            Me.SetCName()
             Me.SetDOB()
             Me.SetGender()
             Me.SetReferenceNo()
             Me.SetTransactionNo()
         End Sub
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
+
         Public Sub SetRegistrationNo()
             'Fill Data - Registration No only
             Me.lblRegistrationNo.Text = Me._strRegistrationNo
             Me.txtRegistrationNo.Text = Me._strRegistrationNo
         End Sub
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
-
 
         Public Sub SetEName()
             'Fill Data - English only
             Me.txtENameSurname.Text = Me._strENameSurName
             Me.txtENameFirstname.Text = Me._strENameFirstName
+        End Sub
+
+        Public Sub SetCName()
+            'Fill Data - Chinese name only
+            Me.txtCName.Text = Me._strCName
         End Sub
 
         ' CRE16-012 Removal of DOB InWord [Start][Winnie]
@@ -411,6 +421,7 @@ Namespace UIControl.DocTypeHCSP
         '--------------------------------------------------------------------------------------------------------------
         Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
             Me.SetENameError(visible)
+            Me.SetCNameError(visible)
             Me.SetGenderError(visible)
             Me.SetDOBTypeError(visible)
             Me.SetDOBError(visible)
@@ -422,6 +433,10 @@ Namespace UIControl.DocTypeHCSP
 
         Public Sub SetENameError(ByVal visible As Boolean)
             Me.imgENameError.Visible = visible
+        End Sub
+
+        Public Sub SetCNameError(ByVal visible As Boolean)
+            Me.imgCNameError.Visible = visible
         End Sub
 
         Public Sub SetGenderError(ByVal visible As Boolean)
@@ -455,6 +470,7 @@ Namespace UIControl.DocTypeHCSP
             Me._strRegistrationNo = Me.txtRegistrationNo.Text.Trim
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
+            Me._strCName = Me.txtCName.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue
             Me._strDOB = Me.txtDOB.Text.Trim
 
@@ -510,6 +526,15 @@ Namespace UIControl.DocTypeHCSP
             End Get
             Set(ByVal value As String)
                 Me._strENameFirstName = value
+            End Set
+        End Property
+
+        Public Property CName() As String
+            Get
+                Return Me._strCName
+            End Get
+            Set(ByVal value As String)
+                Me._strCName = value
             End Set
         End Property
 

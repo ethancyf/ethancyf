@@ -201,7 +201,7 @@
                                                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, Name %>">
                                                                 <ItemTemplate>
                                                                     <asp:Label ID="lblEngName" runat="server"></asp:Label>
-                                                                    <asp:Label ID="lblChiName" runat="server" Visible="false" Font-Names="HA_MingLiu"></asp:Label>
+                                                                    <asp:Label ID="lblChiName" runat="server" Visible="false" CssClass="TextChineseName" />
                                                                 </ItemTemplate>
                                                                 <ItemStyle Width="230px" />
                                                             </asp:TemplateField>
@@ -326,7 +326,7 @@
                                                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, Name %>">
                                                                 <ItemTemplate>
                                                                     <asp:Label ID="lblEngName" runat="server"></asp:Label>
-                                                                    <asp:Label ID="lblChiName" runat="server" Visible="false" Font-Names="HA_MingLiu"></asp:Label>
+                                                                    <asp:Label ID="lblChiName" runat="server" Visible="false" CssClass="TextChineseName" />
                                                                 </ItemTemplate>
                                                                 <ItemStyle Width="230px" />
                                                             </asp:TemplateField>
@@ -618,7 +618,7 @@
                                                                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, Name %>">
                                                                                 <ItemTemplate>
                                                                                     <asp:Label ID="lblEngName" runat="server"></asp:Label>
-                                                                                    <asp:Label ID="lblChiName" runat="server" Visible="false" Font-Names="HA_MingLiu"></asp:Label>
+                                                                                    <asp:Label ID="lblChiName" runat="server" Visible="false" CssClass="TextChineseName" />
                                                                                 </ItemTemplate>
                                                                                 <ItemStyle Width="230px" />
                                                                             </asp:TemplateField>
@@ -734,7 +734,7 @@
                                                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, Name %>">
                                                                 <ItemTemplate>
                                                                     <asp:Label ID="lblEngName" runat="server"></asp:Label>
-                                                                    <asp:Label ID="lblChiName" runat="server" Visible="false" Font-Names="HA_MingLiu"></asp:Label>
+                                                                    <asp:Label ID="lblChiName" runat="server" Visible="false" CssClass="TextChineseName" />
                                                                 </ItemTemplate>
                                                                 <ItemStyle Width="150px" />
                                                             </asp:TemplateField>

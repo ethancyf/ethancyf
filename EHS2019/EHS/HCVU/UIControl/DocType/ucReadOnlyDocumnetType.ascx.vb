@@ -252,8 +252,7 @@ Partial Public Class ucReadOnlyDocumnetType
                             SetNormal(udcReadOnlyADOPC)
                         End If
 
-                    Case DocTypeCode.OW,
-                        DocTypeCode.RFNo8
+                    Case DocTypeCode.OW
 
                         Dim udcReadOnlyOW As ucReadOnlyOW = LoadControl(UserControlPath.OW)
                         udcReadOnlyOW.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
@@ -278,6 +277,18 @@ Partial Public Class ucReadOnlyDocumnetType
                             SetNormal(udcReadOnlyTW)
                         End If
                         ' CRE20-0023 (Immu record) [End][Martin]
+
+                    Case DocTypeCode.RFNo8
+
+                        Dim udcReadOnlyRFNo8 As ucReadOnlyRFNo8 = LoadControl(UserControlPath.RFNo8)
+                        udcReadOnlyRFNo8.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyRFNo8)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyRFNo8)
+                        End If
 
                         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]                        
                         ' CRE19-001 (VSS 2019) [Start][Winnie]

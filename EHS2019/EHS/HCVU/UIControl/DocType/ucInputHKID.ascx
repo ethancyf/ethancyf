@@ -97,11 +97,11 @@
                         <td valign="top" style="height: 28">
                         </td>
                         <td>
-                            <asp:Label ID="lblCNameOriginal" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"
+                            <asp:Label ID="lblCNameOriginal" runat="server" CssClass="tableText TextChineseName"
                                 Text=""></asp:Label></td>
                         <td style="width: 350px;">
-                            <asp:Label ID="lblCName" runat="server" MaxLength="10" Width="150px" Font-Names="HA_MingLiu"
-                                CssClass="tableText"></asp:Label></td>
+                            <asp:Label ID="lblCName" runat="server" MaxLength="10" Width="150px"
+                                CssClass="tableText TextChineseName"></asp:Label></td>
                         <td>
                         </td>
                     </tr>
@@ -261,8 +261,8 @@
             <asp:Label ID="lblNewCNameText" runat="server" Height="25px"></asp:Label>
             </td>            
             <td style="width: 470px;">
-                <asp:Label ID="lblNewCName" runat="server" MaxLength="10" Width="150px" Font-Names="HA_MingLiu"
-                    CssClass="tableText"></asp:Label></td>
+                <asp:Label ID="lblNewCName" runat="server" MaxLength="10" Width="150px"
+                    CssClass="tableText TextChineseName"></asp:Label></td>
         </tr>
         <tr>
             <td valign="top" style="width: 220px; height: 25px;">

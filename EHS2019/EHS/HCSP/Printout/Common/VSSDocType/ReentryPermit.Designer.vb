@@ -80,7 +80,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox5.Name = "TextBox5"
             Me.TextBox5.Style = "color: Black; font-size: 11.25pt; text-decoration: underline; ddo-char-set: 0"
             Me.TextBox5.SummaryGroup = ""
-            Me.TextBox5.Text = "Hong Kong Re-entry Permit"
+            Me.TextBox5.Text = "Hong Kong SAR Re-entry Permit"
             Me.TextBox5.Top = 0.0!
             Me.TextBox5.Width = 3.313!
             '

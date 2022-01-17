@@ -43,10 +43,8 @@ Namespace PrintOut.HSIVSSConsentForm_CHI
 
         Private Sub LoadReport()
 
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
             ' Fill in SPName
-            txtSPName.Text = GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+            txtSPName.Text = _udtSP.ChineseName
 
             'Fill in Date of Vaccination
             'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
@@ -57,9 +55,9 @@ Namespace PrintOut.HSIVSSConsentForm_CHI
 
             'Fill in Dose Description
             If _blnIsAdult Then
-                chkDescription.Text = "¨Ï¥Î¬F©²¸ê§U¬°¥»¤H±µºØ¤HÃş½Ş«¬¬y·P¬Ì­]"
+                chkDescription.Text = "ä½¿ç”¨æ”¿åºœè³‡åŠ©ç‚ºæœ¬äººæ¥ç¨®äººé¡è±¬å‹æµæ„Ÿç–«è‹—"
             Else
-                chkDescription.Text = "¨Ï¥Î¬F©²¸ê§U¬°¥»¤H¤l¤k±µºØ¤HÃş½Ş«¬¬y·P¬Ì­]"
+                chkDescription.Text = "ä½¿ç”¨æ”¿åºœè³‡åŠ©ç‚ºæœ¬äººå­å¥³æ¥ç¨®äººé¡è±¬å‹æµæ„Ÿç–«è‹—"
             End If
 
         End Sub

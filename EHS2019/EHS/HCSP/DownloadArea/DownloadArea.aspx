@@ -104,24 +104,9 @@
                                                                                     </a>
                                                                                 </td>
                                                                             </tr>
-                                                                            <tr>
-                                                                                <td style="vertical-align:top;background-color: #ffffff; width: 20px;padding:5px;">
-                                                                                    2.
-                                                                                </td>
-                                                                                <td style="vertical-align:top;background-color: #ffffff;padding:5px;">
-                                                                                    <img src="../Images/others/font.png" alt="eHealth System Supplementary Character Set" />
-                                                                                    <a href="../../../Download/HA_MINGLIU.exe" target="_self" style="font-weight: bold">
-                                                                                        eHealth System (Subsidies) Supplementary Character Set
-                                                                                    </a>
-                                                                                    <br />
-                                                                                    <br />
-                                                                                    Click <a href="../../../EN/DataDownload/chkCCC.htm">here</a> to check the installed
-                                                                                    Character Set.
-                                                                                </td>
-                                                                            </tr>
                                                                             <tr id="trEngSmartIDCardReader" runat="server">
                                                                                 <td style="vertical-align:top;background-color: #ffffff; width: 20px;padding:5px;">
-                                                                                    3.
+                                                                                    2.
                                                                                 </td>
                                                                                 <td style="vertical-align:top;background-color: #ffffff;padding:5px;">
                                                                                     <img src="../Images/others/SmartIDCardReader.png" alt="Software for reading Smart ID Card" />
@@ -202,23 +187,9 @@
                                                                                     </a>
                                                                                 </td>
                                                                             </tr>
-                                                                            <tr>
-                                                                                <td style="vertical-align:top;background-color: #ffffff; width: 20px;padding:5px;">
-                                                                                    2.
-                                                                                </td>
-                                                                                <td style="vertical-align:top;background-color: #ffffff;padding:5px;">
-                                                                                    <img src="../Images/others/font.png" alt="醫健通(資助)系統增補字符集" />
-                                                                                    <a href="../../../Download/HA_MINGLIU.exe" target="_self" style="font-weight: bold">
-                                                                                        醫健通(資助)系統增補字符集
-                                                                                    </a>
-                                                                                    <br />
-                                                                                    <br />
-                                                                                    按<a href="../../../zh/DataDownload/chkCCC.htm">這裡</a>檢查已安裝的增補字符集。
-                                                                                </td>
-                                                                            </tr>
                                                                             <tr id="trChiSmartIDCardReader" runat="server">
                                                                                 <td style="vertical-align:top;background-color: #ffffff; width: 20px;padding:5px;">
-                                                                                    3.
+                                                                                    2.
                                                                                 </td>
                                                                                 <td style="vertical-align:top;background-color: #ffffff;padding:5px;">
                                                                                     <img src="../Images/others/SmartIDCardReader.png" alt="讀取智能身份證軟件" />

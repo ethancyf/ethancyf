@@ -482,12 +482,12 @@
                                             </td>
                                             <td style="vertical-align: top">
                                                 <asp:Label ID="lblTabeHSAccountChiNameText" runat="server" Text="<%$ Resources:Text, AccountNameInChinese %>" style="position:relative;top:2px"/></td>
-                                            <td style="vertical-align: top">
+                                            <td style="vertical-align: top">  
                                                 <table cellpadding="0" cellspacing="0">
                                                     <tr>
                                                         <td>
                                                             <asp:TextBox ID="txtTabeHSAccountChiName" runat="server" Width="176" onChange="convertToUpper(this)"
-                                                                MaxLength="6"/>
+                                                                MaxLength="12"/>
                                                         </td>
                                                         <td>
                                                             <asp:Image ID="imgTabeHSAccountChiNameErr" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" Visible="False"  style="position:relative;top:-1px;left:1px"/>

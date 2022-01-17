@@ -44,16 +44,10 @@ Namespace PrintOut.VSSConsentForm_CHI
         Private Sub LoadReport()
 
             ' Fill in SPName
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
-            txtSPName.Text = GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName)
-            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+            txtSPName.Text = _udtSP.ChineseName
 
             'Fill in Date of Vaccination
-            'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
-            'txtServiceDate.Text = _udtFormatter.formatDate(_udtEHSTransaction.ServiceDate, CultureLanguage.TradChinese)
             txtServiceDate.Text = _udtFormatter.formatDisplayDate(_udtEHSTransaction.ServiceDate, CultureLanguage.TradChinese)
-            'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
 
         End Sub
 

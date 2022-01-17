@@ -40,8 +40,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConfirmDeclaration1.Height = 0.21875!
             Me.txtConfirmDeclaration1.Left = 0.0!
             Me.txtConfirmDeclaration1.Name = "txtConfirmDeclaration1"
-            Me.txtConfirmDeclaration1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; ddo-char-set: 136"
-            Me.txtConfirmDeclaration1.Text = "¥»¤H¦P·N±ÂÅv¤W¤å´£¤Îªº¤xµn°OªA°È´£¨ÑªÌÅª¨úÀx¦s¦b¥»¤H´¼¯à¨­¥÷ÃÒ´¹¤ù¤ºªº­Ó¤H¸ê®Æ"
+            Me.txtConfirmDeclaration1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; ddo-char-set: 136"
+            Me.txtConfirmDeclaration1.Text = "æœ¬äººåŒæ„æˆæ¬Šä¸Šæ–‡æåŠçš„å·³ç™»è¨˜æœå‹™æä¾›è€…è®€å–å„²å­˜åœ¨æœ¬äººæ™ºèƒ½èº«ä»½è­‰æ™¶ç‰‡å…§çš„å€‹äººè³‡æ–™"
             Me.txtConfirmDeclaration1.Top = 0.0!
             Me.txtConfirmDeclaration1.Width = 6.583!
             '
@@ -50,8 +50,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtDeclaration5.Height = 0.2188976!
             Me.txtDeclaration5.Left = 0.0!
             Me.txtDeclaration5.Name = "txtDeclaration5"
-            Me.txtDeclaration5.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; ddo-char-set: 136"
-            Me.txtDeclaration5.Text = "¥H¨Ñ¬F©²©ó¡uÂåÀø¨é¨Ï¥ÎªÌ¦P·NÂà¥æ­Ó¤H¸ê®Æ¡v¤ºªºªş¿ı¡u¦¬¶°­Ó¤H¸ê®Æªº¥Øªº¡v©Ò­zªº¥Î³~¡C"
+            Me.txtDeclaration5.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; ddo-char-set: 136"
+            Me.txtDeclaration5.Text = "ä»¥ä¾›æ”¿åºœæ–¼ã€Œé†«ç™‚åˆ¸ä½¿ç”¨è€…åŒæ„è½‰äº¤å€‹äººè³‡æ–™ã€å…§çš„é™„éŒ„ã€Œæ”¶é›†å€‹äººè³‡æ–™çš„ç›®çš„ã€æ‰€è¿°çš„ç”¨é€”ã€‚"
             Me.txtDeclaration5.Top = 0.21875!
             Me.txtDeclaration5.Width = 7.031102!
             '
@@ -60,8 +60,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox2.Height = 0.25!
             Me.TextBox2.Left = 6.583!
             Me.TextBox2.Name = "TextBox2"
-            Me.TextBox2.Style = "font-family: HA_MingLiu; font-size: 8pt; text-align: justify; ddo-char-set: 136"
-            Me.TextBox2.Text = "µù"
+            Me.TextBox2.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 8pt; text-align: justify; ddo-char-set: 136"
+            Me.TextBox2.Text = "è¨»"
             Me.TextBox2.Top = 0.0!
             Me.TextBox2.Width = 0.198!
             '
@@ -70,8 +70,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.TextBox1.Height = 0.21875!
             Me.TextBox1.Left = 6.781!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: justify; ddo-char-set: 136"
-            Me.TextBox1.Text = "¡A"
+            Me.TextBox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: justify; ddo-char-set: 136"
+            Me.TextBox1.Text = "ï¼Œ"
             Me.TextBox1.Top = 0.0!
             Me.TextBox1.Width = 0.25!
             '

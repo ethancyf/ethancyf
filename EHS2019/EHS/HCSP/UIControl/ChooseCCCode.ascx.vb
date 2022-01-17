@@ -267,7 +267,7 @@ Partial Public Class ChooseCCCode
                 dtCCCode = udtVRAcctMaintBLL.getCCCTail(strCode)
                 If dtCCCode.Rows.Count > 0 Then
                     ddlCCCode.DataSource = dtCCCode
-                    ddlCCCode.DataTextField = "Big5"
+                    ddlCCCode.DataTextField = "ConvertedCharacter"
                     ddlCCCode.DataValueField = "CCC_Tail"
                     ddlCCCode.DataBind()
                     ddlCCCode.Enabled = True

@@ -45,8 +45,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox4.Height = 0.188!
             Me.TextBox4.Left = 0.07913386!
             Me.TextBox4.Name = "TextBox4"
-            Me.TextBox4.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.TextBox4.Text = "®≠•˜√“©˙§Â•Û°G"
+            Me.TextBox4.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.TextBox4.Text = "Ë∫´‰ªΩË≠âÊòéÊñá‰ª∂Ôºö"
             Me.TextBox4.Top = 0.0!
             Me.TextBox4.Width = 1.627559!
             '
@@ -56,7 +56,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.txtDINo.Height = 0.1875!
             Me.txtDINo.Left = 1.728346!
             Me.txtDINo.Name = "txtDINo"
-            Me.txtDINo.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 0"
+            Me.txtDINo.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 0"
             Me.txtDINo.Text = Nothing
             Me.txtDINo.Top = 0.281!
             Me.txtDINo.Width = 3.31275!
@@ -67,7 +67,7 @@ Namespace PrintOut.Common.VSSDocType
             Me.txtDateOfIssue.Height = 0.1875!
             Me.txtDateOfIssue.Left = 1.728346!
             Me.txtDateOfIssue.Name = "txtDateOfIssue"
-            Me.txtDateOfIssue.Style = "font-family: HA_MingLiu; font-size: 12pt; ddo-char-set: 0"
+            Me.txtDateOfIssue.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; ddo-char-set: 0"
             Me.txtDateOfIssue.Text = Nothing
             Me.txtDateOfIssue.Top = 0.562!
             Me.txtDateOfIssue.Width = 3.31275!
@@ -77,8 +77,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox6.Height = 0.1875!
             Me.TextBox6.Left = 0.07913386!
             Me.TextBox6.Name = "TextBox6"
-            Me.TextBox6.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.TextBox6.Text = "√“•Û∏πΩX°G"
+            Me.TextBox6.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.TextBox6.Text = "Ë≠â‰ª∂ËôüÁ¢ºÔºö"
             Me.TextBox6.Top = 0.281!
             Me.TextBox6.Width = 1.627559!
             '
@@ -87,8 +87,8 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox7.Height = 0.1875!
             Me.TextBox7.Left = 0.07913386!
             Me.TextBox7.Name = "TextBox7"
-            Me.TextBox7.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: right; ddo-char-set: 0"
-            Me.TextBox7.Text = "√±µo§È¥¡°G"
+            Me.TextBox7.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: right; ddo-char-set: 0"
+            Me.TextBox7.Text = "Á∞ΩÁôºÊó•ÊúüÔºö"
             Me.TextBox7.Top = 0.562!
             Me.TextBox7.Width = 1.627559!
             '
@@ -98,10 +98,10 @@ Namespace PrintOut.Common.VSSDocType
             Me.TextBox8.Height = 0.1875!
             Me.TextBox8.Left = 1.728346!
             Me.TextBox8.Name = "TextBox8"
-            Me.TextBox8.Style = "color: Black; font-family: HA_MingLiu; font-size: 12pt; text-decoration: underlin" & _
+            Me.TextBox8.Style = "color: Black; font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-decoration: underlin" & _
         "e; ddo-char-set: 0"
             Me.TextBox8.SummaryGroup = ""
-            Me.TextBox8.Text = "≠ª¥‰ØSßO¶Ê¨F∞œ√±√“®≠•˜Æ—"
+            Me.TextBox8.Text = "È¶ôÊ∏ØÁâπÂà•Ë°åÊîøÂçÄÁ∞ΩË≠âË∫´‰ªΩÊõ∏"
             Me.TextBox8.Top = 0.0!
             Me.TextBox8.Width = 3.313!
             '

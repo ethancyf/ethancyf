@@ -23,165 +23,49 @@ Namespace BLL
         Dim udtFormatter As Formatter = New Formatter
         Dim udtGeneralF As New Common.ComFunction.GeneralFunction
 
-        ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-        ' Obsolete functions that are no longer used
-        ' -----------------------------------------------------------------------------------------    
-
-        'Public Function chkDataEntrySessionExist() As Boolean
-        '    Return udtDataEntryBLL.Exist
-        'End Function
-
-        'Public Function chkVRAcctSessionExist() As Boolean
-        '    Return udtVRAcctBLL.Exist
-        'End Function
-
-        'Public Function chkVRSchemeSessionExist() As Boolean
-        '    Return udtVRSchemeBLL.Exist
-        'End Function
-
-        'Public Function chkSPSessionExist() As Boolean
-        '    Return udtSPBLL.Exist
-        'End Function
-
-        'Public Sub saveDataEntrySession(ByVal udtDataEntry As DataEntryUserModel)
-        '    udtDataEntryBLL.SaveToSession(udtDataEntry)
-        'End Sub
-
-        'Public Function loadDataEntrySession() As DataEntryUserModel
-        '    Return udtDataEntryBLL.GetDataEntry()
-        'End Function
-
-        'Public Function loadSP(ByVal strSPID As String) As ServiceProviderModel
-        '    Dim udtSP As ServiceProviderModel
-        '    udtSP = udtSPBLL.GetServiceProviderBySPID(New Database, strSPID)
-        '    Return udtSP
-        'End Function
-
-        'Public Sub saveSPSession(ByVal udtSP As ServiceProviderModel)
-        '    udtSPBLL.SaveToSession(udtSP)
-        'End Sub
-
-        'Public Function loadSPSession() As ServiceProviderModel
-        '    Return udtSPBLL.GetSP()
-        'End Function
-
-        'Public Sub clearRelatedSession()
-        '    udtVRAcctBLL.ClearSession()
-        '    udtVRSchemeBLL.ClearSession()
-        'End Sub
-
-        'Public Sub saveVRAcctSession(ByVal udtVRAcct As VoucherRecipientAccountModel)
-        '    udtVRAcctBLL.SaveToSession(udtVRAcct)
-        'End Sub
-
-        'Public Sub saveVRSchemeSession(ByVal udtVRScheme As VoucherSchemeModel)
-        '    udtVRSchemeBLL.SaveToSession(udtVRScheme)
-        'End Sub
-
-        'Public Function loadVRSchemeSession() As VoucherSchemeModel
-        '    Return udtVRSchemeBLL.GetScheme()
-        'End Function
-
-        'Public Function loadVRAcctSession() As VoucherRecipientAccountModel
-        '    Return udtVRAcctBLL.GetVRAcct()
-        'End Function
-        ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
-
 #Region "CCCode Supporting Function"
-
-        Public Function getCCCTail(ByVal strcccode As String, ByRef strDisplay As String) As String
-            Dim strRes As String
-            Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-            strRes = String.Empty
-            strRes = udtCCCodeBLL.GetCCCodeDesc(strcccode, strDisplay)
-            Return strRes
-        End Function
 
         Public Function getCCCTail(ByVal strcccode As String) As DataTable
             Dim dtRes As DataTable
             Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-            dtRes = udtCCCodeBLL.GetCCCodeDesc(strcccode)
+            dtRes = udtCCCodeBLL.GetCCCodeChineseMappingByCCCHead(strcccode)
             Return dtRes
         End Function
 
-        Public Function getChiChar(ByVal strcccode As String) As String
-            Dim strRes As String
-            Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
-            strRes = String.Empty
-            strRes = udtCCCodeBLL.GetChiChar(strcccode)
-            Return strRes
-        End Function
-
-        Public Function getCCCodeBig5(ByVal strCCCode As String) As String
-            Dim strCCCodeBig5 As String = String.Empty
-            Dim dtRes As DataTable
-            Dim strTail As String
-
-            If Not strCCCode Is Nothing AndAlso strCCCode.Length > 0 Then
-                If strCCCode.Length <> 5 Then
-                    Return " "
-                End If
-
-                dtRes = Me.getCCCTail(strCCCode.Substring(0, 4))
-                strTail = strCCCode.Substring(4, 1)
-                If Not dtRes Is Nothing AndAlso dtRes.Rows.Count > 0 Then
-
-                    For Each dataRow As DataRow In dtRes.Rows
-                        If dataRow("ccc_tail").ToString().Equals(strTail) Then
-                            Return dataRow("Big5").ToString()
-                        End If
-                    Next
-
-                    Return " "
-                Else
-                    Return " "
-                End If
-            End If
-
-            Return strCCCodeBig5
-        End Function
-
-        Public Function getChiChar(ByVal strcccode As String, ByVal strTail As String) As String
-            Dim dataTable As DataTable = getCCCTail(strcccode)
-
-            For Each dataRow As DataRow In dataTable.Rows
-                If dataRow("ccc_tail").ToString().Equals(strTail) Then
-                    Return dataRow("Big5").ToString()
-                End If
-            Next
-            Return String.Empty
-        End Function
-
+        ' CRE20-023-68 (Remove HA MingLiu) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
         Public Shared Function GetCName(ByVal udtEHSPersonalInformation As EHSAccount.EHSAccountModel.EHSPersonalInformationModel) As String
-            Dim udtVAMaintBLL As BLL.VoucherAccountMaintenanceBLL = New BLL.VoucherAccountMaintenanceBLL()
+            Dim udtCCCodeBLL As New CCCode.CCCodeBLL
             Dim strCName As String = String.Empty
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode1) Then
-                strCName += udtVAMaintBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode1)
+                strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode1)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode2) Then
-                strCName += udtVAMaintBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode2)
+                strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode2)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode3) Then
-                strCName += udtVAMaintBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode3)
+                strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode3)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode4) Then
-                strCName += udtVAMaintBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode4)
+                strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode4)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode5) Then
-                strCName += udtVAMaintBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode5)
+                strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode5)
             End If
 
             If Not String.IsNullOrEmpty(udtEHSPersonalInformation.CCCode6) Then
-                strCName += udtVAMaintBLL.getCCCodeBig5(udtEHSPersonalInformation.CCCode6)
+                strCName += udtCCCodeBLL.getChiCharByCCCode(udtEHSPersonalInformation.CCCode6)
             End If
 
             Return strCName
         End Function
+        ' CRE20-023-68 (Remove HA MingLiu) [End][Winnie SUEN]
+
 #End Region
 
         ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]

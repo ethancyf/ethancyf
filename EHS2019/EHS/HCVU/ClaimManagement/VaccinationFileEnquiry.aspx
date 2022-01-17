@@ -485,7 +485,7 @@
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblPreCheckNameEN" runat="server" Text='<%# Eval("Name_EN")%>' />
                                                             <br />
-                                                            <asp:Label ID="lblPreCheckNameCH" runat="server" Text='<%# Eval("Name_CH")%>' Font-Names="HA_MingLiu" />
+                                                            <asp:Label ID="lblPreCheckNameCH" runat="server" Text='<%# Eval("Name_CH")%>' CssClass="TextChineseName" />
                                                         </ItemTemplate>
                                                         <ItemStyle BackColor="White" />
                                                     </asp:TemplateField>

@@ -114,6 +114,10 @@ Public MustInherit Class BasePrintoutForm
 
             ' Create the PDF export object
             Dim pdf As New GrapeCity.ActiveReports.Export.Pdf.Section.PdfExport()
+
+            ' Set fallback font
+            pdf.FontFallback = Common.Component.Printout.PrintoutBLL.FallbackFont()
+
             ' Create a new memory stream that will hold the pdf output
             Dim memStream As New System.IO.MemoryStream()
             ' Export the report to PDF, Write the PDF stream out and Send all buffered content to the client
@@ -161,24 +165,17 @@ Public MustInherit Class BasePrintoutForm
         obj.DocType = udtEHSPersonalInformation.DocCode
 
         Select Case Me.Language
-            'CRE13-019-02 Extend HCVS to China [Start][Winnie]
             Case ConsentFormInformationModel.LanguageClassInternal.English
                 obj.SPName = udtSP.EnglishName
 
-                'CRE13-019-02 Extend HCVS to China [Start][Winnie]
-                'Case ConsentFormInformationModel.LanguageClassInternal.Chinese
             Case ConsentFormInformationModel.LanguageClassInternal.Chinese,
                 ConsentFormInformationModel.LanguageClassInternal.SimpChinese
-                'CRE13-019-02 Extend HCVS to China [End][Winnie]
                 If udtSP.ChineseName.Trim <> String.Empty Then
-                    ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
-                    obj.SPName = Common.ComFunction.GeneralFunction.ReplaceString_HAMingLiu(udtSP.ChineseName)
-                    ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+                    obj.SPName = udtSP.ChineseName
                 Else
                     obj.SPName = udtSP.EnglishName
                 End If
 
-                'CRE13-019-02 Extend HCVS to China [End][Winnie]
             Case Else
                 Throw New Exception(String.Format("BasePrintoutForm unhandled Language({0})", Me.Language))
         End Select

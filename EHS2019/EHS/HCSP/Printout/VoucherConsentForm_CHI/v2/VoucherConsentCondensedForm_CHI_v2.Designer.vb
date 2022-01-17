@@ -106,7 +106,7 @@
             Me.txtTransactionTo.Height = 0.21875!
             Me.txtTransactionTo.Left = 0.4375!
             Me.txtTransactionTo.Name = "txtTransactionTo"
-            Me.txtTransactionTo.Style = "color: Black; font-family: HA_MingLiu; font-size: 12pt; text-decoration: none; dd" & _
+            Me.txtTransactionTo.Style = "color: Black; font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-decoration: none; dd" & _
         "o-char-set: 136"
             Me.txtTransactionTo.Text = Nothing
             Me.txtTransactionTo.Top = 0.614!
@@ -118,7 +118,7 @@
             Me.TextBox1.Left = 0.4375!
             Me.TextBox1.LineSpacing = 3.0!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.TextBox1.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: left; ddo-char-set: 136"
             Me.TextBox1.Text = "香港特別行政區政府 (下稱「政府」) 衞生署署長"
             Me.TextBox1.Top = 0.83325!
             Me.TextBox1.Width = 6.96875!

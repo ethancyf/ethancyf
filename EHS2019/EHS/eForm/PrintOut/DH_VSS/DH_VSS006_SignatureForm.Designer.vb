@@ -296,7 +296,7 @@ Namespace PrintOut.DH_VSS
             Me.txtByPracticeSignatory.Left = 4.71875!
             Me.txtByPracticeSignatory.Name = "txtByPracticeSignatory"
             Me.txtByPracticeSignatory.Style = "ddo-char-set: 1; text-decoration: none; font-weight: normal; font-size: 10.5pt; f" & _
-                "ont-family: HA_MingLiu; vertical-align: middle; "
+                "ont-family: MingLiU_HKSCS-ExtB; vertical-align: middle; "
             Me.txtByPracticeSignatory.Text = Nothing
             Me.txtByPracticeSignatory.Top = 2.75!
             Me.txtByPracticeSignatory.Width = 2.40625!
@@ -316,7 +316,7 @@ Namespace PrintOut.DH_VSS
             Me.txtByPracticeTelNo.Left = 4.375!
             Me.txtByPracticeTelNo.Name = "txtByPracticeTelNo"
             Me.txtByPracticeTelNo.Style = "text-decoration: none; ddo-char-set: 1; font-weight: normal; font-size: 10.5pt; f" & _
-                "ont-family: HA_MingLiu; vertical-align: middle; "
+                "ont-family: MingLiU_HKSCS-ExtB; vertical-align: middle; "
             Me.txtByPracticeTelNo.Text = Nothing
             Me.txtByPracticeTelNo.Top = 3.375!
             Me.txtByPracticeTelNo.Width = 1.0!
@@ -356,7 +356,7 @@ Namespace PrintOut.DH_VSS
             Me.txtByPracticeDate.Left = 5.75!
             Me.txtByPracticeDate.Name = "txtByPracticeDate"
             Me.txtByPracticeDate.Style = "ddo-char-set: 1; text-decoration: none; font-weight: normal; font-size: 10.5pt; f" & _
-                "ont-family: HA_MingLiu; vertical-align: middle; "
+                "ont-family: MingLiU_HKSCS-ExtB; vertical-align: middle; "
             Me.txtByPracticeDate.Text = Nothing
             Me.txtByPracticeDate.Top = 3.375!
             Me.txtByPracticeDate.Width = 1.375!
@@ -396,7 +396,7 @@ Namespace PrintOut.DH_VSS
             Me.txtPracticePosition.Left = 4.71875!
             Me.txtPracticePosition.Name = "txtPracticePosition"
             Me.txtPracticePosition.Style = "ddo-char-set: 1; text-decoration: none; font-weight: normal; font-size: 10.5pt; f" & _
-                "ont-family: HA_MingLiu; vertical-align: middle; "
+                "ont-family: MingLiU_HKSCS-ExtB; vertical-align: middle; "
             Me.txtPracticePosition.Text = Nothing
             Me.txtPracticePosition.Top = 3.0625!
             Me.txtPracticePosition.Width = 2.40625!

@@ -64,7 +64,7 @@
                 <asp:Label ID="lblCNameText" runat="server" CssClass="tableTitle"  Height="25px" />
             </td>            
             <td style="width: 470px;">
-                <asp:Label ID="lblCName" runat="server" Width="150px" Font-Names="HA_MingLiu" CssClass="tableText" />
+                <asp:Label ID="lblCName" runat="server" Width="150px" CssClass="tableText TextChineseName" />
             </td>
         </tr>
         <tr style="display:none;">

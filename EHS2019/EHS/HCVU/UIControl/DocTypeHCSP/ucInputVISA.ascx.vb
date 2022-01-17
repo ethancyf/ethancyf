@@ -12,6 +12,7 @@ Namespace UIControl.DocTypeHCSP
         Private _strVISANo As String
         Private _strENameFirstName As String
         Private _strENameSurName As String
+        Private _strCName As String
         Private _strGender As String
         Private _strDOB As String
         Private _strPassportNo As String
@@ -28,6 +29,7 @@ Namespace UIControl.DocTypeHCSP
             Me.lblVISANoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler().Language)
             Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
             Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+            Me.lblCName.Text = Me.GetGlobalResourceObject("Text", "NameInChinese")
             Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
             Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
             Me.lblPassportNoText.Text = Me.GetGlobalResourceObject("Text", "PassportNo")
@@ -42,12 +44,19 @@ Namespace UIControl.DocTypeHCSP
             'error message
             Me.imgVISANo.ImageUrl = strErrorImageURL
             Me.imgVISANo.AlternateText = strErrorImageALT
+
             Me.imgEName.ImageUrl = strErrorImageURL
             Me.imgEName.AlternateText = strErrorImageALT
+
+            Me.imgCNameError.ImageUrl = strErrorImageURL
+            Me.imgCNameError.AlternateText = strErrorImageALT
+
             Me.imgGender.ImageUrl = strErrorImageURL
             Me.imgGender.AlternateText = strErrorImageALT
+
             Me.imgDOBDate.ImageUrl = strErrorImageURL
             Me.imgDOBDate.AlternateText = strErrorImageALT
+
             Me.imgPassportNo.ImageUrl = strErrorImageURL
             Me.imgPassportNo.AlternateText = strErrorImageALT
 
@@ -64,6 +73,7 @@ Namespace UIControl.DocTypeHCSP
             Me._strVISANo = MyBase.EHSPersonalInfo.IdentityNum.Replace("(", String.Empty).Replace(")", String.Empty).Replace("-", String.Empty)
             Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
             Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+            Me._strCName = MyBase.EHSPersonalInfo.CName
             Me._strGender = MyBase.EHSPersonalInfo.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
             Me._strPassportNo = MyBase.EHSPersonalInfo.Foreign_Passport_No
@@ -103,6 +113,8 @@ Namespace UIControl.DocTypeHCSP
                     rbGender.Enabled = True
 
                 End If
+
+                Me.txtCName.Enabled = True
 
             Else
                 'Modification and Read-Only Modes
@@ -154,6 +166,7 @@ Namespace UIControl.DocTypeHCSP
                     Me.txtDOB.Enabled = True
                     Me.txtENameSurname.Enabled = True
                     Me.txtENameFirstname.Enabled = True
+                    Me.txtCName.Enabled = True
                     Me.rbGender.Enabled = True
                     Me.txtDOB.Enabled = True
                     Me.txtVISANo1.Enabled = True
@@ -198,6 +211,7 @@ Namespace UIControl.DocTypeHCSP
 
                     Me.txtENameSurname.Enabled = False
                     Me.txtENameFirstname.Enabled = False
+                    Me.txtCName.Enabled = False
                     Me.rbGender.Enabled = False
                     Me.txtDOB.Enabled = False
                     Me.txtVISANo1.Enabled = False
@@ -210,14 +224,14 @@ Namespace UIControl.DocTypeHCSP
             ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
             If MyBase.ActiveViewChanged Then
-
                 Me.SetVISANoError(False)
                 Me.SetPassportNoError(False)
                 Me.SetENameError(False)
+                Me.SetCNameError(False)
                 Me.SetGenderError(False)
                 Me.SetDOBError(False)
-
             End If
+
         End Sub
 
 #Region "Set Up Text Box Value"
@@ -226,6 +240,7 @@ Namespace UIControl.DocTypeHCSP
             SetupVISANo()
             SetupENameFirstName()
             SetupENameSurName()
+            SetCName()
             SetupGender()
             SetupPassportNo()
             SetupDOB()
@@ -274,6 +289,11 @@ Namespace UIControl.DocTypeHCSP
             Me.txtENameSurname.Text = Me._strENameSurName
         End Sub
 
+        Public Sub SetCName()
+            'Fill Data - Chinese name only
+            Me.txtCName.Text = Me._strCName
+        End Sub
+
         Public Sub SetupPassportNo()
             Me.txtPassportNo.Text = Me._strPassportNo
         End Sub
@@ -314,6 +334,7 @@ Namespace UIControl.DocTypeHCSP
         Public Overrides Sub SetErrorImage(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal visible As Boolean)
             Me.SetVISANoError(visible)
             Me.SetENameError(visible)
+            Me.SetCNameError(visible)
             Me.SetGenderError(visible)
             Me.SetDOBError(visible)
             Me.SetPassportNoError(visible)
@@ -325,6 +346,10 @@ Namespace UIControl.DocTypeHCSP
 
         Public Sub SetENameError(ByVal blnVisible As Boolean)
             Me.imgEName.Visible = blnVisible
+        End Sub
+
+        Public Sub SetCNameError(ByVal visible As Boolean)
+            Me.imgCNameError.Visible = visible
         End Sub
 
         Public Sub SetGenderError(ByVal visible As Boolean)
@@ -343,10 +368,10 @@ Namespace UIControl.DocTypeHCSP
 #Region "Property"
 
         Public Overrides Sub SetProperty(ByVal mode As BuildMode)
-
             Me._strVISANo = Me.txtVISANo1.Text.Trim + Me.txtVISANo2.Text.Trim + Me.txtVISANo3.Text.Trim + Me.txtVISANo4.Text.Trim
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
+            Me._strCName = Me.txtCName.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue.Trim
             Me._strDOB = Me.txtDOB.Text.Trim
             Me._strPassportNo = Me.txtPassportNo.Text.Trim
@@ -376,6 +401,15 @@ Namespace UIControl.DocTypeHCSP
             End Get
             Set(ByVal value As String)
                 Me._strENameSurName = value
+            End Set
+        End Property
+
+        Public Property CName() As String
+            Get
+                Return Me._strCName
+            End Get
+            Set(ByVal value As String)
+                Me._strCName = value
             End Set
         End Property
 

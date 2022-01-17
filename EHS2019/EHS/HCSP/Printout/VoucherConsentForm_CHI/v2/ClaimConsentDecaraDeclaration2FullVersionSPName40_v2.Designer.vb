@@ -40,8 +40,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsent2a.Height = 0.1875!
             Me.txtConsent2a.Left = 0.0!
             Me.txtConsent2a.Name = "txtConsent2a"
-            Me.txtConsent2a.Style = "font-family: ∑s≤”©˙≈È; font-size: 12pt; text-align: justify; ddo-char-set: 136"
-            Me.txtConsent2a.Text = "•ª§H¶P∑N¶V "
+            Me.txtConsent2a.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 12pt; text-align: justify; ddo-char-set: 136"
+            Me.txtConsent2a.Text = "Êú¨‰∫∫ÂêåÊÑèÂêë "
             Me.txtConsent2a.Top = 0.0!
             Me.txtConsent2a.Width = 0.875!
             '
@@ -50,7 +50,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsent2c.Height = 0.1875!
             Me.txtConsent2c.Left = 0.0!
             Me.txtConsent2c.Name = "txtConsent2c"
-            Me.txtConsent2c.Style = "font-family: ∑s≤”©˙≈È; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.txtConsent2c.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 12pt; text-align: left; ddo-char-set: 136"
             Me.txtConsent2c.Text = Nothing
             Me.txtConsent2c.Top = 0.1875!
             Me.txtConsent2c.Width = 7.0!
@@ -62,7 +62,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsent2SPName.Height = 0.1875!
             Me.txtConsent2SPName.Left = 0.90625!
             Me.txtConsent2SPName.Name = "txtConsent2SPName"
-            Me.txtConsent2SPName.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 136"
+            Me.txtConsent2SPName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 136"
             Me.txtConsent2SPName.Text = Nothing
             Me.txtConsent2SPName.Top = 0.0!
             Me.txtConsent2SPName.Width = 2.85!
@@ -72,7 +72,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsent2b.Height = 0.1875!
             Me.txtConsent2b.Left = 3.8125!
             Me.txtConsent2b.Name = "txtConsent2b"
-            Me.txtConsent2b.Style = "font-family: ∑s≤”©˙≈È; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.txtConsent2b.Style = "font-family: Êñ∞Á¥∞ÊòéÈ´î; font-size: 12pt; text-align: left; ddo-char-set: 136"
             Me.txtConsent2b.Text = Nothing
             Me.txtConsent2b.Top = 0.0!
             Me.txtConsent2b.Width = 3.1875!

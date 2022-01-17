@@ -56,7 +56,7 @@ Namespace PrintOut.Common.Lite
             Me.txtNameEng.Left = 0.8125!
             Me.txtNameEng.Name = "txtNameEng"
             Me.txtNameEng.Style = "text-decoration: underline; ddo-char-set: 1; text-align: left; font-size: 10.5pt;" & _
-                " font-family: HA_MingLiu; "
+                " font-family: MingLiU_HKSCS-ExtB; "
             Me.txtNameEng.Text = Nothing
             Me.txtNameEng.Top = 0.0!
             Me.txtNameEng.Width = 6.125!
@@ -75,7 +75,7 @@ Namespace PrintOut.Common.Lite
             Me.txtDOB.Left = 0.8125!
             Me.txtDOB.Name = "txtDOB"
             Me.txtDOB.Style = "text-decoration: underline; ddo-char-set: 1; text-align: left; font-size: 10.5pt;" & _
-                " font-family: HA_MingLiu; "
+                " font-family: MingLiU_HKSCS-ExtB; "
             Me.txtDOB.Text = Nothing
             Me.txtDOB.Top = 0.1875!
             Me.txtDOB.Width = 3.34375!
@@ -93,8 +93,8 @@ Namespace PrintOut.Common.Lite
             Me.TextBox5.Height = 0.15625!
             Me.TextBox5.Left = 4.1875!
             Me.TextBox5.Name = "TextBox5"
-            Me.TextBox5.Style = "ddo-char-set: 1; text-align: left; font-size: 10.5pt; font-family: HA_MingLiu; "
-            Me.TextBox5.Text = "© ßO°G"
+            Me.TextBox5.Style = "ddo-char-set: 1; text-align: left; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; "
+            Me.TextBox5.Text = "ÊÄßÂà•Ôºö"
             Me.TextBox5.Top = 0.1875!
             Me.TextBox5.Width = 0.46875!
             '
@@ -112,7 +112,7 @@ Namespace PrintOut.Common.Lite
             Me.txtGender.Left = 4.6875!
             Me.txtGender.Name = "txtGender"
             Me.txtGender.Style = "text-decoration: underline; ddo-char-set: 1; text-align: justify; font-size: 10.5" & _
-                "pt; font-family: HA_MingLiu; "
+                "pt; font-family: MingLiU_HKSCS-ExtB; "
             Me.txtGender.Text = Nothing
             Me.txtGender.Top = 0.1875!
             Me.txtGender.Width = 2.40625!
@@ -130,8 +130,8 @@ Namespace PrintOut.Common.Lite
             Me.TextBox4.Height = 0.15625!
             Me.TextBox4.Left = 0.0!
             Me.TextBox4.Name = "TextBox4"
-            Me.TextBox4.Style = "ddo-char-set: 1; text-align: left; font-size: 10.5pt; font-family: HA_MingLiu; "
-            Me.TextBox4.Text = "•X•Õ§È¥¡°G"
+            Me.TextBox4.Style = "ddo-char-set: 1; text-align: left; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; "
+            Me.TextBox4.Text = "Âá∫ÁîüÊó•ÊúüÔºö"
             Me.TextBox4.Top = 0.1875!
             Me.TextBox4.Width = 0.78125!
             '
@@ -148,8 +148,8 @@ Namespace PrintOut.Common.Lite
             Me.TextBox1.Height = 0.15625!
             Me.TextBox1.Left = 0.0!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "ddo-char-set: 1; text-align: left; font-size: 10.5pt; font-family: HA_MingLiu; "
-            Me.TextBox1.Text = "©m¶W°G"
+            Me.TextBox1.Style = "ddo-char-set: 1; text-align: left; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; "
+            Me.TextBox1.Text = "ÂßìÂêçÔºö"
             Me.TextBox1.Top = 0.0!
             Me.TextBox1.Width = 0.78125!
             '
@@ -167,7 +167,7 @@ Namespace PrintOut.Common.Lite
             Me.txtNameChi.Left = 6.0625!
             Me.txtNameChi.MultiLine = False
             Me.txtNameChi.Name = "txtNameChi"
-            Me.txtNameChi.Style = "ddo-char-set: 0; font-size: 10.5pt; font-family: HA_MingLiu; white-space: nowrap;" & _
+            Me.txtNameChi.Style = "ddo-char-set: 0; font-size: 10.5pt; font-family: MingLiU_HKSCS-ExtB; white-space: nowrap;" & _
                 " "
             Me.txtNameChi.Text = Nothing
             Me.txtNameChi.Top = 0.0!

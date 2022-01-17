@@ -37,7 +37,7 @@
                             </td>
                             <td style="vertical-align: top; width: 300px">
                                 <asp:Label ID="lblSEName" runat="server" CssClass="tableText"></asp:Label>
-                                <asp:Label ID="lblSCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label>
+                                <asp:Label ID="lblSCName" runat="server" CssClass="tableText TextChineseName"></asp:Label>
                             </td>
                             <td style="vertical-align: top; width: 160px">
                                 <asp:Label ID="lblSDOBGenderText" runat="server" Text="<%$ Resources: Text, DOBLongGender %>"

@@ -40,8 +40,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsent2a.Height = 0.21875!
             Me.txtConsent2a.Left = 0.0!
             Me.txtConsent2a.Name = "txtConsent2a"
-            Me.txtConsent2a.Style = "font-family: ·s²Ó©úÅé; font-size: 12pt; text-align: justify; ddo-char-set: 136"
-            Me.txtConsent2a.Text = "¥»¤H¯S¦¹¦P·N"
+            Me.txtConsent2a.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12pt; text-align: justify; ddo-char-set: 136"
+            Me.txtConsent2a.Text = "æœ¬äººç‰¹æ­¤åŒæ„"
             Me.txtConsent2a.Top = 0.0!
             Me.txtConsent2a.Width = 1.03125!
             '
@@ -50,8 +50,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsent2c.Height = 0.40625!
             Me.txtConsent2c.Left = 0.0!
             Me.txtConsent2c.Name = "txtConsent2c"
-            Me.txtConsent2c.Style = "font-family: ·s²Ó©úÅé; font-size: 12pt; text-align: left; ddo-char-set: 136"
-            Me.txtConsent2c.Text = "¸ê®ÆÂà¥æ¤Îµo©ñ¤©¬F©²¡B¨ä¥N²z¤H©Î¨ä¥LÀò¬F©²±ÂÅvªº¤H¤h¡A¥H¨Ñ¬F©²©óªş¿ı¡u¦¬¶°­Ó¤H¸ê®Æªº¥Øªº¡v©Ò­zªº¥Î³~¡C"
+            Me.txtConsent2c.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.txtConsent2c.Text = "è³‡æ–™è½‰äº¤åŠç™¼æ”¾äºˆæ”¿åºœã€å…¶ä»£ç†äººæˆ–å…¶ä»–ç²æ”¿åºœæˆæ¬Šçš„äººå£«ï¼Œä»¥ä¾›æ”¿åºœæ–¼é™„éŒ„ã€Œæ”¶é›†å€‹äººè³‡æ–™çš„ç›®çš„ã€æ‰€è¿°çš„ç”¨é€”ã€‚"
             Me.txtConsent2c.Top = 0.21875!
             Me.txtConsent2c.Width = 7.03125!
             '
@@ -62,7 +62,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsent2SPName.Height = 0.1875!
             Me.txtConsent2SPName.Left = 1.03125!
             Me.txtConsent2SPName.Name = "txtConsent2SPName"
-            Me.txtConsent2SPName.Style = "font-family: HA_MingLiu; font-size: 12pt; text-align: center; ddo-char-set: 136"
+            Me.txtConsent2SPName.Style = "font-family: MingLiU_HKSCS-ExtB; font-size: 12pt; text-align: center; ddo-char-set: 136"
             Me.txtConsent2SPName.Text = Nothing
             Me.txtConsent2SPName.Top = 0.0!
             Me.txtConsent2SPName.Width = 2.85!
@@ -72,8 +72,8 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.txtConsent2b.Height = 0.25!
             Me.txtConsent2b.Left = 3.9375!
             Me.txtConsent2b.Name = "txtConsent2b"
-            Me.txtConsent2b.Style = "font-family: ·s²Ó©úÅé; font-size: 12pt; text-align: left; ddo-char-set: 136"
-            Me.txtConsent2b.Text = "§â¥»¤Hªº­Ó¤H¸ê®Æ¤Î¦³Ãö¬O¦¸¶E¯gªº¥ô¦ó"
+            Me.txtConsent2b.Style = "font-family: æ–°ç´°æ˜é«”; font-size: 12pt; text-align: left; ddo-char-set: 136"
+            Me.txtConsent2b.Text = "æŠŠæœ¬äººçš„å€‹äººè³‡æ–™åŠæœ‰é—œæ˜¯æ¬¡è¨ºç—‡çš„ä»»ä½•"
             Me.txtConsent2b.Top = 0.0!
             Me.txtConsent2b.Width = 3.0625!
             '

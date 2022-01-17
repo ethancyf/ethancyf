@@ -29,7 +29,7 @@
         <tr>
             <td class="tableCellStyle" style="height: 19px; width: 100%;" valign="top">
                 <asp:Label ID="lblEName" runat="server" CssClass="tableText"></asp:Label>
-                <asp:Label ID="lblCName" runat="server" Font-Names="HA_MingLiu"></asp:Label></td>
+                <asp:Label ID="lblCName" runat="server" CssClass="TextChineseName"></asp:Label></td>
         </tr>
         <tr>
             <td class="tableCellStyle" style="width: 100%;" valign="top">
