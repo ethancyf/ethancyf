@@ -929,7 +929,7 @@ Namespace BLL
             Dim blnValid As Boolean = True
             Dim rgx As Regex = Nothing
 
-            Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime
+            Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime.Date
 
             Dim strHKIC As String = String.Empty
             Dim strDocType As String = String.Empty
