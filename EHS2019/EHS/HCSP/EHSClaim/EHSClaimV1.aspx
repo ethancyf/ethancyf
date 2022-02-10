@@ -40,7 +40,7 @@
                 <uc1:ucNoticePopUp ID="ucNoticePopUpDuplicateClaimAlert" runat="server" NoticeMode="Custom" IconMode="ExclamationIcon"
                     ButtonMode="ProceedNotProceed" HeaderText="<%$ Resources:Text, DuplicateClaimAlertTitle %>" MessageText="<%$ Resources:Text, DuplicateClaimAlertMessage %>" />
             </asp:Panel>
-            <asp:Panel Style="display: none" ID="panPopupExclamationConfirmationBox" runat="server" Width="500px">
+            <asp:Panel Style="display: none" ID="panPopupExclamationConfirmationBox" runat="server" Width="700px">
                 <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationConfirm" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel"
                     MessageText="" />
             </asp:Panel>
@@ -56,7 +56,7 @@
                 <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationDemographicReminder" runat="server" NoticeMode="Custom" IconMode="ExclamationIcon" ButtonMode="Close"
                     MessageText="" />
             </asp:Panel>
-            <asp:Panel Style="display: none" ID="panPopupExclamationImportantReminderWithReason" runat="server" Width="600px">
+            <asp:Panel Style="display: none" ID="panPopupExclamationImportantReminderWithReason" runat="server" Width="700px">
                 <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationImportantReminderWithReason" runat="server" NoticeMode="Custom" IconMode="ExclamationIcon" ButtonMode="ConfirmCancelWithReason"
                     MessageText="" />
             </asp:Panel>

@@ -443,3 +443,21 @@ td.SubsidizeCategoryHeader {
 	color: #000000;
 	background-color: #ffff99;
 }
+
+.popup-warning-list ul {
+    margin: 0px 0px 0px 0px;
+	position: relative;
+	list-style: none;
+    padding-left: 15px;
+}
+
+.popup-warning-list li {
+	
+}
+
+.popup-warning-list li::before
+{
+	content: "-";
+	position: absolute;
+	left: 0;
+}
