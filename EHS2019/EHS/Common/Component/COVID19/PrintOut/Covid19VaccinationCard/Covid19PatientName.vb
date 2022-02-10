@@ -9,15 +9,17 @@ Imports Common.ComFunction
 Imports Common.Component.ClaimCategory
 Imports Common.Component.EHSAccount.EHSAccountModel
 Imports Common.Component.DocType
+Imports Common.Component.COVID19.PrintOut.Common.PrintoutHelper
 
 Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
     Public Class Covid19PatientName
         ' Model in use
         Private _udtEHSAccount As EHSAccountModel
         Private _udtFormatter As Formatter
-        Private _udtPrintoutFormatter As Common.Format.Formatter        
+        Private _udtPrintoutFormatter As Common.Format.Formatter
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
+        Private _FormType As FormType
 
 #Region "Constructor"
 
@@ -26,7 +28,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             InitializeComponent()
         End Sub
 
-        Public Sub New(ByRef udtEHSAccount As EHSAccountModel, ByRef blnIsSample As Boolean)
+        Public Sub New(ByRef udtEHSAccount As EHSAccountModel, ByRef blnIsSample As Boolean, Optional ByVal FormType As FormType = FormType.Vaccination)
             ' Invoke default constructor
             Me.New()
 
@@ -34,6 +36,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             _udtFormatter = New Formatter
             _udtPrintoutFormatter = New Common.Format.Formatter
             _blnIsSample = blnIsSample
+            _FormType = FormType
             LoadReport()
             ChkIsSample()
 
@@ -42,6 +45,12 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 #End Region
 
         Private Sub LoadReport()
+            'Resize
+            If _FormType = FormType.Exemption Then
+                txtName.Width = 4.728
+            Else
+                txtName.Width = 5.676
+            End If
 
             Dim patientInformation As EHSPersonalInformationModel = _udtEHSAccount.getPersonalInformation(_udtEHSAccount.SearchDocCode())
             'Dim patientInformation As EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(_udtEHSAccount.SearchDocCode())

@@ -262,8 +262,13 @@ Partial Public Class ClaimTransDetail
 
         'Wordings for display in COVID19
         If IsClaimCOVID19(udtEHSTransaction) Then
-            lblTTransactionHeading.Text = Me.GetGlobalResourceObject("Text", "VaccineInfo")
-            lblTServiceDateText.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
+            If udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19MEC Then
+                lblTTransactionHeading.Text = Me.GetGlobalResourceObject("Text", "MedicalExemptionsCOVID19")
+                lblTServiceDateText.Text = Me.GetGlobalResourceObject("Text", "DateOfIssue")
+            Else
+                lblTTransactionHeading.Text = Me.GetGlobalResourceObject("Text", "VaccineInfo")
+                lblTServiceDateText.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
+            End If
         End If
 
         'Override Reason Warning
@@ -776,6 +781,43 @@ Partial Public Class ClaimTransDetail
                     'Non-Local Recovered History
                     DisplayNonLocalRecoveredHistory(True)
                     FillNonLocalRecoveredHistory(udtEHSTransaction)
+
+                Else
+                    DisplayContactNo(False)
+                    DisplayRemarks(False)
+                    DisplayJoinEHRSS(False)
+                End If
+
+            Case SchemeClaimModel.EnumControlType.COVID19MEC
+                udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
+                udcReadOnlyEHSClaim.Width = 204
+                udcReadOnlyEHSClaim.BuildCOVID19MEC()
+
+                If IsClaimCOVID19(udtEHSTransaction) Then
+
+                    'Contact No.
+                    If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
+                        DisplayContactNo(True)
+                        FillContactNo(udtEHSTransaction)
+                    Else
+                        DisplayContactNo(False)
+                    End If
+
+                    'Remark
+                    DisplayRemarks(False)
+                    
+                    'Join EHRSS
+                    If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
+                        DisplayJoinEHRSS(True)
+                        FillJoinEHRSS(udtEHSTransaction)
+                    Else
+                        DisplayJoinEHRSS(False)
+                        'Hide Contact No.
+                        DisplayContactNo(False)
+                    End If
+
+                    'Non-Local Recovered History
+                    DisplayNonLocalRecoveredHistory(False)
 
                 Else
                     DisplayContactNo(False)
@@ -1461,9 +1503,10 @@ Partial Public Class ClaimTransDetail
     End Sub
 
     Private Function IsClaimCOVID19(ByVal udtEHSTransaction As EHSTransactionModel) As Boolean
-        Dim udtTranDetailList As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+        Dim udtTranDetailC19List As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+        Dim udtTranDetailMECList As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC)
 
-        If udtTranDetailList.Count > 0 Then
+        If udtTranDetailC19List.Count > 0 OrElse udtTranDetailMECList.Count > 0 Then
             Return True
         End If
 
@@ -1492,6 +1535,7 @@ Partial Public Class ClaimTransDetail
 
         Else
             lblContact.Text = GetGlobalResourceObject("Text", "NotProvided")
+            lblContactNoNotAbleSMS.Visible = False
         End If
 
     End Sub

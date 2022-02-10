@@ -1,5 +1,6 @@
 Imports Common.Component.ReasonForVisit
 Imports Common.Component.StaticData
+Imports System.ComponentModel
 
 ' CRE11-024-01 HCVS Pilot Extension Part 1 [Start]
 
@@ -84,6 +85,12 @@ Namespace Component.EHSTransaction
             Public Const EHS As String = "EHS"
             Public Const DH As String = "DH"
         End Class
+
+        Public Enum TextOnlyVersion
+            <Description("")> NA = 0
+            <Description("Y")> Available = 1
+            <Description("N")> NotAvailable = 2
+        End Enum
 
 #Region "ExtRefStatusClass"
         <Serializable()> _
@@ -2058,6 +2065,60 @@ Namespace Component.EHSTransaction
             Return dicVaccineRef
         End Function
         ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
+
+        Public Function TextOnlyAvailable(ByVal enumTextOnlyAvailable As TextOnlyVersion) As Boolean
+            Dim blnRes As Boolean = False
+            Dim udtSchemeClaimModelCollection As SchemeClaimModelCollection = (New SchemeClaimBLL).getAllDistinctSchemeClaim
+            Dim udtSchemeClaim As SchemeClaimModel = udtSchemeClaimModelCollection.Filter(Me.SchemeCode)
+
+            Dim blnTextOnlyAvailable As Boolean = IIf(Common.Format.Formatter.EnumToString(enumTextOnlyAvailable) = YesNo.Yes, True, False)
+
+            If udtSchemeClaim.TextOnlyAvailable = blnTextOnlyAvailable Then
+                blnRes = True
+            End If
+
+            Return blnRes
+
+        End Function
+
+        Public Function Clone() As EHSTransactionModel
+            'Clone EHSTransactionModel
+            Dim udtResEHSTransaction As EHSTransactionModel = New EHSTransactionModel(Me)
+
+            'Clone TransactionDetailModel 
+            If Me.TransactionDetails IsNot Nothing Then
+                udtResEHSTransaction.TransactionDetails = New TransactionDetailModelCollection()
+
+                For Each udtTranDetail As TransactionDetailModel In Me.TransactionDetails
+                    udtResEHSTransaction.TransactionDetails.Add(New TransactionDetailModel(udtTranDetail))
+                Next
+
+            End If
+
+            'Clone TransactionAdditionalFieldModel
+            If Me.TransactionAdditionFields IsNot Nothing Then
+                udtResEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
+
+                For Each udtTAF As TransactionAdditionalFieldModel In Me.TransactionAdditionFields
+                    udtResEHSTransaction.TransactionAdditionFields.Add(New TransactionAdditionalFieldModel(udtTAF))
+                Next
+
+            End If
+
+            'Clone EHSAccountModel & EHSPersonalInformationModel
+            If Me.EHSAcct IsNot Nothing AndAlso Me.EHSAcct.EHSPersonalInformationList IsNot Nothing Then
+                udtResEHSTransaction.EHSAcct = New EHSAccount.EHSAccountModel(Me.EHSAcct)
+                udtResEHSTransaction.EHSAcct.EHSPersonalInformationList = New EHSAccount.EHSAccountModel.EHSPersonalInformationModelCollection()
+
+                For Each udtPersonalInfo As EHSAccount.EHSAccountModel.EHSPersonalInformationModel In Me.EHSAcct.EHSPersonalInformationList
+                    udtResEHSTransaction.EHSAcct.EHSPersonalInformationList.Add(udtPersonalInfo.Clone)
+                Next
+
+            End If
+
+            Return udtResEHSTransaction
+
+        End Function
 #End Region
 
     End Class

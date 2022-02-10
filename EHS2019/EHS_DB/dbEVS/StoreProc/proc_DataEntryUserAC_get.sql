@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	10 Jan 2022
+-- CR No.:			CRE20-023-71 (COVID19 - Medical Exemption Record)
+-- Description:		Add Filter Practice Scheme by [AllowDataEntryClaim] = 'Y'
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -130,6 +137,7 @@ WHERE
 	D.SP_ID = @DE_SPID
 		AND D.Data_Entry_Account = @Data_Entry_Account
 		AND (SC.Available_HCSP_SubPlatform = 'ALL' OR SC.Available_HCSP_SubPlatform = @HCSP_Sub_Platform)
+		AND SC.AllowDataEntryClaim = 'Y'
 
 --
 
@@ -202,7 +210,7 @@ WHERE
 	D.SP_ID = @DE_SPID
 		AND D.Data_Entry_Account = @Data_Entry_Account
 		AND (SC.Available_HCSP_SubPlatform = 'ALL' OR SC.Available_HCSP_SubPlatform = @HCSP_Sub_Platform)
-
+		AND SC.AllowDataEntryClaim = 'Y'
 
 GO
 

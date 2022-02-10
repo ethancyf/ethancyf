@@ -212,6 +212,12 @@
     <Compile Include="Component\COVID19\COVID19BLL.vb" />
     <Compile Include="Component\COVID19\DischargeResultModel.vb" />
     <Compile Include="Component\COVID19\OutreachListModel.vb" />
+    <Compile Include="Component\COVID19\PrintOut\ExemptionCert\ExemptionCert.designer.vb">
+      <DependentUpon>ExemptionCert.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\ExemptionCert\ExemptionCert.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Component\COVID19\VaccinationCardRecordModel.vb" />
     <Compile Include="Component\COVID19\QRCodeModel.vb" />
     <Compile Include="Component\COVID19\PrintOut\Common\Format\Formatter.vb" />
@@ -568,6 +574,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCardFooter.resx">
       <DependentUpon>Covid19VaccinationCardFooter.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\ExemptionCert\ExemptionCert.resx">
+      <DependentUpon>ExemptionCert.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

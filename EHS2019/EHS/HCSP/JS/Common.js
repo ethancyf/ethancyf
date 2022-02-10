@@ -1122,3 +1122,23 @@ function doSetCaretPosition(ctrl, caretPos) {
   function ResetScrollPosition() {
       setTimeout("window.scrollTo(0,0)", 0);
   }
+
+// MEC Valid Until Calendar
+
+  function MECValidUntilCalendarShown(sender, args) {
+
+  }
+
+  function MECValidUntilCalendarHidden(sender, args) {
+      var objSelectedDate;
+
+      if (sender.get_selectedDate()) {
+
+          objSelectedDate = sender.get_selectedDate();
+
+          var selectedDate = new Date(objSelectedDate);
+
+          sender.get_element().value = selectedDate.format(sender._format);
+
+      }
+  }

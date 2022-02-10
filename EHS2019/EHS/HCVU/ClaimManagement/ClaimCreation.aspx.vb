@@ -1879,6 +1879,18 @@ Partial Public Class ClaimCreation
                         End If
                         ' CRE20-0023 (Immu record) [End][Chris YIM]
 
+                    Case SchemeClaimModel.EnumControlType.COVID19MEC
+                        'Dim udcInputCOVID19MEC As ucInputCOVID19MEC = Me.udInputEHSClaim.GetCOVID19MECControl()
+
+                        'If udcInputCOVID19MEC IsNot Nothing Then
+
+                        '    Dim dtmCurrentDate As Date = Me.udtGeneralFunction.GetSystemDateTime().Date
+
+                        '    If udcInputCOVID19MEC.GetDefaultInterval() IsNot Nothing Then
+                        '        udcInputCOVID19MEC.RemainValidUntil = DateAdd(DateInterval.Day, CDbl(udcInputCOVID19MEC.GetDefaultInterval()) - 1, dtmCurrentDate)
+                        '    End If
+                        'End If
+
                 End Select
 
             End If
@@ -2260,14 +2272,9 @@ Partial Public Class ClaimCreation
                 Case SchemeClaimModel.EnumControlType.PPP
                     blnIsValid = Me.PPPValidation(udtEHSTransaction)
 
-                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
                 Case SchemeClaimModel.EnumControlType.SSSCMC
                     blnIsValid = Me.SSSCMCValidation(udtEHSTransaction)
-                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-                    ' CRE20-0023 (Immu record) [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
                 Case SchemeClaimModel.EnumControlType.COVID19
                     blnIsValid = COVID19Validation(udtEHSTransaction)
 
@@ -2277,7 +2284,12 @@ Partial Public Class ClaimCreation
                 Case SchemeClaimModel.EnumControlType.COVID19OR
                     blnIsValid = COVID19ORValidation(udtEHSTransaction)
 
-                    ' CRE20-0023 (Immu record) [End][Chris YIM]
+                    ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case SchemeClaimModel.EnumControlType.COVID19MEC
+                    blnIsValid = COVID19MECValidation(udtEHSTransaction)
+                    ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
             End Select
 
         End If
@@ -2307,6 +2319,9 @@ Partial Public Class ClaimCreation
             Case SchemeClaimModel.EnumControlType.SSSCMC
                 Me.AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction, dtmServiceDate)
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+            Case SchemeClaimModel.EnumControlType.COVID19MEC
+                Me.AuditLogCOVID19MEC(udtAuditLogEntry, udtEHSTransaction, dtmServiceDate)
 
         End Select
 
@@ -2380,6 +2395,10 @@ Partial Public Class ClaimCreation
                 Me.udtEHSClaimBLL.ConstructEHSTransactionDetail_SSSCMC(udtEHSTransaction, udtEHSAccount, udtHCVUUser.UserID, Me.udtSessionHandlerBLL.HAPatientGetFromSession())
 
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+            ElseIf udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_Certification Then
+
+                Me.udtEHSClaimBLL.ConstructEHSTransactionDetail_MEC(udtEHSTransaction, udtEHSAccount, udtHCVUUser.UserID)
 
             Else
                 '-------------------
@@ -3354,18 +3373,33 @@ Partial Public Class ClaimCreation
 
         End If
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
+
         Select Case udtSchemeClaim.SchemeCode.Trim.ToUpper
             Case SchemeClaimModel.VSS
                 Dim udcInputVSS As ucInputVSS = Me.udInputEHSClaim.GetVSSControl
                 If udcInputVSS IsNot Nothing Then
                     udcInputVSS.InitialCOVID19ClaimDetail()
                 End If
+
+                ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.COVID19MEC
+                'Dim udcInputCOVID19MEC As ucInputCOVID19MEC = Me.udInputEHSClaim.GetCOVID19MECControl()
+
+                'If udcInputCOVID19MEC IsNot Nothing Then
+
+                '    Dim dtmCurrentDate As Date = Me.udtGeneralFunction.GetSystemDateTime().Date
+
+                '    If udcInputCOVID19MEC.GetDefaultInterval() IsNot Nothing Then
+                '        udcInputCOVID19MEC.RemainValidUntil = DateAdd(DateInterval.Day, CDbl(udcInputCOVID19MEC.GetDefaultInterval()) - 1, dtmCurrentDate)
+                '    End If
+                'End If
+                ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
             Case Else
                 'Nothing to do
         End Select
-        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
 
     End Sub
 
@@ -3376,26 +3410,22 @@ Partial Public Class ClaimCreation
         Dim strValidatedServiceDate As String = "ValidatedServiceDate"
         strServiceDate = udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English)
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         Dim udtInputPicker As InputPickerModel = Nothing
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
         Dim udtHCVUUser As HCVUUserModel
         Dim udtHCVUUserBLL As New HCVUUserBLL
         udtHCVUUser = udtHCVUUserBLL.GetHCVUUser
 
         Dim udtEHSTransaction As EHSTransactionModel
-        ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-        ' ----------------------------------------------------------
-        udtEHSTransaction = Me.udtSessionHandlerBLL.EHSTransactionWithoutTransactionDetailGetFromSession(FunctionCode)
-        ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
-        ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start][Koala]
-        ' -----------------------------------------------------------------------------------------
+        udtEHSTransaction = Me.udtSessionHandlerBLL.EHSTransactionWithoutTransactionDetailGetFromSession(FunctionCode)
+
         ' Not necessary to clear inputted value when postback rebuild
         If Not blnPostbackRebuild Then Me.udInputEHSClaim.Clear()
-        ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Koala]
+
+        ' Initial Setting
+        panStep2aDischargeRecord.Visible = False
+        panStep2aMedicalExemptionRecord.Visible = False
 
         If Not udtEHSTransaction Is Nothing AndAlso DateTime.TryParse(strServiceDate, dtmServiceDate) Then
 
@@ -3739,8 +3769,6 @@ Partial Public Class ClaimCreation
                     Case SchemeClaimModel.EnumControlType.EHAPP
                         blnNotAvailableForClaim = False
 
-                        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-                        ' ---------------------------------------------------------------------------------------------------------
                     Case SchemeClaimModel.EnumControlType.SSSCMC
                         Dim blnValid As Boolean = True
                         Dim udtPersonalInformation As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
@@ -3774,7 +3802,36 @@ Partial Public Class ClaimCreation
 
                         End If
 
-                        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+                    Case SchemeClaimModel.EnumControlType.COVID19MEC
+                        Dim udtPersonalInformation As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
+                        'Dim dtmToday As Date = udtGeneralFunction.GetSystemDateTime.Date
+                        'Dim intCount As Integer = 0
+                        'Dim intLimit As Integer = CInt(udtGeneralFunction.GetSystemParameterParmValue1("MedicalExemptionIssueLimit", SchemeClaimModel.COVID19MEC))
+
+                        Dim dtExemptionCert As DataTable = (New COVID19BLL).GetCovid19ExemptionCertByDocID(udtPersonalInformation.DocCode, _
+                                                                                                           udtPersonalInformation.IdentityNum, _
+                                                                                                           udtPersonalInformation.AdoptionPrefixNum)
+
+                        If dtExemptionCert.Rows.Count > 0 Then
+                            Me.udtSessionHandlerBLL.MedicalExemptionRecordFullSaveToSession(dtExemptionCert)
+                        Else
+                            Me.udtSessionHandlerBLL.MedicalExemptionRecordFullRemoveFromSession()
+                        End If
+
+                        '' Check Patient whether has claimed today
+                        'For Each dr As DataRow In dtExemptionCert.Rows
+                        '    If CDate(dr("Service_Receive_Dtm")) = dtmToday AndAlso dr("SP_ID").ToString.Trim = udtEHSTransaction.ServiceProviderID Then
+                        '        intCount = intCount + 1
+                        '    End If
+                        'Next
+
+                        'If intCount < intLimit Then
+                        blnNotAvailableForClaim = False
+                        'End If
+
+                        ''If Not _udtEHSTransactionBLL.getAvailableSubsidizeItem_MEC(udtPersonalInformation, udtSchemeClaim.SubsidizeGroupClaimList, dtmServiceDate) > 0 Then
+
+                        ''End If
 
                 End Select
 
@@ -3809,7 +3866,7 @@ Partial Public Class ClaimCreation
                             Me.SetSaveButtonEnable(Me.ibtnEnterClaimDetailSave, True)
                         End If
 
-                    Case SchemeClaimModel.EnumControlType.SSSCMC
+                    Case SchemeClaimModel.EnumControlType.SSSCMC, SchemeClaimModel.EnumControlType.COVID19MEC
                         If blnNotAvailableForClaim Then
                             Me.SetSaveButtonEnable(Me.ibtnEnterClaimDetailSave, False)
                         Else
@@ -3818,8 +3875,37 @@ Partial Public Class ClaimCreation
 
                 End Select
 
+                If udtSchemeClaim.SchemeCode.Trim() = SchemeClaimModel.COVID19MEC Then
+                    'Bind the medical exemption record table in enter claim page
+                    Dim dtMedicalExemption As DataTable = TransactionDetailListToMedicalExemptionDataTable(udtSessionHandlerBLL.MedicalExemptionRecordFullGetFromSession())
+
+                    BuildMedicalExemptionRecordGrid(dtMedicalExemption)
+
+                    panStep2aMedicalExemptionRecord.Visible = True
+
+                    '----------------------------------------------------------
+                    'Generate JavaScript Function
+                    '----------------------------------------------------------
+                    'Generate JavaScript Declaimer checkbox for Medical Exemption
+
+                    Dim udtStaticDataBLL As New StaticData.StaticDataBLL
+                    Dim udtPreExisting_ReasonList As StaticData.StaticDataModelCollection
+                    Dim udtContraindBioNTech_ReasonList As StaticData.StaticDataModelCollection
+                    Dim udtContraindSinovac_ReasonList As StaticData.StaticDataModelCollection
+
+                    udtPreExisting_ReasonList = udtStaticDataBLL.GetStaticDataListByColumnName("COVID19MEC_Pre-existing")
+                    udtContraindBioNTech_ReasonList = udtStaticDataBLL.GetStaticDataListByColumnName("COVID19MEC_Contraind_BioNTech")
+                    udtContraindSinovac_ReasonList = udtStaticDataBLL.GetStaticDataListByColumnName("COVID19MEC_Contraind_Sinovac")
+
+                    BuildJSForHideShowMedicalReason(udtPreExisting_ReasonList, udtContraindBioNTech_ReasonList, udtContraindSinovac_ReasonList)
+                    BuildbtnStep2aClaimEventForMedicalExemption()
+
+                End If
+
             End If
+
         End If
+
     End Sub
 
     Private Function CheckExchangeRateAbsence(ByVal pdtmServiceDate As Date) As Boolean
@@ -5014,6 +5100,35 @@ Partial Public Class ClaimCreation
         Return isValid
     End Function
     ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023-071 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function COVID19MECValidation(ByRef udtEHSTransaction As EHSTransactionModel) As Boolean
+        ' ---------------------------------------------
+        ' Init
+        '----------------------------------------------
+        Dim isValid As Boolean = False
+
+        Dim udcInputCOVID19MEC As ucInputCOVID19MEC = Me.udInputEHSClaim.GetCOVID19MECControl
+
+        udcInputCOVID19MEC.SetAllError(False)
+
+        ' -----------------------------------------------
+        ' UI Input Validation
+        '------------------------------------------------
+        'Claim Detial Part
+        If udcInputCOVID19MEC.Validate(True, Me.udcMessageBox) Then
+            isValid = True
+        End If
+
+        If isValid Then
+            udcInputCOVID19MEC.Save(udtEHSTransaction)
+        End If
+
+        Return isValid
+
+    End Function
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
 #End Region
 
 #Region "Scheme Audit Log"
@@ -5266,6 +5381,31 @@ Partial Public Class ClaimCreation
     End Sub
     ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+    Private Sub AuditLogCOVID19MEC(ByRef udtAuditLogEntry As AuditLogEntry, ByVal udtEHSTransaction As EHSTransactionModel, ByVal dtmServiceDate As Date)
+        If udtEHSTransaction.TransactionAdditionFields Is Nothing OrElse udtEHSTransaction.TransactionAdditionFields(0) Is Nothing Then
+            Return
+        End If
+
+        Dim udtTAF As TransactionAdditionalFieldModel = udtEHSTransaction.TransactionAdditionFields(0)
+
+        Dim udtSchemeClaimBLL As New SchemeClaimBLL
+        Dim udtSchemeClaimModel As SchemeClaimModel = udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransaction.SchemeCode.Trim, dtmServiceDate.AddDays(1).AddMinutes(-1))
+
+        Dim udtSchemeDetailBLL As New SchemeDetails.SchemeDetailBLL
+        Dim udtSubsidizeItemDetailList As SchemeDetails.SubsidizeItemDetailsModelCollection = udtSchemeDetailBLL.getSubsidizeItemDetails(udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode)
+
+        udtAuditLogEntry.AddDescripton("Scheme", udtEHSTransaction.SchemeCode.Trim)
+        udtAuditLogEntry.AddDescripton("Scheme Seq", udtTAF.SchemeSeq)
+        udtAuditLogEntry.AddDescripton("Subsidize Code", udtTAF.SubsidizeCode)
+        udtAuditLogEntry.AddDescripton("Subsidize Item Code", udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode)
+        udtAuditLogEntry.AddDescripton("Available Item Code", udtSubsidizeItemDetailList(0).AvailableItemCode)
+
+        For Each udtTransactAdditionfield As TransactionAdditionalFieldModel In udtEHSTransaction.TransactionAdditionFields
+            udtAuditLogEntry.AddDescripton(udtTransactAdditionfield.AdditionalFieldID, udtTransactAdditionfield.AdditionalFieldValueCode)
+        Next
+
+    End Sub
+
 #End Region
 
     Private Sub BuildCOVID19DischargeRecordGrid(ByVal udtDischargeResult As DischargeResultModel)
@@ -5451,7 +5591,7 @@ Partial Public Class ClaimCreation
 
             'Clear 
             Dim udcInputHCVS As ucInputHCVS = Me.udInputEHSClaim.GetHCVSControl 'CRe20-006 DHC intergation [Nichole]
-         
+
         End If
 
     End Sub
@@ -5517,6 +5657,156 @@ Partial Public Class ClaimCreation
     End Sub
 
 #End Region
+
+#Region "Medical Exemption Record"
+
+    Private Sub BuildMedicalExemptionRecordGrid(ByRef dtMedicalExemption As DataTable)
+
+        Me.udtSessionHandlerBLL.MedicalExemptionRecordSaveToSession(dtMedicalExemption)
+
+        If dtMedicalExemption.Rows.Count > 0 Then
+            gvMedicalExemptionRecord.Style.Add("border-width", "0px")
+            gvMedicalExemptionRecord.Style.Add("border-spacing", "2px")
+            gvMedicalExemptionRecord.Style.Add("border-collapse", "separate")
+            gvMedicalExemptionRecord.Style.Add("position", "relative")
+            gvMedicalExemptionRecord.Style.Add("left", "-2px")
+            gvMedicalExemptionRecord.DataSource = dtMedicalExemption
+            gvMedicalExemptionRecord.DataBind()
+            panMedicalExemptionRecord.Visible = False
+            gvMedicalExemptionRecord.Visible = True
+        Else
+            panMedicalExemptionRecord.Visible = True
+            gvMedicalExemptionRecord.Visible = False
+            gvMedicalExemptionRecord.Dispose()
+        End If
+
+    End Sub
+
+    Protected Sub gvMedicalExemptionRecord_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+
+            Dim dr As DataRow = CType(e.Row.DataItem, System.Data.DataRowView).Row
+            Dim udtFormatter As New Formatter
+            Dim blnIsChinese As Boolean = (LCase(Session("language")) = CultureLanguage.TradChinese)
+            Dim strLanguage As String = Session("language").ToString.Trim.ToLower
+
+            'Date of Issue
+            Dim lblDOI As Label = e.Row.FindControl("lblMedicalExemptionRecordDOI")
+            Select Case strLanguage
+                Case CultureLanguage.TradChinese
+                    lblDOI.Text = udtFormatter.formatDisplayDate(CDate(lblDOI.Text.Trim), CultureLanguage.TradChinese)
+                Case CultureLanguage.SimpChinese
+                    lblDOI.Text = udtFormatter.formatDisplayDate(CDate(lblDOI.Text.Trim), CultureLanguage.SimpChinese)
+                Case CultureLanguage.English
+                    lblDOI.Text = udtFormatter.formatDisplayDate(CDate(lblDOI.Text.Trim), CultureLanguage.English)
+                Case Else
+                    lblDOI.Text = udtFormatter.formatDisplayDate(CDate(lblDOI.Text.Trim), CultureLanguage.English)
+            End Select
+
+            'Issuer
+            Dim lblSP As Label = e.Row.FindControl("lblMedicalExemptionRecordSP")
+            Dim lblSPChi As Label = e.Row.FindControl("lblMedicalExemptionRecordSPChi")
+
+            lblSP.Visible = Not blnIsChinese
+            lblSPChi.Visible = blnIsChinese
+
+            'Date of Valid Until
+            Dim lblValidUntil As Label = e.Row.FindControl("lblMedicalExemptionRecordValidUntil")
+            Select Case strLanguage
+                Case CultureLanguage.TradChinese
+                    lblValidUntil.Text = udtFormatter.formatDisplayDate(CDate(lblValidUntil.Text.Trim), CultureLanguage.TradChinese)
+                Case CultureLanguage.SimpChinese
+                    lblValidUntil.Text = udtFormatter.formatDisplayDate(CDate(lblValidUntil.Text.Trim), CultureLanguage.SimpChinese)
+                Case CultureLanguage.English
+                    lblValidUntil.Text = udtFormatter.formatDisplayDate(CDate(lblValidUntil.Text.Trim), CultureLanguage.English)
+                Case Else
+                    lblValidUntil.Text = udtFormatter.formatDisplayDate(CDate(lblValidUntil.Text.Trim), CultureLanguage.English)
+            End Select
+
+            ' Background colour
+            If (e.Row.RowIndex Mod 2) = 1 Then
+                'Odd row (1,3,5...)
+                e.Row.Style.Add("background-color", "#efffe8")
+                e.Row.Style.Add("color", "black")
+            Else
+                'Even row (0,2,4...)
+                e.Row.Style.Add("background-color", "#d5e3cf")
+                e.Row.Style.Add("color", "black")
+            End If
+
+        End If
+
+    End Sub
+
+    Protected Sub gvMedicalExemptionRecord_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
+        Me.GridViewPreRenderHandler(sender, e, BLL.SessionHandlerBLL.SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord)
+    End Sub
+
+    Protected Sub gvMedicalExemptionRecord_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs)
+        Me.GridViewSortingHandler(sender, e, BLL.SessionHandlerBLL.SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord)
+    End Sub
+
+    Private Function TransactionDetailListToMedicalExemptionDataTable(ByVal dt As DataTable) As DataTable
+        Dim dtMedicalExemption As New DataTable
+        Dim dtmToday As DateTime = udtGeneralFunction.GetSystemDateTime.Date
+
+        ' Columns
+        With dtMedicalExemption.Columns
+            .Add("DateOfIssueDtm", GetType(Date))
+            .Add("DateOfIssueDtmSorting", GetType(String))
+            .Add("ServiceProviderEng", GetType(String))
+            .Add("ServiceProviderChi", GetType(String))
+            .Add("ServiceProviderSorting", GetType(String))
+            .Add("ValidUntilDtm", GetType(Date))
+            .Add("ValidUntilDtmSorting", GetType(String))
+            .Add("TransactionDtm", GetType(Date))
+        End With
+
+        ' Convert each TransactionDetailModel to datarow
+        If dt IsNot Nothing Then
+            For Each dr As DataRow In dt.Rows
+                Dim dtmValidUntil As Date
+
+                If DateTime.TryParse(dr.Item("ValidUntil"), dtmValidUntil) Then
+                    If dtmValidUntil >= dtmToday Then
+
+                        Dim drMedicalExemption As DataRow = dtMedicalExemption.NewRow
+
+                        drMedicalExemption("DateOfIssueDtm") = CDate(dr.Item("Service_Receive_Dtm"))
+                        drMedicalExemption("DateOfIssueDtmSorting") = CDate(dr.Item("Service_Receive_Dtm")).ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English)) + "_" +
+                                                                      CDate(dr.Item("ValidUntil")).ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English))
+                        drMedicalExemption("ServiceProviderEng") = dr.Item("SP_Name").ToString
+                        drMedicalExemption("ServiceProviderChi") = dr.Item("SP_Name_Chi").ToString
+                        drMedicalExemption("ServiceProviderSorting") = dr.Item("SP_Name").ToString + "_" + _
+                                                                        CDate(dr.Item("Service_Receive_Dtm")).ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English)) + "_" + _
+                                                                        CDate(dr.Item("ValidUntil")).ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English))
+                        drMedicalExemption("ValidUntilDtm") = CDate(dr.Item("ValidUntil"))
+                        drMedicalExemption("ValidUntilDtmSorting") = CDate(dr.Item("ValidUntil")).ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English)) + "_" + _
+                                                                     CDate(dr.Item("Service_Receive_Dtm")).ToString("yyyyMMdd", New System.Globalization.CultureInfo(CultureLanguage.English))
+                        drMedicalExemption("TransactionDtm") = CDate(dr.Item("Transaction_Dtm"))
+
+                        dtMedicalExemption.Rows.Add(drMedicalExemption)
+                    End If
+
+                End If
+
+            Next
+
+        End If
+
+        ' Sort the datatable
+        Dim dtResult As DataTable = dtMedicalExemption.Clone
+
+        For Each dr As DataRow In dtMedicalExemption.Select(String.Empty, "DateOfIssueDtmSorting DESC")
+            dtResult.ImportRow(dr)
+        Next
+
+        Return dtResult
+
+    End Function
+
+#End Region
+
 
 #Region "Supported Functions"
 
@@ -5710,6 +6000,87 @@ Partial Public Class ClaimCreation
 
         End If
 
+    End Sub
+
+    Private Sub BuildJSForHideShowMedicalReason(ByVal udtPreExisting_ReasonList As StaticData.StaticDataModelCollection, _
+                                                ByVal udtContraindBioNTech_ReasonList As StaticData.StaticDataModelCollection, _
+                                                ByVal udtContraindSinovac_ReasonList As StaticData.StaticDataModelCollection)
+
+        Dim jsForHideShowMedicalReason As String = ""
+
+        jsForHideShowMedicalReason += "$(""[id$='chkP1ProceedToPart2']"").change(function () {"
+
+        jsForHideShowMedicalReason += "if ($(""[id$='chkP1ProceedToPart2']"").is("":checked"")) {"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonHeading']"").css({display: ''});"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonBioNTechHeading']"").css({display: ''});"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonBioNTech']"").css({display: ''});"
+        jsForHideShowMedicalReason += "$(""[id$='trAND']"").css({display: ''});"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonSinovacHeading']"").css({display: ''});"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonSinovac']"").css({display: ''});"
+        jsForHideShowMedicalReason += "for (var i = 0; i < " + udtPreExisting_ReasonList.Count.ToString + "; i++){"
+        jsForHideShowMedicalReason += "$(""[id$='chkPart1MedicalReason"" + i + ""']"").prop('checked', false);$(""[id$='chkPart1MedicalReason"" + i + ""']"").prop('disabled', true);"
+        jsForHideShowMedicalReason += "if ($(""[id$='txtPart1MedicalReason"" + i + ""']"").length != 0) {$(""[id$='txtPart1MedicalReason"" + i + ""']"").val('');$(""[id$='txtPart1MedicalReason"" + i + ""']"").prop('disabled', true);};"
+        jsForHideShowMedicalReason += "};"
+        'jsForHideShowMedicalReason += "$(""[id$='btnStep2aClaim']"").attr('src','" & strImageEnable.Replace("~", "..") & "');"
+        'jsForHideShowMedicalReason += "console.log(""checked V1"");"
+        jsForHideShowMedicalReason += "}"
+        jsForHideShowMedicalReason += "else {"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonHeading']"").css({display: 'none'});"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonBioNTechHeading']"").css({display: 'none'});"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonBioNTech']"").css({display: 'none'});"
+        jsForHideShowMedicalReason += "$(""[id$='trAND']"").css({display: 'none'});"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonSinovacHeading']"").css({display: 'none'});"
+        jsForHideShowMedicalReason += "$(""[id$='trP2MedicalReasonSinovac']"").css({display: 'none'});"
+        jsForHideShowMedicalReason += "for (var i = 0; i < " + udtPreExisting_ReasonList.Count.ToString + "; i++){"
+        jsForHideShowMedicalReason += "$(""[id$='chkPart1MedicalReason"" + i + ""']"").prop('disabled', false);"
+        jsForHideShowMedicalReason += "if ($(""[id$='txtPart1MedicalReason"" + i + ""']"").length != 0) {$(""[id$='txtPart1MedicalReason"" + i + ""']"").prop('disabled', false);};"
+        jsForHideShowMedicalReason += "};"
+        jsForHideShowMedicalReason += "for (var i = 0; i < " + udtContraindBioNTech_ReasonList.Count.ToString + "; i++){"
+        jsForHideShowMedicalReason += "$(""[id$='chkPart2MedicalReasonBioNTech"" + i + ""']"").prop('checked', false);"
+        'jsForHideShowMedicalReason += "if ($(""[id$='txtPart2MedicalReasonBioNTech"" + i + ""']"").length != 0) {$(""[id$='txtPart2MedicalReasonBioNTech"" + i + ""']"").prop('disabled', false);};"
+        jsForHideShowMedicalReason += "};"
+        jsForHideShowMedicalReason += "for (var i = 0; i < " + udtContraindSinovac_ReasonList.Count.ToString + "; i++){"
+        jsForHideShowMedicalReason += "$(""[id$='chkPart2MedicalReasonSinovac"" + i + ""']"").prop('checked', false);"
+        'jsForHideShowMedicalReason += "if ($(""[id$='txtPart2MedicalReasonSinovac"" + i + ""']"").length != 0) {$(""[id$='txtPart2MedicalReasonSinovac"" + i + ""']"").prop('disabled', false);};"
+        jsForHideShowMedicalReason += "};"
+        'jsForHideShowMedicalReason += "$(""[id$='btnStep2aClaim']"").attr('src','" & strImageDisable.Replace("~", "..") & "');"
+        'jsForHideShowMedicalReason += "console.log(""unchecked V1"");"
+        jsForHideShowMedicalReason += "}"
+        jsForHideShowMedicalReason += "});"
+        jsForHideShowMedicalReason += "$(""[id$='chkP1ProceedToPart2']"").change();"
+        jsForHideShowMedicalReason += "function Part1ReasonRemarkTextChanged(obj){$(""[id$='"" + obj + ""']"").prop('checked', true);};"
+        jsForHideShowMedicalReason += "function Part1ReasonCheckboxChanged(chk,txt){if ($(""[id$='"" + chk + ""']"").is("":checked"")) { } else { $(""[id$='"" + txt + ""']"").val(''); };};"
+        'jsForHideShowMedicalReason += "function Part1ReasonRemarkTextChanged(obj){document.getElementById('obj').checked=true;};"
+        Dim guidText As String = Guid.NewGuid().ToString()
+        jsForHideShowMedicalReason += "RemoveUsedBlockScript('" & guidText & "');"
+
+        ScriptManager.RegisterStartupScript(Me, Page.GetType(), "scriptForHideShowMedicalReason", jsForHideShowMedicalReason, True)
+    End Sub
+
+    Private Sub BuildbtnStep2aClaimEventForMedicalExemption()
+        Dim jsBuildbtnStep2aClaimEventForMedicalExemption As String = ""
+        Dim strImageEnable As String = Me.GetGlobalResourceObject("ImageURL", "SaveBtn")
+        Dim strImageDisable As String = Me.GetGlobalResourceObject("ImageURL", "SaveDisableBtn")
+
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "$(""[id$='chkJoinEHRSS']"").change(function () {"
+
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "if ($(""[id$='chkJoinEHRSS']"").is("":checked"")) {"
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "$(""[id$='txtContactNo']"").attr('disabled', false);"
+        'jsBuildbtnStep2aClaimEventForMedicalExemption += "$(""[id$='btnStep2aClaim']"").attr('src','" & strImageEnable.Replace("~", "..") & "');"
+        'jsBuildbtnStep2aClaimEventForMedicalExemption += "console.log(""checked V1"");"
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "}"
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "else {"
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "$(""[id$='txtContactNo']"").attr('disabled', true);"
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "$(""[id$='txtContactNo']"").val('');"
+        'jsBuildbtnStep2aClaimEventForMedicalExemption += "$(""[id$='btnStep2aClaim']"").attr('src','" & strImageDisable.Replace("~", "..") & "');"
+        'jsBuildbtnStep2aClaimEventForMedicalExemption += "console.log(""unchecked V1"");"
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "}"
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "});"
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "$(""[id$='chkJoinEHRSS']"").change();"
+        Dim guidText As String = Guid.NewGuid().ToString()
+        jsBuildbtnStep2aClaimEventForMedicalExemption += "RemoveUsedBlockScript('" & guidText & "');"
+
+        ScriptManager.RegisterStartupScript(Me, Page.GetType(), "scriptClaimForMedicalExemption", jsBuildbtnStep2aClaimEventForMedicalExemption, True)
     End Sub
 
 #End Region

@@ -282,5 +282,23 @@ Namespace Component.Scheme
             Return False
         End Function
         'CRE20-xxx COVID-19 show practice with VSS or RVP scheme [End][Nichole]
+
+
+        ' CRE20-023-71 (COVID19 - Medical Exemption Record) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------
+        Public Function FilterByHCSPUserRole(ByVal strUserType As String) As SchemeClaimModelCollection
+            Dim udtSchemeClaimList As New SchemeClaimModelCollection
+
+            For Each udtSchemeClaim As SchemeClaimModel In Me
+
+                If strUserType = SPAcctType.DataEntryAcct AndAlso udtSchemeClaim.AllowDataEntryClaim = False Then Continue For
+
+                udtSchemeClaimList.Add(New SchemeClaimModel(udtSchemeClaim))
+            Next
+
+            Return udtSchemeClaimList
+
+        End Function
+        ' CRE20-023-71 (COVID19 - Medical Exemption Record) [End][Winnie SUEN]
     End Class
 End Namespace

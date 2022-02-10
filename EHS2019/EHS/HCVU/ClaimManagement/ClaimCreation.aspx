@@ -464,7 +464,75 @@
                                                         </td>
                                                     </tr>
                                                 </table>
-                                            </asp:Panel>                                            
+                                            </asp:Panel>                
+                                            
+                                            <asp:Panel ID="panStep2aMedicalExemptionRecord" runat="server" Visible="false">
+                                                <table cellspacing="0" cellpadding="0" border="0" style="padding-left:22px">
+                                                    <tr>
+                                                        <td class="eHSTableHeading" style="padding-bottom:3px">
+                                                            <asp:Label ID="lblMedicalExemptionRecordHeading" runat="server" Font-Underline="True" Text="<%$ Resources:Text, MedicalExemptionRecordsHeading%>" CssClass="tableText" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <asp:Panel ID="panMedicalExemptionRecord" runat="server">
+                                                                <table style="border:0px solid;padding:0px;border-spacing:2px;border-collapse:separate;border-color:#CCCCCC;width:930px">
+                                                                    <tr style="background-color:#70AD47">
+                                                                        <td style="width:125px;vertical-align:middle;text-align:center;border:0px solid;border-color:transparent">
+                                                                            <asp:Label ID="lblNoMedicalExemptionRecordDOI" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, DateOfIssue %>" />
+                                                                        </td>
+                                                                        <td style="width:125px;vertical-align:middle;text-align:center;border:0px solid;border-color:transparent">
+                                                                            <asp:Label ID="lblNoMedicalExemptionRecordIssuer" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, Issuer %>" />
+                                                                        </td>
+                                                                        <td style="width:125px;vertical-align:middle;text-align:center;border:0px solid;border-color:transparent">
+                                                                            <asp:Label ID="lblNoMedicalExemptionRecordValidUntil" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, ValidUntil %>" />
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr style="background-color:#D5E3CF">
+                                                                        <td style="vertical-align:middle;border:0px solid;border-color:transparent;height:20px" colspan="3">
+                                                                            <asp:Label ID="lblNoMedicalExemptionRecord" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px"
+                                                                                Text="<%$ Resources:Text, NoRecordsFound%>" />
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </asp:Panel>
+                                                            <asp:GridView ID="gvMedicalExemptionRecord" runat="server" AutoGenerateColumns="False" Width="930px" BorderColor="Transparent"
+                                                                AllowSorting="True"  AllowPaging="False"  OnRowDataBound="gvMedicalExemptionRecord_RowDataBound"
+                                                                OnPreRender="gvMedicalExemptionRecord_PreRender" OnSorting="gvMedicalExemptionRecord_Sorting">
+                                                                <Columns>
+                                                                    <asp:TemplateField SortExpression="DateOfIssueDtmSorting" HeaderText="<%$ Resources: Text, DateOfIssue %>">
+                                                                        <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#70AD47" BorderColor="Transparent"/>                                  
+                                                                        <ItemStyle Width="125px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblMedicalExemptionRecordDOI" runat="server" Text='<%# Bind("DateOfIssueDtm")%>' />
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField SortExpression="ServiceProviderSorting" HeaderText="<%$ Resources: Text, Issuer %>">
+                                                                        <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#70AD47" BorderColor="Transparent"/>
+                                                                        <ItemStyle Width="280px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblMedicalExemptionRecordSP" runat="server" Text='<%# Bind("ServiceProviderEng")%>' />
+                                                                            <asp:Label ID="lblMedicalExemptionRecordSPChi" runat="server" Text='<%# Bind("ServiceProviderChi")%>' />
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField SortExpression="ValidUntilDtmSorting" HeaderText="<%$ Resources: Text, ValidUntil %>">
+                                                                        <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#70AD47" BorderColor="Transparent"/>
+                                                                        <ItemStyle Width="280px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblMedicalExemptionRecordValidUntil" runat="server" Text='<%# Bind("ValidUntilDtm")%>' />
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                </Columns>
+                                                                <AlternatingRowStyle BackColor="#D5E3CF" ForeColor="Black"  />                              
+                                                            </asp:GridView>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-bottom:10px">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </asp:Panel>                                                                        
                                                                                                                                 
                                             <table style="width: 100%;padding-left:22px" cellpadding="1" cellspacing="0">
                                                 <tr>

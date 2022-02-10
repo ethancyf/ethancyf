@@ -101,7 +101,6 @@ Namespace BLL
             Public Const SESS_eHSAccDocType As String = "SESS_EHSACCDOCTYPE"
             Public Const SESS_eHSAccDocNum As String = "SESS_EHSACCDOCNUM"
 
-
             '------------------------------------------------------------------------------------------
             'SmartIC Content Session
             '------------------------------------------------------------------------------------------
@@ -173,6 +172,8 @@ Namespace BLL
             Public Const SESS_ClaimCOVID19_C19VaccineRecord As String = "SESS_CLAIMCOVID19_C19VACCINERECORD"
             Public Const SESS_ClaimCOVID19_OtherVaccineRecord As String = "SESS_CLAIMCOVID19_OTHERVACCINERECORD"
             Public Const SESS_ClaimCOVID19_DischargeRecord As String = "SESS_CLAIMCOVID19_DISCHARGERECORD"
+            Public Const SESS_ClaimCOVID19_MedicalExemptionRecord As String = "SESS_CLAIMCOVID19_MEDICALEXEMPTIONRECORD"
+            Public Const SESS_ClaimCOVID19_MedicalExemptionRecordFull As String = "SESS_CLAIMCOVID19_MEDICALEXEMPTIONRECORDFULL"
             Public Const SESS_ClaimCOVID19_DischargeReminder As String = "SESS_CLAIMCOVID19_DISCHARGEREMINDER"
             Public Const SESS_ClaimCOVID19_DischargeDemographicReminder As String = "SESS_CLAIMCOVID19_DISCHARGEDEMOGRAPHICREMINDER"
             Public Const SESS_ClaimCOVID19_DischargeOverrideReason As String = "SESS_CLAIMCOVID19_DISCHARGEOVERRIDEREASON"
@@ -181,6 +182,7 @@ Namespace BLL
             Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
             Public Const SESS_CLAIMCOVID19_CarryForward As String = "SESS_CLAIMCOVID19_CARRYFORWARD"
             Public Const SESS_NORMALCLAIM_CarryForward As String = "SESS_NORMALCLAIM_CARRYFORWARD"
+            Public Const SESS_MEDICALEXEMPTION_CarryForward As String = "SESS_MEDICALEXEMPTION_CARRYFORWARD"
             ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         End Class
@@ -1599,8 +1601,6 @@ Namespace BLL
         End Sub
 #End Region
 
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
 #Region "Claim COVID-19 - Other Vaccine Record"
 
         Public Sub ClaimCOVID19OtherVaccineRecordSaveToSession(ByVal dtVaccineRecord As DataTable)
@@ -1619,7 +1619,43 @@ Namespace BLL
             HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_OtherVaccineRecord)
         End Sub
 #End Region
-        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "Claim COVID-19 - Medical Exemption Record"
+        Public Sub MedicalExemptionRecordFullSaveToSession(ByVal dt As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecordFull) = dt
+        End Sub
+
+        Public Function MedicalExemptionRecordFullGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecordFull) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecordFull), DataTable)
+            End If
+        End Function
+
+        Public Sub MedicalExemptionRecordFullRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecordFull)
+        End Sub
+
+        Public Sub MedicalExemptionRecordSaveToSession(ByVal dt As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord) = dt
+        End Sub
+
+        Public Function MedicalExemptionRecordGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord), DataTable)
+            End If
+        End Function
+
+        Public Sub MedicalExemptionRecordRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord)
+        End Sub
+#End Region
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
 
 #Region "Claim COVID-19 - Scheme Selected"
         Public Sub ClaimCOVID19SchemeSelectedSaveToSession(ByVal udtSchemeClaim As SchemeClaimModel, ByVal strFunctionCode As String)
@@ -1752,6 +1788,21 @@ Namespace BLL
 
         Public Sub NormalClaimCarryForwordRemoveFromSession(ByVal strFunctionCode As String)
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_NORMALCLAIM_CarryForward))
+        End Sub
+
+#End Region
+
+#Region "Medical Exemption - Carry Forword"
+        Public Sub MedicalExemptionCarryForwordSaveToSession(ByVal blnUsed As Boolean, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_MEDICALEXEMPTION_CarryForward)) = blnUsed
+        End Sub
+
+        Public Function MedicalExemptionCarryForwordGetFromSession(ByVal strFunctionCode As String) As Boolean
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_MEDICALEXEMPTION_CarryForward)), Boolean)
+        End Function
+
+        Public Sub MedicalExemptionCarryForwordRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_MEDICALEXEMPTION_CarryForward))
         End Sub
 
 #End Region

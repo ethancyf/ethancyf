@@ -267,28 +267,34 @@ Namespace BLL
                         If udtPracticeSchemeInfoList.Count = 0 Then Continue For
 
                         '----------------------------------------
-                        '2.2 Filter practice scheme without readonly in claim
+                        '2.2 Filter practice scheme
                         '----------------------------------------
-                        'Dim blnContainReadonlyScheme As Boolean = True
 
-                        'For Each udtPracticeScheme As PracticeSchemeInfoModel In udtPractice.PracticeSchemeInfoList.Values
-                        '    If Not udtSchemeClaimBLL.CheckSchemeClaimReadonly(udtPracticeScheme) Then
-                        '        blnContainReadonlyScheme = False
-                        '        Exit For
-                        '    End If
-                        'Next
-
+                        ' CRE20-023-71 (COVID19 - Medical Exemption Record) [Start][Winnie SUEN]
+                        ' -----------------------------------------------------------------------
                         For Each udtPracticeScheme As PracticeSchemeInfoModel In udtPractice.PracticeSchemeInfoList.Values
-                            If udtSchemeClaimBLL.CheckSchemeClaimReadonly(udtPracticeScheme) Then
 
+                            Dim blnRemove As Boolean = False
+
+                            '2.2.1 readonly in claim
+                            If udtSchemeClaimBLL.CheckSchemeClaimReadonly(udtPracticeScheme) Then
+                                blnRemove = True
+                            End If
+
+                            '2.2.2 Not allow to claim for Data Entry
+                            If udtSchemeClaimBLL.CheckSchemeClaimAllowDataEntryClaim(udtPracticeScheme) = False Then
+                                blnRemove = True
+                            End If
+
+                            If blnRemove Then
                                 If Not udtPracticeSchemeInfoList.Filter(udtPracticeScheme.SchemeCode, udtPracticeScheme.SubsidizeCode) Is Nothing Then
                                     udtPracticeSchemeInfoList.Remove(udtPracticeScheme)
                                 End If
-
                             End If
-                        Next
 
-                        'If blnContainReadonlyScheme Then Continue For
+                        Next
+                        ' CRE20-023-71 (COVID19 - Medical Exemption Record) [End][Winnie SUEN]
+
                         If udtPracticeSchemeInfoList.Count = 0 Then Continue For
 
                         '----------------------------------------

@@ -165,7 +165,7 @@ Namespace PrintOut.ConfirmationLetter
             'textBox.Text = strNameOfMO
             textBox.Name = "txtMO" + intMODisplaySeq.ToString().Trim() + "Text"
             'textBox.Location = New System.Drawing.PointF(0.0!, sngStartTop)
-            textBox.Font = New System.Drawing.Font("HA_MingLiU", 14.25!, Drawing.FontStyle.Bold)
+            textBox.Font = New System.Drawing.Font("MingLiU_HKSCS-ExtB", 14.25!, Drawing.FontStyle.Bold)
             textBox.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
             CType(textBox, System.ComponentModel.ISupportInitialize).EndInit()
 

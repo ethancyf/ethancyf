@@ -106,6 +106,7 @@ Public MustInherit Class BasePage
         Dim objIsCheckedForNotice As Object = Nothing
         Dim objSmartIDContent As Object = Nothing
         Dim objUserType As Object = Nothing
+        Dim objReprintRecordType As Object = Nothing
         Dim udtRedirectParameter As RedirectParameterModel = Nothing
 
         Dim objPageKey As Object = Nothing
@@ -159,6 +160,8 @@ Public MustInherit Class BasePage
             ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             objUserType = Session(SESS_UserType)
+
+            objReprintRecordType = Session(ReprintVaccinationRecord.SESS.SelectedRecordType)
 
             Session.RemoveAll()
 
@@ -220,6 +223,10 @@ Public MustInherit Class BasePage
 
             Session(SESS_UserType) = objUserType
 
+            ' CRE20-023-71 (COVID19 - Medical Exemption Record) [Start][Winnie SUEN]
+            ' -----------------------------------------------------------------------
+            Session(ReprintVaccinationRecord.SESS.SelectedRecordType) = objReprintRecordType
+            ' CRE20-023-71 (COVID19 - Medical Exemption Record) [End][Winnie SUEN]
         End If
     End Sub
 

@@ -155,7 +155,7 @@ Namespace PrintOut.ConfirmationLetter
 
             textBox.Name = "txtMO" + intMODisplaySeq.ToString().Trim() + "Text"
             ' CRE16-009 Allow display Chinese unicode in MO English name [Start][Koala]
-            textBox.Font = New System.Drawing.Font("HA_MingLiU", 10, Drawing.FontStyle.Bold)
+            textBox.Font = New System.Drawing.Font("MingLiU_HKSCS-ExtB", 10, Drawing.FontStyle.Bold)
             ' CRE16-009 Allow display Chinese unicode in MO English name [End][Koala]
             textBox.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
             CType(textBox, System.ComponentModel.ISupportInitialize).EndInit()

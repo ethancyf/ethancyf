@@ -426,6 +426,61 @@ Namespace Component.EHSTransaction
         End Property
         ' CRE20-0023 (Immu record) [End][Chris YIM]
 
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property PreExisting() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.PreExisting)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property PreExistingA2Remark() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.PreExisting_A2_Remark)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueDesc
+            End Get
+        End Property
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property ContraindSinovac() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ContraindSinovac)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property ContraindBioNTech() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ContraindBioNTech)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property ValidUntil() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ValidUntil)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
         ' CRE20-0023 (Immu record) [Start][Martin Tang]
         ' ---------------------------------------------------------------------------------------------------------
         Public ReadOnly Property ClinicType() As String

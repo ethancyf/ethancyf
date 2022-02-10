@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	10 Jan 2022
+-- CR No.			CRE20-023-71 (COVID19 Exemption Record) 
+-- Description:		Add Column    - [SchemeClaim].[AllowDataEntryClaim]
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -108,7 +116,8 @@ SELECT a.*,
 		b.[ProperPractice_Avail],
 		b.[ProperPractice_SectionID],
 		b.[Readonly_HCSP],
-		b.[AllowTempAccBOClaim]	
+		b.[AllowTempAccBOClaim],
+		b.[AllowDataEntryClaim]
 FROM
 (select   
 	 [Scheme_Code],  

@@ -1494,6 +1494,64 @@ Namespace Validation
             Return sm
         End Function
 
+        Public Function chkInputDate(ByVal strOriInputDate As String, _
+                                     ByVal blnCheckEmpty As Boolean, _
+                                     ByVal blnCheckFutureDate As Boolean, _
+                                     ByVal strCustomDateFormat As String) As ComObject.SystemMessage
+            Dim sm As ComObject.SystemMessage
+            Dim formatter As Common.Format.Formatter = New Common.Format.Formatter
+            Dim culEng As New CultureInfo(CultureLanguage.English)
+            Dim strFunctCode, strSeverity, strMsgCode As String
+            Dim blnRes As Boolean = True
+            Dim dtmDate As DateTime
+
+            strFunctCode = "990000"
+            strSeverity = "E"
+            strMsgCode = String.Empty
+
+            '1. Check empty
+            If blnCheckEmpty Then
+                If IsEmpty(strOriInputDate) Then
+                    blnRes = False
+                    strMsgCode = "00463"
+                End If
+            End If
+
+            '2. Check date format
+            If blnRes Then
+                If Not DateTime.TryParseExact(strOriInputDate, strCustomDateFormat, culEng, DateTimeStyles.None, dtmDate) Then
+                    blnRes = False
+                    strMsgCode = "00466"
+                End If
+            End If
+
+            '3. Check not to be a future date
+            If blnRes Then
+                If blnCheckFutureDate Then
+                    If Not chkDateIsFutureDate(dtmDate) Is Nothing Then
+                        blnRes = False
+                        strMsgCode = "00513"
+                    End If
+                End If
+            End If
+
+            '4. Check minimum and maximum date to prevent overflow in SQL with data type - datetime
+            If blnRes Then
+                If dtmDate.Year < DateValidation.YearMinValue Or dtmDate.Year > DateValidation.YearMaxValue Then
+                    blnRes = False
+                    strMsgCode = "00466"
+                End If
+            End If
+
+            If blnRes Then
+                sm = Nothing
+            Else
+                sm = New ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+            End If
+
+            Return sm
+        End Function
+
         'INT15-0015 (Fix date format checking in HCVU) [End][Chris YIM]
 
         Public Function chkBankPaymentDate(ByVal strFunctCode As String, ByVal strOriInputDate As String, ByVal strVariable() As String) As ComObject.SystemMessage

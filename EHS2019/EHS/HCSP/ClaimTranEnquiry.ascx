@@ -135,10 +135,7 @@
                         <asp:Label ID="lblContactNo" runat="server" CssClass="tableText" Style="position:relative;left:-2px"/>
                     </td>
                 </tr>
-                <%--<tr>
-                    <td style="padding-bottom:10px">
-                    </td>
-                </tr>--%>
+                <asp:Panel ID="panRemark" runat="server">
                 <tr>
                     <td style="height:25px;width: 205px;vertical-align:top">
                         <asp:Label ID="lblRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" Style="position:relative;left:-1px"/>
@@ -147,6 +144,7 @@
                         <asp:Label ID="lblRemark" runat="server" CssClass="tableText" Style="position:relative;left:-2px"/>
                     </td>
                 </tr>
+                </asp:Panel>
                 <asp:Panel ID="panJoinEHRSS" runat="server">
                 <tr>
                     <td style="height:25px;width: 205px;vertical-align:top">

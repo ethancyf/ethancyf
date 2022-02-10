@@ -81,6 +81,11 @@ Namespace Component.EHSTransaction
             Public Const DischargeDate As String = "DischargeDate"
             Public Const DischargeFileID As String = "DischargeFileID"
             Public Const NonLocalRecoveredHistory As String = "NonLocalRecovered"
+            Public Const PreExisting As String = "Pre-existing"
+            Public Const PreExisting_A2_Remark As String = "Pre_A2_Remark"
+            Public Const ContraindBioNTech As String = "Contraind_BioNTech"
+            Public Const ContraindSinovac As String = "Contraind_Sinovac"
+            Public Const ValidUntil As String = "ValidUntil"
             ' CRE20-0023 (Immu record) [End][Chris YIM]
 
             Public Shared Function ReasonForVisitL1() As String()

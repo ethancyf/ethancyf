@@ -1184,15 +1184,6 @@ Partial Public Class EHSClaimV1
     Protected WithEvents ModalPopupExtenderOtherVaccinationRecordRemark As Global.AjaxControlToolkit.ModalPopupExtender
 
     '''<summary>
-    '''btnModalPopupOtherVaccinationRecordRemark control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnModalPopupOtherVaccinationRecordRemark As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
     '''ModalPopupExtenderConfirmSelectPractice control.
     '''</summary>
     '''<remarks>
@@ -1526,6 +1517,78 @@ Partial Public Class EHSClaimV1
     Protected WithEvents udcStep2aReadOnlyDocumnetType As Global.HCSP.ucReadOnlyDocumnetType
 
     '''<summary>
+    '''panStep2aMedicalExemptionRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aMedicalExemptionRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblMedicalExemptionRecordHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblMedicalExemptionRecordHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panMedicalExemptionRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panMedicalExemptionRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblNoMedicalExemptionRecordDOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNoMedicalExemptionRecordDOI As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNoMedicalExemptionRecordIssuer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNoMedicalExemptionRecordIssuer As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNoMedicalExemptionRecordValidUntil control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNoMedicalExemptionRecordValidUntil As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNoMedicalExemptionRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNoMedicalExemptionRecord As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''gvMedicalExemptionRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvMedicalExemptionRecord As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
     '''panStep2aOtherVaccinationRecord control.
     '''</summary>
     '''<remarks>
@@ -1544,13 +1607,13 @@ Partial Public Class EHSClaimV1
     Protected WithEvents lblCOtherVaccinationRecordHeading As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''imgCOtherVaccinationRecordInfo control.
+    '''btnModalPopupOtherVaccinationRecordRemark control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgCOtherVaccinationRecordInfo As Global.System.Web.UI.WebControls.Image
+    Protected WithEvents btnModalPopupOtherVaccinationRecordRemark As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''panNoOtherVaccinationRecord control.
@@ -2009,7 +2072,7 @@ Partial Public Class EHSClaimV1
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgStep2aContactNoError As Global.System.Web.UI.WebControls.ImageButton
+    Protected WithEvents imgStep2aContactNoError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''lblStep2aContactNoRecommendation control.
@@ -2048,6 +2111,15 @@ Partial Public Class EHSClaimV1
     Protected WithEvents chkStep2aMobile As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
+    '''trStep2aRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep2aRemark As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblStep2aRemarkText control.
     '''</summary>
     '''<remarks>
@@ -2072,7 +2144,7 @@ Partial Public Class EHSClaimV1
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgStep2aRemarkError As Global.System.Web.UI.WebControls.ImageButton
+    Protected WithEvents imgStep2aRemarkError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''fteStep2aRemark control.
@@ -2307,6 +2379,96 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStep2aDeclareNonLocalRecoveredHistoryContent As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panStep2aMedicalExemptionJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aMedicalExemptionJoinEHRSS As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''trStep2aMedicalExemptionJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep2aMedicalExemptionJoinEHRSS As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''chkStep2aMedicalExemptionJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkStep2aMedicalExemptionJoinEHRSS As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''lblStep2aMedicalExemptionJoinEHRSS_1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aMedicalExemptionJoinEHRSS_1 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep2aMedicalExemptionJoinEHRSS_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aMedicalExemptionJoinEHRSS_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtStep2aMedicalExemptionContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtStep2aMedicalExemptionContactNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgStep2aMedicalExemptionContactNoError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgStep2aMedicalExemptionContactNoError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblStep2aMedicalExemptionJoinEHRSS_3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aMedicalExemptionJoinEHRSS_3 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''fteStep2aMedicalExemptionContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteStep2aMedicalExemptionContactNo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''imgStep2aMedicalExemptionJoinEHRSSError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgStep2aMedicalExemptionJoinEHRSSError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''btnStep2aCancel control.
@@ -2550,6 +2712,15 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStep2bContactNoNotAbleSMS As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panStep2bRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2bRemark As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
     '''lblStep2bRemarkText control.
@@ -3072,6 +3243,15 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStep3ContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panStep3Remark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep3Remark As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
     '''lblStep3RemarkText control.

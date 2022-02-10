@@ -9,6 +9,7 @@
         'CRE20-009 declare variable for service date [Start][Nichole]
         Private _strServiceDate As String
         'CRE20-009 declare variable for service date [End][Nichole]
+        Private _strRecordStatus As String
 
 
         Public Const Column_Name As String = "Column_Name"
@@ -20,6 +21,7 @@
         'CRE20-009 declare variable for service date [Start][Nichole]
         Public Const Service_Dtm As String = "Service_Dtm"
         'CRE20-009 declare variable for service date [End][Nichole]
+        Public Const Record_Status As String = "Record_Status"
 
         Public Property ColumnName()
             Get
@@ -85,8 +87,15 @@
             End Set
         End Property
         'CRE20-009 declare property for service date [End][Nichole]
-
-        Public Sub New(ByVal strColumnName As String, ByVal strItemNo As String, ByVal strDataValue As String, ByVal strDataValueChi As String, ByVal strDataValueCN As String, Optional ByVal strDisplayOrder As String = "", Optional ByVal strServiceDate As String = "")
+        Public Property RecordStatus()
+            Get
+                Return _strRecordStatus
+            End Get
+            Set(ByVal value)
+                _strRecordStatus = value
+            End Set
+        End Property
+        Public Sub New(ByVal strColumnName As String, ByVal strItemNo As String, ByVal strDataValue As String, ByVal strDataValueChi As String, ByVal strDataValueCN As String, Optional ByVal strDisplayOrder As String = "", Optional ByVal strServiceDate As String = "", Optional ByVal strRecordStatus As String = "")
             _strColumnName = strColumnName
             _strItemNo = strItemNo
             _strDataValue = strDataValue
@@ -96,6 +105,7 @@
             'CRE20-009 declare variable for service date on constructor [Start][Nichole]
             _strServiceDate = strServiceDate
             'CRE20-009 declare variable for service date on constructor [End][Nichole]
+            _strRecordStatus = strRecordStatus
         End Sub
 
         Public Sub New(ByVal udtStaticDataModel As StaticDataModel)
@@ -108,6 +118,7 @@
             'CRE20-009 declare variable for service date on constructor [Start][Nichole]
             _strServiceDate = udtStaticDataModel.ServiceDate
             'CRE20-009 declare variable for service date on constructor [End][Nichole]
+            _strRecordStatus = udtStaticDataModel.RecordStatus
         End Sub
 
     End Class

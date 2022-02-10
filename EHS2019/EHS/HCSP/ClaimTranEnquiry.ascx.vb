@@ -81,16 +81,20 @@ Partial Public Class ClaimTranEnquiry
         ' --- Display setting for COVID-19 ---
 
         If IsClaimCOVID19(udtEHSTransaction) Then
-            'trTransactionStatus.Style.Add("display", "none")
-            'trPractice.Style.Add("display", "none")
             trBankAcct.Style.Add("display", "none")
             trServiceType.Style.Add("display", "none")
-            'trServiceDate.Style.Add("display", "none")
-            lblClaimInfo.Text = Me.GetGlobalResourceObject("Text", "VaccineInfo")
-            panRecipinetContactInfo.Visible = True
-            lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
+
+            If udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19MEC Then
+                lblClaimInfo.Text = Me.GetGlobalResourceObject("Text", "MedicalExemptionsCOVID19")
+                lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "DateOfIssue")
+            Else
+                lblClaimInfo.Text = Me.GetGlobalResourceObject("Text", "VaccineInfo")
+                lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
+            End If
 
             'Contact No. & Mobile
+            panRecipinetContactInfo.Visible = True
+
             If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
                 trContactNo.Visible = True
 
@@ -115,7 +119,6 @@ Partial Public Class ClaimTranEnquiry
                 lblRemark.Text = GetGlobalResourceObject("Text", "NotProvided")
             End If
 
-            'Join EHRSS
             If (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19RVP OrElse _
@@ -125,6 +128,9 @@ Partial Public Class ClaimTranEnquiry
                 ((udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
                  udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
                  udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) Then
+
+                'Remarks
+                panRemark.Visible = True
 
                 'Join EHRSS
                 If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSTransaction.EHSAcct, udtEHSTransaction.DocCode) Then
@@ -159,7 +165,32 @@ Partial Public Class ClaimTranEnquiry
                     lblNonLocalRecoveredHistory.Text = GetGlobalResourceObject("Text", "NA")
                 End If
 
+            ElseIf udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19MEC Then
+                'Remarks
+                panRemark.Visible = False
+
+                'Join EHRSS
+                If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSTransaction.EHSAcct, udtEHSTransaction.DocCode) Then
+                    panJoinEHRSS.Visible = True
+
+                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                        lblJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
+                                                   GetGlobalResourceObject("Text", "Yes"), _
+                                                   GetGlobalResourceObject("Text", "No"))
+
+                    Else
+                        lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
+                    End If
+
+                Else
+                    panJoinEHRSS.Visible = False
+
+                End If
+
+                'Non-Local Recovered History
+                panNonLocalRecoveredHistory.Visible = False
             Else
+                panRemark.Visible = False
                 panJoinEHRSS.Visible = False
                 panNonLocalRecoveredHistory.Visible = False
 
@@ -768,11 +799,12 @@ Partial Public Class ClaimTranEnquiry
     End Sub
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
 
-    Public Function IsClaimCOVID19(udtEHSTransaction) As Boolean
+    Public Function IsClaimCOVID19(ByVal udtEHSTransaction As EHSTransactionModel) As Boolean
 
-        Dim udtTranDetailList As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+        Dim udtTranDetailC19List As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+        Dim udtTranDetailMECList As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC)
 
-        If udtTranDetailList.Count > 0 Then
+        If udtTranDetailC19List.Count > 0 OrElse udtTranDetailMECList.Count > 0 Then
             Return True
         End If
 

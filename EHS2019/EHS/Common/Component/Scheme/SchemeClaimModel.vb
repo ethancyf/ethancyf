@@ -60,6 +60,7 @@ Namespace Component.Scheme
         Public Const COVID19OR As String = "COVID19OR"
         Public Const COVID19SR As String = "COVID19SR"
         Public Const COVID19SB As String = "COVID19SB"
+        Public Const COVID19MEC As String = "COVID19MEC"
 
 #End Region
 
@@ -84,6 +85,7 @@ Namespace Component.Scheme
             COVID19     ' CRE20-0022 (Immu record) [Winnie SUEN]
             COVID19RVP
             COVID19OR
+            COVID19MEC
         End Enum
 
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
@@ -141,11 +143,8 @@ Namespace Component.Scheme
         Private _strProperPracticeAvail As String
         Private _strProperPracticeSectionID As String
         Private _strReadonlyHCSP As String
-        ' CRE20-0023 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Private _strAllowTempAccBOClaim As String
-        ' CRE20-0023 (Immu record) [End][Chris YIM]
-
+        Private _strAllowDataEntryClaim As String
 
 
 #End Region
@@ -580,6 +579,27 @@ Namespace Component.Scheme
         End Property
         ' CRE20-0023 (Immu record) [End][Chris YIM]
 
+        ' CRE20-023-71 (COVID19 - Medical Exemption Record) [Start][Winnie SUEN]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property AllowDataEntryClaim() As Boolean
+            Get
+                If _strAllowDataEntryClaim = YesNo.Yes Then
+                    Return True
+                Else
+                    Return False
+                End If
+
+            End Get
+            Set(ByVal value As Boolean)
+                If value = True Then
+                    _strAllowDataEntryClaim = YesNo.Yes
+                Else
+                    _strAllowDataEntryClaim = YesNo.No
+                End If
+
+            End Set
+        End Property
+        ' CRE20-023-71 (COVID19 - Medical Exemption Record) [End][Winnie SUEN]
 #End Region
 
 #Region "Constructor"
@@ -618,10 +638,8 @@ Namespace Component.Scheme
             Me._strProperPracticeSectionID = udtSchemeClaimModel._strProperPracticeSectionID
             Me._udtSubsidizeGroupClaimModelList = udtSchemeClaimModel._udtSubsidizeGroupClaimModelList
             Me.ReadonlyHCSP = udtSchemeClaimModel.ReadonlyHCSP
-            ' CRE20-0023 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             Me.AllowTempAccBOClaim = udtSchemeClaimModel.AllowTempAccBOClaim
-            ' CRE20-0023 (Immu record) [End][Chris YIM]
+            Me.AllowDataEntryClaim = udtSchemeClaimModel.AllowDataEntryClaim
 
         End Sub
 
@@ -635,7 +653,7 @@ Namespace Component.Scheme
                         ByVal strConfirmedTransactionStatus As String, _
                         ByVal strReimbursementMode As String, ByVal strReimbursementCurrency As String, ByVal strAvailableHCSPSubPlatform As String, _
                         ByVal strProperPracticeAvail As String, ByVal strProperPracticeSectionID As String, ByVal strReadonlyHCSP As String, _
-                        ByVal strAllowTempAccBOClaim As String)
+                        ByVal strAllowTempAccBOClaim As String, ByVal strAllowDataEntryClaim As String)
 
             Me._strSchemeCode = strSchemeCode
             Me._intSchemeSeq = intSchemeSeq
@@ -666,10 +684,8 @@ Namespace Component.Scheme
             Me._strProperPracticeAvail = strProperPracticeAvail
             Me._strProperPracticeSectionID = strProperPracticeSectionID
             Me._strReadonlyHCSP = strReadonlyHCSP
-            ' CRE20-0023 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             Me._strAllowTempAccBOClaim = strAllowTempAccBOClaim
-            ' CRE20-0023 (Immu record) [End][Chris YIM]
+            Me._strAllowDataEntryClaim = strAllowDataEntryClaim
 
         End Sub
 #End Region

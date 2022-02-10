@@ -973,26 +973,14 @@ Namespace Component.EHSTransaction
 
                         If blnError Then strMsgCode = "00197"
 
-                        ' CRE13-001 - EHAPP [Start][Tommy L]
-                        ' -------------------------------------------------------------------------------------
                     ElseIf udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeRegistration Then
-                        ' INT13-0012 - Fix EHAPP concurrent claim checking [Start][Tommy L]
-                        ' -------------------------------------------------------------------------------------
-                        ' CRE13-006 - HCVS Ceiling [Start][Tommy L]
-                        ' -----------------------------------------------------------------------------------------
-                        'If Me.getAvailableSubsidizeItem_Registration(udtEHSPersonalInfo, udtSchemeClaimModel.SubsidizeGroupClaimList(0)) > 0 Then
                         If Me.getAvailableSubsidizeItem_Registration(udtEHSPersonalInfo, udtSchemeClaimModel.SubsidizeGroupClaimList(0), udtDB) > 0 Then
-                            ' CRE13-006 - HCVS Ceiling [End][Tommy L]
                             ' Subsidies for Registration is Available
                         Else
                             ' No Available Subsidies for Registration
                             strMsgCode = "00197"
                         End If
-                        ' INT13-0012 - Fix EHAPP concurrent claim checking [End][Tommy L]
-                        ' CRE13-001 - EHAPP [End][Tommy L]
 
-                        ' CRE21-019 (SSSCMC $1000) [Start][Chris YIM]
-                        ' ---------------------------------------------------------------------------------------------------------
                     ElseIf udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_HAService Then
                         ' Available Subsidy 
                         Dim decAvailableSubsidy As Decimal = 0.0
@@ -1010,7 +998,54 @@ Namespace Component.EHSTransaction
                             strMsgCode = "00197"
                         End If
 
-                        ' CRE21-019 (SSSCMC $1000) [End][Chris YIM]
+
+                        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                    ElseIf udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_Certification Then
+                        Dim udtCOVID19BLL As New COVID19.COVID19BLL
+                        Dim udtGeneralFunction As New GeneralFunction
+                        Dim dtmToday As Date = udtGeneralFunction.GetSystemDateTime.Date
+                        Dim intLimit As Integer = CInt(udtGeneralFunction.GetSystemParameterParmValue1("MedicalExemptionIssueLimit", SchemeClaimModel.COVID19MEC))
+                        Dim intCount As Integer = 0
+                        Dim blnValid As Boolean = False
+
+                        Dim dtExemptionCert As DataTable = udtCOVID19BLL.GetCovid19ExemptionCertByDocID(udtEHSPersonalInfo.DocCode, _
+                                                                                                           udtEHSPersonalInfo.IdentityNum, _
+                                                                                                           udtEHSPersonalInfo.AdoptionPrefixNum)
+
+                        ' Check Patient whether has claimed today
+                        For Each dr As DataRow In dtExemptionCert.Rows
+                            If CDate(dr("Service_Receive_Dtm")) = dtmToday AndAlso dr("SP_ID").ToString.Trim = udtEHSTransactionModel.ServiceProviderID Then
+                                intCount = intCount + 1
+                            End If
+                        Next
+
+                        If intCount < intLimit Then
+                            blnValid = True
+                        End If
+
+                        If Not blnValid Then
+                            strMsgCode = "00197"
+                        End If
+
+                        '' Available Subsidy 
+                        'Dim decAvailableAmount As Decimal = 0.0
+
+                        'decAvailableAmount = Me.getAvailableSubsidizeItem_MEC(udtEHSPersonalInfo, _
+                        '                                                          udtSchemeClaimModel.SubsidizeGroupClaimList, _
+                        '                                                          udtEHSTransactionModel.ServiceDate, _
+                        '                                                          udtDB)
+
+                        ''1. Compare the available subsidy between model and DB
+                        ''2. Check claimed amount between 0 and available subsidy
+                        'If (decAvailableAmount <> udtEHSTransactionModel.TransactionAdditionFields.SubsidyBeforeClaim) Or _
+                        '    (decAvailableAmount <= 0 OrElse decAvailableAmount < udtEHSTransactionModel.TransactionDetails(0).TotalAmountRMB) Then
+
+                        '    strMsgCode = "00197"
+                        'End If
+
+                        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
                     Else
                         ' Available Voucher 
                         Dim intAvailableVoucher As Integer = 0
@@ -4065,6 +4100,48 @@ Namespace Component.EHSTransaction
         End Function
         ' CRE21-019 (SSSCMC $1000) [End][Winnie SUEN]
 
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function getAvailableSubsidizeItem_MEC(ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                         ByVal udtSubsidizeGroupClaimList As SubsidizeGroupClaimModelCollection, _
+                                                         ByVal dtmServiceDate As DateTime, _
+                                                         Optional ByRef udtDB As Database = Nothing) As Decimal
+
+            Dim dtmCurrentDate = (New GeneralFunction).GetSystemDateTime.Date
+
+            Dim udtSchemeClaimBLL As New SchemeClaimBLL()
+
+            ' Retrieve Scheme Claim & Specific SubsidizeGroup (For All SchemeSeq)
+            Dim udtSchemeClaimList As SchemeClaimModelCollection = udtSchemeClaimBLL.getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSubsidizeCode(udtSubsidizeGroupClaimList(0).SchemeCode, _
+                                                                                                                                                        udtSubsidizeGroupClaimList(0).SubsidizeCode)
+
+            '----------------------------------------
+            ' Grant Subsidy Amount (For Each Season)
+            '----------------------------------------
+            Dim decNumSubsidize_Total As Decimal = CDec(udtSubsidizeGroupClaimList(0).NumSubsidize)
+            'Dim dicGrantSubsidize As Dictionary(Of Integer, Decimal) = Me.getGrantSubsidize_MEC(udtSubsidizeGroupClaimList(0).SchemeCode, _
+            '                                                                                       udtSubsidizeGroupClaimList(0).SubsidizeCode, _
+            '                                                                                       udtEHSPersonalInfo, _
+            '                                                                                       dtmCurrentDate)
+
+            ''----------------------------------------
+            '' Used Subsidy Amount (For Each Season)
+            ''----------------------------------------
+            'Dim dicUsedSubsidize As Dictionary(Of Integer, Decimal) = Me.getUsedSubsidize_MEC(udtSubsidizeGroupClaimList(0).SchemeCode, _
+            '                                                                                       udtSubsidizeGroupClaimList(0).SubsidizeCode, _
+            '                                                                                       udtEHSPersonalInfo, _
+            '                                                                                       dtmCurrentDate, udtDB)
+
+            ''----------------------------------------
+            '' Available Subsidy Amount (as at service date)
+            ''----------------------------------------
+            Dim decAvailableAmt As Decimal = decNumSubsidize_Total
+            'Dim decAvailableAmt As Decimal = CalculateAvailableSubsidizeItem_MEC(dtmServiceDate, udtSchemeClaimList, dicGrantSubsidize, dicUsedSubsidize)
+
+            Return decAvailableAmt
+
+        End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
 #End Region
 

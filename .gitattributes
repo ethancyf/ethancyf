@@ -350,6 +350,9 @@ EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19Vacc
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19VaccinationCard_A5.Designer.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19VaccinationCard_A5.resx -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19VaccinationCard_A5.vb -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/ExemptionCert/ExemptionCert.designer.vb -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/ExemptionCert/ExemptionCert.resx -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/ExemptionCert/ExemptionCert.vb -text
 EHS2019/EHS/Common/Component/COVID19/QRCodeModel.vb -text
 EHS2019/EHS/Common/Component/COVID19/VaccinationCardRecordModel.vb -text
 EHS2019/EHS/Common/Component/ClaimCategory/ClaimCategoryBLL.vb -text
@@ -1363,6 +1366,9 @@ EHS2019/EHS/HCSP/Images/button/btn_ReadOldSmartIDCard_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReadSmartIDCard.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReadSmartIDCard_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReadSmartIDCard_tw.png -text
+EHS2019/EHS/HCSP/Images/button/btn_ReprintMedicalExemptionRecord.png -text
+EHS2019/EHS/HCSP/Images/button/btn_ReprintMedicalExemptionRecord_cn.png -text
+EHS2019/EHS/HCSP/Images/button/btn_ReprintMedicalExemptionRecord_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReprintVaccinationRecord.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReprintVaccinationRecord_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReprintVaccinationRecord_tw.png -text
@@ -1998,6 +2004,7 @@ EHS2019/EHS/HCSP/JS/WebKit.js -text
 EHS2019/EHS/HCSP/JS/ideasComboLib4Ra.js -text
 EHS2019/EHS/HCSP/JS/ideasComboVersion.js -text
 EHS2019/EHS/HCSP/JS/jquery-3.4.1.min.js -text
+EHS2019/EHS/HCSP/JS/jquery-3.6.0.min.js -text
 EHS2019/EHS/HCSP/MasterPage.Master -text
 EHS2019/EHS/HCSP/MasterPage.Master.designer.vb -text
 EHS2019/EHS/HCSP/MasterPage.Master.vb -text
@@ -3362,6 +3369,9 @@ EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19CBD.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19CBD.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19CBD.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19MEC.ascx -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19MEC.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19MEC.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19OR.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19OR.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputCOVID19OR.ascx.vb -text
@@ -3422,6 +3432,9 @@ EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19CBD.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19CBD.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19CBD.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19MEC.ascx -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19MEC.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19MEC.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx.vb -text
@@ -5050,6 +5063,9 @@ EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCIVSS.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19MEC.ascx -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19MEC.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19MEC.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19OR.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19OR.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19OR.ascx.vb -text
@@ -5113,6 +5129,9 @@ EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19CBD.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19CBD.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19CBD.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19MEC.ascx -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19MEC.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19MEC.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx.vb -text
@@ -8827,6 +8846,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_ClearCache_Delete_ByRequestID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ClearCache_Get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ClearCache_Update.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CodeMapping_get_all_cache.sql -text svneol=unset#application/octet-stream
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_Covid19ExemptionCert_get_byDocID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CrossSubsidizeRelation_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DHCClaimAccess_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DHCProfession_byProfCode.sql -text

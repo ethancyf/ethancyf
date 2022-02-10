@@ -144,7 +144,7 @@ Partial Public Class EHSClaimForm_RV
 
                 End If
 
-                'CRE20-022 (Immu record)  [Start][Raiman] 
+
             Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19RVP, _
                 SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, SchemeClaimModel.COVID19SB
                 If Not IsNothing(udtSP) _
@@ -153,11 +153,15 @@ Partial Public Class EHSClaimForm_RV
                         AndAlso Not IsNothing(udtSchemeClaim) Then
                     objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, _
                                                                                                    blnDischarge)
-
-
-
                 End If
-                'CRE20-022 (Immu record)  [End][Raiman] 
+
+            Case SchemeClaimModel.COVID19MEC
+                If Not IsNothing(udtSP) _
+                        AndAlso Not IsNothing(udtEHSTransaction) _
+                        AndAlso Not IsNothing(udtEHSAccount) _
+                        AndAlso Not IsNothing(udtSchemeClaim) Then
+                    objReport = New COVID19.PrintOut.ExemptionCert.ExemptionCert(udtEHSTransaction, udtEHSAccount, udtSP)
+                End If
 
             Case SchemeClaimModel.RVP
                 If udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then

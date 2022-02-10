@@ -15,18 +15,16 @@ Namespace Component.Scheme
             Public Const SubsidizeTypeVoucher As String = "VOUCHER"
             Public Const SubsidizeTypeRegistration As String = "REGISTRATION"
             Public Const SubsidizeType_HAService As String = "HASERVICE"
+            Public Const SubsidizeType_Certification As String = "CERTIFICATION"
         End Class
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         Public Class HighRiskOptionClass
             Public Const ShowForInput As String = "M"
             Public Const HideWithoutInput As String = "N"
             Public Const HideButForceHighRisk As String = "A"
         End Class
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         Public Class SubsidizeCodeClass
             Public Const EHCVS As String = "EHCVS"
@@ -103,10 +101,11 @@ Namespace Component.Scheme
             Public Const VDAQIVG As String = "VDAQIVG"
             Public Const VDALAIVG As String = "VDALAIVG"
             Public Const VVCC19 As String = "VVCC19"
+            Public Const CMEC As String = "CMEC"
         End Class
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
 
-        ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+        ' CRE20-0023-71 (Immu record) [Start][Winnie SUEN]
         Public Class SubsidizeItemCodeClass
             Public Const C19 As String = "C19"
             Public Const EHAPP_R As String = "EHAPP_R"
@@ -119,8 +118,9 @@ Namespace Component.Scheme
             Public Const PV13 As String = "PV13"
             Public Const SIV As String = "SIV"
             Public Const SIVSH As String = "SIVSH"
+            Public Const MEC As String = "MEC"
         End Class
-        ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+        ' CRE20-0023-71 (Immu record) [End][Winnie SUEN]
 
 #End Region
 

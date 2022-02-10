@@ -56,6 +56,7 @@ Namespace Component.Scheme
             Public Const ProperPractice_SectionID As String = "ProperPractice_SectionID"
             Public Const Readonly_HCSP As String = "Readonly_HCSP"
             Public Const AllowTempAccBOClaim As String = "AllowTempAccBOClaim"
+            Public Const AllowDataEntryClaim As String = "AllowDataEntryClaim"
 
         End Class
 
@@ -703,6 +704,23 @@ Namespace Component.Scheme
         End Function
         ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+        ' CRE20-023-71 (COVID19 - Medical Exemption Record) [Start][Winnie SUEN]
+        ' -----------------------------------------------------------------------
+        Public Function CheckSchemeClaimAllowDataEntryClaim(ByVal udtPracticeSchemeInfo As PracticeSchemeInfo.PracticeSchemeInfoModel) As Boolean
+            ' Convert the Enrolled Scheme (SchemeBackOffice) to SchemeClaim
+            Dim strSchemeClaimCode As String = Me.ConvertSchemeClaimCodeFromSchemeEnrol(udtPracticeSchemeInfo.SchemeCode)
+
+            Dim udtSchemeClaim As SchemeClaimModel = Me.getAllActiveSchemeClaimCache().Filter(strSchemeClaimCode)
+
+            'If scheme contains Readonly Setting, then return true
+            If udtSchemeClaim.AllowDataEntryClaim Then
+                Return True
+            End If
+
+            Return False
+        End Function
+        ' CRE20-023-71 (COVID19 - Medical Exemption Record) [End][Winnie SUEN]
+
 #End Region
 
 #Region "Retrieve Function"
@@ -1277,7 +1295,8 @@ Namespace Component.Scheme
                             CStr(dr.Item(tableSchemeClaim.ProperPractice_Avail)).Trim, _
                             CStr(IIf(IsDBNull(dr(tableSchemeClaim.ProperPractice_SectionID)), String.Empty, dr(tableSchemeClaim.ProperPractice_SectionID))).Trim, _
                             CStr(dr(tableSchemeClaim.Readonly_HCSP)), _
-                            CStr(dr(tableSchemeClaim.AllowTempAccBOClaim))
+                            CStr(dr(tableSchemeClaim.AllowTempAccBOClaim)), _
+                            CStr(dr(tableSchemeClaim.AllowDataEntryClaim))
                             )
 
                         udtSchemeClaimModelCollection.Add(udtSchemeClaimModel)
@@ -1354,7 +1373,8 @@ Namespace Component.Scheme
                             CStr(dr.Item(tableSchemeClaim.ProperPractice_Avail)).Trim, _
                             CStr(IIf(IsDBNull(dr(tableSchemeClaim.ProperPractice_SectionID)), String.Empty, dr(tableSchemeClaim.ProperPractice_SectionID))).Trim, _
                             CStr(dr(tableSchemeClaim.Readonly_HCSP)), _
-                            CStr(dr(tableSchemeClaim.AllowTempAccBOClaim))
+                            CStr(dr(tableSchemeClaim.AllowTempAccBOClaim)), _
+                            CStr(dr(tableSchemeClaim.AllowDataEntryClaim))
                             )
 
                         udtSchemeClaimModelCollection.Add(udtSchemeClaimModel)
@@ -1624,7 +1644,8 @@ Namespace Component.Scheme
                                 CStr(dr.Item(tableSchemeClaim.ProperPractice_Avail)).Trim, _
                                 CStr(IIf(IsDBNull(dr(tableSchemeClaim.ProperPractice_SectionID)), String.Empty, dr(tableSchemeClaim.ProperPractice_SectionID))).Trim, _
                                 CStr(dr(tableSchemeClaim.Readonly_HCSP)), _
-                                CStr(dr(tableSchemeClaim.AllowTempAccBOClaim))
+                                CStr(dr(tableSchemeClaim.AllowTempAccBOClaim)), _
+                                CStr(dr(tableSchemeClaim.AllowDataEntryClaim))
                                 )
 
                             udtSchemeClaimModelCollection.Add(udtSchemeClaimModel)
@@ -1805,7 +1826,8 @@ Namespace Component.Scheme
                                 CStr(dr.Item(tableSchemeClaim.ProperPractice_Avail)).Trim, _
                                 CStr(IIf(IsDBNull(dr(tableSchemeClaim.ProperPractice_SectionID)), String.Empty, dr(tableSchemeClaim.ProperPractice_SectionID))).Trim, _
                                 CStr(dr(tableSchemeClaim.Readonly_HCSP)), _
-                                CStr(dr(tableSchemeClaim.AllowTempAccBOClaim))
+                                CStr(dr(tableSchemeClaim.AllowTempAccBOClaim)), _
+                                CStr(dr(tableSchemeClaim.AllowDataEntryClaim))
                                 )
 
                             udtSchemeClaimModelCollection.Add(udtSchemeClaimModel)
@@ -1920,7 +1942,10 @@ Namespace Component.Scheme
                 For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPracticeList(intPracticeID).PracticeSchemeInfoList.Values
                     Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtPracticeSchemeInfo.SubsidizeCode).ToString.Trim
 
-                    If udtPracticeSchemeInfo.ProvideService AndAlso strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                    If udtPracticeSchemeInfo.ProvideService AndAlso strSubsidizeItemCode IsNot Nothing AndAlso _
+                        (strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 OrElse _
+                         strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC) Then
+
                         If udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
                                 udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist OrElse _
                                 udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend Then
@@ -1934,7 +1959,9 @@ Namespace Component.Scheme
                 For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPracticeList(intPracticeID).PracticeSchemeInfoList.Values
                     Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtPracticeSchemeInfo.SubsidizeCode).ToString.Trim
 
-                    If udtPracticeSchemeInfo.ProvideService AndAlso strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                    If udtPracticeSchemeInfo.ProvideService AndAlso strSubsidizeItemCode IsNot Nothing AndAlso _
+                        (strSubsidizeItemCode.ToString.Trim <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 AndAlso _
+                         strSubsidizeItemCode.ToString.Trim <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC) Then
                         If udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
                                 udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist OrElse _
                                 udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend Then
@@ -2014,7 +2041,9 @@ Namespace Component.Scheme
                 For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
                     Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtSubsidizeGroupClaim.SubsidizeCode).ToString.Trim
 
-                    If strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                    If strSubsidizeItemCode IsNot Nothing AndAlso _
+                        (strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 OrElse _
+                         strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC) Then
                         udtFilterSubsidizeGroupClaimList.Add(New SubsidizeGroupClaimModel(udtSubsidizeGroupClaim))
                     End If
                 Next
@@ -2022,7 +2051,9 @@ Namespace Component.Scheme
                 For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
                     Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtSubsidizeGroupClaim.SubsidizeCode).ToString.Trim
 
-                    If strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                    If strSubsidizeItemCode IsNot Nothing AndAlso _
+                        (strSubsidizeItemCode.ToString.Trim <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 AndAlso _
+                         strSubsidizeItemCode.ToString.Trim <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC) Then
                         udtFilterSubsidizeGroupClaimList.Add(New SubsidizeGroupClaimModel(udtSubsidizeGroupClaim))
                     End If
                 Next

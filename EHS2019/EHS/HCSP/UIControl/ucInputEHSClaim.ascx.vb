@@ -85,6 +85,7 @@ Partial Public Class ucInputEHSClaim
         Public Const COVID19 As String = "ucInputEHSClaim_COVID19"  ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19RVP As String = "ucInputEHSClaim_COVID19RVP"
         Public Const COVID19OR As String = "ucInputEHSClaim_COVID19OR"
+        Public Const COVID19MEC As String = "ucInputEHSClaim_COVID19MEC"
 
     End Class
 
@@ -182,6 +183,9 @@ Partial Public Class ucInputEHSClaim
 
                 Case SchemeClaimModel.EnumControlType.COVID19OR
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19OR Then BuiltSchemeControlOnly(True)
+
+                Case SchemeClaimModel.EnumControlType.COVID19MEC
+                    If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19MEC Then BuiltSchemeControlOnly(True)
 
                 Case Else
                     Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
@@ -422,8 +426,6 @@ Partial Public Class ucInputEHSClaim
                 End If
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                ' --------------------------------------------------------------------------------------
             Case SchemeClaimModel.EnumControlType.COVID19
                 udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19.ascx", strFolderPath))
                 udcInputEHSClaim.ID = EHSClaimControlID.COVID19
@@ -432,7 +434,6 @@ Partial Public Class ucInputEHSClaim
                 Else
                     'Nothing to do
                 End If
-                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19RVP.ascx", strFolderPath))
@@ -455,7 +456,15 @@ Partial Public Class ucInputEHSClaim
                     Dim udcInputCOVID19OR As ucInputCOVID19OR = CType(udcInputEHSClaim, ucInputCOVID19OR)
                     AddHandler udcInputCOVID19OR.SearchButtonClick, AddressOf udcInputCOVID19OR_SearchButtonClick
 
+                End If
 
+            Case SchemeClaimModel.EnumControlType.COVID19MEC
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19MEC.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.COVID19MEC
+                If Me._textOnlyVersion Then
+                    'No Input Control
+                Else
+                    'Nothing to do
                 End If
 
             Case Else
@@ -963,6 +972,20 @@ Partial Public Class ucInputEHSClaim
                 'No Input Control
             Else
                 Return CType(control, ucInputCOVID19OR)
+            End If
+        End If
+
+        Return Nothing
+
+    End Function
+
+    Public Function GetCOVID19MECControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19MEC)
+        If Not control Is Nothing Then
+            If Me._textOnlyVersion Then
+                'No Input Control
+            Else
+                Return CType(control, ucInputCOVID19MEC)
             End If
         End If
 

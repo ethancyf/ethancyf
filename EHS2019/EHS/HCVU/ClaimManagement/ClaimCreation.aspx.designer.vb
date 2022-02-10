@@ -788,6 +788,78 @@ Partial Public Class ClaimCreation
     Protected WithEvents lblCDischargeRemark As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panStep2aMedicalExemptionRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aMedicalExemptionRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblMedicalExemptionRecordHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblMedicalExemptionRecordHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panMedicalExemptionRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panMedicalExemptionRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblNoMedicalExemptionRecordDOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNoMedicalExemptionRecordDOI As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNoMedicalExemptionRecordIssuer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNoMedicalExemptionRecordIssuer As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNoMedicalExemptionRecordValidUntil control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNoMedicalExemptionRecordValidUntil As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNoMedicalExemptionRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNoMedicalExemptionRecord As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''gvMedicalExemptionRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvMedicalExemptionRecord As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
     '''lblTransactionHeading control.
     '''</summary>
     '''<remarks>

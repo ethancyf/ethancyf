@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	10 Jan 2022
+-- CR No.			CRE20-023-71 (COVID19 Exemption Record) 
+-- Description:		Add Column    - [SchemeClaim].[AllowDataEntryClaim]
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	27 April 2021
 -- CR No.:			CRE20-023
@@ -66,7 +73,8 @@ SELECT
 	SC.[ProperPractice_Avail],
 	SC.[ProperPractice_SectionID],
 	SC.[Readonly_HCSP],
-	SC.[AllowTempAccBOClaim]
+	SC.[AllowTempAccBOClaim],
+	SC.[AllowDataEntryClaim]
 FROM
 	SchemeClaim SC WITH (NOLOCK)
 WHERE 

@@ -204,8 +204,6 @@
             setTimeout("window.location = '" + url + "'", 4000);
         }
 
-
-
     </script>
 
     <script type="text/javascript">
@@ -226,6 +224,14 @@
             if (Page.get_isInAsyncPostBack()) {
                 args.set_cancel(true);
             }
+        }
+
+        function RemoveUsedBlockScript(guid) {
+            $("script").each(function () {
+                var _this = $(this);
+                if (_this.html().indexOf(guid) > -1)
+                    _this.remove();
+            });
         }
 
     </script>

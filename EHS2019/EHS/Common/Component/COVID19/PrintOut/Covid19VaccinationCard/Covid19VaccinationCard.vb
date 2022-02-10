@@ -113,11 +113,13 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             'Transaction No.
             Me.txtTransactionNumber.Text = "Ref: " + _udtFormatter.formatSystemNumber(_udtEHSTransaction.TransactionID)
 
-            ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
-            'Me.txtPrintDate.Text = "Printed on " + _udtPrintTime.ToString(_udtFormatter.DisplayVaccinationRecordClockFormat())
-            Me.txtPrintDate.Text = "Printed on " + FormatDisplayClock(_udtPrintTime)
-            ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
+            If _udtPrintoutHelper.DisplayPrintoutRefNo(PrintoutHelper.FormType.Vaccination) Then
+                Me.txtTransactionNumber.Visible = True
+            Else
+                Me.txtTransactionNumber.Visible = False
+            End If
 
+            Me.txtPrintDate.Text = "Printed on " + FormatDisplayClock(_udtPrintTime)
 
 
             ' Vaccination Info                                                  'second _udtEHSTransaction is history Transaction 
@@ -128,8 +130,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             srCovid19VaccinationCardFooter.Report = New Covid19VaccinationCardFooter(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnIsSample, _
                                                                                      _blnDischarge)
 
-            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _
-                                                                     _blnDischarge)
+            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeStringForVaccinationRecord(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
 
         End Sub
 

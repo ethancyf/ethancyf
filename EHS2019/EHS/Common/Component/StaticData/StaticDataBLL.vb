@@ -21,7 +21,8 @@ Namespace Component.StaticData
 
         End Sub
 
-        Public Function GetStaticDataList() As StaticDataModelCollection
+#Region "Cache"
+        Public Function GetStaticDataFullList() As StaticDataModelCollection
             Dim udtStaticDataModelCollection As StaticDataModelCollection = New StaticDataModelCollection
             Dim udtStaticDataModel As StaticDataModel
 
@@ -45,7 +46,8 @@ Namespace Component.StaticData
                                                                 CStr(IIf(row.Item("Data_Value_Chi") Is DBNull.Value, String.Empty, row.Item("Data_Value_Chi"))), _
                                                                 CStr(IIf(row.Item("Data_Value_CN") Is DBNull.Value, String.Empty, row.Item("Data_Value_CN"))), _
                                                                 CStr(IIf(row.Item("Display_Order") Is DBNull.Value, String.Empty, row.Item("Display_Order"))), _
-                                                               CStr(IIf(row.Item("Service_Date_Start") Is DBNull.Value, String.Empty, row.Item("Service_Date_Start"))))
+                                                                CStr(IIf(row.Item("Service_Date_Start") Is DBNull.Value, String.Empty, row.Item("Service_Date_Start"))), _
+                                                                CStr(IIf(row.Item("Record_Status") Is DBNull.Value, String.Empty, row.Item("Record_Status"))))
                         'CRE20-009 call the stored procedure to get the related data from staticData table [End][Nichole]
 
                         udtStaticDataModelCollection.add(udtStaticDataModel)
@@ -64,9 +66,46 @@ Namespace Component.StaticData
 
         End Function
 
+        Public Function GetStaticDataActiveList() As StaticDataModelCollection
+            Dim udtStaticDataModelCollection As StaticDataModelCollection = New StaticDataModelCollection
 
-        Public Function GetStaticDataList(ByVal astrColumnName As String) As DataTable
-            Dim udtStaticDataModelCollection As StaticDataModelCollection = Me.GetStaticDataListByColumnName(astrColumnName)
+            If HttpContext.Current.Cache("StaticDataActive") Is Nothing Then
+
+                For Each udtStaticDataModel As StaticDataModel In GetStaticDataFullList()
+                    If udtStaticDataModel.RecordStatus = StaticDataStatus.Active Then
+                        udtStaticDataModelCollection.add(udtStaticDataModel)
+                    End If
+                Next
+                Common.ComObject.CacheHandler.InsertCache("StaticDataActive", udtStaticDataModelCollection)
+            Else
+                udtStaticDataModelCollection = CType(HttpContext.Current.Cache("StaticDataActive"), StaticDataModelCollection)
+            End If
+
+            Return udtStaticDataModelCollection
+
+        End Function
+
+#End Region
+
+#Region "Get by record status"
+        Private Function GetStaticDataListByRecordStatus(ByVal blnIsActive As Boolean) As StaticDataModelCollection
+            Dim udtStaticDataModelCollection As StaticDataModelCollection = New StaticDataModelCollection
+
+            If blnIsActive = True Then
+                udtStaticDataModelCollection = GetStaticDataActiveList()
+            Else
+                udtStaticDataModelCollection = GetStaticDataFullList()
+            End If
+
+            Return udtStaticDataModelCollection
+
+        End Function
+
+#End Region
+
+#Region "Get by column name - return datatable"
+        Public Function GetStaticDataList(ByVal strColumnName As String) As DataTable
+            Dim udtStaticDataModelCollection As StaticDataModelCollection = Me.GetStaticDataListByColumnName(strColumnName)
 
             Dim dataTable As DataTable = New DataTable()
             Dim dataRow As DataRow
@@ -88,19 +127,16 @@ Namespace Component.StaticData
                 dataTable.Rows.Add(dataRow)
             Next
 
-
             Return dataTable
 
         End Function
 
-        'CRE20-009 VSS Da with CSSA - text version [Start][Nichole]
-        Public Function GetStaticDataListFilter(ByVal astrColumnName As String, ByVal strServiceDtm As String) As DataTable
-            Dim udtStaticDataModelCollection As StaticDataModelCollection = Me.GetStaticDataListByColumnName(astrColumnName)
+        Public Function GetStaticDataListFilter(ByVal strColumnName As String, ByVal strServiceDtm As String) As DataTable
+            Dim udtStaticDataModelCollection As StaticDataModelCollection = Me.GetStaticDataListByColumnName(strColumnName)
 
             Dim dataTable As DataTable = New DataTable()
             Dim dataRow As DataRow
             Dim strConvertedDtm As Date = Date.ParseExact(strServiceDtm.Replace("-", "/"), "dd/MM/yyyy", Nothing)
-
 
             dataTable.Columns.Add(New DataColumn(StaticDataModel.Column_Name, GetType(String)))
             dataTable.Columns.Add(New DataColumn(StaticDataModel.Item_No, GetType(String)))
@@ -126,33 +162,38 @@ Namespace Component.StaticData
                 End If
             Next
 
-
             Return dataTable
 
         End Function
-        'CRE20-009 VSS Da with CSSA - text version [End][Nichole]
+#End Region
 
+#Region "Get by column name - return list"
 
         Public Function GetStaticDataListByColumnName(ByVal strColumnName As String) As StaticDataModelCollection
+            Return GetStaticDataListByColumnName(strColumnName, True)
+        End Function
+
+        Public Function GetStaticDataListByColumnName(ByVal strColumnName As String, Optional ByVal blnIsActive As Boolean = True) As StaticDataModelCollection
             Dim udtStaticDataModelCollection As StaticDataModelCollection = New StaticDataModelCollection
-            udtStaticDataModelCollection = GetStaticDataList()
+
+            udtStaticDataModelCollection = GetStaticDataListByRecordStatus(blnIsActive)
 
             Return udtStaticDataModelCollection.Filter(strColumnName)
 
-
         End Function
-        'CRE20-009 VSS Disabled with CSSA [Start][Nichole]
 
-        Public Function GetStaticDataListByDocProof(ByVal strColumnName As String, ByVal strServiceDate As String) As StaticDataModelCollection
+        Public Function GetStaticDataListByDocProof(ByVal strColumnName As String, ByVal strServiceDate As String, Optional ByVal blnIsActive As Boolean = True) As StaticDataModelCollection
             Dim udtStaticDataModelCollection As StaticDataModelCollection = New StaticDataModelCollection
-            udtStaticDataModelCollection = GetStaticDataList()
+
+            udtStaticDataModelCollection = GetStaticDataListByRecordStatus(blnIsActive)
 
             Return udtStaticDataModelCollection.CSSAFilter(strColumnName, strServiceDate)
 
-
         End Function
-        'CRE20-009 VSS Disabled with CSSA [End][Nichole]
 
+#End Region
+
+#Region "Get by column name & item no. - return model"
         ''' <summary>
         ''' Get the static Data by column name and item no.
         ''' </summary>
@@ -161,11 +202,46 @@ Namespace Component.StaticData
         ''' <returns>A static data model</returns>
         ''' <remarks></remarks>
         Public Function GetStaticDataByColumnNameItemNo(ByVal strColumnName As String, ByVal strItemNo As String) As StaticDataModel
+            Return GetStaticDataByColumnNameItemNo(strColumnName, strItemNo, True, Nothing)
+        End Function
+
+        ''' <summary>
+        ''' Get the static Data by column name, item no. and record status
+        ''' </summary>
+        ''' <param name="strColumnName"></param>
+        ''' <param name="strItemNo"></param>
+        ''' <param name="blnIsActive"></param>
+        ''' <returns>A static data model</returns>
+        ''' <remarks></remarks>
+        Public Function GetStaticDataByColumnNameItemNo(ByVal strColumnName As String, ByVal strItemNo As String, ByVal blnIsActive As Boolean) As StaticDataModel
+            Return GetStaticDataByColumnNameItemNo(strColumnName, strItemNo, blnIsActive, Nothing)
+        End Function
+
+        ''' <summary>
+        ''' Get the static Data by column name, item no. and service date
+        ''' </summary>
+        ''' <param name="strColumnName"></param>
+        ''' <param name="strItemNo"></param>
+        ''' <param name="dtmDate"></param>
+        ''' <returns>A static data model</returns>
+        ''' <remarks></remarks>
+        Public Function GetStaticDataByColumnNameItemNo(ByVal strColumnName As String, ByVal strItemNo As String, ByVal dtmDate As DateTime) As StaticDataModel
+            Return GetStaticDataByColumnNameItemNo(strColumnName, strItemNo, True, dtmDate)
+        End Function
+
+        ''' <summary>
+        ''' Get the static Data by column name and item no.
+        ''' </summary>
+        ''' <param name="strColumnName"></param>
+        ''' <param name="strItemNo"></param>
+        ''' <returns>A static data model</returns>
+        ''' <remarks></remarks>
+        Public Function GetStaticDataByColumnNameItemNo(ByVal strColumnName As String, ByVal strItemNo As String, ByVal blnIsActive As Boolean, ByVal dtmDate As Nullable(Of DateTime)) As StaticDataModel
             Dim udtStaticDataCollectionModel As StaticDataModelCollection = New StaticDataModelCollection
 
-            udtStaticDataCollectionModel = GetStaticDataListByColumnName(strColumnName.Trim)
+            udtStaticDataCollectionModel = GetStaticDataListByColumnName(strColumnName.Trim, blnIsActive)
 
-            Dim udtStaticDataModel As StaticDataModel
+            Dim udtStaticDataModel As StaticDataModel = Nothing
 
             If strItemNo.Trim.Equals(String.Empty) Then
 
@@ -180,6 +256,9 @@ Namespace Component.StaticData
             Return udtStaticDataModel
 
         End Function
+
+#End Region
+
     End Class
 
 End Namespace

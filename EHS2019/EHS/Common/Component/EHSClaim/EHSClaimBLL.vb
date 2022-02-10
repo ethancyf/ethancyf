@@ -132,6 +132,12 @@ Namespace Component.EHSClaim.EHSClaimBLL
             VoucherExceedDHCMaxClaimAmt
             ' CRE19-006 (DHC) [End][Winnie]
 
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            MedicalExemptionCertificateIssued
+            MedicalExemptionCertificateRule
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
+
             None
         End Enum
 
@@ -1080,8 +1086,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
             End If
             'CRE15-004 (TIV and QIV) [End][Chris YIM]
 
-            'CRE16-026 (Add PCV13) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             ' ------------------------------------------------------------------------------------------------------------------------------------
             ' Rule 18: TSW warning
             ' ------------------------------------------------------------------------------------------------------------------------------------
@@ -1144,16 +1148,13 @@ Namespace Component.EHSClaim.EHSClaimBLL
             End If
 
             udtInputPicker.SchoolCode = strSchoolCode
-            ' CRE20-0022 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
+
             '-------------------------------------------------------------------
-            ' 4. Collect "Vaccination Record"
+            ' 5. Collect "Vaccination Record"
             '-------------------------------------------------------------------
             If udtEHSTransaction.TransactionAdditionFields.VaccineBrand IsNot Nothing Then
                 udtInputPicker.Brand = udtEHSTransaction.TransactionAdditionFields.VaccineBrand.Trim
             End If
-
-            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             ' Check Claim Rule
             ' ------------------------------------------------------------------------------------------------------------------------------------
@@ -1205,7 +1206,16 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 End If
             End If
 
-            'CRE16-026 (Add PCV13) [End][Chris YIM]
+            ' ------------------------------------------------------------------------------------------------------------------------------------
+            ' Rule : Medical Exemption Certificate Rules
+            ' ------------------------------------------------------------------------------------------------------------------------------------
+            If EnumControlType = SchemeClaimModel.EnumControlType.COVID19MEC Then
+                ' Check COVID19MEC Rules
+                udtTempClaimRuleList = Me.CheckMedicalExemptionRule(udtEHSTransaction, udtSchemeClaimModel, udtEHSAccount)
+                If Not udtTempClaimRuleList Is Nothing Then
+                    udtRuleResultList.Merge(udtTempClaimRuleList)
+                End If
+            End If
 
             ' ------------------------------------------------------------------------------------------------------------------------------------
             ' Return
@@ -1843,6 +1853,17 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 End If
                 ' CRE21-019 (SSSCMC $1000) [End][Winnie]
 
+                ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            ElseIf _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.COVID19MEC Then
+                If blnIsEligible Then
+                    If CheckAvailableSubsidizeItem_MEC(udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel) = False Then
+                        udtRuleResultList.RuleResults.Add(New RuleResult(RuleID.MedicalExemptionCertificateIssued))
+                    End If
+
+                End If
+                ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
             ElseIf _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.EHAPP Then
 
                 If blnIsEligible Then
@@ -2082,6 +2103,37 @@ Namespace Component.EHSClaim.EHSClaimBLL
         End Function
         ' CRE21-019 (SSSCMC $1000) [End][Winnie]
 
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function CheckAvailableSubsidizeItem_MEC(ByVal udtEHSTransaction As EHSTransactionModel, _
+                                                            ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                            ByVal udtSchemeClaimModel As SchemeClaimModel) As Boolean
+
+            Dim udtPersonalInformation As EHSAccountModel.EHSPersonalInformationModel = udtEHSTransaction.EHSAcct.getPersonalInformation(udtEHSTransaction.EHSAcct.SearchDocCode)
+            Dim dtmToday As Date = _udtGeneralFunction.GetSystemDateTime.Date
+            Dim intCount As Integer = 0
+            Dim intLimit As Integer = CInt(_udtGeneralFunction.GetSystemParameterParmValue1("MedicalExemptionIssueLimit", SchemeClaimModel.COVID19MEC))
+
+            Dim dtExemptionCert As DataTable = (New COVID19.COVID19BLL).GetCovid19ExemptionCertByDocID(udtPersonalInformation.DocCode, _
+                                                                                                       udtPersonalInformation.IdentityNum, _
+                                                                                                       udtPersonalInformation.AdoptionPrefixNum)
+
+            ' Check Patient whether has claimed today
+            For Each dr As DataRow In dtExemptionCert.Rows
+                If CDate(dr("Service_Receive_Dtm")) = dtmToday AndAlso dr("SP_ID").ToString.Trim = udtEHSTransaction.ServiceProviderID Then
+                    intCount = intCount + 1
+                End If
+            Next
+
+            If intCount < intLimit Then
+                Return True
+            Else
+                Return False
+            End If
+
+        End Function
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]     
+
         ' CRE13-001 - EHAPP [Start][Tommy L]
         ' -------------------------------------------------------------------------------------
         Private Function CheckAvailableSubsidizeItem_EHAPP(ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection) As Boolean
@@ -2167,6 +2219,44 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Return Nothing
         End Function
         ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function CheckMedicalExemptionRuleDetail(ByVal udtEHSTransaction As EHSTransactionModel, 
+                                                         ByVal udtSchemeClaimModel As SchemeClaimModel) As Boolean
+
+            Dim blnValid As Boolean = True
+
+            'Check Valid Until Date Range
+            Dim dtmValidUntilDate As Date = DateTime.Parse(udtEHSTransaction.TransactionAdditionFields.ValidUntil, New System.Globalization.CultureInfo(CultureLanguage.English))
+
+            If dtmValidUntilDate < udtEHSTransaction.ServiceDate OrElse DateAdd(DateInterval.Day, _
+                                                                                CDbl(GetUpperLimitInterval(udtSchemeClaimModel.SchemeCode)) - 1, _
+                                                                                udtEHSTransaction.ServiceDate) < dtmValidUntilDate Then
+                blnValid = False
+
+            End If
+
+            Return blnValid
+
+        End Function
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]     
+
+        Public Function GetUpperLimitInterval(ByVal strSchemeCode As String) As Nullable(Of Double)
+            Dim strDefaultValue As String = String.Empty
+            Dim strUpperLimitValue As String = String.Empty
+            Dim intRes As Nullable(Of Double) = Nothing
+
+            _udtGeneralFunction.getSytemParameterByParameterNameSchemeCode("RemainVaildPeriod", strDefaultValue, strUpperLimitValue, strSchemeCode)
+
+            If strUpperLimitValue <> String.Empty Then
+                intRes = CDbl(strUpperLimitValue)
+            End If
+
+            Return intRes
+
+
+        End Function
 
         'Private Function CheckAvailableSubsidy(ByVal strCategoryCode As String, ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal udtEHSAccount As EHSAccountModel, ByVal udtEHSClaimVaccine As EHSClaimVaccine.EHSClaimVaccineModel, ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection) As RuleResult
 
@@ -2619,6 +2709,28 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Return udtRuleResultList
 
         End Function
+
+
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function CheckMedicalExemptionRule(ByVal udtEHSTransaction As EHSTransactionModel, 
+                                                   ByVal udtSchemeClaimModel As SchemeClaimModel, _
+                                                   ByVal udtEHSAccount As EHSAccountModel) As RuleResultList
+
+            Dim udtRuleResultList As New RuleResultList()
+
+            If _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.COVID19MEC Then
+                If CheckMedicalExemptionRuleDetail(udtEHSTransaction, udtSchemeClaimModel) = False Then
+                    udtRuleResultList.RuleResults.Add(New RuleResult(RuleID.MedicalExemptionCertificateRule))
+                End If
+
+            End If
+
+            Return udtRuleResultList
+
+        End Function
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
+
         Private Function ReturnRuleID(ByVal strRuleType As String, ByVal intHandleMethod As Integer) As Integer
 
             ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
@@ -3716,6 +3828,10 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     strRule = "DeathDecease"
                 Case RuleID.ServiceDateDecease
                     strRule = "ServiceDateDecease"
+                Case RuleID.MedicalExemptionCertificateIssued
+                    strRule = "CertificateIssued"
+                Case RuleID.MedicalExemptionCertificateRule
+                    strRule = "CertificateRule"
 
                     'Case RuleID.InnerDoseBlock
                     '    strRule = "InnerDose"

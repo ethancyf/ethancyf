@@ -594,7 +594,7 @@
             <%-- Popup for Other Vaccination Record Remark --%>
             <cc1:ModalPopupExtender ID="ModalPopupExtenderOtherVaccinationRecordRemark" runat="server" BackgroundCssClass="modalBackgroundTransparent"
                 TargetControlID="btnModalPopupOtherVaccinationRecordRemark" PopupControlID="panOtherVaccinationRecordRemark" BehaviorID="mpeOtherVaccinationRecordRemark"
-                PopupDragHandleControlID="panOtherVaccinationRecordRemarkHeading" OkControlID="btnOtherVaccinationRecordRemarkClose" RepositionMode="None">
+                PopupDragHandleControlID="" OkControlID="btnOtherVaccinationRecordRemarkClose" RepositionMode="None">
             </cc1:ModalPopupExtender>
             <%--<asp:Button ID="btnModalPopupOtherVaccinationRecordRemark" runat="server" Style="display: none" >
             </asp:Button>--%>
@@ -764,6 +764,74 @@
                                 </td>
                             </tr>
                     </table>
+
+                    <asp:Panel ID="panStep2aMedicalExemptionRecord" runat="server">
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                                <td class="eHSTableHeading">
+                                    <asp:Label ID="lblMedicalExemptionRecordHeading" runat="server" Text="<%$ Resources:Text, MedicalExemptionRecordsHeading%>" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Panel ID="panMedicalExemptionRecord" runat="server">
+                                        <table style="border:0px solid;padding:0px;border-spacing:2px;border-collapse:separate;border-color:#CCCCCC;width:930px">
+                                            <tr style="background-color:#70AD47">
+                                                <td style="width:125px;vertical-align:middle;text-align:center;border:0px solid;border-color:transparent">
+                                                    <asp:Label ID="lblNoMedicalExemptionRecordDOI" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, DateOfIssue %>" />
+                                                </td>
+                                                <td style="width:125px;vertical-align:middle;text-align:center;border:0px solid;border-color:transparent">
+                                                    <asp:Label ID="lblNoMedicalExemptionRecordIssuer" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, Issuer %>" />
+                                                </td>
+                                                <td style="width:125px;vertical-align:middle;text-align:center;border:0px solid;border-color:transparent">
+                                                    <asp:Label ID="lblNoMedicalExemptionRecordValidUntil" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, ValidUntil %>" />
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color:#D5E3CF">
+                                                <td style="vertical-align:middle;border:0px solid;border-color:transparent;height:20px" colspan="3">
+                                                    <asp:Label ID="lblNoMedicalExemptionRecord" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px"
+                                                        Text="<%$ Resources:Text, NoRecordsFound%>" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </asp:Panel>
+                                    <asp:GridView ID="gvMedicalExemptionRecord" runat="server" AutoGenerateColumns="False" Width="930px" BorderColor="Transparent"
+                                        AllowSorting="True"  AllowPaging="False"  OnRowDataBound="gvMedicalExemptionRecord_RowDataBound"
+                                        OnPreRender="gvMedicalExemptionRecord_PreRender" OnSorting="gvMedicalExemptionRecord_Sorting">
+                                        <Columns>
+                                            <asp:TemplateField SortExpression="DateOfIssueDtmSorting" HeaderText="<%$ Resources: Text, DateOfIssue %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#70AD47" BorderColor="Transparent"/>                                  
+                                                <ItemStyle Width="125px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblMedicalExemptionRecordDOI" runat="server" Text='<%# Bind("DateOfIssueDtm")%>' />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField SortExpression="ServiceProviderSorting" HeaderText="<%$ Resources: Text, Issuer %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#70AD47" BorderColor="Transparent"/>
+                                                <ItemStyle Width="280px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblMedicalExemptionRecordSP" runat="server" Text='<%# Bind("ServiceProviderEng")%>' />
+                                                    <asp:Label ID="lblMedicalExemptionRecordSPChi" runat="server" Text='<%# Bind("ServiceProviderChi")%>' />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField SortExpression="ValidUntilDtmSorting" HeaderText="<%$ Resources: Text, ValidUntil %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#70AD47" BorderColor="Transparent"/>
+                                                <ItemStyle Width="280px" VerticalAlign="Top" Font-Size="Medium" BorderColor="Transparent" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblMedicalExemptionRecordValidUntil" runat="server" Text='<%# Bind("ValidUntilDtm")%>' />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                        <AlternatingRowStyle BackColor="#D5E3CF" ForeColor="Black"  />                              
+                                    </asp:GridView>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-bottom:10px">
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
 
                     <asp:Panel ID="panStep2aOtherVaccinationRecord" runat="server">
                         <table cellspacing="0" cellpadding="0" border="0">
@@ -1087,7 +1155,7 @@
                                 </td>
                                 <td height="25" style="vertical-align:top;padding-top:3px">
                                     <asp:textbox ID="txtStep2aContactNo" runat="server" MaxLength="8" style="position:relative;left:-1px" Width="100px"/>
-                                    <asp:ImageButton ID="imgStep2aContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                    <asp:Image ID="imgStep2aContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
                                     <asp:Label ID="lblStep2aContactNoRecommendation" runat="server" Text="<%$ Resources:Text, ProvideContactNoWithSMS%>" style="font-size:14px"></asp:Label>
                                     <cc1:FilteredTextBoxExtender ID="fteStep2aContactNo" runat="server" TargetControlID="txtStep2aContactNo"
@@ -1098,13 +1166,13 @@
                                     <asp:checkbox ID="chkStep2aMobile" runat="server" AutoPostBack="false" style="position:relative;left:-1px" Visible="false"/>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="trStep2aRemark" runat="server" visible="false">
                                 <td height="25" style="width: 205px;vertical-align:top;padding-top:2px">
                                     <asp:Label ID="lblStep2aRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
                                 </td>
                                 <td height="25" style="vertical-align:top;padding-top:3px" colspan="2">
                                     <asp:textbox ID="txtStep2aRemark" runat="server" MaxLength="100" style="position:relative;left:-1px" Width="660px"/>
-                                    <asp:ImageButton ID="imgStep2aRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                    <asp:Image ID="imgStep2aRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
                                     <cc1:FilteredTextBoxExtender ID="fteStep2aRemark" runat="server" TargetControlID="txtStep2aRemark"
                                       FilterMode="InvalidChars"  InvalidChars="|\&quot;"></cc1:FilteredTextBoxExtender>
@@ -1222,6 +1290,38 @@
                         </table>
                     </asp:Panel>
 
+                    <asp:Panel ID="panStep2aMedicalExemptionJoinEHRSS" runat="server">
+                        <div style="padding-top:3px"></div>
+                        <table cellspacing="0" cellpadding="0" border="0" style="position:relative;left:-1px">
+                            <tr>
+                                <td style="width: 930px; min-height: 48px; vertical-align: top;background-color:white!important" class="checkboxStyle">
+                                    <table style="width:100%;border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">        
+                                        <tr id="trStep2aMedicalExemptionJoinEHRSS" runat="server" style="min-height :20px;background-color:#fff894">
+                                            <td style="vertical-align:top;width:30px;padding-top:5px;padding-bottom:5px">
+                                                <asp:CheckBox ID="chkStep2aMedicalExemptionJoinEHRSS" runat="server" AutoPostBack="false" style="position:relative;left:2px;top:3px;-ms-transform:scale(1.5)"/>
+                                            </td>
+                                            <td style="text-align:left;padding-top:5px;padding-bottom:5px">
+                                                <asp:label ID="lblStep2aMedicalExemptionJoinEHRSS_1" AssociatedControlID="chkStep2aMedicalExemptionJoinEHRSS" runat="server" Text="<%$ Resources:Text, MedicalExemptionsJoinEHRSS_1 %>" />
+                                                <br />
+                                                <asp:label ID="lblStep2aMedicalExemptionJoinEHRSS_2" AssociatedControlID="chkStep2aMedicalExemptionJoinEHRSS" runat="server" Text="<%$ Resources:Text, MedicalExemptionsJoinEHRSS_2 %>" />
+                                                <asp:textbox ID="txtStep2aMedicalExemptionContactNo" runat="server" MaxLength="8" style="position:relative;left:-1px" Width="100px"/>
+                                                <asp:Image ID="imgStep2aMedicalExemptionContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                                    ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />                                                
+                                                <asp:label ID="lblStep2aMedicalExemptionJoinEHRSS_3" AssociatedControlID="chkStep2aMedicalExemptionJoinEHRSS" runat="server" Text="<%$ Resources:Text, MedicalExemptionsJoinEHRSS_3 %>" />
+                                                <cc1:FilteredTextBoxExtender ID="fteStep2aMedicalExemptionContactNo" runat="server"
+                                                     TargetControlID="txtStep2aMedicalExemptionContactNo" FilterType="Numbers" />
+                                            </td>
+                                        </tr>                                                                                             
+                                    </table>
+                                </td>
+                                <td style="vertical-align:top;padding-left:5px">
+                                    <asp:Image ID="imgStep2aMedicalExemptionJoinEHRSSError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr>
@@ -1326,6 +1426,7 @@
                                     <asp:Label ID="lblStep2bContactNoNotAbleSMS" runat="server" CssClass="tableText" Text="<%$ Resources:Text, NotAbleToReceiveSMS%>" style="color:red!important" />
                                 </td>
                             </tr>
+                            <asp:Panel ID="panStep2bRemark" runat="server">
                             <tr>
                                 <td height="25" style="width: 205px;vertical-align:top;">
                                     <asp:Label ID="lblStep2bRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
@@ -1334,6 +1435,7 @@
                                     <asp:Label ID="lblStep2bRemark" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
                                 </td>
                             </tr>
+                            </asp:Panel>
                             <asp:Panel ID="panStep2bJoinEHRSS" runat="server">
                             <tr>
                                 <td height="25" style="width: 205px;vertical-align:top;">
@@ -1573,6 +1675,7 @@
                                 <td style="padding-bottom:10px">
                                 </td>
                             </tr>--%>
+                            <asp:Panel ID="panStep3Remark" runat="server">
                             <tr>
                                 <td height="25" style="width: 205px;vertical-align:top">
                                     <asp:Label ID="lblStep3RemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
@@ -1581,6 +1684,7 @@
                                     <asp:Label ID="lblStep3Remark" runat="server" CssClass="tableText"/>
                                 </td>
                             </tr>
+                            </asp:Panel>
                             <asp:Panel ID="panStep3JoinEHRSS" runat="server">
                             <tr>
                                 <td height="25" style="width: 205px;vertical-align:top;">

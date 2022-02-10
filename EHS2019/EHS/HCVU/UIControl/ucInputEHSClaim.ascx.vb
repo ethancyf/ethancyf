@@ -60,13 +60,14 @@ Partial Public Class ucInputEHSClaim
         Public Const VSS As String = "ucInputEHSClaim_VSS"
         Public Const ENHVSSO As String = "ucInputEHSClaim_ENHVSSO"
         Public Const PPP As String = "ucInputEHSClaim_PPP"
-        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
-        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         Public Const COVID19 As String = "ucInputEHSClaim_COVID19"
         Public Const COVID19RVP As String = "ucInputEHSClaim_COVID19RVP"
         Public Const COVID19OR As String = "ucInputEHSClaim_COVID19OR"
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const COVID19MEC As String = "ucInputEHSClaim_COVID19MEC"
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
 
     End Class
 
@@ -94,10 +95,7 @@ Partial Public Class ucInputEHSClaim
         ucInputEHSClaim_VSS.Visible = False
         ucInputEHSClaim_ENHVSSO.Visible = False
         ucInputEHSClaim_PPP.Visible = False
-        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         ucInputEHSClaim_SSSCMC.Visible = False
-        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         ucInputEHSClaim_COVID19.Visible = False
 
         Select Case New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(Me._strSchemeCode)
@@ -179,12 +177,9 @@ Partial Public Class ucInputEHSClaim
                     AddHandler udcInputPPP.SearchButtonClick, AddressOf udcInputPPPKG_SearchButtonClick
                 End If
 
-                'CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-                '---------------------------------------------------------------------------------------------------------
             Case SchemeClaimModel.EnumControlType.SSSCMC
                 udcInputEHSClaim = Me.ucInputEHSClaim_SSSCMC
                 udcInputEHSClaim.ID = EHSClaimControlID.SSSCMC
-                'CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
             Case SchemeClaimModel.EnumControlType.COVID19
                 udcInputEHSClaim = Me.ucInputEHSClaim_COVID19
@@ -207,6 +202,10 @@ Partial Public Class ucInputEHSClaim
                 Dim udcInputCOVID19OR As ucInputCOVID19OR = CType(udcInputEHSClaim, ucInputCOVID19OR)
                 AddHandler udcInputCOVID19OR.SearchButtonClick, AddressOf udcInputCOVID19OR_SearchButtonClick
                 AddHandler udcInputCOVID19OR.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
+
+            Case SchemeClaimModel.EnumControlType.COVID19MEC
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19MEC.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.COVID19MEC
 
         End Select
 
@@ -659,6 +658,18 @@ Partial Public Class ucInputEHSClaim
         End If
     End Function
     ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023-071 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Function GetCOVID19MECControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19MEC)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCOVID19MEC)
+        Else
+            Return Nothing
+        End If
+    End Function
+    ' CRE20-0023-071 (Immu record) [End][Chris YIM]
 #End Region
 
 #Region "Property"

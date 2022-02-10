@@ -18,17 +18,13 @@ Namespace BLL
             Public Const SESS_EHSTransaction_Without_Transaction_Detail As String = "SESS_EHSTRANSACTION_WITHOUT_TRANSACTION_DETAIL"
             Public Const SESS_EHSClaimVaccine As String = "SESS_EHSCLAIMVACCINE"
 
-
-            ' CRE20-0022 (Immu record) [Start][Raiman]
-            ' ---------------------------------------------------------------------------------------------------------
             'EHSTransaction Reprint
             Public Const SESS_EHSClaimPrintOutFunctionCode As String = "SESS_EHSCLAIM_PRINTOUT_FUNCTIONCODE"
             Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
             Public Const SESS_CLAIMCOVID19_ValidReprint As String = "SESS_CLAIMCOVID19_VALIDREPRINT"
             Public Const SESS_ClaimCOVID19_DischargeRecord As String = "SESS_CLAIMCOVID19_DISCHARGERECORD"
-
-            ' CRE20-0022 (Immu record) [Start][Raiman]
-            ' ---------------------------------------------------------------------------------------------------------
+            Public Const SESS_ClaimCOVID19_MedicalExemptionRecord As String = "SESS_CLAIMCOVID19_MEDICALEXEMPTIONRECORD"
+            Public Const SESS_ClaimCOVID19_MedicalExemptionRecordFull As String = "SESS_CLAIMCOVID19_MEDICALEXEMPTIONRECORDFULL"
 
             'Scheme
             Public Const SESS_SchemeClaim As String = "SESS_SCHEMECLAIM"
@@ -536,6 +532,43 @@ Namespace BLL
         End Sub
 #End Region
         ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "Claim COVID-19 - Medical Exemption Record"
+        Public Sub MedicalExemptionRecordFullSaveToSession(ByVal dt As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecordFull) = dt
+        End Sub
+
+        Public Function MedicalExemptionRecordFullGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecordFull) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecordFull), DataTable)
+            End If
+        End Function
+
+        Public Sub MedicalExemptionRecordFullRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecordFull)
+        End Sub
+
+        Public Sub MedicalExemptionRecordSaveToSession(ByVal dt As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord) = dt
+        End Sub
+
+        Public Function MedicalExemptionRecordGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord), DataTable)
+            End If
+        End Function
+
+        Public Sub MedicalExemptionRecordRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_MedicalExemptionRecord)
+        End Sub
+#End Region
+        ' CRE20-0023-71 (Immu record) [End][Chris YIM]
 
 #End Region
 

@@ -1,3 +1,4 @@
+Imports Common.Component.Scheme
 Namespace Component.EHSTransaction
     <Serializable()> Public Class EHSTransactionModelCollection
         Inherits System.Collections.ArrayList
@@ -18,5 +19,32 @@ Namespace Component.EHSTransaction
                 Return CType(MyBase.Item(intIndex), EHSTransactionModel)
             End Get
         End Property
+
+        Public Function FilterByTextOnlyAvailable(ByVal enumTextOnlyAvailable As EHSTransactionModel.TextOnlyVersion) As EHSTransactionModelCollection
+            Dim udtEHSTransactionList As EHSTransactionModelCollection = New EHSTransactionModelCollection()
+
+            For Each udtEHSTransaction As EHSTransactionModel In Me
+                If udtEHSTransaction.TextOnlyAvailable(enumTextOnlyAvailable) Then
+                    udtEHSTransactionList.Add(udtEHSTransaction.Clone)
+                End If
+            Next
+
+            Return udtEHSTransactionList
+        End Function
+
+        Public Function FilterbyExcludingCategoryCode(ByVal strCategoryCode As String) As EHSTransactionModelCollection
+            Dim udtEHSTransactionList As EHSTransactionModelCollection = New EHSTransactionModelCollection()
+
+            For Each udtEHSTransaction As EHSTransactionModel In Me
+                If udtEHSTransaction.CategoryCode IsNot Nothing AndAlso udtEHSTransaction.CategoryCode.Trim <> strCategoryCode.Trim Then
+                    udtEHSTransactionList.Add(udtEHSTransaction.Clone)
+                End If
+            Next
+
+            Return udtEHSTransactionList
+
+        End Function
+
     End Class
+
 End Namespace

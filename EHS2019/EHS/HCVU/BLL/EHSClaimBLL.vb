@@ -810,8 +810,62 @@ Namespace BLL
         End Sub
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+        ''' <summary>
+        ''' Construct EHS Transaction Detail For COVID19MEC
+        ''' </summary>
+        ''' <param name="udtEHSTransaction"></param>
+        ''' <param name="udtEHSAccount"></param>
+        ''' <param name="strBOUserID"></param>
+        ''' <remarks></remarks>
+        Public Sub ConstructEHSTransactionDetail_MEC(ByRef udtEHSTransaction As EHSTransactionModel, _
+                                                     ByVal udtEHSAccount As EHSAccountModel,
+                                                     ByVal strBOUserID As String)
 
+            Dim udtSchemeClaimModel As SchemeClaimModel = Me._udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransaction.SchemeCode, udtEHSTransaction.ServiceDate.AddDays(1).AddMinutes(-1))
 
+            ' VoucherTransaction
+            If udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
+                udtEHSTransaction.VoucherAccID = udtEHSAccount.VoucherAccID
+            Else
+                udtEHSTransaction.TempVoucherAccID = udtEHSAccount.VoucherAccID
+            End If
+            udtEHSTransaction.RecordStatus = EHSTransactionModel.TransRecordStatusClass.Pending
+            udtEHSTransaction.CreateBy = strBOUserID
+            udtEHSTransaction.UpdateBy = strBOUserID
+            udtEHSTransaction.DataEntryBy = String.Empty
+
+            udtEHSTransaction.ManualReimburse = True
+
+            'udtEHSTransaction.TransactionDtm = Now
+            udtEHSTransaction.DocCode = udtEHSAccount.SearchDocCode
+
+            udtEHSTransaction.TransactionDetails = New TransactionDetailModelCollection()
+
+            ' ------------------------------------------------------------------------
+            ' Construct the Detail usign the Active Scheme & Subsidize By Service date 
+            ' ------------------------------------------------------------------------
+            Dim udtEHSTransactionDetail As New EHSTransaction.TransactionDetailModel()
+            udtEHSTransactionDetail.SchemeCode = udtSchemeClaimModel.SchemeCode
+            udtEHSTransactionDetail.SchemeSeq = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SchemeSeq
+            udtEHSTransactionDetail.SubsidizeCode = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeCode
+            udtEHSTransactionDetail.SubsidizeItemCode = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode
+
+            Dim udtSubsidizeItemDetailList As SubsidizeItemDetailsModelCollection = Me._udtSchemeDetailBLL.getSubsidizeItemDetails(udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode)
+            udtEHSTransactionDetail.AvailableItemCode = udtSubsidizeItemDetailList(0).AvailableItemCode
+            udtEHSTransactionDetail.Unit = Nothing
+            udtEHSTransactionDetail.PerUnitValue = Nothing
+            udtEHSTransactionDetail.TotalAmount = Nothing
+            udtEHSTransactionDetail.Remark = String.Empty
+            udtEHSTransactionDetail.ExchangeRate_Value = udtEHSTransaction.ExchangeRate
+            udtEHSTransactionDetail.TotalAmountRMB = udtEHSTransaction.VoucherClaimRMB
+
+            udtEHSTransaction.TransactionDetails.Add(udtEHSTransactionDetail)
+
+            udtEHSTransaction.VoucherBeforeRedeem = 0
+            udtEHSTransaction.VoucherAfterRedeem = 0
+            udtEHSTransaction.ClaimAmount = Nothing
+
+        End Sub
 
 #End Region
 

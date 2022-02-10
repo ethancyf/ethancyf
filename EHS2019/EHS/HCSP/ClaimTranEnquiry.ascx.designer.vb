@@ -473,6 +473,15 @@ Partial Public Class ClaimTranEnquiry
     Protected WithEvents lblContactNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panRemark As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''lblRemarkText control.
     '''</summary>
     '''<remarks>

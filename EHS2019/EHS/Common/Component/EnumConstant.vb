@@ -3539,4 +3539,8 @@ Namespace Component
     End Enum
     ' CRE20-0022 (Immu record) [End][Chris YIM]
 
+    Public Class StaticDataStatus
+        Public Const Active As String = "A"
+        Public Const Inactive As String = "I"
+    End Class
 End Namespace

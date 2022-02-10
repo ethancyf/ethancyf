@@ -422,6 +422,12 @@ Public Class PracticeRadioButtonGroup
             udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(DirectCast(Me.Page, BasePage).SubPlatform)
             ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
+            ' CRE20-023-71 (COVID19 - Medical Exemption Record) [Start][Winnie SUEN]
+            ' -----------------------------------------------------------------------
+            udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPUserRole(UserAC.UserACBLL.GetUserAC.UserType)
+            ' CRE20-023-71 (COVID19 - Medical Exemption Record) [End][Winnie SUEN]
+
+
             Dim udtSchemeClaimModelList As SchemeClaimModelCollection = Nothing
             For Each udtSchemeClaimModel As SchemeClaimModel In udtSchemeClaimModelCollection
 
@@ -625,6 +631,11 @@ Public Class PracticeRadioButtonGroup
                 ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
                 udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(DirectCast(Me.Page, BasePage).SubPlatform)
                 ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+
+                ' CRE20-023-71 (COVID19 - Medical Exemption Record) [Start][Winnie SUEN]
+                ' -----------------------------------------------------------------------
+                udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPUserRole(UserAC.UserACBLL.GetUserAC.UserType)
+                ' CRE20-023-71 (COVID19 - Medical Exemption Record) [End][Winnie SUEN]
 
                 ' CRE20-023  (Immu record) [Start][Raiman]
                 Dim blnIsContainCovid19Scheme = False

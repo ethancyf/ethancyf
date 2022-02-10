@@ -92,6 +92,8 @@ Partial Public MustInherit Class BasePrintoutForm
                 rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, _
                                                                                          blnDischarge)
 
+            Case SchemeClaimModel.COVID19MEC
+                rpt = New COVID19.PrintOut.ExemptionCert.ExemptionCert(udtEHSTransaction, udtEHSAccount)
             Case Else
                 rpt = Nothing
 

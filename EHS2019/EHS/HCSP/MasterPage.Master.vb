@@ -211,19 +211,17 @@ Partial Public Class MasterPage
 
         setLangageStyle()
 
-        'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
+        Dim strVersion As String = udcGeneralF.GetSystemParameterParmValue1("CSS_Style_Version")
         Dim hlCommonStyleCSS As HtmlLink = New HtmlLink
         Dim hlMenuStyleCSS As HtmlLink = New HtmlLink
         If DirectCast(Me.Page, BasePage).SubPlatform = EnumHCSPSubPlatform.CN Then
-            hlCommonStyleCSS.Href = "CSS/CommonStyle_cn.css"
-            hlMenuStyleCSS.Href = "CSS/MenuStyle_cn.css"
+            hlCommonStyleCSS.Href = "CSS/CommonStyle_cn.css?ver=" & strVersion
+            hlMenuStyleCSS.Href = "CSS/MenuStyle_cn.css?ver=" & strVersion
         Else
-            hlCommonStyleCSS.Href = "CSS/CommonStyle.css"
-            hlMenuStyleCSS.Href = "CSS/MenuStyle.css"
+            hlCommonStyleCSS.Href = "CSS/CommonStyle.css?ver=" & strVersion
+            hlMenuStyleCSS.Href = "CSS/MenuStyle.css?ver=" & strVersion
         End If
 
-        ' CRE15-006 Rename of eHS [Start][Lawrence]
         lblAppEnvironment.Text = (New GeneralFunction).getSystemParameter("AppEnvironment")
 
         If lblAppEnvironment.Text.ToLower = "production" Then lblAppEnvironment.Text = String.Empty
@@ -234,7 +232,6 @@ Partial Public Class MasterPage
             Case Else
                 tdAppEnvironment.Attributes("class") = "AppEnvironment"
         End Select
-        ' CRE15-006 Rename of eHS [End][Lawrence]
 
         'Add CommonStyle CSS File
         hlCommonStyleCSS.Attributes.Add("rel", "stylesheet")
@@ -245,7 +242,6 @@ Partial Public Class MasterPage
         hlMenuStyleCSS.Attributes.Add("rel", "stylesheet")
         hlMenuStyleCSS.Attributes.Add("type", "text/css")
         Me.Page.Header.Controls.Add(hlMenuStyleCSS)
-        'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
 
         Dim udtUserAC As UserACModel = UserACBLL.GetUserAC()
         Dim udtSP As ServiceProviderModel
@@ -748,16 +744,21 @@ Partial Public Class MasterPage
                     aryDataEntryPracticeList = udtDataEntry.PracticeList
                 End If
 
-                ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
                 If Me.IsCOVID19MenuItem(CInt(dr("Display_Seq"))) Then
                     ' Check the Menu Visible if entitle the premitted scheme
                     Dim strMenuSchemeList As String = CStr(dr("Scheme_Code")).Trim.ToUpper
-                    e.Row.Visible = CheckMenuVisible(strMenuSchemeList, udtSP, aryDataEntryPracticeList, SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                    ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Dim blnVisible As Boolean = CheckMenuVisible(strMenuSchemeList, udtSP, aryDataEntryPracticeList, SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                    blnVisible = blnVisible OrElse CheckMenuVisible(strMenuSchemeList, udtSP, aryDataEntryPracticeList, SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC)
+
+                    e.Row.Visible = blnVisible
 
                     lnkbtnMenuItemReal.Attributes.Add("Mode", "2")
                     lnkbtnMenuChiItemReal.Attributes.Add("Mode", "2")
-
+                    ' CRE20-0023-17 (Immu record) [End][Chris YIM]
                 Else
                     ' Check the Menu Visible if entitle the premitted scheme
                     Dim strMenuSchemeList As String = CStr(dr("Scheme_Code")).Trim.ToUpper
@@ -766,7 +767,7 @@ Partial Public Class MasterPage
                     lnkbtnMenuItemReal.Attributes.Add("Mode", "1")
                     lnkbtnMenuChiItemReal.Attributes.Add("Mode", "1")
 
-                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
                 End If
 
             End If

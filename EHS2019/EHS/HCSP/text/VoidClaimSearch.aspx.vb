@@ -189,6 +189,7 @@ Partial Public Class VoidClaimSearch
         Dim udtEHSTransaction As EHSTransactionModel = Nothing
         Dim udtFormatter As Formatter = New Formatter()
         Dim udtEHSTransactions As EHSTransactionModelCollection = Nothing
+        Dim udtTempEHSTransactions As EHSTransactionModelCollection = Nothing
         Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(FunctCode, Me)
 
         'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
@@ -211,6 +212,28 @@ Partial Public Class VoidClaimSearch
                 isValid = False
             Else
                 udtEHSTransaction = udtEHSTransactionBLL.LoadClaimTran(Formatter.ReverseSystemNumber(strTransactionNo))
+
+                'Not to show transaction if it is not available for text-only version
+                If udtEHSTransaction IsNot Nothing AndAlso Not udtEHSTransaction.TextOnlyAvailable(EHSTransactionModel.TextOnlyVersion.Available) Then
+                    udtEHSTransaction = Nothing
+                End If
+
+                'Not to show transaction if it is COVID19 vaccination
+                If udtEHSTransaction IsNot Nothing AndAlso udtEHSTransaction.CategoryCode IsNot Nothing Then
+                    Dim blnMatch As Boolean = False
+
+                    For Each strCategoryCode As String In GetCategoryCodeNotAvailableInTextOnly()
+                        If udtEHSTransaction.CategoryCode.Trim = strCategoryCode Then
+                            blnMatch = True
+                            Exit For
+                        End If
+                    Next
+
+                    If blnMatch Then
+                        udtEHSTransaction = Nothing
+                    End If
+                End If
+
             End If
 
             'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
@@ -303,15 +326,21 @@ Partial Public Class VoidClaimSearch
                 Select Case strDocumentType
                     Case DocTypeModel.DocTypeCode.EC
                         If intAge = 0 Then
-                            udtEHSTransactions = udtEHSTransactionBLL.SearchEHSTransaction(strDocumentType, strIdentity, strADOPCPrefix, dtmDOB, strInputDOBFormat, Me._udtSP.SPID, strDataEntryUser, Me.SubPlatform)
+                            udtTempEHSTransactions = udtEHSTransactionBLL.SearchEHSTransaction(strDocumentType, strIdentity, strADOPCPrefix, dtmDOB, strInputDOBFormat, Me._udtSP.SPID, strDataEntryUser, Me.SubPlatform)
                         Else
-                            udtEHSTransactions = udtEHSTransactionBLL.SearchEHSTransaction(strDocumentType, strIdentity, intAge, dtmDOR, Me._udtSP.SPID, strDataEntryUser, Me.SubPlatform)
+                            udtTempEHSTransactions = udtEHSTransactionBLL.SearchEHSTransaction(strDocumentType, strIdentity, intAge, dtmDOR, Me._udtSP.SPID, strDataEntryUser, Me.SubPlatform)
                         End If
 
                     Case Else
-                        udtEHSTransactions = udtEHSTransactionBLL.SearchEHSTransaction(strDocumentType, strIdentity, strADOPCPrefix, dtmDOB, strInputDOBFormat, Me._udtSP.SPID, strDataEntryUser, Me.SubPlatform)
+                        udtTempEHSTransactions = udtEHSTransactionBLL.SearchEHSTransaction(strDocumentType, strIdentity, strADOPCPrefix, dtmDOB, strInputDOBFormat, Me._udtSP.SPID, strDataEntryUser, Me.SubPlatform)
                 End Select
                 ' CRE13-001 - EHAPP [End][Koala]
+
+                udtEHSTransactions = udtTempEHSTransactions.FilterByTextOnlyAvailable(EHSTransactionModel.TextOnlyVersion.Available)
+
+                For Each strCategoryCode As String In GetCategoryCodeNotAvailableInTextOnly()
+                    udtEHSTransactions = udtEHSTransactions.FilterbyExcludingCategoryCode(strCategoryCode)
+                Next
 
                 If Not udtEHSTransactions Is Nothing AndAlso udtEHSTransactions.Count > 0 Then
 
@@ -753,6 +782,16 @@ Partial Public Class VoidClaimSearch
         End If
 
         Return IIf(Me._udtSessionHandler.Language = Common.Component.CultureLanguage.English, udtDocType.DocName, udtDocType.DocNameChi)
+    End Function
+
+    Private Function GetCategoryCodeNotAvailableInTextOnly() As List(Of String)
+        Dim lstCategoryCode As New List(Of String)
+
+        lstCategoryCode.Add(Common.Component.CategoryCode.VSS_COVID19)
+        lstCategoryCode.Add(Common.Component.CategoryCode.VSS_COVID19_Outreach)
+        lstCategoryCode.Add(Common.Component.CategoryCode.RVP_COVID19)
+
+        Return lstCategoryCode
     End Function
 
 #End Region

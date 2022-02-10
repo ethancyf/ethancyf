@@ -40,7 +40,7 @@ Namespace PrintOut.ConfirmationLetter
                     ' CRE19-008 (Rename VO) [End][Koala]
 
                 Case Common.Component.CultureLanguage.TradChinese
-                    objFont = New System.Drawing.Font("HA_MingLiu", 11.25F, System.Drawing.FontStyle.Regular)
+                    objFont = New System.Drawing.Font("MingLiU_HKSCS-ExtB", 11.25F, System.Drawing.FontStyle.Regular)
                     'Me.txtTelNoEng.Location = New System.Drawing.PointF(1.82F, 0.5F)
                     'Me.txtFaxNoEng.Location = New System.Drawing.PointF(1.82F, 0.72F)
 
@@ -63,7 +63,7 @@ Namespace PrintOut.ConfirmationLetter
             Me.txtRecipientSPNameEng.Text = Me._strSPName
 
             If Me._blnIsChineseSPName Then
-                Me.txtRecipientSPNameEng.Font = New System.Drawing.Font("HA_MingLiu", 11.25F, Drawing.FontStyle.Regular)
+                Me.txtRecipientSPNameEng.Font = New System.Drawing.Font("MingLiU_HKSCS-ExtB", 11.25F, Drawing.FontStyle.Regular)
             Else
                 Me.txtRecipientSPNameEng.Font = New System.Drawing.Font("Arial", 10, Drawing.FontStyle.Regular)
             End If

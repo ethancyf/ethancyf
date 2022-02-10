@@ -1772,6 +1772,130 @@ Namespace Format
 
         End Function
 
+        Public Function formatInputDateDDMMMYYYY(ByVal strInputDate As String, Optional ByVal strLang As String = CultureLanguage.English) As String
+            ' Format Input Date: 
+            ' 1. Pad 0 for : 1-Jan-2009
+            ' 2. Separate with '-' : 01Jan2009
+            Dim strRes As String = String.Empty
+
+            'INT15-0008 (Fix invalid character in date input for HCVU) [Start][Chris YIM]
+            '-----------------------------------------------------------------------------------------
+            Dim rgx As Regex = Nothing
+            'INT15-0008 (Fix invalid character in date input for HCVU) [End][Chris YIM]
+
+            If strInputDate.Length > 0 Then
+                'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
+                '-----------------------------------------------------------------------------------------
+                Select Case strLang
+                    Case CultureLanguage.English, CultureLanguage.TradChinese
+                        If strInputDate.Contains("-") Then
+                            Dim arrStrDate As String() = strInputDate.Split("-")
+                            If arrStrDate.Length = 2 Then
+                                strRes = arrStrDate(0).PadLeft(2, "0").Trim() + "-" + arrStrDate(1).Trim()
+                            ElseIf arrStrDate.Length = 3 Then
+                                strRes = arrStrDate(0).PadLeft(2, "0").Trim() + "-" + arrStrDate(1).Trim() + "-" + arrStrDate(2).Trim()
+                            Else
+                                strRes = String.Empty
+                            End If
+                        Else
+                            Select Case strInputDate.Length
+                                Case 9
+                                    rgx = New Regex("\d{2}[a-zA-Z]{3}\d{4}", RegexOptions.IgnoreCase)
+                                    If rgx.IsMatch(strInputDate) Then
+                                        strRes = strInputDate.Substring(0, 2) + "-" + strInputDate.Substring(2, 3) + "-" + strInputDate.Substring(5, 4)
+                                    Else
+                                        strRes = strInputDate
+                                    End If
+                                Case 7
+                                    rgx = New Regex("[a-zA-Z]{3}\d{4}", RegexOptions.IgnoreCase)
+                                    If rgx.IsMatch(strInputDate) Then
+                                        strRes = strInputDate.Substring(0, 2) + "-" + strInputDate.Substring(2, 4)
+                                    Else
+                                        strRes = strInputDate
+                                    End If
+                                Case Else
+                                    strRes = strInputDate
+                            End Select
+                        End If
+                    Case CultureLanguage.SimpChinese
+                        If strInputDate.Contains("-") Then
+                            Dim arrStrDate As String() = strInputDate.Split("-")
+                            If arrStrDate.Length = 2 Then
+                                strRes = arrStrDate(1).PadLeft(2, "0").Trim() + "-" + arrStrDate(0).Trim()
+                            ElseIf arrStrDate.Length = 3 Then
+                                strRes = arrStrDate(2).PadLeft(2, "0").Trim() + "-" + arrStrDate(1).PadLeft(2, "0").Trim() + "-" + arrStrDate(0).Trim()
+                            Else
+                                strRes = String.Empty
+                            End If
+                        Else
+                            Select Case strInputDate.Length
+                                'INT15-0008 (Fix invalid character in date input for HCVU) [Start][Chris YIM]
+                                '-----------------------------------------------------------------------------------------
+                                'Case 4, 10
+                                '    strRes = strInputDate
+                                Case 8
+                                    rgx = New Regex("\d{8}", RegexOptions.IgnoreCase)
+                                    If rgx.IsMatch(strInputDate) Then
+                                        strRes = strInputDate.Substring(6, 2) + "-" + strInputDate.Substring(4, 2) + "-" + strInputDate.Substring(0, 4)
+                                    Else
+                                        strRes = strInputDate
+                                    End If
+                                Case 6
+                                    rgx = New Regex("\d{6}", RegexOptions.IgnoreCase)
+                                    If rgx.IsMatch(strInputDate) Then
+                                        strRes = strInputDate.Substring(4, 2) + "-" + strInputDate.Substring(0, 4)
+                                    Else
+                                        strRes = strInputDate
+                                    End If
+                                Case Else
+                                    strRes = strInputDate
+                                    'INT15-0008 (Fix invalid character in date input for HCVU) [End][Chris YIM]
+                            End Select
+                        End If
+                    Case Else
+                        If strInputDate.Contains("-") Then
+                            Dim arrStrDate As String() = strInputDate.Split("-")
+                            If arrStrDate.Length = 2 Then
+                                strRes = arrStrDate(0).PadLeft(2, "0").Trim() + "-" + arrStrDate(1).Trim()
+                            ElseIf arrStrDate.Length = 3 Then
+                                strRes = arrStrDate(0).PadLeft(2, "0").Trim() + "-" + arrStrDate(1).PadLeft(2, "0").Trim() + "-" + arrStrDate(2).Trim()
+                            Else
+                                strRes = String.Empty
+                            End If
+                        Else
+                            Select Case strInputDate.Length
+                                'INT15-0008 (Fix invalid character in date input for HCVU) [Start][Chris YIM]
+                                '-----------------------------------------------------------------------------------------
+                                'Case 4, 10
+                                '    strRes = strInputDate
+                                Case 8
+                                    rgx = New Regex("\d{8}", RegexOptions.IgnoreCase)
+                                    If rgx.IsMatch(strInputDate) Then
+                                        strRes = strInputDate.Substring(0, 2) + "-" + strInputDate.Substring(2, 2) + "-" + strInputDate.Substring(4, 4)
+                                    Else
+                                        strRes = strInputDate
+                                    End If
+                                Case 6
+                                    rgx = New Regex("\d{8}", RegexOptions.IgnoreCase)
+                                    If rgx.IsMatch(strInputDate) Then
+                                        strRes = strInputDate.Substring(0, 2) + "-" + strInputDate.Substring(2, 4)
+                                    Else
+                                        strRes = strInputDate
+                                    End If
+                                Case Else
+                                    strRes = strInputDate
+                                    'INT15-0008 (Fix invalid character in date input for HCVU) [End][Chris YIM]
+                            End Select
+                        End If
+                End Select
+
+                'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+            End If
+
+            Return strRes
+
+        End Function
+
         Public Sub seperateHKID(ByVal strSavedHKID As String, ByRef strHKIDPrefix As String, ByRef strHKID As String, ByRef strHKIDDigit As String)
             Dim intLen As Integer
             Dim strTemp As String = String.Empty

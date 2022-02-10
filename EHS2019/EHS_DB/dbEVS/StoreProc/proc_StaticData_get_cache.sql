@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Ethan Chan
+-- Modified date:	17 Jan 2022
+-- CR No.:			CRE20-023
+-- Description:		Change active to all
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Nichole Ip
@@ -60,9 +66,9 @@ BEGIN
 -- Return results
 -- =============================================
 
-	SELECT Column_Name, Item_No, Data_Value, Data_Value_Chi, Data_Value_CN, Display_Order, Service_Date_Start
+	SELECT Column_Name, Item_No, Data_Value, Data_Value_Chi, Data_Value_CN, Display_Order, Service_Date_Start, Record_Status
 	FROM dbo.StaticData
-	WHERE Record_Status = 'A'
+--	WHERE Record_Status = 'A'
 	ORDER BY Display_Order
 END
 GO

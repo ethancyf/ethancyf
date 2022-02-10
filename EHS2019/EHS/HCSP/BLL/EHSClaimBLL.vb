@@ -4432,6 +4432,79 @@ Namespace BLL
 
         End Sub
 
+        ''' <summary>
+        ''' Construct EHS Transaction Detail For COVID19MEC
+        ''' </summary>
+        ''' <param name="udtSP"></param>
+        ''' <param name="udtDataEntry"></param>
+        ''' <param name="udtEHSTransactionModel"></param>
+        ''' <param name="udtEHSAccount"></param>
+        ''' <remarks></remarks>
+        Public Sub ConstructEHSTransactionDetail_MEC(ByVal udtSP As ServiceProviderModel, _
+                                                     ByVal udtDataEntry As DataEntryUserModel, _
+                                                     ByRef udtEHSTransactionModel As EHSTransactionModel, _
+                                                     ByVal udtEHSAccount As EHSAccountModel)
+
+            Dim udtSchemeClaimModel As SchemeClaimModel = Me._udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransactionModel.SchemeCode, udtEHSTransactionModel.ServiceDate.AddDays(1).AddMinutes(-1))
+
+            ' VoucherTransaction
+            If udtDataEntry Is Nothing Then
+                If udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
+                    udtEHSTransactionModel.RecordStatus = udtSchemeClaimModel.ConfirmedTransactionStatus
+                    udtEHSTransactionModel.VoucherAccID = udtEHSAccount.VoucherAccID
+                Else
+                    udtEHSTransactionModel.RecordStatus = EHSTransactionModel.TransRecordStatusClass.PendingVRValidate
+                    udtEHSTransactionModel.TempVoucherAccID = udtEHSAccount.VoucherAccID
+                End If
+
+                udtEHSTransactionModel.CreateBy = udtSP.SPID
+                udtEHSTransactionModel.UpdateBy = udtSP.SPID
+                udtEHSTransactionModel.DataEntryBy = String.Empty
+            Else
+
+                If udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
+                    udtEHSTransactionModel.VoucherAccID = udtEHSAccount.VoucherAccID
+                Else
+                    udtEHSTransactionModel.TempVoucherAccID = udtEHSAccount.VoucherAccID
+                End If
+                udtEHSTransactionModel.RecordStatus = EHSTransactionModel.TransRecordStatusClass.Pending
+                udtEHSTransactionModel.CreateBy = udtSP.SPID
+                udtEHSTransactionModel.UpdateBy = udtSP.SPID
+                udtEHSTransactionModel.DataEntryBy = udtDataEntry.DataEntryAccount
+            End If
+
+            udtEHSTransactionModel.TransactionDtm = Now
+            udtEHSTransactionModel.DocCode = udtEHSAccount.SearchDocCode
+
+            udtEHSTransactionModel.TransactionDetails = New TransactionDetailModelCollection()
+
+            ' ------------------------------------------------------------------------
+            ' Construct the Detail usign the Active Scheme & Subsidize By Service date 
+            ' ------------------------------------------------------------------------
+            Dim udtEHSTransactionDetail As New EHSTransaction.TransactionDetailModel()
+            udtEHSTransactionDetail.SchemeCode = udtSchemeClaimModel.SchemeCode
+            udtEHSTransactionDetail.SchemeSeq = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SchemeSeq
+            udtEHSTransactionDetail.SubsidizeCode = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeCode
+            udtEHSTransactionDetail.SubsidizeItemCode = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode
+
+            Dim udtSubsidizeItemDetailList As SubsidizeItemDetailsModelCollection = Me._udtSchemeDetailBLL.getSubsidizeItemDetails(udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode)
+            udtEHSTransactionDetail.AvailableItemCode = udtSubsidizeItemDetailList(0).AvailableItemCode
+            udtEHSTransactionDetail.Unit = Nothing
+            udtEHSTransactionDetail.PerUnitValue = Nothing
+            udtEHSTransactionDetail.TotalAmount = Nothing
+            udtEHSTransactionDetail.Remark = String.Empty
+            udtEHSTransactionDetail.ExchangeRate_Value = udtEHSTransactionModel.ExchangeRate
+            udtEHSTransactionDetail.TotalAmountRMB = udtEHSTransactionModel.VoucherClaimRMB
+
+            udtEHSTransactionModel.TransactionDetails.Add(udtEHSTransactionDetail)
+
+            udtEHSTransactionModel.VoucherBeforeRedeem = 0
+            udtEHSTransactionModel.VoucherAfterRedeem = 0
+            udtEHSTransactionModel.ClaimAmount = Nothing
+
+        End Sub
+
+
         ' CRE13-001 - EHAPP [Start][Tommy L]
         ' -------------------------------------------------------------------------------------
         ''' <summary>

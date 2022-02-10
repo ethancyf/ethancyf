@@ -104,6 +104,42 @@ Partial Public Class ReprintVaccinationRecord
     Protected WithEvents ViewSearch As Global.System.Web.UI.WebControls.View
 
     '''<summary>
+    '''trRPRecordType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRPRecordType As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblRPRecordTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRPRecordTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rblRPRecordType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblRPRecordType As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
+    '''imgRPRecordTypeErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgRPRecordTypeErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''lbleHSDocTypeText control.
     '''</summary>
     '''<remarks>
@@ -176,13 +212,121 @@ Partial Public Class ReprintVaccinationRecord
     Protected WithEvents ibtnSearchByCard As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
-    '''ViewTransaction control.
+    '''ViewSearchResultMEC control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ViewTransaction As Global.System.Web.UI.WebControls.View
+    Protected WithEvents ViewSearchResultMEC As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''btnHidden control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHidden As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''udcCollapsibleSearchCriteriaReview control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcCollapsibleSearchCriteriaReview As Global.HCVU.ucCollapsibleSearchCriteriaReview
+
+    '''<summary>
+    '''panSearchCriteriaReview control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panSearchCriteriaReview As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblRRecordTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRRecordTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRRecordType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRRecordType As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblREHealthDocTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblREHealthDocTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblREHealthDocType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblREHealthDocType As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblREHealthDocNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblREHealthDocNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblREHealthDocNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblREHealthDocNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''gvSearchResult control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvSearchResult As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''ibtnBack control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnBack As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''ViewDetail control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ViewDetail As Global.System.Web.UI.WebControls.View
 
     '''<summary>
     '''udcClaimTransDetail control.

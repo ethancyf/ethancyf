@@ -373,6 +373,7 @@
     <Content Include="UIControl\DocType\ucReadOnlyROP140.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyTW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19MEC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19.ascx" />
@@ -387,6 +388,7 @@
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19MEC.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx" />
@@ -1742,6 +1744,13 @@
       <DependentUpon>ucInputCIVSS.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19MEC.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19MEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19MEC.ascx.vb">
+      <DependentUpon>ucInputCOVID19MEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx.designer.vb">
       <DependentUpon>ucInputCOVID19OR.ascx</DependentUpon>
     </Compile>
@@ -1874,6 +1883,13 @@
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCIVSS.ascx.vb">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19MEC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19MEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19MEC.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19MEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx.designer.vb">
       <DependentUpon>ucReadOnlyRVPCOVID19.ascx</DependentUpon>
@@ -3013,7 +3029,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1817</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost/HCVU</IISUrl>
+          <IISUrl>http://localhost/HCVU_Dev</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

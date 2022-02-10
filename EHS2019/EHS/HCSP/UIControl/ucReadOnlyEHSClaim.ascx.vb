@@ -40,6 +40,8 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const COVID19 As String = "ucReadOnlyEHSClaim_COVID19"     ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19RVP As String = "ucReadOnlyEHSClaim_COVID19RVP"     ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19OR As String = "ucReadOnlyEHSClaim_COVID19OR"
+        Public Const COVID19MEC As String = "ucReadOnlyEHSClaim_COVID19MEC"
+
     End Class
 
 
@@ -158,12 +160,9 @@ Partial Public Class ucReadOnlyEHSClaim
                 udcReadOnlyEHSClaim.ID = EHSClaimControlID.SSSCMC
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                ' --------------------------------------------------------------------------------------
             Case SchemeClaimModel.EnumControlType.COVID19
                 udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19.ascx", strFolderPath))
                 udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19
-                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19RVP.ascx", strFolderPath))
@@ -172,6 +171,10 @@ Partial Public Class ucReadOnlyEHSClaim
             Case SchemeClaimModel.EnumControlType.COVID19OR
                 udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19OR.ascx", strFolderPath))
                 udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19OR
+
+            Case SchemeClaimModel.EnumControlType.COVID19MEC
+                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19MEC.ascx", strFolderPath))
+                udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19MEC
         End Select
 
         udcReadOnlyEHSClaim.EHSClaimVaccine = Me._udtEHSClaimVaccine

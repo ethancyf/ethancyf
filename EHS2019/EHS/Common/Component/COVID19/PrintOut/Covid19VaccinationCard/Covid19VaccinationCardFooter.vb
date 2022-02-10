@@ -96,7 +96,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             txtHKID.Text = _udtFormatter.FormatDocIdentityNoForDisplay(patientInformation.DocCode.Trim(), patientInformation.IdentityNum, False, IIf(patientInformation.DocCode = "ADOPC", patientInformation.AdoptionPrefixNum, vbNull))
             srCovid19FooterDoseTable.Report = New Covid19FooterDoseTableWithNoSignature(_udtEHSTransaction, _udtVaccinationRecord, _blnIsSample, _blnDischarge)
 
-            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
+            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeStringForVaccinationRecord(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
 
         End Sub
 

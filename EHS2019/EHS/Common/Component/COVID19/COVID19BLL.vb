@@ -665,6 +665,30 @@ Namespace Component.COVID19
 
 #End Region
 
+#Region "Get COVID19 Exemption Certificate"
+        Public Function GetCovid19ExemptionCertByDocID(ByVal strDocCode As String, ByVal strDocNo As String, strAdoptionPrefix As String) As DataTable
+            Dim dt As New DataTable
+            Dim db As New Common.DataAccess.Database
+            Try
+                ' create data object and params
+                Dim prams() As SqlParameter = {db.MakeInParam("@doc_code", SqlDbType.Char, 20, IIf(udcValidator.IsEmpty(strDocCode), DBNull.Value, strDocCode)), _
+                                               db.MakeInParam("@identity_no", SqlDbType.VarChar, 20, IIf(udcValidator.IsEmpty(strDocNo), DBNull.Value, strDocNo)), _
+                                               db.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, IIf(udcValidator.IsEmpty(strAdoptionPrefix), DBNull.Value, strAdoptionPrefix)) _
+                                              }
+
+                ' run the stored procedure
+                db.RunProc("proc_Covid19ExemptionCert_get_byDocID", prams, dt)
+            Catch eSQL As SqlException
+                Throw eSQL
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return dt
+        End Function
+
+#End Region
+
 #Region "Supported Function"
         Public Function GenerateVaccineLotNoMappingJavaScript(ByVal strVaccineLotNoJson As String) As String
             Dim strVaccineLotNoMappingJavaScript As String = String.Empty
@@ -1067,11 +1091,24 @@ Namespace Component.COVID19
 #End Region
 
 #Region "QR Code"
-        Public Function GetQRCodeVersion() As String
+        Public Function GetQRCodeVersion(ByVal FormType As PrintOut.Common.PrintoutHelper.FormType) As String
             Dim udtGeneralFunction As New GeneralFunction
+            Dim strParm1 As String = String.Empty
+            Dim strParm2 As String = String.Empty
+            Dim strParmValue As String = String.Empty
 
             'Get QRCode Version
-            Return udtGeneralFunction.GetSystemParameterParmValue1("COVID19_Vaccination_Record_QRCode_QRCodeVersion")
+            udtGeneralFunction.getSystemParameter("COVID19_Vaccination_Record_QRCode_QRCodeVersion", strParm1, strParm2)
+
+            Select Case FormType
+                Case PrintOut.Common.PrintoutHelper.FormType.Vaccination
+                    strParmValue = strParm1
+
+                Case PrintOut.Common.PrintoutHelper.FormType.Exemption
+                    strParmValue = strParm2
+            End Select
+
+            Return strParmValue
 
         End Function
 
