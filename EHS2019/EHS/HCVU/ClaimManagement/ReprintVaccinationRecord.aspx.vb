@@ -211,8 +211,7 @@ Partial Public Class ReprintVaccinationRecord
         BindDocumentType(Me.ddleHSDocType)
         Me.ddleHSDocType.Enabled = True
         Me.txteHSDocNo.Text = String.Empty
-        'rblRPRecordType.SelectedIndex = -1
-        rblRPRecordType.SelectedIndex = 0
+        rblRPRecordType.SelectedIndex = -1
 
     End Sub
 

@@ -138,7 +138,7 @@ Namespace Component.COVID19.PrintOut.ExemptionCert
             'txtPractice.Html += String.Format("&nbsp<span style='font-family:Times New Roman'>{0}</span>", "CHAN TAI MAN Clinic")
 
             txtPractice.SelectionStart = 0
-            txtPractice.SelectionLength = txtPractitionerName.Text.Length
+            txtPractice.SelectionLength = txtPractice.Text.Length
             txtPractice.SelectionColor = Drawing.Color.Black
             txtPractice.SelectionAlignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Right
 
@@ -146,7 +146,7 @@ Namespace Component.COVID19.PrintOut.ExemptionCert
             txtIssueDate.Html = String.Format("<span style='font-family:PMingLiU'>{0}</span>", FormatDisplayDateChinese(_udtEHSTransaction.ServiceDate))
             txtIssueDate.Html += String.Format("&nbsp<span style='font-family:Times New Roman'>{0}</span>", FormatDisplayDate(_udtEHSTransaction.ServiceDate))
             txtIssueDate.SelectionStart = 0
-            txtIssueDate.SelectionLength = txtPractitionerName.Text.Length
+            txtIssueDate.SelectionLength = txtIssueDate.Text.Length
             txtIssueDate.SelectionColor = Drawing.Color.Black
             txtIssueDate.SelectionAlignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Right
 

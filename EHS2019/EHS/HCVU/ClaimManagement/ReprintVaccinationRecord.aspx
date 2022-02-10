@@ -27,7 +27,7 @@
                 <asp:MultiView ID="MultiViewReprintVaccinationRecord" runat="server" ActiveViewIndex="0">
                     <asp:View ID="ViewSearch" runat="server">
                         <table style="width: 100%; padding-left: 22px" cellpadding="1" cellspacing="0">
-                            <tr id="trRPRecordType" runat="server" style="display:none">
+                            <tr id="trRPRecordType" runat="server">
                                 <td style="width: 200px; height: 25px; padding-top: 8px; vertical-align: top">
                                     <asp:Label ID="lblRPRecordTypeText" runat="server" Text="<%$ Resources: Text, RecordType %>" />
                                 </td>
