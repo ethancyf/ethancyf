@@ -8,6 +8,14 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			INT22-0003
+-- Modified by:		Koala CHENG
+-- Modified date:	8 Feb 2022
+-- Description:		Performance Tuning
+--					- Combine 4 queries of different account type to single query
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
 -- Modified date:	16 June 2021
@@ -228,7 +236,7 @@ AS BEGIN
 				AND Record_Status = 'A'
 
 			
-	-- Validated account
+	-- Validated/Temp/Special/Invalid account
 	
 	INSERT INTO @TempTransaction (
 		Transaction_ID,
@@ -259,24 +267,54 @@ AS BEGIN
 		Subsidize_Code,
 		ConsultAndRegFeeRMB
 	)
+	SELECT TOP (@maxrow + 1) * FROM (
 	SELECT
 		VT.Transaction_ID,
 		VT.Transaction_Dtm,
 		VT.Claim_Amount,
 		TD.Total_Amount_RMB,
 		VT.Bank_Account_No,
-		PINFO.Encrypt_Field1,
-		PINFO.Encrypt_Field2,
-		PINFO.Encrypt_Field3,
-		PINFO.Encrypt_Field11,
+		CASE WHEN PINFO_I.Invalid_Acc_ID IS NOT NULL THEN PINFO_I.Encrypt_Field1
+			WHEN PINFO.Voucher_Acc_ID IS NOT NULL THEN PINFO.Encrypt_Field1
+			WHEN PINFO_S.Special_Acc_ID IS NOT NULL THEN PINFO_S.Encrypt_Field1
+			WHEN PINFO_T.Voucher_Acc_ID IS NOT NULL THEN PINFO_T.Encrypt_Field1
+		END AS Encrypt_Field1,  
+		CASE WHEN PINFO_I.Invalid_Acc_ID IS NOT NULL THEN PINFO_I.Encrypt_Field2
+			WHEN PINFO.Voucher_Acc_ID IS NOT NULL THEN PINFO.Encrypt_Field2
+			WHEN PINFO_S.Special_Acc_ID IS NOT NULL THEN PINFO_S.Encrypt_Field2
+			WHEN PINFO_T.Voucher_Acc_ID IS NOT NULL THEN PINFO_T.Encrypt_Field2
+		END AS Encrypt_Field2,  
+		CASE WHEN PINFO_I.Invalid_Acc_ID IS NOT NULL THEN PINFO_I.Encrypt_Field3
+			WHEN PINFO.Voucher_Acc_ID IS NOT NULL THEN PINFO.Encrypt_Field3
+			WHEN PINFO_S.Special_Acc_ID IS NOT NULL THEN PINFO_S.Encrypt_Field3
+			WHEN PINFO_T.Voucher_Acc_ID IS NOT NULL THEN PINFO_T.Encrypt_Field3
+		END AS Encrypt_Field3,  
+		CASE WHEN PINFO_I.Invalid_Acc_ID IS NOT NULL THEN PINFO_I.Encrypt_Field11
+			WHEN PINFO.Voucher_Acc_ID IS NOT NULL THEN PINFO.Encrypt_Field11
+			WHEN PINFO_S.Special_Acc_ID IS NOT NULL THEN PINFO_S.Encrypt_Field11
+			WHEN PINFO_T.Voucher_Acc_ID IS NOT NULL THEN PINFO_T.Encrypt_Field11
+		END AS Encrypt_Field11,  
+		--PINFO.Encrypt_Field2,  
+		--PINFO.Encrypt_Field3,  
+		--PINFO.Encrypt_Field11,
 		VT.Record_Status,
 		VT.DataEntry_By,
-		'V' AS [AccountType],
+		CASE WHEN PINFO_I.Invalid_Acc_ID IS NOT NULL THEN 'I'
+			WHEN PINFO.Voucher_Acc_ID IS NOT NULL THEN 'V'
+			WHEN PINFO_S.Special_Acc_ID IS NOT NULL THEN 'S'
+			WHEN PINFO_T.Voucher_Acc_ID IS NOT NULL THEN 'T'
+		END AS [AccountType],
+		--'V' AS [AccountType],
 		VT.SP_ID,
 		VT.Practice_Display_Seq,
 		P.Practice_Name,
 		P.Practice_Name_Chi,
-		PINFO.Doc_Code,
+		CASE WHEN PINFO_I.Invalid_Acc_ID IS NOT NULL THEN VT.[Doc_Code]
+			WHEN PINFO.Voucher_Acc_ID IS NOT NULL THEN PINFO.[Doc_Code]
+			WHEN PINFO_S.Special_Acc_ID IS NOT NULL THEN PINFO_S.[Doc_Code]
+			WHEN PINFO_T.Voucher_Acc_ID IS NOT NULL THEN PINFO_T.[Doc_Code]
+		END AS [Doc_Code],  
+		--PINFO.Doc_Code,
 		VT.Scheme_Code,
 		VT.Invalidation, 
 		VT.Manual_Reimburse,
@@ -300,9 +338,17 @@ AS BEGIN
 	INNER JOIN Professional PF WITH (NOLOCK)
 		ON P.SP_ID = PF.SP_ID
 			AND P.Professional_Seq = PF.Professional_Seq
-	INNER JOIN PersonalInformation PINFO WITH (NOLOCK) 
-		ON VT.Voucher_Acc_ID = PINFO.Voucher_Acc_ID
-			AND VT.Doc_Code = PINFO.Doc_Code
+	LEFT JOIN PersonalInformation PINFO WITH (NOLOCK)   
+		ON VT.Voucher_Acc_ID = PINFO.Voucher_Acc_ID  
+		AND VT.Doc_Code = PINFO.Doc_Code  
+	LEFT JOIN TempPersonalInformation PINFO_T WITH (NOLOCK)   
+		ON VT.Temp_Voucher_Acc_ID = PINFO_T.Voucher_Acc_ID  
+		AND VT.Doc_Code = PINFO_T.Doc_Code  
+	LEFT JOIN SpecialPersonalInformation PINFO_S WITH (NOLOCK)   
+		ON VT.Special_acc_id = PINFO_S.Special_acc_id  
+		AND VT.Doc_Code = PINFO_S.Doc_Code  
+	LEFT JOIN InvalidPersonalInformation PINFO_I WITH (NOLOCK)   
+		ON VT.invalid_acc_id = PINFO_I.invalid_acc_id
 	LEFT JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
 		ON VT.Transaction_ID  = RAT.Transaction_ID
 			AND isnull(VT.Manual_Reimburse,'N') = 'N'
@@ -316,10 +362,11 @@ AS BEGIN
 	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
 		ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
 
-	where isnull(VT.[voucher_acc_id],'') <> ''
-	and isnull(VT.[invalid_acc_id],'') = ''
+	where 
+	--isnull(VT.[voucher_acc_id],'') <> ''
+	--and isnull(VT.[invalid_acc_id],'') = ''
 	--and isnull(MR.Record_Status,'R') = 'R'
-	AND VT.Record_Status NOT IN ('B', 'D')
+	VT.Record_Status NOT IN ('B', 'D')
 	and (@In_TransactionID is null or @In_TransactionID = VT.Transaction_ID)
 	and (VT.Transaction_Dtm between @In_TranDtmFrom and @In_TranDtmTo)
 	and (@In_SPID = VT.SP_ID)
@@ -328,342 +375,343 @@ AS BEGIN
 	and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
 	AND (@In_Record_Status IS NULL OR @In_Record_Status = VT.Record_Status)
 	AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
-	AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
-			or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
-	 AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
-	  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
+	) a
+	WHERE (@In_identity_no1 is null or Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)    
+		OR Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))  
+		AND (@In_Adoption_Prefix_Num is null or Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num))   
+		AND (@In_doc_code is null or @doc_code = Doc_Code)     
 	IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
 	BEGIN
 		RAISERROR('00009', 16, 1)
 		RETURN @@error
 	END	
 	
-	-- Temporary account
+	---- Temporary account
 	
-	INSERT INTO @TempTransaction (
-		Transaction_ID,
-		Transaction_Dtm,
-		Total_Claim_Amount,
-		Total_Claim_Amount_RMB,
-		Bank_Account_No,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Encrypt_Field11,
-		Record_Status,
-		DataEntry_By,
-		AccountType,
-		SP_ID,
-		Practice_Display_Seq,
-		Practice_Name,
-		Practice_Name_Chi,
-		Doc_Code,
-		Scheme_Code,
-		Invalidation, 
-		Manual_Reimburse,
-		Service_Type, 
-		IsUpload,
-		Category_Code,
-		High_Risk,
-		DHC_Service,
-		Subsidize_Code,
-		ConsultAndRegFeeRMB
-	)
-	SELECT
-		VT.Transaction_ID,
-		VT.Transaction_Dtm,
-		VT.Claim_Amount,
-		TD.Total_Amount_RMB,
-		VT.Bank_Account_No,
-		PINFO.Encrypt_Field1,
-		PINFO.Encrypt_Field2,
-		PINFO.Encrypt_Field3,
-		PINFO.Encrypt_Field11,
-		VT.Record_Status,
-		VT.DataEntry_By,
-		'T' AS [AccountType],
-		VT.SP_ID,
-		VT.Practice_Display_Seq,
-		P.Practice_Name,
-		P.Practice_Name_Chi,
-		PINFO.Doc_Code,
-		VT.Scheme_Code,
-		VT.Invalidation, 
-		VT.Manual_Reimburse,
-		VT.Service_Type, 
-		VT.IsUpload,
-		VT.Category_Code,
-		VT.High_Risk,
-		VT.DHC_Service,
-		TD.Subsidize_Code,
-		TAF.AdditionalFieldValueCode
-	FROM VoucherTransaction VT WITH (NOLOCK)
-	INNER JOIN ServiceProvider SP WITH (NOLOCK)
-		ON VT.SP_ID = SP.SP_ID
-	INNER JOIN Practice P WITH (NOLOCK)
-		ON VT.SP_ID  = P.SP_ID
-			AND VT.Practice_display_seq = P.Display_seq
-	INNER JOIN BankAccount B WITH (NOLOCK)
-		ON P.SP_ID = B.SP_ID
-			AND P.Display_seq = B.SP_Practice_Display_Seq
-			AND VT.Bank_Acc_Display_Seq = B.Display_Seq
-	INNER JOIN Professional PF WITH (NOLOCK)
-		ON P.SP_ID = PF.SP_ID
-			AND P.Professional_Seq = PF.Professional_Seq
-	INNER JOIN TempPersonalInformation PINFO WITH (NOLOCK) 
-		ON VT.Temp_Voucher_Acc_ID = PINFO.Voucher_Acc_ID
-			AND VT.Doc_Code = PINFO.Doc_Code
-	LEFT JOIN SchemeClaim SC WITH (NOLOCK)
-		ON VT.Scheme_Code = SC.Scheme_Code
-	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
-		ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
-	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
-		ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
+	--INSERT INTO @TempTransaction (
+	--	Transaction_ID,
+	--	Transaction_Dtm,
+	--	Total_Claim_Amount,
+	--	Total_Claim_Amount_RMB,
+	--	Bank_Account_No,
+	--	Encrypt_Field1,
+	--	Encrypt_Field2,
+	--	Encrypt_Field3,
+	--	Encrypt_Field11,
+	--	Record_Status,
+	--	DataEntry_By,
+	--	AccountType,
+	--	SP_ID,
+	--	Practice_Display_Seq,
+	--	Practice_Name,
+	--	Practice_Name_Chi,
+	--	Doc_Code,
+	--	Scheme_Code,
+	--	Invalidation, 
+	--	Manual_Reimburse,
+	--	Service_Type, 
+	--	IsUpload,
+	--	Category_Code,
+	--	High_Risk,
+	--	DHC_Service,
+	--	Subsidize_Code,
+	--	ConsultAndRegFeeRMB
+	--)
+	--SELECT
+	--	VT.Transaction_ID,
+	--	VT.Transaction_Dtm,
+	--	VT.Claim_Amount,
+	--	TD.Total_Amount_RMB,
+	--	VT.Bank_Account_No,
+	--	PINFO.Encrypt_Field1,
+	--	PINFO.Encrypt_Field2,
+	--	PINFO.Encrypt_Field3,
+	--	PINFO.Encrypt_Field11,
+	--	VT.Record_Status,
+	--	VT.DataEntry_By,
+	--	'T' AS [AccountType],
+	--	VT.SP_ID,
+	--	VT.Practice_Display_Seq,
+	--	P.Practice_Name,
+	--	P.Practice_Name_Chi,
+	--	PINFO.Doc_Code,
+	--	VT.Scheme_Code,
+	--	VT.Invalidation, 
+	--	VT.Manual_Reimburse,
+	--	VT.Service_Type, 
+	--	VT.IsUpload,
+	--	VT.Category_Code,
+	--	VT.High_Risk,
+	--	VT.DHC_Service,
+	--	TD.Subsidize_Code,
+	--	TAF.AdditionalFieldValueCode
+	--FROM VoucherTransaction VT WITH (NOLOCK)
+	--INNER JOIN ServiceProvider SP WITH (NOLOCK)
+	--	ON VT.SP_ID = SP.SP_ID
+	--INNER JOIN Practice P WITH (NOLOCK)
+	--	ON VT.SP_ID  = P.SP_ID
+	--		AND VT.Practice_display_seq = P.Display_seq
+	--INNER JOIN BankAccount B WITH (NOLOCK)
+	--	ON P.SP_ID = B.SP_ID
+	--		AND P.Display_seq = B.SP_Practice_Display_Seq
+	--		AND VT.Bank_Acc_Display_Seq = B.Display_Seq
+	--INNER JOIN Professional PF WITH (NOLOCK)
+	--	ON P.SP_ID = PF.SP_ID
+	--		AND P.Professional_Seq = PF.Professional_Seq
+	--INNER JOIN TempPersonalInformation PINFO WITH (NOLOCK) 
+	--	ON VT.Temp_Voucher_Acc_ID = PINFO.Voucher_Acc_ID
+	--		AND VT.Doc_Code = PINFO.Doc_Code
+	--LEFT JOIN SchemeClaim SC WITH (NOLOCK)
+	--	ON VT.Scheme_Code = SC.Scheme_Code
+	--LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
+	--	ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
+	--LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
+	--	ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
 
-	where isnull(VT.invalid_acc_id,'') = ''
-	and isnull(VT.special_acc_id,'') = ''
-	and isnull(VT.voucher_acc_id,'') = ''
-	and isnull(VT.temp_voucher_acc_id,'') <> ''
-	AND VT.Record_Status NOT IN ('B', 'D')
-	and (@In_TransactionID is null or @In_TransactionID = VT.Transaction_ID)
-	and (VT.Transaction_Dtm between @In_TranDtmFrom and @In_TranDtmTo)
-	and (@In_SPID = VT.SP_ID)
-	and (@In_DataEntry is null or (@In_DataEntry = VT.DataEntry_By AND VT.Record_Status in ('U','P','I')))
-	and (@In_Practice_Seq is null or @In_Practice_Seq = VT.Practice_Display_Seq)
-	and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
-	and (@In_Record_Status is null or		
-			(@In_Record_Status <> 'R' and 
-				isnull(VT.Manual_Reimburse,'N') = 'N' and 
-				@In_Record_Status = VT.Record_Status)
-		)
-	AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
-		AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
-			or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
-	 AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
-	  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
-	IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
-	BEGIN
-		RAISERROR('00009', 16, 1)
-		RETURN @@error
-	END
+	--where isnull(VT.invalid_acc_id,'') = ''
+	--and isnull(VT.special_acc_id,'') = ''
+	--and isnull(VT.voucher_acc_id,'') = ''
+	--and isnull(VT.temp_voucher_acc_id,'') <> ''
+	--AND VT.Record_Status NOT IN ('B', 'D')
+	--and (@In_TransactionID is null or @In_TransactionID = VT.Transaction_ID)
+	--and (VT.Transaction_Dtm between @In_TranDtmFrom and @In_TranDtmTo)
+	--and (@In_SPID = VT.SP_ID)
+	--and (@In_DataEntry is null or (@In_DataEntry = VT.DataEntry_By AND VT.Record_Status in ('U','P','I')))
+	--and (@In_Practice_Seq is null or @In_Practice_Seq = VT.Practice_Display_Seq)
+	--and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
+	--and (@In_Record_Status is null or		
+	--		(@In_Record_Status <> 'R' and 
+	--			isnull(VT.Manual_Reimburse,'N') = 'N' and 
+	--			@In_Record_Status = VT.Record_Status)
+	--	)
+	--AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
+	--	AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
+	--		or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
+	-- AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
+	--  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
+	--IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
+	--BEGIN
+	--	RAISERROR('00009', 16, 1)
+	--	RETURN @@error
+	--END
 		
-	-- Special account
+	---- Special account
 	
-	INSERT INTO @TempTransaction (
-		Transaction_ID,
-		Transaction_Dtm,
-		Total_Claim_Amount,
-		Total_Claim_Amount_RMB,
-		Bank_Account_No,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Encrypt_Field11,
-		Record_Status,
-		DataEntry_By,
-		AccountType,
-		SP_ID,
-		Practice_Display_Seq,
-		Practice_Name,
-		Practice_Name_Chi,
-		Doc_Code,
-		Scheme_Code,
-		Invalidation, 
-		Manual_Reimburse,
-		Service_Type, 
-		IsUpload,
-		Category_Code,
-		High_Risk,
-		DHC_Service,
-		Subsidize_Code,
-		ConsultAndRegFeeRMB
-	)
-	SELECT
-		VT.Transaction_ID,
-		VT.Transaction_Dtm,
-		VT.Claim_Amount,
-		TD.Total_Amount_RMB,
-		VT.Bank_Account_No,
-		PINFO.Encrypt_Field1,
-		PINFO.Encrypt_Field2,
-		PINFO.Encrypt_Field3,
-		PINFO.Encrypt_Field11,
-		VT.Record_Status,
-		VT.DataEntry_By,
-		'S' AS [AccountType],
-		VT.SP_ID,
-		VT.Practice_Display_Seq,
-		P.Practice_Name,
-		P.Practice_Name_Chi,
-		VT.Doc_Code,
-		VT.Scheme_Code,
-		VT.Invalidation, 
-		VT.Manual_Reimburse,
-		VT.Service_Type, 
-		VT.IsUpload,
-		VT.Category_Code,
-		VT.High_Risk,
-		VT.DHC_Service,
-		TD.Subsidize_Code,
-		TAF.AdditionalFieldValueCode
-	from VoucherTransaction VT WITH (NOLOCK)
-	INNER JOIN ServiceProvider SP WITH (NOLOCK)
-		ON VT.SP_ID = SP.SP_ID
-	INNER JOIN Practice P WITH (NOLOCK)
-		ON VT.SP_ID  = P.SP_ID
-			AND VT.Practice_display_seq = P.Display_seq
-	INNER JOIN BankAccount B WITH (NOLOCK)
-		ON P.SP_ID = B.SP_ID
-			AND P.Display_seq = B.SP_Practice_Display_Seq
-			AND VT.Bank_Acc_Display_Seq = B.Display_Seq
-	INNER JOIN Professional PF WITH (NOLOCK)
-		ON P.SP_ID = PF.SP_ID
-			AND P.Professional_Seq = PF.Professional_Seq
-	INNER JOIN SpecialPersonalInformation PINFO WITH (NOLOCK) 
-		ON VT.Special_acc_id = PINFO.Special_acc_id
-			AND VT.Doc_Code = PINFO.Doc_Code
-	LEFT JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
-		ON VT.Transaction_ID  = RAT.Transaction_ID
-			AND isnull(VT.Manual_Reimburse,'N') = 'N'
-	LEFT JOIN SchemeClaim SC WITH (NOLOCK)
-		ON VT.Scheme_Code = SC.Scheme_Code
-	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
-		ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
-	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
-		ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
+	--INSERT INTO @TempTransaction (
+	--	Transaction_ID,
+	--	Transaction_Dtm,
+	--	Total_Claim_Amount,
+	--	Total_Claim_Amount_RMB,
+	--	Bank_Account_No,
+	--	Encrypt_Field1,
+	--	Encrypt_Field2,
+	--	Encrypt_Field3,
+	--	Encrypt_Field11,
+	--	Record_Status,
+	--	DataEntry_By,
+	--	AccountType,
+	--	SP_ID,
+	--	Practice_Display_Seq,
+	--	Practice_Name,
+	--	Practice_Name_Chi,
+	--	Doc_Code,
+	--	Scheme_Code,
+	--	Invalidation, 
+	--	Manual_Reimburse,
+	--	Service_Type, 
+	--	IsUpload,
+	--	Category_Code,
+	--	High_Risk,
+	--	DHC_Service,
+	--	Subsidize_Code,
+	--	ConsultAndRegFeeRMB
+	--)
+	--SELECT
+	--	VT.Transaction_ID,
+	--	VT.Transaction_Dtm,
+	--	VT.Claim_Amount,
+	--	TD.Total_Amount_RMB,
+	--	VT.Bank_Account_No,
+	--	PINFO.Encrypt_Field1,
+	--	PINFO.Encrypt_Field2,
+	--	PINFO.Encrypt_Field3,
+	--	PINFO.Encrypt_Field11,
+	--	VT.Record_Status,
+	--	VT.DataEntry_By,
+	--	'S' AS [AccountType],
+	--	VT.SP_ID,
+	--	VT.Practice_Display_Seq,
+	--	P.Practice_Name,
+	--	P.Practice_Name_Chi,
+	--	VT.Doc_Code,
+	--	VT.Scheme_Code,
+	--	VT.Invalidation, 
+	--	VT.Manual_Reimburse,
+	--	VT.Service_Type, 
+	--	VT.IsUpload,
+	--	VT.Category_Code,
+	--	VT.High_Risk,
+	--	VT.DHC_Service,
+	--	TD.Subsidize_Code,
+	--	TAF.AdditionalFieldValueCode
+	--from VoucherTransaction VT WITH (NOLOCK)
+	--INNER JOIN ServiceProvider SP WITH (NOLOCK)
+	--	ON VT.SP_ID = SP.SP_ID
+	--INNER JOIN Practice P WITH (NOLOCK)
+	--	ON VT.SP_ID  = P.SP_ID
+	--		AND VT.Practice_display_seq = P.Display_seq
+	--INNER JOIN BankAccount B WITH (NOLOCK)
+	--	ON P.SP_ID = B.SP_ID
+	--		AND P.Display_seq = B.SP_Practice_Display_Seq
+	--		AND VT.Bank_Acc_Display_Seq = B.Display_Seq
+	--INNER JOIN Professional PF WITH (NOLOCK)
+	--	ON P.SP_ID = PF.SP_ID
+	--		AND P.Professional_Seq = PF.Professional_Seq
+	--INNER JOIN SpecialPersonalInformation PINFO WITH (NOLOCK) 
+	--	ON VT.Special_acc_id = PINFO.Special_acc_id
+	--		AND VT.Doc_Code = PINFO.Doc_Code
+	--LEFT JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
+	--	ON VT.Transaction_ID  = RAT.Transaction_ID
+	--		AND isnull(VT.Manual_Reimburse,'N') = 'N'
+	--LEFT JOIN SchemeClaim SC WITH (NOLOCK)
+	--	ON VT.Scheme_Code = SC.Scheme_Code
+	--LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
+	--	ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
+	--LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
+	--	ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
 
-	where isnull(VT.invalid_acc_id,'') = ''
-	and isnull(VT.special_acc_id,'') <> ''
-	and isnull(VT.voucher_acc_id,'') = ''
-	AND VT.Record_Status NOT IN ('B', 'D')
-	and (@In_TransactionID is null or @In_TransactionID = VT.Transaction_ID)
-	and (VT.Transaction_Dtm between @In_TranDtmFrom and @In_TranDtmTo)
-	and (@In_SPID = VT.SP_ID)
-	and (@In_DataEntry is null or (@In_DataEntry = VT.DataEntry_By AND VT.Record_Status in ('U','P','I')))
-	and (@In_Practice_Seq is null or @In_Practice_Seq = VT.Practice_Display_Seq)
-	and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
-	and (@In_Record_Status is null or
-			(@In_Record_Status = 'R' and isnull(RAT.Authorised_Status,'') = 'R') or
-			(@In_Record_Status <> 'R' and 
-				isnull(VT.Manual_Reimburse,'N') = 'N' and 
-				@In_Record_Status = VT.Record_Status and
-				isnull(RAT.Authorised_Status,'') <> 'R')
-		)
-	AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
-		AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
-			or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
-	 AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
-	  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
+	--where isnull(VT.invalid_acc_id,'') = ''
+	--and isnull(VT.special_acc_id,'') <> ''
+	--and isnull(VT.voucher_acc_id,'') = ''
+	--AND VT.Record_Status NOT IN ('B', 'D')
+	--and (@In_TransactionID is null or @In_TransactionID = VT.Transaction_ID)
+	--and (VT.Transaction_Dtm between @In_TranDtmFrom and @In_TranDtmTo)
+	--and (@In_SPID = VT.SP_ID)
+	--and (@In_DataEntry is null or (@In_DataEntry = VT.DataEntry_By AND VT.Record_Status in ('U','P','I')))
+	--and (@In_Practice_Seq is null or @In_Practice_Seq = VT.Practice_Display_Seq)
+	--and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
+	--and (@In_Record_Status is null or
+	--		(@In_Record_Status = 'R' and isnull(RAT.Authorised_Status,'') = 'R') or
+	--		(@In_Record_Status <> 'R' and 
+	--			isnull(VT.Manual_Reimburse,'N') = 'N' and 
+	--			@In_Record_Status = VT.Record_Status and
+	--			isnull(RAT.Authorised_Status,'') <> 'R')
+	--	)
+	--AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
+	--	AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
+	--		or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
+	-- AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
+	--  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
 		
-	IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
-	BEGIN
-		RAISERROR('00009', 16, 1)
-		RETURN @@error
-	END
+	--IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
+	--BEGIN
+	--	RAISERROR('00009', 16, 1)
+	--	RETURN @@error
+	--END
 	
-	-- Invalid account
+	---- Invalid account
 	
-	INSERT INTO @TempTransaction
-	(
-		Transaction_ID,
-		Transaction_Dtm,
-		Total_Claim_Amount,
-		Total_Claim_Amount_RMB,
-		Bank_Account_No,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Encrypt_Field11,
-		Record_Status,
-		DataEntry_By,
-		AccountType,
-		SP_ID,
-		Practice_Display_Seq,
-		Practice_Name,
-		Practice_Name_Chi,
-		Doc_Code,
-		Scheme_Code,
-		Invalidation, 
-		Manual_Reimburse,
-		Service_Type, 
-		IsUpload,
-		Category_Code,
-		High_Risk,
-		DHC_Service,
-		Subsidize_Code,
-		ConsultAndRegFeeRMB
-	)
-	SELECT
-		VT.Transaction_ID,
-		VT.Transaction_Dtm,
-		VT.Claim_Amount,
-		TD.Total_Amount_RMB,
-		VT.Bank_Account_No,
-		PINFO.Encrypt_Field1,
-		PINFO.Encrypt_Field2,
-		PINFO.Encrypt_Field3,
-		PINFO.Encrypt_Field11,
-		VT.Record_Status,
-		VT.DataEntry_By,
-		'I' AS [AccountType],
-		VT.SP_ID,
-		VT.Practice_Display_Seq,
-		P.Practice_Name,
-		P.Practice_Name_Chi,
-		VT.Doc_Code,
-		VT.Scheme_Code,
-		VT.Invalidation,
-		VT.Manual_Reimburse,
-		VT.Service_Type, 
-		VT.IsUpload,
-		VT.Category_Code,
-		VT.High_Risk,
-		VT.DHC_Service,
-		TD.Subsidize_Code,
-		TAF.AdditionalFieldValueCode
+	--INSERT INTO @TempTransaction
+	--(
+	--	Transaction_ID,
+	--	Transaction_Dtm,
+	--	Total_Claim_Amount,
+	--	Total_Claim_Amount_RMB,
+	--	Bank_Account_No,
+	--	Encrypt_Field1,
+	--	Encrypt_Field2,
+	--	Encrypt_Field3,
+	--	Encrypt_Field11,
+	--	Record_Status,
+	--	DataEntry_By,
+	--	AccountType,
+	--	SP_ID,
+	--	Practice_Display_Seq,
+	--	Practice_Name,
+	--	Practice_Name_Chi,
+	--	Doc_Code,
+	--	Scheme_Code,
+	--	Invalidation, 
+	--	Manual_Reimburse,
+	--	Service_Type, 
+	--	IsUpload,
+	--	Category_Code,
+	--	High_Risk,
+	--	DHC_Service,
+	--	Subsidize_Code,
+	--	ConsultAndRegFeeRMB
+	--)
+	--SELECT
+	--	VT.Transaction_ID,
+	--	VT.Transaction_Dtm,
+	--	VT.Claim_Amount,
+	--	TD.Total_Amount_RMB,
+	--	VT.Bank_Account_No,
+	--	PINFO.Encrypt_Field1,
+	--	PINFO.Encrypt_Field2,
+	--	PINFO.Encrypt_Field3,
+	--	PINFO.Encrypt_Field11,
+	--	VT.Record_Status,
+	--	VT.DataEntry_By,
+	--	'I' AS [AccountType],
+	--	VT.SP_ID,
+	--	VT.Practice_Display_Seq,
+	--	P.Practice_Name,
+	--	P.Practice_Name_Chi,
+	--	VT.Doc_Code,
+	--	VT.Scheme_Code,
+	--	VT.Invalidation,
+	--	VT.Manual_Reimburse,
+	--	VT.Service_Type, 
+	--	VT.IsUpload,
+	--	VT.Category_Code,
+	--	VT.High_Risk,
+	--	VT.DHC_Service,
+	--	TD.Subsidize_Code,
+	--	TAF.AdditionalFieldValueCode
 
-	from VoucherTransaction VT WITH (NOLOCK)
-	INNER JOIN ServiceProvider SP WITH (NOLOCK)
-		ON VT.SP_ID = SP.SP_ID
-	INNER JOIN Practice P WITH (NOLOCK)
-		ON VT.SP_ID  = P.SP_ID
-			AND VT.Practice_display_seq = P.Display_seq
-	INNER JOIN BankAccount B WITH (NOLOCK)
-		ON P.SP_ID = B.SP_ID
-			AND P.Display_seq = B.SP_Practice_Display_Seq
-			AND VT.Bank_Acc_Display_Seq = B.Display_Seq
-	INNER JOIN Professional PF WITH (NOLOCK)
-		ON P.SP_ID = PF.SP_ID
-			AND P.Professional_Seq = PF.Professional_Seq
-	INNER JOIN InvalidPersonalInformation PINFO WITH (NOLOCK) 
-		ON VT.invalid_acc_id = PINFO.invalid_acc_id
-	LEFT JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
-		ON VT.Transaction_ID  = RAT.Transaction_ID
-			AND isnull(VT.Manual_Reimburse,'N') = 'N'
-	LEFT JOIN ManualReimbursement MR WITH (NOLOCK)
-		ON VT.Transaction_ID  = MR.Transaction_ID
-			AND isnull(VT.Manual_Reimburse,'N') = 'Y'
-	LEFT JOIN SchemeClaim SC WITH (NOLOCK)
-		ON VT.Scheme_Code = SC.Scheme_Code
-	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
-		ON VT.Transaction_ID = TD.Transaction_ID AND TD.Total_Amount_RMB IS NOT NULL
-	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
-		ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
+	--from VoucherTransaction VT WITH (NOLOCK)
+	--INNER JOIN ServiceProvider SP WITH (NOLOCK)
+	--	ON VT.SP_ID = SP.SP_ID
+	--INNER JOIN Practice P WITH (NOLOCK)
+	--	ON VT.SP_ID  = P.SP_ID
+	--		AND VT.Practice_display_seq = P.Display_seq
+	--INNER JOIN BankAccount B WITH (NOLOCK)
+	--	ON P.SP_ID = B.SP_ID
+	--		AND P.Display_seq = B.SP_Practice_Display_Seq
+	--		AND VT.Bank_Acc_Display_Seq = B.Display_Seq
+	--INNER JOIN Professional PF WITH (NOLOCK)
+	--	ON P.SP_ID = PF.SP_ID
+	--		AND P.Professional_Seq = PF.Professional_Seq
+	--INNER JOIN InvalidPersonalInformation PINFO WITH (NOLOCK) 
+	--	ON VT.invalid_acc_id = PINFO.invalid_acc_id
+	--LEFT JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
+	--	ON VT.Transaction_ID  = RAT.Transaction_ID
+	--		AND isnull(VT.Manual_Reimburse,'N') = 'N'
+	--LEFT JOIN ManualReimbursement MR WITH (NOLOCK)
+	--	ON VT.Transaction_ID  = MR.Transaction_ID
+	--		AND isnull(VT.Manual_Reimburse,'N') = 'Y'
+	--LEFT JOIN SchemeClaim SC WITH (NOLOCK)
+	--	ON VT.Scheme_Code = SC.Scheme_Code
+	--LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
+	--	ON VT.Transaction_ID = TD.Transaction_ID AND TD.Total_Amount_RMB IS NOT NULL
+	--LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
+	--	ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
 
-	where isnull(VT.invalid_acc_id,'') <> ''
-	AND VT.Record_Status NOT IN ('B', 'D')
-	and (@In_TransactionID is null or @In_TransactionID = VT.Transaction_ID)
-	and (VT.Transaction_Dtm between @In_TranDtmFrom and @In_TranDtmTo)
-	and (@In_SPID = VT.SP_ID)
-	and (@In_DataEntry is null or @In_DataEntry = VT.DataEntry_By)
-	and (@In_Practice_Seq is null or @In_Practice_Seq = VT.Practice_Display_Seq)
-	and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
-	AND (@In_Record_Status IS NULL OR @In_Record_Status = VT.Record_Status)
-	AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
-		AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
-			or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
-	 AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
-	  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
+	--where isnull(VT.invalid_acc_id,'') <> ''
+	--AND VT.Record_Status NOT IN ('B', 'D')
+	--and (@In_TransactionID is null or @In_TransactionID = VT.Transaction_ID)
+	--and (VT.Transaction_Dtm between @In_TranDtmFrom and @In_TranDtmTo)
+	--and (@In_SPID = VT.SP_ID)
+	--and (@In_DataEntry is null or @In_DataEntry = VT.DataEntry_By)
+	--and (@In_Practice_Seq is null or @In_Practice_Seq = VT.Practice_Display_Seq)
+	--and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
+	--AND (@In_Record_Status IS NULL OR @In_Record_Status = VT.Record_Status)
+	--AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
+	--	AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
+	--		or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
+	-- AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
+	--  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
 
 	IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
 	BEGIN
@@ -1509,7 +1557,7 @@ AS BEGIN
 		Content_TC,
 		Content_SC
 	FROM
-		@OtherInfo
+		@OtherInfo  
 
 	--
 
