@@ -2777,8 +2777,8 @@ Namespace Component
         ' ---------------------------------------------------------------------------------------------------------
         Public Const PatientPortalDoctorListGenerator As String = "PatientPortalDoctorListGenerator"
         ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
-        Public Const COVID19Exporter As String = "COVID19Exporter" 'CRE20-0022 (Immu record)[Martin Tang]
-        Public Const COVID19eHRIntegration As String = "COVID19eHRIntegration"  'CRE20-0022 (Immu record)[Martin Tang]
+        Public Const COVID19Exporter As String = "COVID19Exporter" 'CRE20-0023 (Immu record)[Martin Tang]
+        Public Const COVID19MECExporter As String = "COVID19MECExporter"  'CRE20-0023-73 (COVID19 - Medical Exemption) [Winnie SUEN]
 
         Public Const COVID19BatchConfirm As String = "COVID19BatchConfirm"  'CRE20-0023 (Immu record)[Winnie SUEN]
         Public Const COVID19DischargeImporter As String = "COVID19DischargeImporter"  ' CRE20-023 (Immu)[Raiman]
@@ -2807,6 +2807,7 @@ Namespace Component
         Public Const COVID19Exporter As String = "019923" 'CRE20-0022 (Immu record)[Martin Tang]
         Public Const COVID19eHRIntegration As String = "019924" 'CRE20-0022 (Immu record)[Martin Tang]
         Public Const COVID19DischargeImporter As String = "019925"  ' CRE20-023 (Immu)[Raiman]
+        Public Const COVID19MECExporter As String = "019926"
 
     End Class
 

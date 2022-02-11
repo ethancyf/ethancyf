@@ -89,6 +89,9 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
             ' Me.txtPrintDate.Text = "Printed on " + Date.Now().ToString((New Formatter).DisplayVaccinationRecordClockFormat())
 
+            Dim strQRCode As String = (New QrcodeFormatter).GenerateQRCodeStringForVaccinationRecord(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
+            qrCode.Text = strQRCode
+
             'Patient Name
             srCovid19PatientName.Report = New Covid19PatientName(_udtEHSAccount, _blnIsSample)
 
@@ -106,7 +109,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 srCovid19DoseTable.Height = 4.75
 
                 'Footer               
-                srCovid19VaccinationCardFooter.Report = New Covid19VaccinationCardFooter(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnIsSample, _blnDischarge)
+                srCovid19VaccinationCardFooter.Report = New Covid19VaccinationCardFooter(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnIsSample, _blnDischarge, strQRCode)
                 srCovid19VaccinationCardFooter.Visible = True
             End If
 
@@ -122,15 +125,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.txtPrintDate.Text = "Printed on " + FormatDisplayClock(_udtPrintTime)
 
 
-            ' Vaccination Info                                                  'second _udtEHSTransaction is history Transaction 
-            srCovid19DoseTable.Report = New Covid19DoseTable(_udtEHSTransaction, _udtVaccinationRecord, _blnIsSample, _
-                                                             _blnDischarge)
 
-            'Footer                                                                                     'second _udtEHSTransaction is history Transaction 
-            srCovid19VaccinationCardFooter.Report = New Covid19VaccinationCardFooter(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnIsSample, _
-                                                                                     _blnDischarge)
-
-            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeStringForVaccinationRecord(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
 
         End Sub
 

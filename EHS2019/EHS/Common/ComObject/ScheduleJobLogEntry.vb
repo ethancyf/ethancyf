@@ -62,6 +62,10 @@ Namespace ComObject
             WriteLog(strLogID, strDesc, Nothing, Nothing)
         End Sub
 
+        Public Sub WriteLog(ByVal strLogID As String, ByVal strDesc As String, ByVal dtmStart As Nullable(Of DateTime), ByVal dtmEnd As Nullable(Of DateTime))
+            WriteLog(strLogID, strDesc, Nothing, Nothing, Nothing, Nothing)
+        End Sub
+
         Public Function WriteStartLog(ByVal strLogID As String, ByVal strDesc As String) As AuditLogStartKey
             Dim objStartKey As New AuditLogStartKey(Me, Now)
 
@@ -70,11 +74,23 @@ Namespace ComObject
             Return objStartKey
         End Function
 
+        Public Function WriteStartLog(ByVal strLogID As String, ByVal strDesc As String, ByVal strAction As String, ByVal strStatus As String) As AuditLogStartKey
+            Dim objStartKey As New AuditLogStartKey(Me, Now)
+
+            WriteLog(strLogID, strDesc, objStartKey.StartTime, Nothing, strAction, strStatus)
+
+            Return objStartKey
+        End Function
+
         Public Sub WriteEndLog(ByVal objStartKey As AuditLogStartKey, ByVal strLogID As String, ByVal strDesc As String)
             WriteLog(strLogID, strDesc, objStartKey.StartTime, Now)
         End Sub
 
-        Public Sub WriteLog(ByVal strLogID As String, ByVal strDesc As String, ByVal dtmStart As Nullable(Of DateTime), ByVal dtmEnd As Nullable(Of DateTime))
+        Public Sub WriteEndLog(ByVal objStartKey As AuditLogStartKey, ByVal strLogID As String, ByVal strDesc As String, ByVal strAction As String, ByVal strStatus As String)
+            WriteLog(strLogID, strDesc, objStartKey.StartTime, Now, strAction, strStatus)
+        End Sub
+
+        Public Sub WriteLog(ByVal strLogID As String, ByVal strDesc As String, ByVal dtmStart As Nullable(Of DateTime), ByVal dtmEnd As Nullable(Of DateTime), ByVal strAction As String, ByVal strStatus As String)
             ' Write Database log
             Dim udtDB As Database = MyBase.CreateDatabase()
 
@@ -94,8 +110,8 @@ Namespace ComObject
                     udtDB.MakeInParam("@Action_Dtm", SqlDbType.DateTime, 8, _dtmActionTime.Value), _
                     udtDB.MakeInParam("@Client_IP", SqlDbType.VarChar, 20, GetIPAddress()), _
                     udtDB.MakeInParam("@Program_ID", SqlDbType.VarChar, 30, _strFunctionCode), _
-                    udtDB.MakeInParam("@Action", SqlDbType.VarChar, 30, DBNull.Value), _
-                    udtDB.MakeInParam("@Status", SqlDbType.VarChar, 20, DBNull.Value), _
+                    udtDB.MakeInParam("@Action", SqlDbType.VarChar, 30, IIf(String.IsNullOrEmpty(strAction), DBNull.Value, strAction)), _
+                    udtDB.MakeInParam("@Status", SqlDbType.VarChar, 20, IIf(String.IsNullOrEmpty(strStatus), DBNull.Value, strStatus)), _
                     udtDB.MakeInParam("@Return_Description", SqlDbType.NText, 2147483647, DBNull.Value), _
                     udtDB.MakeInParam("@Description", SqlDbType.NText, 2147483647, strDesc & GetAdditionalDescription()), _
                     udtDB.MakeInParam("@Start_Dtm", SqlDbType.DateTime, 8, objStartDtm), _

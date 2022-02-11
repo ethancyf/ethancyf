@@ -242,12 +242,12 @@ Namespace WebService.Interface
                             Dim udtDHClient As DHClientModel = GetDHClient(udtClient)
 
                             'Validation
-                            If udtClient.docType <> _udtVaccineEnqReq.reqClientList(intClient).docType Or _
-                                udtClient.docNum <> _udtVaccineEnqReq.reqClientList(intClient).docNum Or _
-                                udtClient.engName <> _udtVaccineEnqReq.reqClientList(intClient).engName Or _
-                                udtClient.dob <> _udtVaccineEnqReq.reqClientList(intClient).dob Or _
-                                udtClient.dobInd <> _udtVaccineEnqReq.reqClientList(intClient).dobInd Or _
-                                udtClient.sex <> _udtVaccineEnqReq.reqClientList(intClient).sex Then
+                            If udtClient.docType.ToUpper.Trim <> _udtVaccineEnqReq.reqClientList(intClient).docType.ToUpper.Trim Or _
+                                udtClient.docNum.ToUpper.Trim <> _udtVaccineEnqReq.reqClientList(intClient).docNum.ToUpper.Trim Or _
+                                udtClient.engName.ToUpper.Trim <> _udtVaccineEnqReq.reqClientList(intClient).engName.ToUpper.Trim Or _
+                                udtClient.dob.ToUpper.Trim <> _udtVaccineEnqReq.reqClientList(intClient).dob.ToUpper.Trim Or _
+                                udtClient.dobInd.ToUpper.Trim <> _udtVaccineEnqReq.reqClientList(intClient).dobInd.ToUpper.Trim Or _
+                                udtClient.sex.ToUpper.Trim <> _udtVaccineEnqReq.reqClientList(intClient).sex.ToUpper.Trim Then
 
                                 _enumReturnCode = enumReturnCode.ReturnClientNotMatch
                                 Exit For

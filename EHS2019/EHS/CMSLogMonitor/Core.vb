@@ -79,6 +79,7 @@ Public Class ScheduleJob
         COVID19Exporter
         COVID19BatchConfirm
         COVID19DischargeImporter
+        COVID19MECExporter
     End Enum
 
 #End Region
@@ -411,29 +412,12 @@ Public Class ScheduleJob
         dtmLastCheck.Insert(HealthCheckType.OCSSSHealthCheckFail, dtmNow)
         dtmLastCheck.Insert(HealthCheckType.OCSSSSlowResponse, dtmNow)
         dtmLastCheck.Insert(HealthCheckType.OCSSSConnectFail, dtmNow)
-
-
-        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         dtmLastCheck.Insert(HealthCheckType.EHRSSPatientPortalSlowResponse, dtmNow)
-        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
-
-
-        ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
-        ' ---------------------------------------------------------------------------------------------------------
         dtmLastCheck.Insert(HealthCheckType.HAServicePatientImporter, dtmNow)
-        ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
-
-        'CRE20-0023 (Immu record) [Start][Winnie SUEN]
-        ' ---------------------------------------------------------------------------------------------------------
         dtmLastCheck.Insert(HealthCheckType.COVID19Exporter, dtmNow)
         dtmLastCheck.Insert(HealthCheckType.COVID19BatchConfirm, dtmNow)
-        'CRE20-0023 (Immu record) [End][Winnie SUEN]
-
-
-        'CRE20-0XX (Immu record) [Start][Raiman Chong]
         dtmLastCheck.Insert(HealthCheckType.COVID19DischargeImporter, dtmNow)
-        'CRE20-0XX (Immu record) [End][Raiman Chong]
+        dtmLastCheck.Insert(HealthCheckType.COVID19MECExporter, dtmNow)
 
 
 
@@ -471,31 +455,17 @@ Public Class ScheduleJob
 
             CheckOCSSS_ConnectFail(dtmLastCheck(HealthCheckType.OCSSSConnectFail), dtmNow)
 
-            ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             CheckEHRSS_PP_SlowResponse(dtmLastCheck(HealthCheckType.EHRSSPatientPortalSlowResponse), dtmNow)
-            ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
-
-
-            ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
-            ' ---------------------------------------------------------------------------------------------------------
             CheckHASPImporter_ImportFail(dtmLastCheck(HealthCheckType.HAServicePatientImporter), dtmNow)
-            ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
 
-            'CRE20-0022 (Immu record) [Start][Martin Tang]
             CheckCOVID19Exporter_ExportFail(dtmLastCheck(HealthCheckType.COVID19Exporter), dtmNow)
-            'CRE20-0022 (Immu record) [End][Martin Tang]
 
-            'CRE20-0023 (Immu record) [Start][Winnie SUEN]
             CheckCOVID19BatchConfirm_Fail(dtmLastCheck(HealthCheckType.COVID19BatchConfirm), dtmNow)
-            'CRE20-0023 (Immu record) [End][Winnie SUEN]
 
-            'CRE20-0XX (Immu record) [Start][Raiman Chong]
             CheckCOVID19DischargeImporter_ImportFail(dtmLastCheck(HealthCheckType.COVID19DischargeImporter), dtmNow)
-            'CRE20-0XX (Immu record) [End][Raiman Chong]
 
-
+            CheckCOVID19MECExporter_ExportFail(dtmLastCheck(HealthCheckType.COVID19MECExporter), dtmNow)
 
             CheckTime.WriteCheckTime(dtmLastCheck)
 
@@ -2524,5 +2494,90 @@ Public Class ScheduleJob
 
 #End Region
 
+#Region "COVID19MECExporter"
+    Private Sub CheckCOVID19MECExporter_ExportFail(ByRef dtmLastCheck As DateTime, ByVal dtmCurrent As DateTime)
+        ' +--------------------------------------------------------------------------------------------------+
+        ' | For every [5] minutes, monitor the ScheduleJobLog to see if any COVID19MECExporter                  |
+        ' | If there are any connection error case, raise alert.                                              |
+        ' +--------------------------------------------------------------------------------------------------+
 
+        Log("Checking COVID19MECExporter_ExportFail")
+
+        ' Check whether need to run
+        If DateDiff(DateInterval.Minute, dtmLastCheck, dtmCurrent) < CInt(ConfigurationManager.AppSettings("COVID19MECExporter_CheckInterval")) Then
+            Log("Smaller than CheckInterval, no need to run")
+
+            Return
+        End If
+
+        ' Update now to be the new LastCheckTime
+        dtmLastCheck = dtmCurrent
+
+        ' Check logs
+        Dim intScheduleJobLogMinuteBefore As Integer = CInt(ConfigurationManager.AppSettings("COVID19MECExporter_ScheduleJobLogMinuteBefore"))
+        Dim strScheduleJobLogProgramID As String = ConfigurationManager.AppSettings("COVID19MECExporter_ProgramID")
+        Dim strScheduleJobAlertLogID As String = ConfigurationManager.AppSettings("COVID19MECExporter_AlertLogID")
+
+        Dim strPagerAlertLogID_PagerAlert As String = ConfigurationManager.AppSettings("COVID19MECExporter_PagerAlertLogID_PagerAlert")
+        Dim strEmailAlertLogID_EmailAlert As String = ConfigurationManager.AppSettings("COVID19MECExporter_EmailAlertLogID_EmailAlert")
+
+
+        Dim dtAlertLogID As DataTable = MonitorBLL.GetScheduleJobLog(strScheduleJobLogProgramID, strScheduleJobAlertLogID, _
+                                                         dtmCurrent.Add(New TimeSpan(0, -1 * intScheduleJobLogMinuteBefore, 0)), _
+                                                         dtmCurrent)
+
+        Dim strMessage As String = String.Empty
+        Dim blnPagerAlert As Boolean = False
+        Dim blnEmailAlert As Boolean = False
+
+        If dtAlertLogID.Rows.Count > 0 Then
+
+            If strPagerAlertLogID_PagerAlert = "Y" Then blnPagerAlert = True
+
+            If strEmailAlertLogID_EmailAlert = "Y" Then blnEmailAlert = True
+
+            ' Get the latest description
+            strMessage = dtAlertLogID.Rows(0)("Description")
+        End If
+
+
+
+        If blnPagerAlert Then
+            Log("CheckCOVID19MECExporter_ExportFail pager alert")
+
+            CheckCOVID19MECExporter_ExportFailAlert(AlertType.PagerAlert, strMessage)
+        End If
+
+        If blnEmailAlert Then
+            Log("CheckCOVID19MECExporter_ExportFail email alert")
+
+            CheckCOVID19MECExporter_ExportFailAlert(AlertType.EmailAlert, strMessage)
+        End If
+
+        Log("Completed checking CheckCOVID19MECExporter_ExportFail")
+
+    End Sub
+
+
+    'For CheckCOVID19MECExporter_ImportFail write event log
+    Private Sub CheckCOVID19MECExporter_ExportFailAlert(ByVal eAlertType As AlertType, ByVal strMessage As String)
+        Select Case eAlertType
+            Case AlertType.PagerAlert
+                WriteEventLog(ConfigurationManager.AppSettings("COVID19MECExporter_EventSource"), _
+                              ConfigurationManager.AppSettings("COVID19MECExporter_PagerEventID"), _
+                              EventLogEntryType.Error, strMessage)
+
+            Case AlertType.EmailAlert
+                WriteEventLog(ConfigurationManager.AppSettings("COVID19MECExporter_EventSource"), _
+                              ConfigurationManager.AppSettings("COVID19MECExporter_EmailEventID"), _
+                              EventLogEntryType.Warning, strMessage)
+
+            Case Else
+                Throw New NotImplementedException
+
+        End Select
+
+    End Sub
+
+#End Region
 End Class

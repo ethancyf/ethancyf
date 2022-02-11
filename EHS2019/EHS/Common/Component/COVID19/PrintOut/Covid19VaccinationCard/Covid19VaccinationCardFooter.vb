@@ -24,6 +24,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
         Private _blnDischarge As Boolean
+        Private _strQRCode As String
 
 #Region "Constructor"
 
@@ -37,7 +38,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                        ByRef udtEHSAccount As EHSAccountModel, _
                        ByRef udtPrintTime As Date, _
                        ByRef blnIsSample As Boolean, _
-                       ByVal blnDischarge As Boolean)
+                       ByVal blnDischarge As Boolean, _
+                       ByVal strQRCode As String)
 
             ' Invoke default constructor
             Me.New()
@@ -49,6 +51,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             _udtPrintTime = udtPrintTime
             _blnIsSample = blnIsSample
             _blnDischarge = blnDischarge
+            _strQRCode = strQRCode
 
             LoadReport()
             ChkIsSample()
@@ -96,7 +99,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             txtHKID.Text = _udtFormatter.FormatDocIdentityNoForDisplay(patientInformation.DocCode.Trim(), patientInformation.IdentityNum, False, IIf(patientInformation.DocCode = "ADOPC", patientInformation.AdoptionPrefixNum, vbNull))
             srCovid19FooterDoseTable.Report = New Covid19FooterDoseTableWithNoSignature(_udtEHSTransaction, _udtVaccinationRecord, _blnIsSample, _blnDischarge)
 
-            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeStringForVaccinationRecord(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
+            'qrCode.Text = (New QrcodeFormatter).GenerateQRCodeStringForVaccinationRecord(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
+            qrCode.Text = _strQRCode
 
         End Sub
 
