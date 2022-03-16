@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			INT22-0006 (Fix MEX file contain empty line record)
+-- Modified by:		Winnie SUEN
+-- Modified date:	24 Jan 2022
+-- Description:		Add ISNULL when concat the raw data
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023-73 (Upload COVID19MEC to Central DB)
 -- Modified by:		Winnie SUEN
 -- Modified date:	24 Jan 2022
@@ -726,26 +733,58 @@ AS
                NULL, 
 			   @EmptyStringVarbinary,	-- For new record, no longer look at this column as it uses VARCHAR for decryption			   
                ENCRYPTBYKEY(KEY_GUID('sym_Key'), CONVERT(NVARCHAR(MAX), LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(HKICDocID)), ''))) +
-               @VBar + Doc_Type + @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(otherDocID)), ''))) + @VBar + EC_SerialNo + 
-			   @VBar + PASS_Issue_Region + @VBar + Sex + @VBar + DOB + @VBar + Exact_DOB + 
-			   @VBar + Surname + @VBar + given_name + @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(full_name)))) +
-               @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc1)))) + @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc2)))) +
-               @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc3)))) + @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc4)))) +
-               @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc5)))) + @VBar + LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc6)))) +
-			   @VBar + [Language] + @VBar + Phone_no + 
+               @VBar + ISNULL(Doc_Type, '') + 
+			   @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(otherDocID)), ''))) + 
+			   @VBar + ISNULL(EC_SerialNo, '') + 
+			   @VBar + ISNULL(PASS_Issue_Region, '') + 
+			   @VBar + ISNULL(Sex, '') + 
+			   @VBar + ISNULL(DOB, '') + 
+			   @VBar + ISNULL(Exact_DOB, '') + 
+			   @VBar + ISNULL(Surname, '') + 
+			   @VBar + ISNULL(given_name, '') + 
+			   @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(full_name)),''))) +
+               @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc1)),''))) + 
+			   @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc2)),''))) +
+               @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc3)),''))) + 
+			   @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc4)),''))) +
+               @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc5)),''))) + 
+			   @VBar + LTRIM(RTRIM(ISNULL(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(ccc6)),''))) +
+			   @VBar + ISNULL([Language], '') + 
+			   @VBar + ISNULL(Phone_no, '') + 
 			   @VBar + REPLACE(LTRIM(RTRIM(ISNULL(CONVERT(NVARCHAR(MAX), DECRYPTBYKEY(Encrypted_CName)),''))), @VBar, @VBarWithQuote) +
-			   @VBar + Smart_ID_Indicator + @VBar + record_key + @VBar + Transaction_datetime + @VBar + transaction_Type + 
-			   @VBar + Record_last_update_datetime + @VBar + Upload_Source_System + 
-			   @VBar + Issue_Date + @VBar + Valid_Til_Date + @VBar + Profession_RegNo + @VBar + SP_Name_Eng + @VBar + SP_Name_Chi +
-			   @VBar + Institution_identifier + @VBar + Institution_Name_Eng + @VBar + Institution_Name_Chi +
-			   @VBar + PreExisting + @VBar + Medical_Treatment + @VBar + PreExisting_Remark1 + @VBar + PreExisting_Remark2 +
-			   @VBar + Contraindications1 + @VBar + Contraindications2 + @VBar + Contraindications3 + @VBar + Contraindications_Remark4 + @VBar + Contraindications5 +
-			   @VBar + Contraindications_Remark1 + @VBar + Contraindications_Remark2 + @VBar + Contraindications_Remark3 +
-			   @VBar + Contraindications_Remark4 + @VBar + Contraindications_Remark5 + @VBar + eHRSS_Consent +
-			   @VBar + Reserved_field_1 + @VBar + Reserved_field_2 + @VBar + Reserved_field_3 + @VBar + Reserved_field_4 + @VBar + Reserved_field_5 +
-			   @VBar + Reserved_field_6 + @VBar + Reserved_field_7 + @VBar + Reserved_field_8 + @VBar + Reserved_field_9 + @VBar + Reserved_field_10 +
-			   @VBar + Reserved_field_11 + @VBar + Reserved_field_12 + @VBar + Reserved_field_13 + @VBar + Reserved_field_14 + @VBar + Reserved_field_15 +
-			   @VBar + Reserved_field_16 + @VBar + Reserved_field_17 + @VBar + Reserved_field_18 + @VBar + Reserved_field_19 + @VBar + Reserved_field_20)), 
+			   @VBar + ISNULL(Smart_ID_Indicator, '') + 
+			   @VBar + ISNULL(record_key, '') + 
+			   @VBar + ISNULL(Transaction_datetime, '') + 
+			   @VBar + ISNULL(transaction_Type, '') + 
+			   @VBar + ISNULL(Record_last_update_datetime, '') + 
+			   @VBar + ISNULL(Upload_Source_System, '') + 
+			   @VBar + ISNULL(Issue_Date, '') + 
+			   @VBar + ISNULL(Valid_Til_Date, '') + 
+			   @VBar + ISNULL(Profession_RegNo, '') + 
+			   @VBar + ISNULL(SP_Name_Eng, '') + 
+			   @VBar + ISNULL(SP_Name_Chi, '') +
+			   @VBar + ISNULL(Institution_identifier, '') + 
+			   @VBar + ISNULL(Institution_Name_Eng, '') + 
+			   @VBar + ISNULL(Institution_Name_Chi, '') +
+			   @VBar + ISNULL(PreExisting, '') + 
+			   @VBar + ISNULL(Medical_Treatment, '') + 
+			   @VBar + ISNULL(PreExisting_Remark1, '') + 
+			   @VBar + ISNULL(PreExisting_Remark2, '') +
+			   @VBar + ISNULL(Contraindications1, '') + 
+			   @VBar + ISNULL(Contraindications2, '') + 
+			   @VBar + ISNULL(Contraindications3, '') + 
+			   @VBar + ISNULL(Contraindications4, '') + 
+			   @VBar + ISNULL(Contraindications5, '') +
+			   @VBar + ISNULL(Contraindications_Remark1, '') + 
+			   @VBar + ISNULL(Contraindications_Remark2, '') +
+			   @VBar + ISNULL(Contraindications_Remark3, '') +
+			   @VBar + ISNULL(Contraindications_Remark4, '') + 
+			   @VBar + ISNULL(Contraindications_Remark5, '') + 
+			   @VBar + ISNULL(eHRSS_Consent, '') +
+			   @VBar + ISNULL(Reserved_field_1, '') + @VBar + ISNULL(Reserved_field_2, '') + @VBar + ISNULL(Reserved_field_3, '') + @VBar + ISNULL(Reserved_field_4, '') + @VBar + ISNULL(Reserved_field_5, '') +
+			   @VBar + ISNULL(Reserved_field_6, '') + @VBar + ISNULL(Reserved_field_7, '') + @VBar + ISNULL(Reserved_field_8, '') + @VBar + ISNULL(Reserved_field_9, '') + @VBar + ISNULL(Reserved_field_10, '') +
+			   @VBar + ISNULL(Reserved_field_11, '') + @VBar + ISNULL(Reserved_field_12, '') + @VBar + ISNULL(Reserved_field_13, '') + @VBar + ISNULL(Reserved_field_14, '') + @VBar + ISNULL(Reserved_field_15, '') +
+			   @VBar + ISNULL(Reserved_field_16, '') + @VBar + ISNULL(Reserved_field_17, '') + @VBar + ISNULL(Reserved_field_18, '') + @VBar + ISNULL(Reserved_field_19, '') + @VBar + ISNULL(Reserved_field_20, ''))), 
 
                ISNULL(HKICDocID, otherDocID), 
                Doc_Type, 
