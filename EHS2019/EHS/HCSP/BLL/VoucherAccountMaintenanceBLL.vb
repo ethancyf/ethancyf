@@ -195,16 +195,14 @@ Namespace BLL
         '    intBankAcctID = CType(strBankAcctIDtemp, Integer)
         'End Sub
 
-        Public Function loadRectifyList(ByVal strSPID As String, _
-                                ByVal strDataEntry As String, ByVal strStatus As String, ByVal enumSubPlatform As [Enum]) As DataTable
-            Dim dt As DataTable
-            'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
-            'dt = udtVRAcctBLL.LoadRectifyTempVRAcct(strSPID, strDataEntry, strStatus)
-            dt = udtVRAcctBLL.LoadRectifyTempVRAcct(strSPID, strDataEntry, strStatus, enumSubPlatform)
-            'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+        Public Function loadRectifyList(ByVal strSPID As String, ByVal strDataEntry As String, ByVal strStatus As String, _
+                                        ByVal enumSubPlatform As [Enum], ByVal dtmCreateDate As Nullable(Of DateTime)) As VoucherRecipientAccountBLL.RectifyListResultModel
 
-            Return dt
+            Dim udtRectifyListResult As VoucherRecipientAccountBLL.RectifyListResultModel
+
+            udtRectifyListResult = udtVRAcctBLL.LoadRectifyTempVRAcct(strSPID, strDataEntry, strStatus, enumSubPlatform, dtmCreateDate)
+
+            Return udtRectifyListResult
 
         End Function
 

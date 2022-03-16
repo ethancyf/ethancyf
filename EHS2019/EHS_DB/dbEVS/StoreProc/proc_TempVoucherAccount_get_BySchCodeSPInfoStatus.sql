@@ -5,6 +5,15 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			INT22-0007 (Handle eHA Rectification OutOfMemoryException Issue)
+-- Modified by:		Winnie SUEN
+-- Modified date:	15 Feb 2022
+-- Description:		1. Add Max Row Checking
+--					2. Add Search Criteria "@Create_Date"
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -99,26 +108,33 @@ GO
 -- Modified date:	8 Sep 2009
 -- Description:		Transaction field: char(20)
 -- =============================================
+--exec proc_TempVoucherAccount_get_BySchCodeSPInfoStatus @SP_ID='90017250',@DataEntry_By=NULL,@Status=NULL,@Available_HCSP_SubPlatform='HK',@Create_Date = '2018-01-02'
 
 CREATE PROCEDURE [dbo].[proc_TempVoucherAccount_get_BySchCodeSPInfoStatus]
 	@SP_ID	char(8),
 	@DataEntry_By varchar(20),
 	@Status	char(1),
-	@Available_HCSP_SubPlatform	char(2)
+	@Available_HCSP_SubPlatform	char(2),
+	@Create_Date  DATETIME = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
 -- =============================================
 -- Declaration
 -- =============================================
+	DECLARE @maxrow				int
+
 	DECLARE @In_SP_ID			char(8)	
 	DECLARE @In_DataEntry_By	varchar(20)
 	DECLARE @In_Status			char(1)
 	DECLARE @In_Available_HCSP_SubPlatform	char(2)
+	DECLARE @In_Create_Date		datetime
+	
 	SET @In_SP_ID = @SP_ID
 	SET @In_DataEntry_By = @DataEntry_By
 	SET @In_Status = @Status
 	SET @In_Available_HCSP_SubPlatform = @Available_HCSP_SubPlatform
+	SET @In_Create_Date = @Create_Date
 	
 	create table #temp_account
 	(
@@ -176,6 +192,11 @@ BEGIN
 -- Initialization
 -- =============================================
 
+	-- Max Retrieve Row
+	SELECT	@maxrow = Parm_Value1
+	FROM	SystemParameters WITH (NOLOCK)
+	WHERE	Parameter_Name = 'HCSPEHARectify_MaxRowRetrieve' AND Record_Status = 'A'
+
 	-- Temp Account (Pending Confirmation / Pending Validation / Pending Validation (Special Account) / Validation Failed)
 	insert into #temp_account
 	(
@@ -213,7 +234,8 @@ BEGIN
 		Exact_DOD,
 		PASS_Issue_Region
 	)
-	select	tva.voucher_acc_id,
+	select	TOP (@maxrow + 1)
+			tva.voucher_acc_id,
 			tva.scheme_code,
 			tp.Encrypt_Field1,
 			tp.Encrypt_Field2,
@@ -266,82 +288,20 @@ BEGIN
 	and (@In_DataEntry_By is null or vac.dataentry_by = @In_DataEntry_By)
 	--and tp.doc_code = d.doc_code
 	and (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
+	and (@In_Create_Date is null or  CAST(tva.Create_Dtm AS DATE) = @In_Create_Date)
 
-	
---insert into #temp_account
---	(
---		voucher_acc_id,
---		scheme_code,
---		Encrypt_Field1,
---		Encrypt_Field2,
---		Encrypt_Field3,
---		dob,	
---		exact_dob,
---		sex,
---		date_of_issue,
---		EC_Serial_No,
---		EC_Reference_No,
---		EC_Age,
---		EC_Date_of_Registration,
---		Foreign_Passport_No,
---		Permit_To_Remain_Until,
---		Encrypt_Field11,
---		doc_code,
---		--Doc_Display_code,
---		personal_info_record_status,
---		account_status,
---		display_status,
---		source,
---		create_dtm,
---		dataentry_by,
---		practice_name,
---		practice_name_chi,
---		original_acc_id,
---		Display_Acc_ID,
---		other_info
---	)
---	select	tva.Special_Acc_ID,
---			tva.scheme_code,
---			tp.Encrypt_Field1,
---			tp.Encrypt_Field2,
---			tp.Encrypt_Field3,			
---			tp.dob,
---			tp.exact_dob,
---			tp.sex,
---			tp.date_of_issue,
---			tp.EC_Serial_No,
---			tp.EC_Reference_No,
---			tp.EC_Age,
---			tp.EC_Date_of_Registration,
---			tp.Foreign_Passport_No,
---			tp.Permit_To_Remain_Until,
---			tp.Encrypt_Field11,
---			tp.doc_code,
---			--d.Doc_Display_Code,
---			tp.record_status,
---			tva.record_status,
---			tva.record_status,
---			'S',			
---			tva.create_dtm,
---			vac.dataentry_by,
---			p.practice_name,
---			p.practice_name_chi,
---			tva.original_acc_id,
---			isNull(TVA.Original_Acc_ID, TVA.Special_Acc_ID),
---			tp.other_info
---	from specialaccount tva, specialPersonalInformation tp, VoucherAccountCreationLOG vac, practice p --,doctype d
---	where tva.Special_Acc_ID = tp.Special_Acc_ID
---	and tva.Special_Acc_ID = vac.voucher_acc_id
---	and vac.sp_id = p.sp_id
---	and vac.SP_Practice_Display_seq = p.display_seq
---	and vac.voucher_acc_type = 'S'
---	and tva.special_acc_id in (select voucher_acc_id from TempVoucherAccPendingVerify)
---	--and tp.record_status = 'N'
---	and tva.record_status not in ('D', 'V')
---	and (tva.record_status = @Status or @Status = '')
---	and vac.sp_id = @sp_id
---	and (vac.dataentry_by = @dataentry_by or @dataentry_by = '')
-	
+
+    -- =============================================    
+    -- Max Row Checking  
+    -- =============================================  
+	IF (SELECT COUNT(1) FROM #temp_account) > @maxrow
+	BEGIN
+		RAISERROR('00009', 16, 1)
+		RETURN @@error
+	END
+
+
+
 	insert into #transaction
 	select Transaction_ID, Temp_Voucher_Acc_ID, doc_code
 	from VoucherTransaction 

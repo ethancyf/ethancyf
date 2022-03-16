@@ -572,6 +572,8 @@ Partial Public Class EHSRectification
         Dim strStatus As String = String.Empty
 
         udcInfoMsgBox.Visible = False
+        udcMsgBoxErr.Visible = False
+
         Me.lblDisplayStatus.Text = Me.ddlAcctStatus.SelectedItem.ToString
         strStatus = Me.ddlAcctStatus.SelectedValue.Trim
         'Unusual case: sometime it return "Any" instead of ""
@@ -593,35 +595,49 @@ Partial Public Class EHSRectification
 
         Dim udtVAMaintBLL As New VoucherAccountMaintenanceBLL
 
-        'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
-        'dt = udtVAMaintBLL.loadRectifyList(udtSP.SPID, strDataEntry, strStatus)
-        dt = udtVAMaintBLL.loadRectifyList(udtSP.SPID, strDataEntry, strStatus, Me.SubPlatform)
-        'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+        Dim udtRectifyListResult As VoucherRecipientAccount.VoucherRecipientAccountBLL.RectifyListResultModel = udtVAMaintBLL.loadRectifyList(udtSP.SPID, strDataEntry, strStatus, Me.SubPlatform, Nothing)
 
-        If Not IsNothing(dt) Then
-            Me.udtAuditLogEntry.AddDescripton("NoOfRecord", dt.Rows.Count)
+        If Not IsNothing(udtRectifyListResult) Then
+            If Not udtRectifyListResult.ExceedLimit Then
+                'Result is normal
+                If udtRectifyListResult.Result IsNot Nothing Then
+                    dt = udtRectifyListResult.Result
 
-            If dt.Rows.Count = 0 Then
-                ' No record found
-                udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Information
-                udcInfoMsgBox.AddMessage("990000", "I", "00001")
-                udcInfoMsgBox.BuildMessageBox()
+                    Me.udtAuditLogEntry.AddDescripton("NoOfRecord", dt.Rows.Count)
+
+                    If dt.Rows.Count = 0 Then
+                        ' No record found
+                        udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Information
+                        udcInfoMsgBox.AddMessage("990000", "I", "00001")
+                        udcInfoMsgBox.BuildMessageBox()
+
+                    Else
+                        BLL.PracticeBankAcctBLL.HandleSwapPracticeLanguage(dt, strPracticeName, strPracticeNameChi)
+
+                        Session(SESS_SearchResultList) = dt
+
+                        GridViewDataBind(gvAcctList, dt, "Create_Dtm", "ASC", False)
+                        Me.mvRectify.ActiveViewIndex = intSearchResultList
+
+                    End If
+
+                    Me.udtAuditLogEntry.AddDescripton("Status", strStatus)
+                    Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00002, AuditLogDesc.SearchSuccess)
+
+                End If
+
             Else
+                'Result exceeds the upper limit(e.g. 10000 rows)
+                Me.udcMsgBoxErr.AddMessage(Common.Component.FunctCode.FUNT990001, SeverityCode.SEVD, MsgCode.MSG00016)
+                Me.udtAuditLogEntry.AddDescripton("Status", strStatus)
+                Me.udcMsgBoxErr.BuildMessageBox(strValidationFail, Me.udtAuditLogEntry, LogID.LOG00003, AuditLogDesc.SearchFail)
 
-                BLL.PracticeBankAcctBLL.HandleSwapPracticeLanguage(dt, strPracticeName, strPracticeNameChi)
-
-                Session(SESS_SearchResultList) = dt
-
-                GridViewDataBind(gvAcctList, dt, "Create_Dtm", "ASC", False)
-                Me.mvRectify.ActiveViewIndex = intSearchResultList
             End If
 
-            Me.udtAuditLogEntry.AddDescripton("Status", strStatus)
-            Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00002, AuditLogDesc.SearchSuccess)
         Else
             Me.udtAuditLogEntry.AddDescripton("Status", strStatus)
             Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00003, AuditLogDesc.SearchFail)
+
         End If
 
     End Sub

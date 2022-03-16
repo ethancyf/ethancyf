@@ -436,6 +436,7 @@ Partial Public Class ucInputCOVID19MEC
         'Check Valid Until Date Format
         Dim strValidUntilDate As String = String.Empty
         Dim dtmValidUntilDate As Date
+        Dim strValidUntilFormat As String = String.Empty
 
         If blnValid Then
             Dim rgx As Regex = New Regex("[a-zA-Z]{1}", RegexOptions.IgnoreCase)
@@ -445,12 +446,14 @@ Partial Public Class ucInputCOVID19MEC
 
                 objMsg = _udtValidator.chkInputDate(strValidUntilDate, True, False, "dd-MMM-yyyy")
 
+                strValidUntilFormat = "dd-MMM-yyyy"
             Else
                 'Format: dd-MM-yyyy
                 strValidUntilDate = _udtFormatter.formatInputDate(Me.txtValidUntil.Text, CultureLanguage.English)
 
                 objMsg = _udtValidator.chkInputDate(strValidUntilDate, True, False, "dd-MM-yyyy")
 
+                strValidUntilFormat = "dd-MM-yyyy"
             End If
 
             If objMsg IsNot Nothing Then
@@ -475,7 +478,12 @@ Partial Public Class ucInputCOVID19MEC
 
         'Check Valid Until Date Range
         If blnValid Then
-            dtmValidUntilDate = DateTime.Parse(strValidUntilDate, New System.Globalization.CultureInfo(CultureLanguage.English))
+            Select Case strValidUntilFormat
+                Case "dd-MM-yyyy"
+                    dtmValidUntilDate = DateTime.ParseExact(strValidUntilDate, "dd-MM-yyyy", New System.Globalization.CultureInfo(CultureLanguage.English))
+                Case "dd-MMM-yyyy"
+                    dtmValidUntilDate = DateTime.ParseExact(strValidUntilDate, "dd-MMM-yyyy", New System.Globalization.CultureInfo(CultureLanguage.English))
+            End Select
 
             'If dtmValidUntilDate < Me.ServiceDate OrElse DateAdd(DateInterval.Day, CDbl(GetUpperLimitInterval()) - 1, Me.ServiceDate) < dtmValidUntilDate Then
             If dtmValidUntilDate < Me.ServiceDate Then
