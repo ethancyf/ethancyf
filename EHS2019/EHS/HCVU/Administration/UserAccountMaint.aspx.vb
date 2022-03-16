@@ -282,7 +282,7 @@ Partial Public Class UserAccountMaint
             ' Vaccine Centre: Exclude 'DH Clinic' 
             Dim udtCovid19BLL As New COVID19.COVID19BLL
             Dim dvVaccineCentre As DataView = New DataView(udtCovid19BLL.GetVaccineCentre)
-            dvVaccineCentre.RowFilter = udtCovid19BLL.FilterByCentreType("CENTRE")
+            dvVaccineCentre.RowFilter = udtCovid19BLL.FilterByCentreType(VaccineCentreType.Centre)
             Dim dtVaccineCentre As DataTable = dvVaccineCentre.ToTable()
             ckbVaccineCentre.DataTextField = "Centre_Name"
             ckbVaccineCentre.DataValueField = "Centre_ID"

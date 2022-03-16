@@ -33,6 +33,15 @@ Namespace Component.COVID19
             GetFromSession
             NoSession
         End Enum
+
+        ' I-CRE21-003 (To handle Centre ID with prefix 'DH') [Start][Winnie SUEN]
+        Public Enum VaccineCentreType
+            Centre
+            DHClinic
+        End Enum
+
+        Private DHClinicPrefix As String = "DH0"
+        ' I-CRE21-003 (To handle Centre ID with prefix 'DH') [End][Winnie SUEN]
 #End Region
 
 #Region "Private Member"
@@ -534,24 +543,23 @@ Namespace Component.COVID19
 
         End Function
 
-        ' CRE20-023-59 (New Prefix of Centre Code 'Q') [Start][Winnie SUEN]
+        ' I-CRE21-003 (To handle Centre ID with prefix 'DH') [Start][Winnie SUEN]
         ' -------------------------------------------------------------
-        Public Function FilterByCentreType(ByVal strCentreType As String) As String
-            Dim strFilter As String = String.Empty
-            Dim strDHClinicPrefix As String = "DH"
+        Public Function FilterByCentreType(ByVal enumVaccineCentreType As VaccineCentreType) As String
+            Dim strFilter As String = String.Empty            
             'Dim strCentrePrefix As String = "CVC"
 
-            If strCentreType.Trim.ToUpper = "CENTRE" Then
-                strFilter = String.Format("Centre_ID not like '{0}%'", strDHClinicPrefix)
+            If enumVaccineCentreType = VaccineCentreType.Centre Then
+                strFilter = String.Format("Centre_ID NOT LIKE '{0}%'", DHClinicPrefix)
                 'strFilter = String.Format("Centre_ID like '{0}%'", strCentrePrefix)
             Else
-                strFilter = String.Format("Centre_ID like '{0}%'", strDHClinicPrefix)
+                strFilter = String.Format("Centre_ID LIKE '{0}%'", DHClinicPrefix)
             End If
 
             Return strFilter
 
         End Function
-        ' CRE20-023-59 (New Prefix of Centre Code 'Q') [End][Winnie SUEN]
+        ' I-CRE21-003 (To handle Centre ID with prefix 'DH') [End][Winnie SUEN]
 
 #End Region
 

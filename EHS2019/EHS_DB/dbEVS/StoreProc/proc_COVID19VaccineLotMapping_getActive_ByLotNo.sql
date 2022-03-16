@@ -13,6 +13,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE21-003 (To handle Centre ID with prefix 'DH')
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 Sep 2021
+-- Description:		Consider Centre ID with prefix "DH0" as 'DH CLINIC'
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023-59 
 -- Modified by:		Winnie SUEN
 -- Modified date:	28 Sep 2021
@@ -51,7 +58,7 @@ AS
                centre_name,
                CASE
 					WHEN Centre_ID IS NULL OR service_type <> 'CENTRE' THEN '' 
-					WHEN LEFT(centre_id, 2) = 'DH' THEN 'DH CLINIC'
+					WHEN LEFT(centre_id, 3) = 'DH0' THEN 'DH CLINIC'
 					ELSE 'CENTRE'
                END AS centre_service_type
         FROM
