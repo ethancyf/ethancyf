@@ -226,24 +226,50 @@
                 <asp:View ID="vSearch" runat="server">
                     <table>
                         <tr>
-                            <td colspan="2" style="height: 50px">
+                            <td colspan="3" style="height: 50px">
                                 <asp:Label ID="lblAcctSearchList" runat="server" CssClass="tableCaption" Text="<%$ Resources: Text, SearchTempVRAcct %>"></asp:Label>
                             </td>
                         </tr>
                         <tr>
-                            <td style="width: 250px; height: 50px">
+                            <td style="width: 250px; height: 28px">
                                 <asp:Label ID="lblAcctStatusText" runat="server" CssClass="tableTitle" Text="<%$ Resources: Text, AccRectificationList %>"></asp:Label>
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <asp:DropDownList ID="ddlAcctStatus" runat="server" Width="250px" AppendDataBoundItems="true">
                                     <asp:ListItem Selected="True" Value="" Text="<%$ Resources: Text, Any %>"></asp:ListItem>
                                 </asp:DropDownList>
                             </td>
                         </tr>
                         <tr>
+                            <td style="width: 250px; height: 28px; vertical-align: top">
+                                <asp:Label ID="lblCreationDateText" runat="server" CssClass="tableTitle" Text="<%$ Resources: Text, CreationDate %>"></asp:Label>
+                            </td>
+                            <td colspan="2" style="vertical-align: top">
+                                <table cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td>
+                                            <asp:TextBox ID="txtSearchCreationDate" runat="server" MaxLength="10" Width="75px"
+                                                onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);"
+                                                onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);"
+                                                onblur="filterDateInput(this);"></asp:TextBox>&nbsp;
+                                        </td>
+                                        <td>
+                                            <asp:ImageButton ID="btnSearchCreationDate" runat="server" AlternateText="Calender" ImageAlign="Middle" ImageUrl="~/Images/button/icon_button/btn_calender.png" />
+                                            <cc2:CalendarExtender ID="calExtCreationDate" runat="server" CssClass="ajax_cal" PopupButtonID="btnSearchCreationDate" TargetControlID="txtSearchCreationDate" />
+                                            <cc2:FilteredTextBoxExtender ID="filtereditSearchCreationDate" runat="server" FilterType="Custom, Numbers" TargetControlID="txtSearchCreationDate" ValidChars="-" />
+                                        </td>
+                                        <td>
+                                            &nbsp;
+                                            <asp:Image ID="imgSearchCreationDateError" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" />
+                                        </td>
+                                    </tr>
+                                </table>                                
+                            </td>
+                        </tr>
+                        <tr>
                             <td style="width: 250px; height: 50px">
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <asp:ImageButton ID="ibtnSearch" runat="server" AlternateText="<%$ Resources: AlternateText, SearchBtn %>"
                                     ImageUrl="<%$ Resources: ImageURL, SearchBtn %>" OnClick="ibtnSearch_Click" /></td>
                         </tr>
@@ -262,6 +288,14 @@
                             </td>
                             <td>
                                 <asp:Label ID="lblDisplayStatus" runat="server" CssClass="tableText"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 250px; height: 30px">
+                                <asp:Label ID="lblAcctListCreateDateText" runat="server" CssClass="tableTitle" Text="<%$ Resources: Text, CreationDate %>"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:Label ID="lblAcctListCreateDate" runat="server" CssClass="tableText"></asp:Label>
                             </td>
                         </tr>
                     </table>

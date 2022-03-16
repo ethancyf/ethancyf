@@ -329,6 +329,60 @@ Partial Public Class EHSRectification
     Protected WithEvents ddlAcctStatus As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''lblCreationDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCreationDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtSearchCreationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtSearchCreationDate As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''btnSearchCreationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSearchCreationDate As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''calExtCreationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calExtCreationDate As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''filtereditSearchCreationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtereditSearchCreationDate As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''imgSearchCreationDateError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgSearchCreationDateError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''ibtnSearch control.
     '''</summary>
     '''<remarks>
@@ -372,6 +426,24 @@ Partial Public Class EHSRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDisplayStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblAcctListCreateDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblAcctListCreateDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblAcctListCreateDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblAcctListCreateDate As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''gvAcctList control.

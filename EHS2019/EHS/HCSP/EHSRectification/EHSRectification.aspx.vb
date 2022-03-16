@@ -570,9 +570,13 @@ Partial Public Class EHSRectification
         Dim dt As DataTable
         Dim strDataEntry As String = String.Empty
         Dim strStatus As String = String.Empty
+        Dim strCreationDate As String = String.Empty
+        Dim dtmCreationDate As Nullable(Of DateTime) = Nothing
+        Dim blnIsValid As Boolean = True
 
         udcInfoMsgBox.Visible = False
         udcMsgBoxErr.Visible = False
+        imgSearchCreationDateError.Visible = False
 
         Me.lblDisplayStatus.Text = Me.ddlAcctStatus.SelectedItem.ToString
         strStatus = Me.ddlAcctStatus.SelectedValue.Trim
@@ -588,14 +592,81 @@ Partial Public Class EHSRectification
             strStatus = VRAcctValidatedStatus.PendingForConfirmation
         End If
 
+        ' Creation Date
+        strCreationDate = txtSearchCreationDate.Text.Trim
+
         'Log start search 
         Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
         Me.udtAuditLogEntry.AddDescripton("Status", strStatus)
+        Me.udtAuditLogEntry.AddDescripton("Creation Date", strCreationDate)
         Me.udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00001, AuditLogDesc.SearchTempEHSAccount)
 
-        Dim udtVAMaintBLL As New VoucherAccountMaintenanceBLL
+        ' I-CRE21-002 (To enhance the search criteria of account recitification in eHS(S)) [Start][Winnie SUEN]
+        ' -----------------------------------------------------------------------
+        ' Data Validation
+        Dim udtSM As Common.ComObject.SystemMessage
+        Dim udtSubPlatformBLL As New SubPlatformBLL
 
-        Dim udtRectifyListResult As VoucherRecipientAccount.VoucherRecipientAccountBLL.RectifyListResultModel = udtVAMaintBLL.loadRectifyList(udtSP.SPID, strDataEntry, strStatus, Me.SubPlatform, Nothing)
+        If strCreationDate <> String.Empty Then
+            strCreationDate = udtFormatter.formatInputDate(txtSearchCreationDate.Text.Trim, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+            udtSM = Me.validator.chkInputDate(strCreationDate, True, True)
+
+            If Not udtSM Is Nothing Then
+                Me.imgSearchCreationDateError.Visible = True
+                Dim udtMsg As SystemMessage
+
+                Select Case udtSM.MessageCode
+                    Case MsgCode.MSG00022
+                        '"Creation Date" should not be future date.
+                        udtMsg = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00513)
+
+                    Case MsgCode.MSG00028
+                        'Please input the "Creation Date".
+                        udtMsg = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00463)
+
+                    Case MsgCode.MSG00029
+                        '"Creation Date" is invalid.
+                        udtMsg = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00466)
+
+                    Case Else
+                        'Please input the "Creation Date".
+                        udtMsg = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00463)
+                End Select
+
+                If Me.udcMsgBoxErr IsNot Nothing Then Me.udcMsgBoxErr.AddMessage(udtMsg, _
+                                                                New String() {"%en", "%tc", "%sc"}, _
+                                                                New String() {HttpContext.GetGlobalResourceObject("Text", "CreationDate", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                                              HttpContext.GetGlobalResourceObject("Text", "CreationDate", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                                              HttpContext.GetGlobalResourceObject("Text", "CreationDate", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
+
+                blnIsValid = False
+
+            Else
+                txtSearchCreationDate.Text = udtFormatter.formatInputTextDate(strCreationDate, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+                
+                If IsDate(udtFormatter.convertDate(strCreationDate, String.Empty)) Then
+                    dtmCreationDate = udtFormatter.convertDate(strCreationDate, String.Empty)
+                End If
+            End If
+        End If
+
+        If blnIsValid = False Then
+            udcMsgBoxErr.BuildMessageBox(strValidationFail, Me.udtAuditLogEntry, LogID.LOG00003, AuditLogDesc.SearchFail)
+            Return
+        End If
+
+        ' Build search criteria review
+        ' Creation Date
+        If strCreationDate.Equals(String.Empty) Then
+            lblAcctListCreateDate.Text = Me.GetGlobalResourceObject("Text", "Any")
+        Else
+            lblAcctListCreateDate.Text = udtFormatter.formatDisplayDate(strCreationDate, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+        End If
+        ' I-CRE21-002 (To enhance the search criteria of account recitification in eHS(S)) [End][Winnie SUEN]
+
+        'Search    
+        Dim udtVAMaintBLL As New VoucherAccountMaintenanceBLL
+        Dim udtRectifyListResult As VoucherRecipientAccount.VoucherRecipientAccountBLL.RectifyListResultModel = udtVAMaintBLL.loadRectifyList(udtSP.SPID, strDataEntry, strStatus, Me.SubPlatform, dtmCreationDate)
 
         If Not IsNothing(udtRectifyListResult) Then
             If Not udtRectifyListResult.ExceedLimit Then
@@ -622,6 +693,7 @@ Partial Public Class EHSRectification
                     End If
 
                     Me.udtAuditLogEntry.AddDescripton("Status", strStatus)
+                    Me.udtAuditLogEntry.AddDescripton("Creation Date", strCreationDate)
                     Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00002, AuditLogDesc.SearchSuccess)
 
                 End If
@@ -630,12 +702,14 @@ Partial Public Class EHSRectification
                 'Result exceeds the upper limit(e.g. 10000 rows)
                 Me.udcMsgBoxErr.AddMessage(Common.Component.FunctCode.FUNT990001, SeverityCode.SEVD, MsgCode.MSG00016)
                 Me.udtAuditLogEntry.AddDescripton("Status", strStatus)
+                Me.udtAuditLogEntry.AddDescripton("Creation Date", strCreationDate)
                 Me.udcMsgBoxErr.BuildMessageBox(strValidationFail, Me.udtAuditLogEntry, LogID.LOG00003, AuditLogDesc.SearchFail)
 
             End If
 
         Else
             Me.udtAuditLogEntry.AddDescripton("Status", strStatus)
+            Me.udtAuditLogEntry.AddDescripton("Creation Date", strCreationDate)
             Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00003, AuditLogDesc.SearchFail)
 
         End If
@@ -4270,6 +4344,8 @@ Partial Public Class EHSRectification
         strSelectedLanguage = LCase(udtSessionHandler.Language())
 
         Dim strSelectedStatus As String = Me.ddlAcctStatus.SelectedValue.Trim
+        Dim strCreationDate As String = Me.txtSearchCreationDate.Text.Trim
+        Dim dtmCreationDate As Date = udtGeneralFunction.GetSystemDateTime
 
         'Rebind the Dropdownlist in search critria
         ddlAcctStatus.Items.Clear()
@@ -4290,20 +4366,6 @@ Partial Public Class EHSRectification
 
         ddlAcctStatus.SelectedValue = strSelectedStatus
 
-        'If lblDisplayStatus.Text.Trim = HttpContext.GetGlobalResourceObject("Text", "Any", New CultureInfo("zh-TW")) Or lblDisplayStatus.Text.Trim = HttpContext.GetGlobalResourceObject("Text", "Any", New CultureInfo("en-us")) Then
-        '    lblDisplayStatus.Text = Me.GetGlobalResourceObject("Text", "Any").ToString().Trim
-        'Else
-        '    For Each dr As DataRow In dt.Rows
-        '        If lblDisplayStatus.Text.Trim = dr("Status_Description_Chi").ToString.Trim Or lblDisplayStatus.Text.Trim = dr("Status_Description").ToString.Trim Then
-        '            If LCase(strSelectedLanguage).Equals(TradChinese) Then
-        '                lblDisplayStatus.Text = dr("Status_Description_Chi").ToString.Trim
-        '            Else
-        '                lblDisplayStatus.Text = dr("Status_Description").ToString.Trim
-        '            End If
-        '        End If
-        '    Next
-        'End If
-
         If strSelectedStatus.Trim.Equals(String.Empty) Then
             lblDisplayStatus.Text = Me.GetGlobalResourceObject("Text", "Any")
         Else
@@ -4321,6 +4383,32 @@ Partial Public Class EHSRectification
             End If
 
         End If
+
+        ' I-CRE21-002 (To enhance the search criteria of account recitification in eHS(S)) [Start][Winnie SUEN]
+        ' -----------------------------------------------------------------------
+        ' Creation Date   
+        If Not strCreationDate.Equals(String.Empty) Then
+            Dim udtSubPlatformBLL As New SubPlatformBLL
+            'strCreationDate = udtFormatter.convertDate(strCreationDate, "E")
+            strCreationDate = udtFormatter.formatInputDate(txtSearchCreationDate.Text.Trim, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+
+            If IsDate(udtFormatter.convertDate(strCreationDate, String.Empty)) Then
+                dtmCreationDate = udtFormatter.convertDate(strCreationDate, String.Empty)
+                strCreationDate = udtFormatter.formatDisplayDate(dtmCreationDate, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+            End If
+
+            'If Not strCreationDate.Equals(String.Empty) Then
+            '    dtmCreationDate = CType(strCreationDate, DateTime)
+            '    strCreationDate = udtFormatter.formatDisplayDate(dtmCreationDate, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+            'End If
+        End If
+
+        If strCreationDate.Equals(String.Empty) Then
+            lblAcctListCreateDate.Text = Me.GetGlobalResourceObject("Text", "Any")
+        Else
+            lblAcctListCreateDate.Text = strCreationDate
+        End If
+        ' I-CRE21-002 (To enhance the search criteria of account recitification in eHS(S)) [End][Winnie SUEN]
 
         ' Rebind Gridview gvAcctList to display the search result
         If Not IsNothing(Session(SESS_SearchResultList)) Then
@@ -6198,6 +6286,36 @@ Partial Public Class EHSRectification
         Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
 
         Me.udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00071, "Click HERE for software of reading Smart ID card")
+
+    End Sub
+
+    Private Sub calExtCreationDate_Load(sender As Object, e As EventArgs) Handles calExtCreationDate.Load
+        Dim selectedLang As String
+        Dim chineseTodayDateFormat As String
+        Dim udtSubPlatformBLL As New SubPlatformBLL
+
+        selectedLang = LCase(Session("language"))
+
+        Select Case selectedLang
+            Case English
+                Me.calExtCreationDate.TodaysDateFormat = "d MMMM, yyyy"
+                Me.calExtCreationDate.DaysModeTitleFormat = "MMMM, yyyy"
+                Me.calExtCreationDate.Format = udtFormatter.EnterDateFormat(udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+            Case TradChinese
+                chineseTodayDateFormat = CStr(Today.Year) + "年" + CStr(Today.Month) + "月" + CStr(Today.Day) & "日"
+                Me.calExtCreationDate.TodaysDateFormat = chineseTodayDateFormat
+                Me.calExtCreationDate.DaysModeTitleFormat = "MMMM, yyyy"
+                Me.calExtCreationDate.Format = udtFormatter.EnterDateFormat(udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+            Case SimpChinese
+                chineseTodayDateFormat = CStr(Today.Year) + "年" + CStr(Today.Month) + "月" + CStr(Today.Day) & "日"
+                Me.calExtCreationDate.TodaysDateFormat = chineseTodayDateFormat
+                Me.calExtCreationDate.DaysModeTitleFormat = "MMMM, yyyy"
+                Me.calExtCreationDate.Format = udtFormatter.EnterDateFormat(udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+            Case Else
+                Me.calExtCreationDate.TodaysDateFormat = "dd-MM-yyyy"
+                Me.calExtCreationDate.DaysModeTitleFormat = "MMMM, yyyy"
+                Me.calExtCreationDate.Format = udtFormatter.EnterDateFormat(udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
+        End Select
 
     End Sub
 End Class
