@@ -594,12 +594,18 @@ function tabChanges(sender, e) {
                                                                         </HeaderTemplate>
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblMScheme" runat="server" Text='<%# Eval("SchemeDisplayCode") %>' CssClass="tableText"></asp:Label>
-                                                                            <asp:HiddenField ID="hfMScheme" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                                            <%--<asp:HiddenField ID="hfMScheme" runat="server" Value='<%# Eval("SchemeCode") %>' />
                                                                             <asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />
                                                                             <asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />
                                                                             <asp:HiddenField ID="hfGCategoryNameChi" runat="server" Value='<%# Eval("CategoryNameChi") %>' />
                                                                             <asp:HiddenField ID="hfGCategoryNameCN" runat="server" Value='<%# Eval("CategoryNameCN") %>' />
-                                                                            <asp:HiddenField ID="hfGAllNotProvideService" runat="server" />
+                                                                            <asp:HiddenField ID="hfGAllNotProvideService" runat="server" />--%>
+                                                                            <asp:Label ID="hfMScheme" runat="server" Text='<%# Eval("SchemeCode") %>' Visible="false"></asp:Label>
+                                                                            <asp:Label ID="hfGIsCategoryHeader" runat="server" Text='<%# Eval("IsCategoryHeader") %>' Visible="false"></asp:Label>
+                                                                            <asp:Label ID="hfGCategoryName" runat="server" Text='<%# Eval("CategoryName") %>' Visible="false"></asp:Label>
+                                                                            <asp:Label ID="hfGCategoryNameChi" runat="server" Text='<%# Eval("CategoryNameChi") %>' Visible="false"></asp:Label>
+                                                                            <asp:Label ID="hfGCategoryNameCN" runat="server" Text='<%# Eval("CategoryNameCN") %>' Visible="false"></asp:Label>
+                                                                            <asp:Label ID="hfGAllNotProvideService" runat="server" Text="" Visible="false"></asp:Label>
                                                                         </ItemTemplate>
                                                                         <ItemStyle VerticalAlign="Top" Width="100px" BackColor="#ffffff" />
                                                                     </asp:TemplateField>
@@ -611,7 +617,8 @@ function tabChanges(sender, e) {
                                                                         </HeaderTemplate>
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblScheme" runat="server" Text='<%# Eval("SubsidizeDisplayCode") %>' CssClass="tableText"></asp:Label>
-                                                                            <asp:HiddenField ID="hfScheme" runat="server" Value='<%# Eval("SubsidizeCode") %>' />
+                                                                            <%--<asp:HiddenField ID="hfScheme" runat="server" Value='<%# Eval("SubsidizeCode") %>' />--%>
+                                                                            <asp:Label ID="hfScheme" runat="server" Text='<%# Eval("SubsidizeCode") %>' Visible="false"></asp:Label>
                                                                         </ItemTemplate>
                                                                         <ItemStyle VerticalAlign="Top" Width="65px" BackColor="#ffffff" />
                                                                     </asp:TemplateField>

@@ -715,8 +715,8 @@ Partial Public Class MyProfileV2
     Protected Sub gvPracticeSchemeInfo_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
         Select Case e.Row.RowType
             Case DataControlRowType.DataRow
-                Dim strSchemeCode As String = DirectCast(e.Row.FindControl("hfMScheme"), HiddenField).Value
-                Dim strSubsidizeCode As String = DirectCast(e.Row.FindControl("hfScheme"), HiddenField).Value
+                Dim strSchemeCode As String = DirectCast(e.Row.FindControl("hfMScheme"), Label).Text
+                Dim strSubsidizeCode As String = DirectCast(e.Row.FindControl("hfScheme"), Label).Text
 
                 Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Session(SESS_MyProfilePracticeSchemeInfoList)
                 Dim udtPracticeSchemeInfo As PracticeSchemeInfoModel = udtPracticeSchemeInfoList.Filter(strSchemeCode, strSubsidizeCode)
@@ -731,7 +731,7 @@ Partial Public Class MyProfileV2
                 'INT17-0014 (Fix sp profile display when no service provided) [End][Chris YIM]
 
                 ' Hide the row if not enrolled or not providing service
-                If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+                If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), Label).Text = "Y" Then
                     For Each udtPSINode As PracticeSchemeInfoModel In udtPracticeSchemeInfoList.Values
                         If udtPSINode.SchemeCode = strSchemeCode Then
                             udtPracticeSchemeInfo = udtPSINode
@@ -759,7 +759,7 @@ Partial Public Class MyProfileV2
                     Next
 
                     If blnAllNotProvideService Then
-                        DirectCast(e.Row.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y"
+                        DirectCast(e.Row.FindControl("hfGAllNotProvideService"), Label).Text = "Y"
 
                     Else
                         If IsNothing(udtPracticeSchemeInfo) OrElse udtPracticeSchemeInfo.ProvideService = False Then
@@ -802,23 +802,23 @@ Partial Public Class MyProfileV2
 
                 Dim lblServiceFee As Label = CType(e.Row.FindControl("lblServiceFee"), Label)
 
-                If udtPracticeSchemeInfo.ProvideServiceFee.HasValue Then
-                    If udtPracticeSchemeInfo.ProvideServiceFee.Value AndAlso udtPracticeSchemeInfo.ServiceFee.HasValue Then
-                        lblServiceFee.Text = udtformatter.formatMoney(udtPracticeSchemeInfo.ServiceFee, True)
+                If udtSubsidizeGpBO.ServiceFeeEnabled Then
 
+                    If udtPracticeSchemeInfo.ProvideServiceFee.HasValue Then
+                        If udtPracticeSchemeInfo.ProvideServiceFee.Value AndAlso udtPracticeSchemeInfo.ServiceFee.HasValue Then
+                            lblServiceFee.Text = udtformatter.formatMoney(udtPracticeSchemeInfo.ServiceFee, True)
+                        Else
+                            lblServiceFee.Text = udtSubsidizeGpBO.ServiceFeeCompulsoryWording
+                        End If
                     Else
-                        lblServiceFee.Text = udtSubsidizeGpBO.ServiceFeeCompulsoryWording
-
+                        lblServiceFee.Text = "--"
                     End If
 
                 Else
-                    If udtSubsidizeGpBO.ServiceFeeEnabled Then
-                        lblServiceFee.Text = "--"
-                    Else
-                        lblServiceFee.Text = Me.GetGlobalResourceObject("Text", "ServiceFeeN/A")
-                    End If
-
+                    lblServiceFee.Text = Me.GetGlobalResourceObject("Text", "ServiceFeeN/A")
                 End If
+
+
 
                 ' Status
                 Dim lblStatus As Label = CType(e.Row.FindControl("lblStatus"), Label)
@@ -874,16 +874,16 @@ Partial Public Class MyProfileV2
 
         ' Handle Category
         For Each gvr As GridViewRow In gvPracticeSchemeInfo.Rows
-            If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+            If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), Label).Text = "Y" Then
                 ' Check whether this category is visible
-                Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfMScheme"), HiddenField).Value
-                Dim strCategoryName As String = DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value
+                Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfMScheme"), Label).Text
+                Dim strCategoryName As String = DirectCast(gvr.FindControl("hfGCategoryName"), Label).Text
                 Dim blnVisible As Boolean = False
 
                 For Each r As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(r.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "N" _
-                        AndAlso DirectCast(r.FindControl("hfMScheme"), HiddenField).Value = strSchemeCode _
-                        AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
+                    If DirectCast(r.FindControl("hfGIsCategoryHeader"), Label).Text = "N" _
+                        AndAlso DirectCast(r.FindControl("hfMScheme"), Label).Text = strSchemeCode _
+                        AndAlso DirectCast(r.FindControl("hfGCategoryName"), Label).Text = strCategoryName _
                         AndAlso r.Visible Then
                         blnVisible = True
                         Exit For
@@ -895,11 +895,11 @@ Partial Public Class MyProfileV2
                     ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [Start][Winnie]
                     Select Case Session("language")
                         Case CultureLanguage.TradChinese
-                            gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryNameChi"), HiddenField).Value, True)
+                            gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryNameChi"), Label).Text, True)
                         Case CultureLanguage.SimpChinese
-                            gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryNameCN"), HiddenField).Value, True)
+                            gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryNameCN"), Label).Text, True)
                         Case Else
-                            gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value, True)
+                            gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryName"), Label).Text, True)
                     End Select
                     ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [End][Winnie]
 
@@ -927,7 +927,7 @@ Partial Public Class MyProfileV2
                 Continue For
             End If
 
-            Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfMScheme"), HiddenField).Value
+            Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfMScheme"), Label).Text
 
             If Not udtSchemeBackOfficeList.Filter(strSchemeCode).DisplaySubsidizeDesc Then
                 gvr.Cells(1).ColumnSpan = 2
@@ -943,7 +943,7 @@ Partial Public Class MyProfileV2
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
                     If gvrow.Visible Then
-                        If DirectCast(gvrow.FindControl("hfMScheme"), HiddenField).Value = strSchemeCode Then
+                        If DirectCast(gvrow.FindControl("hfMScheme"), Label).Text = strSchemeCode Then
                             RowCount += 1
                         End If
                     End If
@@ -957,7 +957,7 @@ Partial Public Class MyProfileV2
                 Dim blnAllNotProvideService As Boolean = False
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(gvrow.FindControl("hfMScheme"), HiddenField).Value = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    If DirectCast(gvrow.FindControl("hfMScheme"), Label).Text = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), Label).Text = "Y" Then
                         blnAllNotProvideService = True
                         Exit For
                     End If
@@ -981,7 +981,7 @@ Partial Public Class MyProfileV2
                 Dim blnAllNotProvideService As Boolean = False
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(gvrow.FindControl("hfMScheme"), HiddenField).Value = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    If DirectCast(gvrow.FindControl("hfMScheme"), Label).Text = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), Label).Text = "Y" Then
                         blnAllNotProvideService = True
                         Exit For
                     End If
@@ -1006,13 +1006,13 @@ Partial Public Class MyProfileV2
 
         For Each r As GridViewRow In CType(sender, GridView).Rows
             Dim lblMScheme As Label = CType(r.FindControl("lblMScheme"), Label)
-            Dim hfMScheme As HiddenField = CType(r.FindControl("hfMScheme"), HiddenField)
-            lblMScheme.ToolTip = GetMasterSchemeDesc(udtSchemeBackOfficeModelCollection, hfMScheme.Value, strLang)
+            Dim hfMScheme As Label = CType(r.FindControl("hfMScheme"), Label)
+            lblMScheme.ToolTip = GetMasterSchemeDesc(udtSchemeBackOfficeModelCollection, hfMScheme.Text, strLang)
 
             Dim lblScheme As Label = r.FindControl("lblScheme")
 
             If Not IsNothing(lblScheme) Then
-                Dim dt As DataTable = udtSchemeBackOfficeBLL.GetSubsidizeBySubsidizeCode(CType(r.FindControl("hfScheme"), HiddenField).Value) ' CRE20-015-10 (Special Support Scheme) [Martin]
+                Dim dt As DataTable = udtSchemeBackOfficeBLL.GetSubsidizeBySubsidizeCode(CType(r.FindControl("hfScheme"), Label).Text) ' CRE20-015-10 (Special Support Scheme) [Martin]
                 CType(r.FindControl("lblScheme"), Label).ToolTip = GetSubSchemeDesc(dt, strLang)
             End If
 
