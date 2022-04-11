@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-0023-80 (4th Dose)
+-- Modified by:		Winnie SUEN
+-- Modified date:	04 Mar 2022
+-- Description:		1. Handle 4th Dose for 'Vaccine_dose_sequence'
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023-68 (Add Chinese Name)
 -- Modified by:		Winnie SUEN
 -- Modified date:	07 Dec 2021
@@ -704,6 +711,8 @@ AS
                    THEN '2nd dose'
                    WHEN '3RDDOSE'
                    THEN '3rd dose'
+                   WHEN '4THDOSE'
+                   THEN '4th dose'
                    ELSE ''
                END AS 'Vaccine_dose_sequence',
                CASE vt.Scheme_Code

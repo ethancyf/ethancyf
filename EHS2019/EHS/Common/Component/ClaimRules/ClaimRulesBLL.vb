@@ -6973,6 +6973,8 @@ Namespace Component.ClaimRules
                         strTarget = "2ndDose"
                     Case SubsidizeItemDetailsModel.DoseCode.ThirdDOSE
                         strTarget = "3rdDose"
+                    Case SubsidizeItemDetailsModel.DoseCode.DOSE_4TH
+                        strTarget = "4thDose"
                     Case SubsidizeItemDetailsModel.DoseCode.ONLYDOSE
                         strTarget = "OnlyDose"
                 End Select
@@ -6985,6 +6987,8 @@ Namespace Component.ClaimRules
                             strDependence = "2ndDose"
                         Case SubsidizeItemDetailsModel.DoseCode.ThirdDOSE
                             strDependence = "3rdDose"
+                        Case SubsidizeItemDetailsModel.DoseCode.DOSE_4TH
+                            strDependence = "4thDose"
                         Case SubsidizeItemDetailsModel.DoseCode.ONLYDOSE
                             strDependence = "OnlyDose"
                     End Select

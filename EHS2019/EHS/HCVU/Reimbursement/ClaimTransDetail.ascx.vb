@@ -1585,15 +1585,25 @@ Partial Public Class ClaimTransDetail
     ' ---------------------------------------------------------------------------------------------------------
     Private Function CheckVaccinationRecordForReprint(ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtTranDetailVaccineList As TransactionDetailVaccineModelCollection) As Boolean
         Dim blnValid As Boolean = True
+        Dim udtSchemeDetailBLL As New SchemeDetailBLL
         Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
-        Dim udtResTranDetailVaccineModel_FirstDose As TransactionDetailVaccineModel = Nothing
-        Dim udtResTranDetailVaccineModel_SecondDose As TransactionDetailVaccineModel = Nothing
-        Dim udtResTranDetailVaccineModel_ThirdDose As TransactionDetailVaccineModel = Nothing
 
-        Dim intCount_FirstDose As Integer = 0
-        Dim intCount_SecondDose As Integer = 0
-        Dim intCount_ThirdDose As Integer = 0
+        Dim SlDoseCount As New SortedList(Of Integer, Integer)
+        Dim SlTranDetailVaccine As New SortedList(Of Integer, TransactionDetailVaccineModel)
 
+        ' -------------------------------------------------------------
+        ' Initial counter and temporary list
+        ' -------------------------------------------------------------
+        Dim udtSubsidizeItemDetailList As SubsidizeItemDetailsModelCollection = udtSchemeDetailBLL.getSubsidizeItemDetails(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+        For Each udtSubsidizeItemDetail As SubsidizeItemDetailsModel In udtSubsidizeItemDetailList
+            SlDoseCount.Add(udtSubsidizeItemDetail.DisplaySeq, 0)
+            SlTranDetailVaccine.Add(udtSubsidizeItemDetail.DisplaySeq, Nothing)
+        Next
+
+        ' -------------------------------------------------------------
+        ' Collect count and vaccine record
+        ' -------------------------------------------------------------
         Dim udtVaccinationCardRecord As New VaccinationCardRecordModel()
 
         udtVaccinationRecordList = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
@@ -1603,112 +1613,75 @@ Partial Public Class ClaimTransDetail
             ' CRE20-023-59 (Immu record - 3rd Dose) [Start][Winnie SUEN]
             ' -------------------------------------------------------------
             For Each udtVaccinationRecord As TransactionDetailVaccineModel In udtVaccinationRecordList
-                
-                ' ====== 1st Dose ======
-                If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                    intCount_FirstDose = intCount_FirstDose + 1
 
-                    If udtResTranDetailVaccineModel_FirstDose Is Nothing Then
-                        udtResTranDetailVaccineModel_FirstDose = udtVaccinationRecord
-                    Else
-                        If udtResTranDetailVaccineModel_FirstDose.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
-                            udtResTranDetailVaccineModel_FirstDose = udtVaccinationRecord
+                For Each udtSubsidizeItemDetail As SubsidizeItemDetailsModel In udtSubsidizeItemDetailList
+                    If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = udtSubsidizeItemDetail.AvailableItemCode.Trim().ToUpper() Then
+                        'Store count per dose                 
+                        Dim intCt As Integer = SlDoseCount(udtSubsidizeItemDetail.DisplaySeq) + 1
+
+                        SlDoseCount.Remove(udtSubsidizeItemDetail.DisplaySeq)
+                        SlDoseCount.Add(udtSubsidizeItemDetail.DisplaySeq, intCt)
+
+                        'Store the latest vaccine record per dose
+                        If SlTranDetailVaccine(udtSubsidizeItemDetail.DisplaySeq) Is Nothing Then
+                            SlTranDetailVaccine.Remove(udtSubsidizeItemDetail.DisplaySeq)
+                            SlTranDetailVaccine.Add(udtSubsidizeItemDetail.DisplaySeq, udtVaccinationRecord)
+                        Else
+                            Dim udtTranDetailVaccine As TransactionDetailVaccineModel = SlTranDetailVaccine(udtSubsidizeItemDetail.DisplaySeq)
+
+                            If udtTranDetailVaccine.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
+                                SlTranDetailVaccine.Remove(udtSubsidizeItemDetail.DisplaySeq)
+                                SlTranDetailVaccine.Add(udtSubsidizeItemDetail.DisplaySeq, udtVaccinationRecord)
+                            End If
                         End If
                     End If
-                End If
-
-                ' ====== 2nd Dose ======
-                If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
-                    intCount_SecondDose = intCount_SecondDose + 1
-
-                    If udtResTranDetailVaccineModel_SecondDose Is Nothing Then
-                        udtResTranDetailVaccineModel_SecondDose = udtVaccinationRecord
-                    Else
-                        If udtResTranDetailVaccineModel_SecondDose.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
-                            udtResTranDetailVaccineModel_SecondDose = udtVaccinationRecord
-                        End If
-                    End If
-                End If
-
-                ' ====== 3rd Dose ======
-                If udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
-                    intCount_ThirdDose = intCount_ThirdDose + 1
-
-                    If udtResTranDetailVaccineModel_ThirdDose Is Nothing Then
-                        udtResTranDetailVaccineModel_ThirdDose = udtVaccinationRecord
-                    Else
-                        If udtResTranDetailVaccineModel_ThirdDose.ServiceReceiveDtm < udtVaccinationRecord.ServiceReceiveDtm Then
-                            udtResTranDetailVaccineModel_ThirdDose = udtVaccinationRecord
-                        End If
-                    End If
-                End If
+                Next
 
             Next
 
-            ' Validation
+            ' -------------------------------------------------------------
+            ' Validation on count and vaccine record
+            ' -------------------------------------------------------------
 
             ' ====== Duplicate Dose ======
             If blnValid Then
-                If intCount_FirstDose > 1 OrElse intCount_SecondDose > 1 OrElse intCount_ThirdDose > 1 Then
-                    blnValid = False
-                End If
+                For Each udtSubsidizeItemDetail As SubsidizeItemDetailsModel In udtSubsidizeItemDetailList
+                    If SlDoseCount.Item(udtSubsidizeItemDetail.DisplaySeq) > 1 Then
+                        blnValid = False
+                        Exit For
+                    End If
+                Next
+
             End If
 
             ' ====== Dose Sequence ======
             If blnValid Then
                 Dim dtmLatestDate As Date = Nothing
 
-                If udtResTranDetailVaccineModel_FirstDose IsNot Nothing Then
-                    If dtmLatestDate = Nothing Then
-                        dtmLatestDate = udtResTranDetailVaccineModel_FirstDose.ServiceReceiveDtm
-                    Else
-                        If dtmLatestDate <= udtResTranDetailVaccineModel_FirstDose.ServiceReceiveDtm Then
-                            dtmLatestDate = udtResTranDetailVaccineModel_FirstDose.ServiceReceiveDtm
-                        Else
-                            blnValid = False
-                        End If
-                    End If
-                End If
+                For Each udtSubsidizeItemDetail As SubsidizeItemDetailsModel In udtSubsidizeItemDetailList
+                    If SlTranDetailVaccine(udtSubsidizeItemDetail.DisplaySeq) IsNot Nothing Then
+                        Dim udtTranDetailVaccine As TransactionDetailVaccineModel = SlTranDetailVaccine(udtSubsidizeItemDetail.DisplaySeq)
 
-                If udtResTranDetailVaccineModel_SecondDose IsNot Nothing Then
-                    If dtmLatestDate = Nothing Then
-                        dtmLatestDate = udtResTranDetailVaccineModel_SecondDose.ServiceReceiveDtm
-                    Else
-                        If dtmLatestDate <= udtResTranDetailVaccineModel_SecondDose.ServiceReceiveDtm Then
-                            dtmLatestDate = udtResTranDetailVaccineModel_SecondDose.ServiceReceiveDtm
+                        If dtmLatestDate = Nothing Then
+                            dtmLatestDate = udtTranDetailVaccine.ServiceReceiveDtm
                         Else
-                            blnValid = False
+                            If dtmLatestDate <= udtTranDetailVaccine.ServiceReceiveDtm Then
+                                dtmLatestDate = udtTranDetailVaccine.ServiceReceiveDtm
+                            Else
+                                blnValid = False
+                                Exit For
+                            End If
                         End If
                     End If
-                End If
+                Next
 
-                If udtResTranDetailVaccineModel_ThirdDose IsNot Nothing Then
-                    If dtmLatestDate = Nothing Then
-                        dtmLatestDate = udtResTranDetailVaccineModel_ThirdDose.ServiceReceiveDtm
-                    Else
-                        If dtmLatestDate <= udtResTranDetailVaccineModel_ThirdDose.ServiceReceiveDtm Then
-                            dtmLatestDate = udtResTranDetailVaccineModel_ThirdDose.ServiceReceiveDtm
-                        Else
-                            blnValid = False
-                        End If
-                    End If
-                End If
             End If
 
             If blnValid Then
-
-                If udtResTranDetailVaccineModel_FirstDose IsNot Nothing Then
-                    udtVaccinationCardRecord.FirstDose = New VaccinationCardDoseRecordModel(udtResTranDetailVaccineModel_FirstDose)
-                End If
-
-                If udtResTranDetailVaccineModel_SecondDose IsNot Nothing Then
-                    udtVaccinationCardRecord.SecondDose = New VaccinationCardDoseRecordModel(udtResTranDetailVaccineModel_SecondDose)
-                End If
-
-                If udtResTranDetailVaccineModel_ThirdDose IsNot Nothing Then
-                    udtVaccinationCardRecord.ThirdDose = New VaccinationCardDoseRecordModel(udtResTranDetailVaccineModel_ThirdDose)
-                End If
-
+                ' CRE20-023-80 (COVID19 - 4th Dose) [Start][Winnie SUEN]
+                ' -------------------------------------------------------------
+                udtVaccinationCardRecord.AddDoseRecord(udtVaccinationRecordList)
+                ' CRE20-023-80 (COVID19 - 4th Dose) [End][Winnie SUEN]
             End If
 
             'Save vaccine detail for reprint vaccination card

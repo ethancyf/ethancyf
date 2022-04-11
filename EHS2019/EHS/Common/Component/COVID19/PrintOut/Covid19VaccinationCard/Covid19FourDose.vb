@@ -14,7 +14,7 @@ Imports Common.Component.COVID19.PrintOut.Common.Format.Formatter
 Imports Common.Component.RVPHomeList
 
 Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
-    Public Class Covid19DoseTable
+    Public Class Covid19FourDose
 
         ' Model in use
         Private _udtEHSTransaction As EHSTransactionModel
@@ -23,7 +23,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private _blnIsSample As Boolean
         Private _blnDischarge As Boolean
         Private udtCOVID19BLL As New COVID19.COVID19BLL
-        Private _intNumDose As String
+        Private _intNumDose As Integer
 
 
 #Region "Constructor"
@@ -37,7 +37,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                        ByRef udtVaccinationRecord As VaccinationCardDoseRecordModel, _
                        ByRef blnIsSample As Boolean, _
                        ByVal blnDischarge As Boolean,
-                       ByRef intNumDose As String)
+                       ByRef intNumDose As Integer)
             ' Invoke default constructor
             Me.New()
 
@@ -56,31 +56,29 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
         Private Sub LoadReport()
 
-           
             'Number of Dose
             Select Case _intNumDose
                 Case 1
-                    NoDoseChi.Text = "第一針"
-                    NoDose.Text = "1st Dose"
+                    NumDoseChi.Text = "第一針"
+                    NumDose.Text = "1st Dose"
                 Case 2
-                    NoDoseChi.Text = "第二針"
-                    NoDose.Text = "2nd Dose"
+                    NumDoseChi.Text = "第二針"
+                    NumDose.Text = "2nd Dose"
                 Case 3
-                    NoDoseChi.Text = "第三針"
-                    NoDose.Text = "3rd Dose"
+                    NumDoseChi.Text = "第三針"
+                    NumDose.Text = "3rd Dose"
                 Case 4
-                    NoDoseChi.Text = "第四針"
-                    NoDose.Text = "4th Dose"
+                    NumDoseChi.Text = "第四針"
+                    NumDose.Text = "4th Dose"
             End Select
 
             'Cover
             Cover.Text = String.Format(" {0}", HttpContext.GetGlobalResourceObject("Text", "NoInformation", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))) & _
-                Environment.NewLine & _
-                String.Format(" {0}", HttpContext.GetGlobalResourceObject("Text", "NoInformation", New System.Globalization.CultureInfo(CultureLanguage.English)))
+                    Environment.NewLine & _
+                    String.Format(" {0}", HttpContext.GetGlobalResourceObject("Text", "NoInformation", New System.Globalization.CultureInfo(CultureLanguage.English)))
 
-
-            'if nothing, show cover
             If (_udtVaccinationRecord IsNot Nothing) Then
+
                 'Cover
                 Cover.Visible = False
 
@@ -92,8 +90,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 VaccineName.Text = _udtVaccinationRecord.VaccineName
 
                 'Injection Date
-                InjectionDateChi.Text = FormatDisplayDateChinese(_udtVaccinationRecord.InjectionDate)
-                InjectionDate.Text = FormatDisplayDate(_udtVaccinationRecord.InjectionDate)
+                InjectionDate.Html = String.Format("<span style='font-size: 10pt; font-family:PMingLiU'>{0} / {1}</span>", FormatDisplayDateChinese(_udtVaccinationRecord.InjectionDate), FormatDisplayDate(_udtVaccinationRecord.InjectionDate))
 
                 'Center
                 'If center only have english name, show english only label.
@@ -135,11 +132,13 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 VaccineNameChi.Visible = False
                 VaccineName.Visible = False
                 LotNumber.Visible = False
-                InjectionDateChi.Visible = False
                 InjectionDate.Visible = False
                 VaccinationCenter.Visible = False
                 VaccinationCenterChi.Visible = False
                 VaccinationCenterEngOnly.Visible = False
+
+
+
             End If
         End Sub
 

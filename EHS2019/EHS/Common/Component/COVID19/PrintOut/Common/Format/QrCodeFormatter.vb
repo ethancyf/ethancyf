@@ -82,53 +82,9 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             Dim blnNonLocalRecovered As Boolean = False
 
             If udtVaccinationRecord IsNot Nothing Then
-                With udtVaccinationRecord
-                    If .FirstDose IsNot Nothing AndAlso .SecondDose Is Nothing AndAlso .ThirdDose Is Nothing Then
-                        '1st Dose only
-                        udtLastDose = Nothing
-                        udtSecondLastDose = .FirstDose
-                        udtThirdLastDose = Nothing
-
-                    ElseIf .FirstDose Is Nothing AndAlso .SecondDose IsNot Nothing AndAlso .ThirdDose Is Nothing Then
-                        '2nd Dose only
-                        udtLastDose = .SecondDose
-                        udtSecondLastDose = Nothing
-                        udtThirdLastDose = Nothing
-
-                    ElseIf .FirstDose Is Nothing AndAlso .SecondDose Is Nothing AndAlso .ThirdDose IsNot Nothing Then
-                        '3rd Dose only
-                        udtLastDose = .ThirdDose
-                        udtSecondLastDose = Nothing
-                        udtThirdLastDose = Nothing
-
-                    ElseIf .FirstDose IsNot Nothing AndAlso .SecondDose IsNot Nothing AndAlso .ThirdDose Is Nothing Then
-                        '1+2 Dose
-                        udtLastDose = .SecondDose
-                        udtSecondLastDose = .FirstDose
-                        udtThirdLastDose = Nothing
-
-                    ElseIf .FirstDose Is Nothing AndAlso .SecondDose IsNot Nothing AndAlso .ThirdDose IsNot Nothing Then
-                        '2+3 Dose
-                        udtLastDose = .ThirdDose
-                        udtSecondLastDose = .SecondDose
-                        udtThirdLastDose = Nothing
-
-                    ElseIf .FirstDose IsNot Nothing AndAlso .SecondDose Is Nothing AndAlso .ThirdDose IsNot Nothing Then
-                        '1+3 Dose
-                        udtLastDose = .ThirdDose
-                        udtSecondLastDose = Nothing
-                        udtThirdLastDose = .FirstDose
-
-                    ElseIf .FirstDose IsNot Nothing AndAlso .SecondDose IsNot Nothing AndAlso .ThirdDose IsNot Nothing Then
-                        '1+2+3 Dose
-                        udtLastDose = .ThirdDose
-                        udtSecondLastDose = .SecondDose
-                        udtThirdLastDose = .FirstDose
-
-                    End If
-
-                End With
-
+                udtLastDose = udtVaccinationRecord.getLastDoseRecordForQRCode(VaccinationCardRecordModel.LastDoseSeq.FirstLastDose)
+                udtSecondLastDose = udtVaccinationRecord.getLastDoseRecordForQRCode(VaccinationCardRecordModel.LastDoseSeq.SecondLastDose)
+                udtThirdLastDose = udtVaccinationRecord.getLastDoseRecordForQRCode(VaccinationCardRecordModel.LastDoseSeq.ThirdLastDose)
             End If
 
             '===== Last Dose =====

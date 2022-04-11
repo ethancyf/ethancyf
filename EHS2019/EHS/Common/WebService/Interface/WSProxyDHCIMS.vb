@@ -872,11 +872,10 @@ Namespace WebService.Interface
                 Case DocTypeModel.DocTypeCode.CCIC
                     Return "CCIC" ' Revise Later
                 Case DocTypeModel.DocTypeCode.ROP140
-                    Return "ROP140" ' Revise Later
+                    'Return "ROP140" ' Revise Later
+                    Return "ID"
                 Case DocTypeModel.DocTypeCode.PASS
                     Return "PASS" ' Revise Later
-                    ' CRE20-0023-53 (Immu record) [Start][Winnie SUEN]
-                    ' --------------------------------------------------------------------------------------
                 Case DocTypeModel.DocTypeCode.MEP
                     Return "MEP"
                 Case DocTypeModel.DocTypeCode.TWMTP
@@ -897,7 +896,6 @@ Namespace WebService.Interface
                     Return "ET"
                 Case DocTypeModel.DocTypeCode.RFNo8
                     Return "RFNo8"
-                    ' CRE20-0023-53 (Immu record) [End][Winnie SUEN]
                 Case Else
                     Throw New Exception(String.Format("Generate CIMS request object failed: Unhandle Document Type({0}).", strDocCode))
             End Select

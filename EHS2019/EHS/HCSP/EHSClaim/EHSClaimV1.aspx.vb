@@ -252,9 +252,9 @@ Partial Public Class EHSClaimV1
                         Dim guidText As String = Guid.NewGuid().ToString()
 
                         strJS += "setTimeout('window.scrollTo(0,210)', 0);"
-                        strJS += "RemoveUsedBlockScript('" & guidText & "');"
+                        'strJS += "RemoveUsedBlockScript('" & guidText & "');"
 
-                        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ScrollPage", strJS, True)
+                        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ScrollPageToMessageBlock", strJS, True)
                     End If
 
                 Case ActiveViewIndex.Step2b
@@ -14556,7 +14556,7 @@ Partial Public Class EHSClaimV1
 
                 ' CRE20-023-60 (Immu record - 3rd Dose) [Start][Winnie SUEN]
                 ' -------------------------------------------------------------
-                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                If ClaimMode = Common.Component.ClaimMode.COVID19 AndAlso udtSchemeClaim.SchemeCode.Trim() <> SchemeClaimModel.COVID19MEC Then
                     'Clear old vaccination record for vaccination card
                     _udtSessionHandler.ClaimCOVID19VaccinationCardRemoveFromSession(FunctionCode)
 
@@ -14567,61 +14567,18 @@ Partial Public Class EHSClaimV1
                     'Assign vaccination record for vaccination card
                     Dim udtVaccinationCardRecord As New VaccinationCardRecordModel()
 
-                    Dim udtVaccinationRecord_FirstDose As TransactionDetailVaccineModel = Nothing
-                    Dim udtVaccinationRecord_SecondDose As TransactionDetailVaccineModel = Nothing
-                    Dim udtVaccinationRecord_ThirdDose As TransactionDetailVaccineModel = Nothing
+                    ' CRE20-023-80 (COVID19 - 4th Dose) [Start][Winnie SUEN]
+                    ' -------------------------------------------------------------
+                    'Current Tx
+                    If udtEHSTransaction IsNot Nothing Then
+                        udtVaccinationCardRecord.AddDoseRecord(udtEHSTransaction)
+                    End If
 
-                    Select Case udtEHSTransaction.TransactionDetails(0).AvailableItemCode.Trim().ToUpper()
-                        Case SubsidizeItemDetailsModel.DoseCode.FirstDOSE
-
-                            udtVaccinationCardRecord.FirstDose = New VaccinationCardDoseRecordModel(udtEHSTransaction)
-
-                            If udtVaccinationRecordList.Count > 0 Then
-                                udtVaccinationRecord_SecondDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.SecondDOSE)
-                                If udtVaccinationRecord_SecondDose IsNot Nothing Then
-                                    udtVaccinationCardRecord.SecondDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_SecondDose)
-                                End If
-
-                                udtVaccinationRecord_ThirdDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.ThirdDOSE)
-                                If udtVaccinationRecord_ThirdDose IsNot Nothing Then
-                                    udtVaccinationCardRecord.ThirdDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_ThirdDose)
-                                End If
-
-                            End If
-
-                        Case SubsidizeItemDetailsModel.DoseCode.SecondDOSE
-
-                            udtVaccinationCardRecord.SecondDose = New VaccinationCardDoseRecordModel(udtEHSTransaction)
-
-                            If udtVaccinationRecordList.Count > 0 Then
-                                udtVaccinationRecord_FirstDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.FirstDOSE)
-                                If udtVaccinationRecord_FirstDose IsNot Nothing Then
-                                    udtVaccinationCardRecord.FirstDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_FirstDose)
-                                End If
-
-                                udtVaccinationRecord_ThirdDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.ThirdDOSE)
-                                If udtVaccinationRecord_ThirdDose IsNot Nothing Then
-                                    udtVaccinationCardRecord.ThirdDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_ThirdDose)
-                                End If
-                            End If
-
-                        Case SubsidizeItemDetailsModel.DoseCode.ThirdDOSE
-
-                            udtVaccinationCardRecord.ThirdDose = New VaccinationCardDoseRecordModel(udtEHSTransaction)
-
-                            If udtVaccinationRecordList.Count > 0 Then
-                                udtVaccinationRecord_FirstDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.FirstDOSE)
-                                If udtVaccinationRecord_FirstDose IsNot Nothing Then
-                                    udtVaccinationCardRecord.FirstDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_FirstDose)
-                                End If
-
-                                udtVaccinationRecord_SecondDose = udtVaccinationRecordList.FilterFindNearestRecordByDose(SubsidizeItemDetailsModel.DoseCode.SecondDOSE)
-                                If udtVaccinationRecord_SecondDose IsNot Nothing Then
-                                    udtVaccinationCardRecord.SecondDose = New VaccinationCardDoseRecordModel(udtVaccinationRecord_SecondDose)
-                                End If
-                            End If
-
-                    End Select
+                    'Tx History
+                    If udtVaccinationRecordList IsNot Nothing Then
+                        udtVaccinationCardRecord.AddDoseRecord(udtVaccinationRecordList)
+                    End If
+                    ' CRE20-023-80 (COVID19 - 4th Dose) [End][Winnie SUEN]
 
                     ' Save to session
                     _udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationCardRecord, FunctionCode)

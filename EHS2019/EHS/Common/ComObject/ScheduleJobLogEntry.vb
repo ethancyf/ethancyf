@@ -63,7 +63,7 @@ Namespace ComObject
         End Sub
 
         Public Sub WriteLog(ByVal strLogID As String, ByVal strDesc As String, ByVal dtmStart As Nullable(Of DateTime), ByVal dtmEnd As Nullable(Of DateTime))
-            WriteLog(strLogID, strDesc, Nothing, Nothing, Nothing, Nothing)
+            WriteLog(strLogID, strDesc, dtmStart, dtmEnd, Nothing, Nothing)
         End Sub
 
         Public Function WriteStartLog(ByVal strLogID As String, ByVal strDesc As String) As AuditLogStartKey

@@ -56,29 +56,33 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             FirstDoseCover.Visible = True
             SecondDoseCover.Visible = True
 
+
+            Dim udtFirstDoseRecord As VaccinationCardDoseRecordModel = _udtVaccinationRecord.getDoseRecordByDose(1)
+            Dim udtSecondDoseRecord As VaccinationCardDoseRecordModel = _udtVaccinationRecord.getDoseRecordByDose(2)
+
             '===== First Dose =====
-            If (_udtVaccinationRecord.FirstDose IsNot Nothing) Then
+            If (udtFirstDoseRecord IsNot Nothing) Then
 
                 FirstDoseCover.Visible = False
-                FirstDoseVaccineNameChi.Text = _udtVaccinationRecord.FirstDose.VaccineNameChi
-                FirstDoseVaccineName.Text = _udtVaccinationRecord.FirstDose.VaccineName
+                FirstDoseVaccineNameChi.Text = udtFirstDoseRecord.VaccineNameChi
+                FirstDoseVaccineName.Text = udtFirstDoseRecord.VaccineName
 
                 ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
-                FirstDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtVaccinationRecord.FirstDose.InjectionDate)
-                FirstDoseInjectionDate.Text = FormatDisplayDate(_udtVaccinationRecord.FirstDose.InjectionDate)
+                FirstDoseInjectionDateChi.Text = FormatDisplayDateChinese(udtFirstDoseRecord.InjectionDate)
+                FirstDoseInjectionDate.Text = FormatDisplayDate(udtFirstDoseRecord.InjectionDate)
                 ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
             End If
 
             '===== Second Dose =====
-            If (_udtVaccinationRecord.SecondDose IsNot Nothing) Then
+            If (udtSecondDoseRecord IsNot Nothing) Then
 
                 SecondDoseCover.Visible = False
-                SecondDoseVaccineNameChi.Text = _udtVaccinationRecord.SecondDose.VaccineNameChi
-                SecondDoseVaccineName.Text = _udtVaccinationRecord.SecondDose.VaccineName
+                SecondDoseVaccineNameChi.Text = udtSecondDoseRecord.VaccineNameChi
+                SecondDoseVaccineName.Text = udtSecondDoseRecord.VaccineName
 
                 ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
-                SecondDoseInjectionDateChi.Text = FormatDisplayDateChinese(_udtVaccinationRecord.SecondDose.InjectionDate)
-                SecondDoseInjectionDate.Text = FormatDisplayDate(_udtVaccinationRecord.SecondDose.InjectionDate)
+                SecondDoseInjectionDateChi.Text = FormatDisplayDateChinese(udtSecondDoseRecord.InjectionDate)
+                SecondDoseInjectionDate.Text = FormatDisplayDate(udtSecondDoseRecord.InjectionDate)
                 ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
 
             End If

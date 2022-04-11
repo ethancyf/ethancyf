@@ -211,6 +211,19 @@
     <Compile Include="Component\CMSHealthCheck\CMSHealthCheckBLL.vb" />
     <Compile Include="Component\COVID19\COVID19BLL.vb" />
     <Compile Include="Component\COVID19\DischargeResultModel.vb" />
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19Doses.designer.vb">
+      <DependentUpon>Covid19Doses.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19Doses.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FourDose.designer.vb">
+      <DependentUpon>Covid19FourDose.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FourDose.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\VaccinationCardDoseRecordModelCollection.vb" />
     <Compile Include="Component\COVID19\OutreachListModel.vb" />
     <Compile Include="Component\COVID19\PrintOut\ExemptionCert\ExemptionCert.designer.vb">
       <DependentUpon>ExemptionCert.vb</DependentUpon>
@@ -218,6 +231,7 @@
     <Compile Include="Component\COVID19\PrintOut\ExemptionCert\ExemptionCert.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Component\COVID19\VaccinationCardDoseRecordModel.vb" />
     <Compile Include="Component\COVID19\VaccinationCardRecordModel.vb" />
     <Compile Include="Component\COVID19\QRCodeModel.vb" />
     <Compile Include="Component\COVID19\PrintOut\Common\Format\Formatter.vb" />
@@ -560,11 +574,17 @@
     <Compile Include="WebService\Proxy\TokenReplacementWS.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19Doses.resx">
+      <DependentUpon>Covid19Doses.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19DoseTable.resx">
       <DependentUpon>Covid19DoseTable.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FooterDoseTableWithNoSignature.resx">
       <DependentUpon>Covid19FooterDoseTableWithNoSignature.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FourDose.resx">
+      <DependentUpon>Covid19FourDose.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19PatientName.resx">
       <DependentUpon>Covid19PatientName.vb</DependentUpon>

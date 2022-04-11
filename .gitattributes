@@ -343,12 +343,18 @@ EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19Dose
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19DoseTable_A5.Designer.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19DoseTable_A5.resx -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19DoseTable_A5.vb -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19Doses.designer.vb -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19Doses.resx -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19Doses.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FooterDoseTableWithNoSignature.Designer.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FooterDoseTableWithNoSignature.resx -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FooterDoseTableWithNoSignature.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FooterDoseTableWithSignature.Designer.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FooterDoseTableWithSignature.resx -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FooterDoseTableWithSignature.vb -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FourDose.designer.vb -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FourDose.resx -text
+EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19FourDose.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19PatientName.Designer.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19PatientName.resx -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Covid19VaccinationCard/Covid19PatientName.vb -text
@@ -368,6 +374,8 @@ EHS2019/EHS/Common/Component/COVID19/PrintOut/ExemptionCert/ExemptionCert.design
 EHS2019/EHS/Common/Component/COVID19/PrintOut/ExemptionCert/ExemptionCert.resx -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/ExemptionCert/ExemptionCert.vb -text
 EHS2019/EHS/Common/Component/COVID19/QRCodeModel.vb -text
+EHS2019/EHS/Common/Component/COVID19/VaccinationCardDoseRecordModel.vb -text
+EHS2019/EHS/Common/Component/COVID19/VaccinationCardDoseRecordModelCollection.vb -text
 EHS2019/EHS/Common/Component/COVID19/VaccinationCardRecordModel.vb -text
 EHS2019/EHS/Common/Component/ClaimCategory/ClaimCategoryBLL.vb -text
 EHS2019/EHS/Common/Component/ClaimCategory/ClaimCategoryEligibilityModel.vb -text
