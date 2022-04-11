@@ -953,16 +953,27 @@ Namespace BLL
 
             If enumClaimMode = ClaimMode.COVID19 Then
                 'Claim COVID19
-                If Not udtEHSAccount Is Nothing AndAlso (udtEHSAccount.RecordStatus = "A" OrElse (udtEHSAccount.RecordStatus = "S" AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True)) Then
-                    'Nothing to do
+                If Not udtEHSAccount Is Nothing AndAlso _
+                    (udtEHSAccount.RecordStatus = "A" OrElse (udtEHSAccount.RecordStatus = "S" AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True)) AndAlso _
+                    (udtEHSAccount.SearchDocCode = strDocCode) Then
+                    ' Use Validated Account directly
                 Else
-                    udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, intAge, dtmDOR, strSchemeCode)
+                    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+                    '--------------------------------------------------------------------------
+                    'udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, intAge, dtmDOR, strSchemeCode)
+
+                    ' Get latest temp account with COVID19 tx
+                    Me.SearchTemporaryAccountWithCOVID19Claim(strDocCode, strIdentityNum, Nothing, Nothing, strSchemeCode, udtEHSAccount,
+                                                              udtSearchAccountStatus, intAge, dtmDOR, Nothing, strSearchDocCode, udtEHSPersonalInfo)
+
+                    udtSearchAccountStatus.NotMatchAccountExist = udtSearchAccountStatus.OnlyInvalidAccountFound OrElse udtSearchAccountStatus.TempAccountNotMatchDOBFound
+                    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
                 End If
 
             Else
                 'Normal claim
                 If udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
-                    SearchTemporaryAccount(strDocCode, strIdentityNum, Nothing, Nothing, udtEHSAccount, _
+                    Me.SearchTemporaryAccount(strDocCode, strIdentityNum, Nothing, Nothing, udtEHSAccount, _
                         udtSearchAccountStatus, intAge, dtmDOR, Nothing, strSearchDocCode, udtEHSPersonalInfo)
                 End If
 
@@ -1243,10 +1254,22 @@ Namespace BLL
             ' -------------------------------------------------------------------------------
             If enumClaimMode = ClaimMode.COVID19 Then
                 'Claim COVID19
-                If Not udtEHSAccount Is Nothing AndAlso (udtEHSAccount.RecordStatus = "A" OrElse (udtEHSAccount.RecordStatus = "S" AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True)) Then
-                    'Nothing to do
+
+                If Not udtEHSAccount Is Nothing AndAlso _
+                    (udtEHSAccount.RecordStatus = "A" OrElse (udtEHSAccount.RecordStatus = "S" AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True)) AndAlso _
+                    (udtEHSAccount.SearchDocCode = strDocCode) Then
+                    ' Use Validated Account directly
                 Else
-                    udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, strExactDOB, dtmDOB, strSchemeCode, strAdoptionPrefixNum, udtEHSPersonalInfo)
+                    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+                    '--------------------------------------------------------------------------
+                    'udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, strExactDOB, dtmDOB, strSchemeCode, strAdoptionPrefixNum, udtEHSPersonalInfo)
+                    ' Get latest temp account with COVID19 tx
+                    Me.SearchTemporaryAccountWithCOVID19Claim(strDocCode, strIdentityNum, dtmDOB, strExactDOB, strSchemeCode, udtEHSAccount, _
+                                                              udtSearchAccountStatus, Nothing, Nothing, strAdoptionPrefixNum, strSearchDocCode, _
+                                                              udtEHSPersonalInfo)
+
+                    udtSearchAccountStatus.NotMatchAccountExist = udtSearchAccountStatus.OnlyInvalidAccountFound OrElse udtSearchAccountStatus.TempAccountNotMatchDOBFound
+                    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
                 End If
 
             Else
@@ -1565,6 +1588,8 @@ Namespace BLL
                     If Not chkEHSAccountInputDOBMatch(udtCurEHSAccount.EHSPersonalInformationList(0), intAge.Value, dtmDOR.Value) Then
                         ' Any Temp Account Not Match DOB Found
                         udtSearchAccountStatus.TempAccountNotMatchDOBFound = True
+
+                        Continue For
                     End If
 
                     If Not ChkEHSAccountInputDetailMatch(udtEHSPersonalInfo, udtCurEHSAccount.EHSPersonalInformationList(0)) Then
@@ -2210,10 +2235,20 @@ Namespace BLL
             ' INT13-0021 - Fix use HKBC on smart IC claim incorrectly [Start][Koala]
             ' -------------------------------------------------------------------------------------
             If (udtEHSAccount Is Nothing Or enumSmartIDReadStatus = SmartIDHandler.SmartIDResultStatus.DocTypeNotExist) AndAlso strMsgCode = String.Empty Then
-                'If udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
                 ' INT13-0021 - Fix use HKBC on smart IC claim incorrectly [End][Koala]
-                Me.SearchTemporaryAccountSmartID(strDocCode, strIdentityNum, dtmDOB, strExactDOB, udtEHSAccount, udtEHSAccountSmartID, _
-                     enumSmartIDReadStatus, blnTempAccountNotMatchDOBFound, blnOnlyInValidAccountFound, strSearchDocCode)
+
+                ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+                '--------------------------------------------------------------------------
+                If enumClaimMode = ClaimMode.COVID19 Then
+                    Me.SearchTemporaryAccountSmartIDWithCOVID19Claim(strDocCode, strIdentityNum, dtmDOB, strExactDOB, strSchemeCode, _
+                                                                     udtEHSAccount, udtEHSAccountSmartID, enumSmartIDReadStatus, _
+                                                                     blnTempAccountNotMatchDOBFound, blnOnlyInValidAccountFound, strSearchDocCode)
+                Else
+                    'Normal claim
+                    Me.SearchTemporaryAccountSmartID(strDocCode, strIdentityNum, dtmDOB, strExactDOB, udtEHSAccount, udtEHSAccountSmartID, _
+                         enumSmartIDReadStatus, blnTempAccountNotMatchDOBFound, blnOnlyInValidAccountFound, strSearchDocCode)
+                End If
+                ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
             End If
 
             blnNoMatchRecordFound = blnOnlyInValidAccountFound Or blnTempAccountNotMatchDOBFound
@@ -2381,6 +2416,202 @@ Namespace BLL
             End If
 
         End Sub
+
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+        '--------------------------------------------------------------------------
+        ''' <summary>
+        ''' Only temp account with COVID19 transaction will be returned
+        ''' </summary>
+        ''' <param name="strDocCode"></param>
+        ''' <param name="strIdentityNum"></param>
+        ''' <param name="dtmDOB"></param>
+        ''' <param name="strExactDOB"></param>
+        ''' <param name="strSchemeCode"></param>
+        ''' <param name="udtEHSAccount"></param>
+        ''' <param name="udtSearchAccountStatus"></param>
+        ''' <param name="intAge"></param>
+        ''' <param name="dtmDOR"></param>
+        ''' <param name="strAdoptionPrefixNum"></param>
+        ''' <param name="strSearchDocCode"></param>
+        ''' <param name="udtEHSPersonalInfo"></param>
+        ''' <remarks></remarks>
+        Private Sub SearchTemporaryAccountWithCOVID19Claim(ByVal strDocCode As String, ByVal strIdentityNum As String, ByVal dtmDOB As Date, ByVal strExactDOB As String, ByVal strSchemeCode As String, _
+                                                           ByRef udtEHSAccount As EHSAccountModel, ByRef udtSearchAccountStatus As SearchAccountStatus, _
+                                                           ByVal intAge As Nullable(Of Integer), ByVal dtmDOR As Nullable(Of Date), ByVal strAdoptionPrefixNum As String, ByRef strSearchDocCode As String, _
+                                                           ByVal udtEHSPersonalInfo As EHSPersonalInformationModel)
+
+            ' -----------------------------------------------------------------------------------
+            ' Search Temporary Account with COVID19 transaction (C19 & MEC)
+            ' -----------------------------------------------------------------------------------
+            Dim udtEHSAccountModelList As New EHSAccountModelCollection
+            Dim udtC19EHSAccountModelList As EHSAccountModelCollection = Me._udtEHSAccountBLL.LoadTempEHSAccountByIdentityNumSubsidize(strIdentityNum, strDocCode, SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+            Dim udtMECEHSAccountModelList As EHSAccountModelCollection = Me._udtEHSAccountBLL.LoadTempEHSAccountByIdentityNumSubsidize(strIdentityNum, strDocCode, SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC)
+
+            udtEHSAccountModelList.AddRange(udtC19EHSAccountModelList)
+            udtEHSAccountModelList.AddRange(udtMECEHSAccountModelList)
+
+            Dim udtTempEHSAccount As EHSAccountModel = Nothing
+            Dim blnInvalidTempAccountFound As Boolean = False
+            strSearchDocCode = strDocCode.Trim()
+
+            ' -----------------------------------------------------------------------------------
+            ' Temporary Account
+            ' -----------------------------------------------------------------------------------
+            For Each udtCurEHSAccount As EHSAccountModel In udtEHSAccountModelList
+                ' --- Checking 1: For Claim or For Validate only ----
+                If udtCurEHSAccount.AccountPurpose <> AccountPurposeClass.ForClaim AndAlso _
+                        udtCurEHSAccount.AccountPurpose <> AccountPurposeClass.ForValidate Then
+                    Continue For
+                End If
+
+                ' --- Checking 2: Pending For Confirmation Or Pending For Verify ----
+                If udtCurEHSAccount.RecordStatus <> TempAccountRecordStatusClass.PendingConfirmation AndAlso _
+                        udtCurEHSAccount.RecordStatus <> TempAccountRecordStatusClass.PendingVerify Then
+                    If udtCurEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.InValid Then
+                        ' Any Invalid Record Found!
+                        blnInvalidTempAccountFound = True
+                    End If
+
+                    Continue For
+                End If
+
+                ' ---- Checking 3: Not X Account ----
+                If Not IsNothing(udtCurEHSAccount.OriginalAccID) AndAlso udtCurEHSAccount.OriginalAccID.Trim <> String.Empty Then
+                    ' X Account Found: Invalid Record Found
+                    blnInvalidTempAccountFound = True
+
+                    Continue For
+                End If
+
+                ' ---- Checking 4: With COVID19 Transaction ----
+                If IsNothing(udtCurEHSAccount.TransactionID) OrElse udtCurEHSAccount.TransactionID.Trim = String.Empty Then
+                    ' No COVID19 Tx Found: Invalid Record Found
+                    blnInvalidTempAccountFound = True
+
+                    Continue For
+                End If
+
+                ' ---- Checking 5: Match DOB ----
+                If intAge.HasValue AndAlso dtmDOR.HasValue Then
+                    ' EC Case Report Age on Date of Registration
+                    If Not chkEHSAccountInputDOBMatch(udtCurEHSAccount.EHSPersonalInformationList(0), intAge.Value, dtmDOR.Value) Then
+                        ' Any Temp Account Not Match DOB Found
+                        udtSearchAccountStatus.TempAccountNotMatchDOBFound = True
+
+                        Continue For
+                    End If
+
+                    If Not ChkEHSAccountInputDetailMatch(udtEHSPersonalInfo, udtCurEHSAccount.EHSPersonalInformationList(0)) Then
+                        udtSearchAccountStatus.TempAccountInputDetailDiffFound = True
+
+                        Continue For
+                    End If
+
+                Else
+                    If Not chkEHSAccountInputDOBMatch(udtCurEHSAccount.EHSPersonalInformationList(0), dtmDOB, strExactDOB) Then
+                        ' Any Temp Account Not Match DOB Found
+                        udtSearchAccountStatus.TempAccountNotMatchDOBFound = True
+
+                        Continue For
+                    End If
+
+                    If Not ChkEHSAccountInputDetailMatch(udtEHSPersonalInfo, udtCurEHSAccount.EHSPersonalInformationList(0)) Then
+                        udtSearchAccountStatus.TempAccountInputDetailDiffFound = True
+
+                        Continue For
+                    End If
+
+                End If
+
+                ' ---- Checking 6: Check Latest Account ----
+                Dim blnUseCurrentAccount As Boolean = False
+
+                If udtTempEHSAccount Is Nothing Then
+                    udtTempEHSAccount = udtCurEHSAccount
+                    Continue For
+                End If
+
+                'Priority: Personal Info Latest Update Dtm
+                If udtTempEHSAccount.EHSPersonalInformationList(0).UpdateDtm < udtCurEHSAccount.EHSPersonalInformationList(0).UpdateDtm Then
+                    blnUseCurrentAccount = True
+                End If
+
+                '==================================================================================================================================================================
+
+                If blnUseCurrentAccount Then
+                    udtTempEHSAccount = udtCurEHSAccount
+                End If
+
+            Next
+
+            ' -----------------------------------------------------------------------------------
+            ' Special Account    (Skipped)
+            ' -----------------------------------------------------------------------------------
+
+            ' -----------------------------------------------------------------------------------
+            ' Load Temporary Account with HKIC / BirthCert if not Found (HKIC <==> BirthCert)    (Skipped)
+            ' -----------------------------------------------------------------------------------
+
+            If Not udtTempEHSAccount Is Nothing Then
+                udtEHSAccount = udtTempEHSAccount
+            End If
+
+            If udtTempEHSAccount Is Nothing Then
+                ' Not Match Record Found & Invalid Record Found!
+                If blnInvalidTempAccountFound Then
+                    udtSearchAccountStatus.OnlyInvalidAccountFound = True
+                End If
+            End If
+
+        End Sub
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+
+
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+        '--------------------------------------------------------------------------
+        Private Sub SearchTemporaryAccountSmartIDWithCOVID19Claim(ByVal strDocCode As String, ByVal strIdentityNum As String, ByVal dtmDOB As Date, ByVal strExactDOB As String, ByVal strSchemeCode As String, _
+                                                                  ByRef udtEHSAccount As EHSAccountModel, ByVal udtEHSAccountSmartID As EHSAccountModel, ByRef enumSmartIDReadStatus As SmartIDHandler.SmartIDResultStatus, _
+                                                                  ByRef blnTempAccountNotMatchDOBFound As Boolean, ByRef blnOnlyInValidAccountFound As Boolean, _
+                                                                  ByRef strSearchDocCode As String)
+
+            Dim udtEHSAccountModelList As New EHSAccountModelCollection
+            Dim blnInvalidTempAccountFound As Boolean = False
+            Dim udtResultEHSAccount As EHSAccountModel = Nothing
+            
+            strSearchDocCode = strDocCode.Trim()
+            ' -----------------------------------------------------------------------------------
+            ' Search Temporary Account with COVID19 transaction (C19 & MEC)
+            ' -----------------------------------------------------------------------------------
+            Dim udtC19EHSAccountModelList As EHSAccountModelCollection = Me._udtEHSAccountBLL.LoadTempEHSAccountByIdentityNumSubsidize(strIdentityNum, strDocCode, SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+            Dim udtMECEHSAccountModelList As EHSAccountModelCollection = Me._udtEHSAccountBLL.LoadTempEHSAccountByIdentityNumSubsidize(strIdentityNum, strDocCode, SubsidizeGroupClaimModel.SubsidizeItemCodeClass.MEC)
+
+            udtEHSAccountModelList.AddRange(udtC19EHSAccountModelList)
+            udtEHSAccountModelList.AddRange(udtMECEHSAccountModelList)
+
+            Me.FilterSmartIDEHSAccountForCOVID19(udtEHSAccountModelList, udtEHSAccountSmartID, dtmDOB, strExactDOB, enumSmartIDReadStatus, blnInvalidTempAccountFound, blnTempAccountNotMatchDOBFound, udtResultEHSAccount)
+
+            If Not udtResultEHSAccount Is Nothing Then
+                udtEHSAccount = udtResultEHSAccount
+            End If
+
+            ' -----------------------------------------------------------------------------------
+            ' Special Account   (Skipped)
+            ' -----------------------------------------------------------------------------------
+
+            ' ----------------------------------------------------------------------------------------------------------------------
+            ' Load Temporary Account with HKIC / BirthCert if not Found (HKIC <==> BirthCert)   (Skipped)
+            ' ----------------------------------------------------------------------------------------------------------------------
+
+            If udtResultEHSAccount Is Nothing Then
+                ' Not Match Record Found & Invalid Record Found!
+                If blnInvalidTempAccountFound Then
+                    blnOnlyInValidAccountFound = True
+                End If
+            End If
+
+        End Sub
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+
 
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
@@ -2663,8 +2894,147 @@ Namespace BLL
                 Return
             End If
         End Sub
-        '==================================================================================================================================================================
 
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+        '--------------------------------------------------------------------------
+        Private Sub FilterSmartIDEHSAccountForCOVID19(ByVal udtEHSAccountModelList As EHSAccountModelCollection, ByVal udtEHSAccountSmartID As EHSAccountModel, ByVal dtmDOB As Date, ByVal strExactDOB As String, _
+                                                      ByRef enumSmartIDReadStatus As SmartIDHandler.SmartIDResultStatus, ByRef blnInvalidTempAccountFound As Boolean, ByRef blnTempAccountNotMatchDOBFound As Boolean, ByRef udtTempEHSAccount As EHSAccountModel)
+
+            Dim enumTempSmartIDReadStatus As SmartIDHandler.SmartIDResultStatus
+            'Dim blnCheckedBySmartID As Boolean = False
+            Dim blnCheckEHSAccount As Boolean = True
+
+            If Not udtEHSAccountModelList Is Nothing AndAlso udtEHSAccountModelList.Count > 0 Then
+
+
+                For Each udtCurEHSAccount As EHSAccountModel In udtEHSAccountModelList
+
+                    ' Temporary Account
+
+                    ' --- Checking 1: For Claim or For Validate only ----
+                    If (udtCurEHSAccount.AccountPurpose <> EHSAccountModel.AccountPurposeClass.ForClaim AndAlso _
+                        udtCurEHSAccount.AccountPurpose <> EHSAccountModel.AccountPurposeClass.ForValidate) Then
+                        Continue For
+                    End If
+
+                    ' --- Checking 2: Pending For Confirmation Or Pending For Verify ----
+                    If (udtCurEHSAccount.RecordStatus <> EHSAccountModel.TempAccountRecordStatusClass.PendingConfirmation AndAlso _
+                        udtCurEHSAccount.RecordStatus <> EHSAccountModel.TempAccountRecordStatusClass.PendingVerify) Then
+                        If udtCurEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.InValid Then
+                            ' Any Invalid Record Found!
+                            blnInvalidTempAccountFound = True
+                        End If
+
+                        Continue For
+                    End If
+
+                    ' ---- Checking 3: Not X Account ----
+                    If Not IsNothing(udtCurEHSAccount.OriginalAccID) AndAlso udtCurEHSAccount.OriginalAccID.Trim <> String.Empty Then
+                        ' X Account Found: Invalid Record Found
+                        blnInvalidTempAccountFound = True
+
+                        Continue For
+                    End If
+
+                    ' ---- Checking 4: With COVID19 Transaction ----
+                    If IsNothing(udtCurEHSAccount.TransactionID) OrElse udtCurEHSAccount.TransactionID.Trim = String.Empty Then
+                        ' No COVID19 Tx Found: Invalid Record Found
+                        blnInvalidTempAccountFound = True
+
+                        Continue For
+                    End If
+
+                    ' ---- Checking 5: Match Smart ID Status ----
+                    enumTempSmartIDReadStatus = BLL.SmartIDHandler.CheckSmartIDCardStatus(udtEHSAccountSmartID, udtCurEHSAccount)
+
+                    'If Not blnCheckedBySmartID Then
+                    '    If Not IsNothing(udtCurEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC)) Then
+                    '        blnCheckedBySmartID = udtCurEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC).CreateBySmartID
+                    '    Else
+                    '        blnCheckEHSAccount = True
+                    '    End If
+                    'End If
+
+                    Select Case enumTempSmartIDReadStatus
+
+                        Case BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB_WithGender, _
+                            BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB_WithoutGender_DiffName
+                            ' Account created by Smart IC + Same DOI + Diff Info => Invalid Card (Block Case)
+                            enumSmartIDReadStatus = enumTempSmartIDReadStatus
+                            'blnCheckEHSAccount = False
+
+                            Return
+
+                            'Case BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB_WithoutGender_SameName
+                            '    'Account is created by smartID, TempEHSAccount can be override
+                            '    blnCheckEHSAccount = True
+
+                            'Case BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_DiffDOIDOB
+                            '    'Account is created by smartID, TempEHSAccount can be override
+                            '    blnCheckEHSAccount = True
+
+                            'Case BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_NotCreateBySmartID
+                            '    'If one of the EHS Account is created by smartID, system will not check again
+                            '    If Not blnCheckedBySmartID Then
+                            '        blnCheckEHSAccount = True
+                            '    Else
+                            '        blnCheckEHSAccount = False
+                            '    End If
+
+                            'Case BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_SameDetail
+
+                            '    If udtCurEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC).CreateBySmartID Then
+                            '        blnCheckEHSAccount = True
+                            '    Else
+                            '        If Not blnCheckedBySmartID Then
+                            '            blnCheckEHSAccount = True
+                            '        Else
+                            '            blnCheckEHSAccount = False
+                            '        End If
+
+                            '    End If
+                    End Select
+
+                    ' ---- Checking 6: Match DOB ----
+                    If blnCheckEHSAccount Then
+                        If Not Me.chkEHSAccountInputDOBMatch(udtCurEHSAccount.EHSPersonalInformationList(0), dtmDOB, strExactDOB) Then
+                            ' Any Temp Account Not Match DOB Found
+                            blnTempAccountNotMatchDOBFound = True
+                            'Continue For   ' Use the temp account for prefill purpose even DOB not match
+                        End If
+                    End If
+
+                    ' ---- Checking 7: Check Latest Account ----
+                    Dim blnUseCurrentAccount As Boolean = False
+
+                    If blnCheckEHSAccount Then
+                        If udtTempEHSAccount Is Nothing Then
+                            blnUseCurrentAccount = True
+                            enumSmartIDReadStatus = enumTempSmartIDReadStatus
+                            udtTempEHSAccount = udtCurEHSAccount
+                            Continue For
+                        End If
+                    Else
+                        Continue For
+                    End If
+
+                    'Priority: Personal Info Latest Update Dtm
+                    If udtTempEHSAccount.EHSPersonalInformationList(0).UpdateDtm < udtCurEHSAccount.EHSPersonalInformationList(0).UpdateDtm Then
+                        blnUseCurrentAccount = True
+                    End If
+
+                    If blnUseCurrentAccount Then
+                        enumSmartIDReadStatus = enumTempSmartIDReadStatus
+                        udtTempEHSAccount = udtCurEHSAccount
+                    End If
+
+                Next
+            Else
+                Return
+            End If
+        End Sub
+        '==================================================================================================================================================================
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
 #End Region
 
 #Region "Insert / Update EHS Account / EHSTransaction"

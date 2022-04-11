@@ -1470,9 +1470,7 @@ Partial Public Class Inbox
         For Each row As GridViewRow In Me.GridView1.Rows
             cb = CType(row.Cells(0).FindControl("chk_selected"), CheckBox)
             If cb.Checked = True Then
-                selectedRow.Add(Convert.ToInt32(CType(row.Cells(0).FindControl("lblMessageID"), Label).Text))
-                'selectedRow.Add(Me.GridView1.PageSize * Me.GridView1.PageIndex + i)
-                'selectedRow.Add(i)
+                selectedRow.Add(Convert.ToString(CType(row.Cells(0).FindControl("lblMessageID"), Label).Text))
             End If
             i = i + 1
         Next
@@ -1505,7 +1503,7 @@ Partial Public Class Inbox
 
                     For i = 0 To selectedRow.Count - 1
 
-                        Dim arrDrRow As DataRow() = dt.Select("MessageID=" + selectedRow(i).ToString())
+                        Dim arrDrRow As DataRow() = dt.Select("MessageID= '" + selectedRow(i).ToString() +"'")
                         If arrDrRow.Length <= 0 Then
                             LoadEnqDownloadGrid(EmailStatus.Read)
                             'Throw New Exception("Message Row: " + selectedRow(i).ToString() + " Not Found!")
@@ -1750,7 +1748,7 @@ Partial Public Class Inbox
 
                 For i = 0 To selectedRow.Count - 1
 
-                    Dim arrDrRow As DataRow() = dt.Select("MessageID=" + selectedRow(i).ToString() + "")
+                    Dim arrDrRow As DataRow() = dt.Select("MessageID= '" + selectedRow(i).ToString() + "'")
                     If arrDrRow.Length <= 0 Then
                         'Throw New Exception("Message Row: " + selectedRow(i).ToString() + " Not Found!")
                         LoadEnqDownloadGrid(EmailStatus.Deleted)
@@ -1894,7 +1892,8 @@ Partial Public Class Inbox
 
                 For i = 0 To selectedRow.Count - 1
 
-                    Dim arrDrRow As DataRow() = dt.Select("MessageID=" + selectedRow(i).ToString() + "")
+                    Dim arrDrRow As DataRow() = dt.Select("MessageID= '" + selectedRow(i).ToString() + "'")
+
                     If arrDrRow.Length <= 0 Then
                         LoadEnqDownloadGrid(EmailStatus.Read)
                     Else

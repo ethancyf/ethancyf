@@ -85,7 +85,6 @@ Partial Public Class ucInputHKIDSmartIDSignal
         Me._strEName = MyBase.Formatter.formatEnglishName(udtPersonalInfoSmartID.ENameSurName, udtPersonalInfoSmartID.ENameFirstName)
         Me._strHKID = MyBase.Formatter.formatHKID(MyBase.EHSPersonalInfo.IdentityNum, False)
 
-
         Me.SetHKID()
         Me.SetDOI()
         Me.SetDOB()

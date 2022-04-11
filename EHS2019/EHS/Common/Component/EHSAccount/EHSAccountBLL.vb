@@ -6,6 +6,7 @@ Imports Common.Component
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSAccount.EHSAccountModel
 Imports Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel
+Imports Common.Component.SchemeDetails
 
 Namespace Component.EHSAccount
     Public Class EHSAccountBLL
@@ -117,6 +118,12 @@ Namespace Component.EHSAccount
         End Function
         ' CRE17-018-07 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+        '--------------------------------------------------------------------------
+        Public Function LoadTempEHSAccountByIdentityNumSubsidize(ByVal strIdentityNum As String, ByVal strDocCode As String, ByVal strSubsidizeItemCode As String, Optional ByVal udtDB As Database = Nothing) As EHSAccountModelCollection
+            Return Me.getTempEHSAccountByIdentityNumSubsidize(strIdentityNum, strDocCode, strSubsidizeItemCode, udtDB)
+        End Function
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
 #End Region
 
 #Region "[Public] Insert Function"
@@ -3102,6 +3109,62 @@ Namespace Component.EHSAccount
             Return udtEHSAccountModel
 
         End Function
+
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+        ' -------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve Temporary EHS Account (List) by Document + Identity Number + Subsidize Item Code (e.g C19)
+        ''' </summary>
+        ''' <param name="strIdentityNum"></param>
+        ''' <param name="strDocType"></param>
+        ''' <param name="strSubsidizeItemCode"></param>
+        ''' <param name="udtDB"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function getTempEHSAccountByIdentityNumSubsidize(ByVal strIdentityNum As String, ByVal strDocType As String, ByVal strSubsidizeItemCode As String, Optional ByVal udtDB As Database = Nothing) As EHSAccountModelCollection
+
+            Dim udtEHSAccountModelList As New EHSAccountModelCollection()
+            Dim udtEHSAccountModel As EHSAccountModel = Nothing
+
+            If udtDB Is Nothing Then udtDB = New Database()
+            Dim ds As New DataSet()
+
+            strIdentityNum = Me._udtFormatter.formatDocumentIdentityNumber(strDocType, strIdentityNum)
+
+            Try
+                Dim prams() As SqlParameter = { _
+                     udtDB.MakeInParam("@Doc_Code", DocType.DocTypeModel.Doc_Code_DataType, DocType.DocTypeModel.Doc_Code_DataSize, strDocType), _
+                     udtDB.MakeInParam("@identity", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, strIdentityNum), _
+                     udtDB.MakeInParam("@Subsidize_Item_Code", SubsidizeItemDetailsModel.Subsidize_Item_Code_DataType, SubsidizeItemDetailsModel.Subsidize_Item_Code_DataSize, strSubsidizeItemCode)}
+                udtDB.RunProc("proc_TempVoucherAccount_get_byDocCodeDocIDSubsidize", prams, ds)
+
+                If ds.Tables.Count > 1 Then
+                    ' Table(0) : TempVoucherAccount, Table(1) : TempPersonalInformation
+                    ' Pair Up TempVoucherAccount & TempPersonalInformation
+
+                    For Each drTempVoucherAccount As DataRow In ds.Tables(0).Rows
+                        Dim drTempPersonalInformation As DataRow = Nothing
+
+                        Dim arrRow As DataRow() = ds.Tables(1).Select("Voucher_Acc_ID ='" + drTempVoucherAccount("Voucher_Acc_ID").ToString().Trim() + "'")
+
+                        If arrRow.Length > 0 Then
+                            drTempPersonalInformation = arrRow(0)
+                            udtEHSAccountModel = Me.FillTempVoucherAccountInformation(drTempVoucherAccount, drTempPersonalInformation)
+                            udtEHSAccountModelList.Add(udtEHSAccountModel)
+                        End If
+                    Next
+                End If
+
+            Catch eSQL As SqlException
+                Throw eSQL
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return udtEHSAccountModelList
+
+        End Function
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
 
 #End Region
 

@@ -29,6 +29,10 @@ Public MustInherit Class ucInputDocTypeBase
     Private _blnEditDocumentNo As Boolean = False
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
+    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+    Private _enumMode As Common.Component.ClaimMode = Common.Component.ClaimMode.All
+    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Dim strErrorImageURL As String = Me.GetGlobalResourceObject("ImageUrl", "ErrorBtn")
         Dim strErrorImageALT As String = Me.GetGlobalResourceObject("AlternateText", "ErrorBtn")
@@ -145,6 +149,18 @@ Public MustInherit Class ucInputDocTypeBase
         End Set
     End Property
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+
+    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+    ' -------------------------------------------------------------------------
+    Public Property ClaimMode() As Common.Component.ClaimMode
+        Get
+            Return Me._enumMode
+        End Get
+        Set(ByVal value As Common.Component.ClaimMode)
+            Me._enumMode = value
+        End Set
+    End Property
+    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
 
 #End Region
 

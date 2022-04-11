@@ -135,39 +135,36 @@ Partial Public Class EHSAccountCreationV1
                     '--------------------------------------------------------------------------------------------------
                     Select Case udtSmartIDContent.SmartIDReadStatus
 
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
                         Case SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_DiffDOI_LargerDOI, _
                                 SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_NotCreateBySmartID_SameDOB, _
                                 SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOIDOB_CreateBySmartID_WithoutGender_SameName
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
                             udtSmartIDContent.EHSValidatedAccount = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
                             Me._udtSessionHandler.SmartIDContentSaveToSession(FunctCode, udtSmartIDContent)
 
+                            ' Confirm Account ("Cancel", "Confirm")
                             Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1b3
 
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
+
                         Case SmartIDHandler.SmartIDResultStatus.DocTypeNotExist, _
                                 SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_NotCreateBySmartID, _
                                 SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_DiffDOIDOB, _
                                 SmartIDHandler.SmartIDResultStatus.DocTypeNotExist, _
                                 SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB_WithoutGender_SameName
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                            ' Create new account   ("Back", "Create Account")
                             Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
 
                         Case SmartIDHandler.SmartIDResultStatus.TempAccountExist_SameDetail
-                            If Me.ClaimMode = ClaimMode.COVID19 Then
-                                ' Create new account
+                            If _udtEHSAccount.IsNew Then
+                                ' Create new account   ("Back", "Create Account")
                                 mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
                             Else
-                                If _udtEHSAccount.IsNew Then
-                                    ' Create new account
-                                    mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
-                                Else
-                                    mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2
-                                End If
-                            End If
+                                ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+                                '--------------------------------------------------------------------------
+                                'show all information to get consent ("Back", "Confirm", "Modify")
+                                mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2
+                                ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+                            End If                            
                     End Select
                     '==================================================================================================================================================================
 
@@ -261,8 +258,15 @@ Partial Public Class EHSAccountCreationV1
                     '-------------------------------
                     '--- smart IC
                     If Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2 Then
-                        '-Validate smart IC
-                        Me.btnStep1a2Confirm_Click(Nothing, Nothing)
+
+                        'Me.btnStep1a2Confirm_Click(Nothing, Nothing)
+
+                        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+                        '--------------------------------------------------------------------------
+                        ' Pretend Modify Account Click -> Yes Click
+                        Me.btnPopupConfirmModifyYes_Click(Nothing, Nothing)
+                        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+
                     ElseIf Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1 Then
                         Me.btnstep1a1CreateAccount_Click(Nothing, Nothing)
                     End If
@@ -270,18 +274,28 @@ Partial Public Class EHSAccountCreationV1
                     '------------------------------
                     '--- manual input
 
+                    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+                    '--------------------------------------------------------------------------
                     If Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2 Then
-                        Me._udtSessionHandler.ExceedDocTypeLimitRemoveFromSession()
-                        Me._udtSessionHandler.NotMatchAccountExistRemoveFromSession()
-                        Me._udtSessionHandler.CCCodeRemoveFromSession(FunctCode)
-                        Me._udtSessionHandler.AccountCreationProceedClaimSaveToSession(True)
-
-                        Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
+                        Me.btnPopupConfirmModifyYes_Click(Nothing, Nothing)
                     Else
-
+                        Me.btnstep1a1CreateAccount_Click(Nothing, Nothing)
                     End If
 
-                    Me.btnstep1a1CreateAccount_Click(Nothing, Nothing)
+                    'If Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2 Then
+                    '    Me._udtSessionHandler.ExceedDocTypeLimitRemoveFromSession()
+                    '    Me._udtSessionHandler.NotMatchAccountExistRemoveFromSession()
+                    '    Me._udtSessionHandler.CCCodeRemoveFromSession(FunctCode)
+                    '    Me._udtSessionHandler.AccountCreationProceedClaimSaveToSession(True)
+
+                    '    Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
+                    'Else
+
+                    'End If
+
+                    'Me.btnstep1a1CreateAccount_Click(Nothing, Nothing)
+                    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+
                 End If
             End If
         End If
@@ -424,7 +438,13 @@ Partial Public Class EHSAccountCreationV1
             'For CCCode is not nothing only--------------------------------------------------------------------------------------------
             'Save CCCode to session. If account detial is no change, Chinese Name Popup box will not display and pass cccode validation
             '---------------------------------------------------------------------------------------------------------------------------
-            If Me._udtEHSAccount.EHSPersonalInformationList(0).DocCode.Trim() = DocTypeModel.DocTypeCode.HKIC Then
+
+            ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+            '--------------------------------------------------------------------------
+            If Me._udtEHSAccount.EHSPersonalInformationList(0).DocCode.Trim() = DocTypeModel.DocTypeCode.HKIC _
+                OrElse Me._udtEHSAccount.EHSPersonalInformationList(0).DocCode.Trim() = DocTypeModel.DocTypeCode.ROP140 Then
+                ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+
                 Me.udcChooseCCCode.CCCode1 = Me._udtEHSAccount.EHSPersonalInformationList(0).CCCode1
                 Me.udcChooseCCCode.CCCode2 = Me._udtEHSAccount.EHSPersonalInformationList(0).CCCode2
                 Me.udcChooseCCCode.CCCode3 = Me._udtEHSAccount.EHSPersonalInformationList(0).CCCode3
@@ -1444,19 +1464,16 @@ Partial Public Class EHSAccountCreationV1
             'Set up practice selection popup Box
             udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
             Me.udcPracticeRadioButtonGroup.VerticalScrollBar = True
-            ' CRE20-0XX (HA Scheme) [Start][Winnie]
             Me.udcPracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
             Me.udcPracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
-            ' CRE20-0XX (HA Scheme) [End][Winnie]
-            ' CRE20-0022 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
+
             Me.udcPracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, _
                                                                  Me._udtSP.PracticeList, _
                                                                  Me._udtSP.SchemeInfoList, _
                                                                  Me._udtSessionHandler.Language, _
                                                                  PracticeRadioButtonGroup.DisplayMode.Address, _
                                                                  Me.ClaimMode)
-            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
             Me.udcStep1b1InputDocumentType.EHSAccount = udtEHSAccount
             Me.udcStep1b1InputDocumentType.DocType = udtEHSAccount.SearchDocCode
             Me.udcStep1b1InputDocumentType.Mode = ucInputDocTypeBase.BuildMode.Creation
@@ -1466,6 +1483,7 @@ Partial Public Class EHSAccountCreationV1
             Me.udcStep1b1InputDocumentType.AuditLogEntry = _udtAuditLogEntry
             Me.udcStep1b1InputDocumentType.FixEnglishNameGender = Not IsNothing(_udtSessionHandler.VREEHSAccountGetFromSession) _
                 AndAlso _udtSessionHandler.VREEHSAccountGetFromSession.EHSPersonalInformationList(0).ENameSurName <> String.Empty
+            Me.udcStep1b1InputDocumentType.ClaimMode = Me.ClaimMode
 
             Me.udcStep1b1InputDocumentType.Built()
 
@@ -3072,6 +3090,21 @@ Partial Public Class EHSAccountCreationV1
 
         Dim udcSmartIDContent As BLL.SmartIDContentModel = Me._udtSessionHandler.SmartIDContentGetFormSession(FunctCode)
         Dim isShowSmartIDDiff As Boolean = False
+        Dim blnGenderSelected As Boolean = False
+
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+        '-------------------------------------------------------------------------------------------------------------------------
+        'Fill Gender from Existing Account for COVID19 Claim if not reading Gender
+        '-------------------------------------------------------------------------------------------------------------------------
+        If Me.ClaimMode = ClaimMode.COVID19 Then
+            If udcSmartIDContent.EHSAccount.getPersonalInformation(DocTypeModel.DocTypeCode.HKIC).Gender = String.Empty AndAlso _
+                Not String.IsNullOrEmpty(udtEHSAccount.EHSPersonalInformationList(0).Gender) Then
+                udcSmartIDContent.EHSAccount.getPersonalInformation(DocTypeModel.DocTypeCode.HKIC).Gender = udtEHSAccount.EHSPersonalInformationList(0).Gender
+                Me._udtSessionHandler.SmartIDContentSaveToSession(FunctCode, udcSmartIDContent)
+
+            End If
+        End If
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
 
         'Me.rbStep1b3PrintClaimConsentFormLanguage.Items.FindByValue(PrintOptionValue.Chi).Text = Me.GetGlobalResourceObject("Text", "Chinese")
         'Me.rbStep1b3PrintClaimConsentFormLanguage.Items.FindByValue(PrintOptionValue.Eng).Text = Me.GetGlobalResourceObject("Text", "English")
@@ -3092,6 +3125,8 @@ Partial Public Class EHSAccountCreationV1
         Me.udcStep1b3InputDocumentType.SmartIDContent = udcSmartIDContent
         Me.udcStep1b3InputDocumentType.FixEnglishNameGender = Not IsNothing(_udtSessionHandler.VREEHSAccountGetFromSession) _
             AndAlso _udtSessionHandler.VREEHSAccountGetFromSession.EHSPersonalInformationList(0).ENameSurName <> String.Empty
+        Me.udcStep1b3InputDocumentType.ClaimMode = Me.ClaimMode
+
         Me.udcStep1b3InputDocumentType.Built()
 
         'Me.btnStep1b3PrintChangeForm.Enabled = False
@@ -3125,9 +3160,18 @@ Partial Public Class EHSAccountCreationV1
 
         End Select
 
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+        '--------------------------------------------------------------------------
         If Not String.IsNullOrEmpty(udcSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).Gender) Then
+            blnGenderSelected = True
+        End If
+        ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+
+        If blnGenderSelected Then
+            ' Handle declaration and and confirm button as Gender has been selected (other field must be read from Smart IC) 
 
             If Not isShowSmartIDDiff Then
+                ' For temp account / new account, Enable declaration checkbox
                 Me.chkStep1b3Declare.Enabled = True
 
                 If Me.chkStep1b3Declare.Checked Then
@@ -3136,6 +3180,7 @@ Partial Public Class EHSAccountCreationV1
                     Me.EnableConfirmButton(False, Me.btnStep1b3Confirm)
                 End If
             Else
+                ' For validated account with difference, Enable confirm button
                 Me.EnableConfirmButton(True, Me.btnStep1b3Confirm)
             End If
         Else

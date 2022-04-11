@@ -53,6 +53,10 @@ Partial Public Class ucInputDocumentType
     Private _blnEditDocumentNo As Boolean = False
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
+    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+    Private _enumMode As ClaimMode = ClaimMode.All
+    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
+
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
     End Sub
@@ -273,6 +277,7 @@ Partial Public Class ucInputDocumentType
         udcInputDocumentType.AuditLogEntry = Me._udtAuditLogEntry
         udcInputDocumentType.FixEnglishNameGender = Me._blnFixEnglishNameGender
         udcInputDocumentType.EditDocumentNo = Me.EditDocumentNo
+        udcInputDocumentType.ClaimMode = Me.ClaimMode
 
         Me.Built(udcInputDocumentType)
     End Sub
@@ -743,6 +748,17 @@ Partial Public Class ucInputDocumentType
     End Property
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
+    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
+    ' -------------------------------------------------------------------------
+    Public Property ClaimMode() As ClaimMode
+        Get
+            Return Me._enumMode
+        End Get
+        Set(ByVal value As ClaimMode)
+            Me._enumMode = value
+        End Set
+    End Property
+    ' CRE20-023-67 (COVID19 - Prefill Personal Info) [End][Winnie SUEN]
 #End Region
 
 End Class

@@ -9952,6 +9952,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_TempVoucherAccount_get_AmendRecord.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TempVoucherAccount_get_ByPairVoucherAccIDStatus.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TempVoucherAccount_get_BySchCodeSPInfoStatus.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TempVoucherAccount_get_byDocCodeDocID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_TempVoucherAccount_get_byDocCodeDocIDSubsidize.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TempVoucherAccount_get_byDocTypeDocIDVRAccID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TempVoucherAccount_get_byECSchCode.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TempVoucherAccount_get_byVRAccID.sql -text
