@@ -10150,6 +10150,7 @@ EHS2019/EHS_DB/dbEVS/Trigger/ProfessionalSubmissionResult_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccVerification_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccountStaging_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccount_after_upd.sql -text
+EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19DischargePatient_after_ins.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19InfectedDischargeList_after_ins.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19VaccineLotDetailHistory_after_del.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19VaccineLotDetailHistory_after_upd.sql -text

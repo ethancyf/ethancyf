@@ -278,80 +278,115 @@ Public Class ProgramMgr
 
                 Dim strfilename As String = Me.m_strImportFolderPath + "\" + strFileNameNoExtension + ".csv"
 
-                Dim num_rows As Long
+                'Dim num_rows As Long
                 csvFileNameForLog = strFileNameNoExtension + ".csv"
 
                 ' ------------------ Import File ----------------'
                 COVID19DischargeLogger.LogLine("[" + csvFileNameForLog + "] Start Import CSV File")
                 objLogStartKeyStack.Push(COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, Nothing, "<Start><ImportCSVFile>[" + csvFileNameForLog + "] Start Import CSV File", zipFileNameForLog))
                 tmpstream = File.OpenText(strfilename)
+
+                Dim udtDB As New Common.DataAccess.Database()
+
                 Try
                     Dim tempTable As DataTable = covid19Discharge.getCOVID19DischargeTempDataTable
-                    Dim strlines() As String
-                    Dim strline() As String
+                    'Dim strlines() As String
+
+                    Dim intBatchMaxRow As Integer = covid19Discharge.GetImportFileBatchMaxRow()
 
                     COVID19DischargeLogger.LogLine("[" + csvFileNameForLog + "] Check CSV File Content")
-                    objLogStartKeyStack.Push(COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, Nothing, "<Start><ChkCSVContent>[" + csvFileNameForLog + "] Check CSV File Content", zipFileNameForLog))
-                    'Load content of file to strLines array
-                    strlines = tmpstream.ReadToEnd.Split(Environment.NewLine)
-                    num_rows = UBound(strlines)
+                    'objLogStartKeyStack.Push(COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, Nothing, "<Start><ChkCSVContent>[" + csvFileNameForLog + "] Check CSV File Content", zipFileNameForLog))
 
-                    ' Add CSV ROW to dataTable
-                    For countRow As Integer = 1 To num_rows
-                        'remove all new line character
-                        strline = strlines(countRow).Replace(vbCr, "").Replace(vbLf, "").Split("|")
-                        Dim strlineLengthBeforeResize As Integer = strline.Length
-                        Dim strExceptionRemarkForRow As String = ""
+                    ' Add CSV ROW to dataTable              
+                    Dim TotalCountRow As Integer = 0
+                    Dim BatchNo As Integer = 1
+                    Dim BatchCountRow As Integer = 1
+
+                    'Load content of file by line
+                    Dim strFirstLine As String = tmpstream.ReadLine()
+                    TotalCountRow = TotalCountRow + 1 '1
+
+                    Dim strNextLine As String = tmpstream.ReadLine()
+                    TotalCountRow = TotalCountRow + 1 '2
+
+                    udtDB.BeginTransaction()
+
+                    While (strNextLine IsNot Nothing)
+
+                        If BatchCountRow = 1 Then
+                            objLogStartKeyStack.Push(COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, Nothing, String.Format("<Start><ChkCSVContent>[" + csvFileNameForLog + "] Check CSV File Content BatchNo = {0}", BatchNo.ToString), zipFileNameForLog))
+                            COVID19DischargeLogger.LogLine(String.Format("[" + csvFileNameForLog + "] Check CSV File Content BatchNo = {0}", BatchNo.ToString))
+
+                            exceptionText = ""
+                        End If
+                        
+                        'Remove all new line character
+                        Dim arrOri As Array = strNextLine.Replace(vbCr, "").Replace(vbLf, "").Split("|")
+                        Dim arrResize As New ArrayList
+
+                        Dim strlineLengthBeforeResize As Integer = arrOri.Length
+                        Dim strExceptionRemarkForRow As String = String.Empty
                         Dim blnSkipThisRow = False
 
                         ' Call Array.Resize to reduct Filler_01 to Filler_10
-                        Array.Resize(strline, COVID19DischargePatient_ColumnNum)
-
-                        Dim checkContain As ArrayList = New ArrayList(strline)
+                        For intCt As Integer = 0 To COVID19DischargePatient_ColumnNum - 1
+                            arrResize.Add(arrOri(intCt))
+                        Next
 
                         'chk if row is empty row and current row is not last row (csv file will auto generate empty row in last row so except last row)
-                        If (strlines(countRow) = vbCr Or strlines(countRow) = vbLf) Then
-                            If (countRow <> num_rows) Then
-                                strExceptionRemarkForRow += "Row is empty."
-                                exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Warning][Row " + (1 + countRow).ToString() + "] : is empty row.")
-                                COVID19DischargeLogger.Log(Common.Component.LogID.LOG00007, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + (1 + countRow).ToString() + "] : is empty row.", zipFileNameForLog)
-                                blnSkipThisRow = True
-                            Else
-                                Continue For
-                            End If
+                        If (strNextLine = vbCr Or strNextLine = vbLf) Then
+                            strExceptionRemarkForRow += "Row is empty."
+                            exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Warning][Row " + (TotalCountRow).ToString() + "] : is empty row.")
+                            COVID19DischargeLogger.Log(Common.Component.LogID.LOG00007, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + (TotalCountRow).ToString() + "] : is empty row.", zipFileNameForLog)
+                            blnSkipThisRow = True
+
                         End If
 
                         'change to add Filler_01 ~ Filler_10 for the future.
                         If blnSkipThisRow = False Then
-                            If strlineLengthBeforeResize < 12 Then
-                                strExceptionRemarkForRow += "Column number less than 12."
-                                exceptionText = exceptionText + Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (1 + countRow).ToString() + "] : Column number should not be less than 12")
-                                COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + (1 + countRow).ToString() + "] : Column number should not be less than 12", zipFileNameForLog)
+                            If strlineLengthBeforeResize < COVID19DischargePatient_ColumnNum Then
+                                strExceptionRemarkForRow += String.Format("Column number less than {0}.", COVID19DischargePatient_ColumnNum)
+                                exceptionText = exceptionText + Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (TotalCountRow).ToString() + String.Format("] : Column number should not be less than {0}", COVID19DischargePatient_ColumnNum))
+                                COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008,
+                                                           objLogStartKeyStack.Peek,
+                                                           "[" + csvFileNameForLog + "] [Row " + (TotalCountRow).ToString() + String.Format("] : Column number should not be less than {0}", COVID19DischargePatient_ColumnNum),
+                                                           zipFileNameForLog)
                                 blnSkipThisRow = True
                             End If
                         End If
 
                         'check double quote must place to head and tail under the text
                         If blnSkipThisRow = False Then
-                            For column As Integer = 0 To strline.Length - 1
+                            Try
+                                For column As Integer = 0 To arrResize.Count - 1
 
-                                'if the left first text =" (double quote) and right first text =" (double quote), remove it
-                                If (strline(column).Length > 1 AndAlso Left(strline(column), 1).Equals("""") AndAlso Right(strline(column), 1).Equals("""")) Then
-                                    strline(column) = Right(strline(column), strline(column).Length - 1)
-                                    strline(column) = Left(strline(column), strline(column).Length - 1)
-                                Else
-                                    strExceptionRemarkForRow += "[Column " + (1 + column).ToString() + "] Double quote is missing."
-                                    exceptionText = exceptionText + Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (1 + countRow).ToString() + "][Column " + (1 + column).ToString() + "] : Double quote is missing.")
-                                    COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Error][Row " + (1 + countRow).ToString() + "][Column " + (1 + column).ToString() + "] : Double quote is missing.", zipFileNameForLog)
+                                    'if the left first text =" (double quote) and right first text =" (double quote), remove it
+                                    If (arrResize(column).Length > 1 AndAlso Left(arrResize(column), 1).Equals("""") AndAlso Right(arrResize(column), 1).Equals("""")) Then
 
-                                    'double quote not place to head and tail under the text => skip this line
-                                    blnSkipThisRow = True
-                                End If
-                            Next
+                                        Dim strTmp As String = arrResize(column)
+                                        strTmp = Right(strTmp, strTmp.Length - 1)
+                                        strTmp = Left(strTmp, strTmp.Length - 1)
+                                        arrResize(column) = strTmp
+
+                                    Else
+                                        strExceptionRemarkForRow += "[Column " + (1 + column).ToString() + "] Double quote is missing."
+                                        exceptionText = exceptionText + Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (TotalCountRow).ToString() + "][Column " + (1 + column).ToString() + "] : Double quote is missing.")
+                                        COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Error][Row " + (TotalCountRow).ToString() + "][Column " + (1 + column).ToString() + "] : Double quote is missing.", zipFileNameForLog)
+
+                                        'double quote not place to head and tail under the text => skip this line
+                                        blnSkipThisRow = True
+                                    End If
+
+                                Next
+
+                            Catch ex As Exception
+                                Throw
+                            End Try
+
                         End If
 
                         If blnSkipThisRow Then
-                            SkippedRowList.Add(countRow)
+                            SkippedRowList.Add(TotalCountRow)
                             'Continue For
                         End If
 
@@ -366,48 +401,66 @@ Public Class ProgramMgr
                         'checkContain.RemoveAt(3) 'remove the column Discharge_Date
 
                         'If checkContain.Contains("") Or checkContain.Contains(String.Empty) Then
-                        '    exceptionText = exceptionText + Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (1 + countRow).ToString() + "] : Has empty value in row")
-                        '    COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + (1 + countRow).ToString() + "] : Has empty value in row", zipFileNameForLog)
-                        '    SkippedRowList.Add(countRow)
+                        '    exceptionText = exceptionText + Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (TotalCountRow).ToString() + "] : Has empty value in row")
+                        '    COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + (TotalCountRow).ToString() + "] : Has empty value in row", zipFileNameForLog)
+                        '    SkippedRowList.Add(TotalCountRow)
                         '    Continue For
                         'End If
 
-                        Array.Resize(strline, strline.Length + 3)
-                        strline(strline.Length - 3) = zipFileNameForLog ' File ID
-                        strline(strline.Length - 2) = strExceptionRemarkForRow 'Import Remark
-                        strline(strline.Length - 1) = 1 + countRow 'Row Number (show it start from 2 rows.)
-                        tempTable.Rows.Add(strline)
-                    Next
+                        arrResize.Add(zipFileNameForLog) ' File ID
+                        arrResize.Add(strExceptionRemarkForRow) 'Import Remark
+                        arrResize.Add(TotalCountRow.ToString) 'Row Number (show it start from 2 rows.)
 
-                    ValidateCovid19DHCIPImportData(tempTable)
+                        Dim dr As DataRow = tempTable.NewRow
 
-                    'if there have exception in csv
-                    If (exceptionText <> "") Then
-                        COVID19DischargeLogger.LogLine("[" + csvFileNameForLog + "] CSV file content has a error")
-                        COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, objLogStartKeyStack.Pop, "<Fail><ChkCSVContent>[" + csvFileNameForLog + "] CSV file content has a error", zipFileNameForLog)
-                        'Throw New System.Exception(exceptionText)
-                        COVID19DischargeLogger.LogLine("Content Error Log : " + exceptionText)
-                    End If
+                        For idx As Integer = 0 To COVID19DischargePatient_ColumnNum - 1
+                            dr.Item(idx) = arrResize.Item(idx)
+                        Next
 
-                    COVID19DischargeLogger.LogLine("[" + csvFileNameForLog + "] Check CSV file content success")
-                    COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, objLogStartKeyStack.Pop, "<Success><ChkCSVContent>[" + csvFileNameForLog + "] Check CSV file content success", zipFileNameForLog)
-                    Dim udtDB As New Common.DataAccess.Database()
-                    Try
+                        dr.Item(tempTable.Columns.Count - 3) = arrResize.Item(arrResize.Count - 3)
+                        dr.Item(tempTable.Columns.Count - 2) = arrResize.Item(arrResize.Count - 2)
+                        dr.Item(tempTable.Columns.Count - 1) = arrResize.Item(arrResize.Count - 1)
 
-                        udtDB.BeginTransaction()
-                        covid19Discharge.ImportCOVID19DischargeByDataTable(udtDB, tempTable, DateTime.Now)
-                        udtDB.CommitTransaction()
-                        tmpstream.Close()
+                        tempTable.Rows.Add(dr)
 
-                    Catch dbex As Exception
-                        Try
-                            udtDB.RollBackTranscation()
-                        Catch rollbackex As Exception
-                            Throw rollbackex
-                        End Try
-                        'throw exception when db have error
-                        Throw dbex
-                    End Try
+                        strNextLine = tmpstream.ReadLine()
+
+                        ' Insert to DB for each batch
+                        If strNextLine Is Nothing OrElse BatchCountRow = intBatchMaxRow Then
+
+                            ValidateCovid19DHCIPImportData(tempTable)
+
+                            'if there have exception in csv
+                            If (exceptionText <> "") Then
+                                COVID19DischargeLogger.LogLine("[" + csvFileNameForLog + "] CSV file content has a error")
+                                COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, objLogStartKeyStack.Peek, "<Fail><ChkCSVContent>[" + csvFileNameForLog + "] CSV file content has a error", zipFileNameForLog)
+                                'Throw New System.Exception(exceptionText)
+                                COVID19DischargeLogger.LogLine("Content Error Log : " + exceptionText)
+                            End If
+
+                            COVID19DischargeLogger.LogLine("[" + csvFileNameForLog + "] Check CSV file content success")
+                            COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, objLogStartKeyStack.Pop, "<Success><ChkCSVContent>[" + csvFileNameForLog + "] Check CSV file content success", zipFileNameForLog)
+
+                            Dim blnDeleteRecord As Boolean = False
+                            If BatchNo = 1 Then blnDeleteRecord = True
+
+                            covid19Discharge.ImportCOVID19DischargeByDataTable(udtDB, tempTable, blnDeleteRecord)
+
+                            'Reset tempTable for another batch
+                            tempTable.Rows.Clear()
+                            'Increase batch no.
+                            BatchNo = BatchNo + 1
+                            'Reset batch counter
+                            BatchCountRow = 0
+                        End If
+
+                        'Increase total row no.
+                        TotalCountRow = TotalCountRow + 1
+                        'Increase batch row no.
+                        BatchCountRow = BatchCountRow + 1
+                    End While
+
+                    udtDB.CommitTransaction()
 
                     COVID19DischargeLogger.LogLine("[" + csvFileNameForLog + "] Import CSV File Success")
                     COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, objLogStartKeyStack.Pop, "<Success><ImportCSVFile>[" + csvFileNameForLog + "] Import CSV File Success", zipFileNameForLog)
@@ -416,6 +469,13 @@ Public Class ProgramMgr
                     COVID19DischargeLogger.LogLine("[" + csvFileNameForLog + "] [Error]Import CSV File Fail")
                     COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Pop, "[" + csvFileNameForLog + "] Import CSV File Fail", zipFileNameForLog)
                     'COVID19DischargeLogger.ErrorLog(ex)
+
+                    Try
+                        udtDB.RollBackTranscation()
+                    Catch rollbackex As Exception
+                        Throw rollbackex
+                    End Try
+
                     Throw
                 End Try
             Else
@@ -450,9 +510,15 @@ Public Class ProgramMgr
 
                 Dim strError As String = ""
                 Dim strExceptionRemarkForRow As String = ""
-                Dim indexOfRow As String = (dtImport.Rows.IndexOf(row) + 2).ToString()
+                'Dim indexOfRow As String = (dtImport.Rows.IndexOf(row) + 2).ToString()
+                Dim indexOfRow As String = row.Item("Row_No").ToString()
+                Dim intIdx As Integer = 0
 
-                If SkippedRowList.Contains((1 + dtImport.Rows.IndexOf(row))) Then
+                If Not Integer.TryParse(indexOfRow, intIdx) Then
+                    Throw New Exception(String.Format("Invalid row no.({0}) in function ValidateCovid19DHCIPImportData.", indexOfRow))
+                End If
+
+                If SkippedRowList.Contains(intIdx) Then
                     'skippedRow = skippedRow + 1
 
                     For indexOfColumn As Integer = 0 To dtImport.Columns.Count - 1
@@ -480,8 +546,6 @@ Public Class ProgramMgr
                         row(colName) = row(colName).ToString.Trim
                     Next
 
-
-
                     'CHP_index_no
                     If row("CHP_index_no").Equals(String.Empty) Then
                         strError = "CHP Index Number is missing."
@@ -499,8 +563,8 @@ Public Class ProgramMgr
 
                     'Surname
                     If (row("Surname_eng").ToString.Length > 40) Then
-                        If (row("Surname_eng").ToString.Length > 80) Then
-                            row("Surname_eng") = Left(row("Surname_eng").ToString.Trim, 80)
+                        If (row("Surname_eng").ToString.Length > 150) Then
+                            row("Surname_eng") = Left(row("Surname_eng").ToString.Trim, 150)
                         End If
 
                         strError = "Surname should not more than 40."
@@ -511,8 +575,8 @@ Public Class ProgramMgr
 
                     'GivenName
                     If (row("Given_name_eng").ToString.Length > 40) Then
-                        If (row("Given_name_eng").ToString.Length > 80) Then
-                            row("Given_name_eng") = Left(row("Given_name_eng").ToString.Trim, 80)
+                        If (row("Given_name_eng").ToString.Length > 150) Then
+                            row("Given_name_eng") = Left(row("Given_name_eng").ToString.Trim, 150)
                         End If
 
                         strError = "Given name should not more than 40."
@@ -681,7 +745,67 @@ Public Class ProgramMgr
                         row("Discharge_date") = DBNull.Value
                     End If
 
+                    'Filler_01 (Infection Date)
+                    If (Not row("Infection_Date").Equals(String.Empty)) Then
+                        'Infection_Date = YYYY-MM-DD
+                        Dim chkDischargeDateParseExactDate As Boolean = DateTime.TryParseExact(row("Infection_Date"), "yyyy-MM-dd", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.None, New Date)
+                        If Not (dob_edmy_regex.IsMatch(row("Infection_Date")) And chkDischargeDateParseExactDate) Then
+                            row("Infection_Date") = DBNull.Value
 
+                            strError = "Invalid date format for filler 01 (infection date)."
+                            strExceptionRemarkForRow += strError
+                            exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Warning] [Row " + indexOfRow + "][CHP_Index_No " + row("CHP_index_no") + "] : " + strError)
+                            COVID19DischargeLogger.Log(Common.Component.LogID.LOG00007, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "]  [Row " + indexOfRow + "][CHP_Index_No " + row("CHP_index_no") + "] : " + strError, zipFileNameForLog)
+                        End If
+                    Else
+                        row("Infection_Date") = DBNull.Value
+                    End If
+
+                    'Filler_02 (Recovery Date)
+                    If (Not row("Recovory_Date").Equals(String.Empty)) Then
+                        'Recovery_Date = YYYY-MM-DD
+                        Dim chkDischargeDateParseExactDate As Boolean = DateTime.TryParseExact(row("Recovory_Date"), "yyyy-MM-dd", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.None, New Date)
+                        If Not (dob_edmy_regex.IsMatch(row("Recovory_Date")) And chkDischargeDateParseExactDate) Then
+                            row("Recovory_Date") = DBNull.Value
+
+                            strError = "Invalid date format for filler 02 (recovery date)."
+                            strExceptionRemarkForRow += strError
+                            exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Warning] [Row " + indexOfRow + "][CHP_Index_No " + row("CHP_index_no") + "] : " + strError)
+                            COVID19DischargeLogger.Log(Common.Component.LogID.LOG00007, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "]  [Row " + indexOfRow + "][CHP_Index_No " + row("CHP_index_no") + "] : " + strError, zipFileNameForLog)
+                        End If
+                    Else
+                        row("Recovory_Date") = DBNull.Value
+                    End If
+
+                    'Filler_03 (Death Indicator)
+                    If (Not row("Death_Indicator").Equals(String.Empty)) Then
+                        'Death_Indicator = "Y"
+                        If (row("Death_Indicator") <> Common.Component.YesNo.Yes) Then
+                            'row("Death_Indicator") = DBNull.Value
+
+                            strError = "Invalid date format for filler 03 (death indicator)."
+                            strExceptionRemarkForRow += strError
+                            exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Warning] [Row " + indexOfRow + "][CHP_Index_No " + row("CHP_index_no") + "] : " + strError)
+                            COVID19DischargeLogger.Log(Common.Component.LogID.LOG00007, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "]  [Row " + indexOfRow + "][CHP_Index_No " + row("CHP_index_no") + "] : " + strError, zipFileNameForLog)
+                        End If
+                    Else
+                        row("Death_Indicator") = DBNull.Value
+                    End If
+
+                    'Filler_04 (Data source)
+                    If (Not row("Data_Source").Equals(String.Empty)) Then
+                        ''Data_Source = ???????
+                        'If Not (row("Data_Source") <> "XXXXXXXX") Then
+                        '    row("Data_Source") = DBNull.Value
+
+                        '    strError = "Invalid date format for filler_04 (data source)."
+                        '    strExceptionRemarkForRow += strError
+                        '    exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Warning] [Row " + indexOfRow + "][CHP_Index_No " + row("CHP_index_no") + "] : " + strError)
+                        '    COVID19DischargeLogger.Log(Common.Component.LogID.LOG00007, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "]  [Row " + indexOfRow + "][CHP_Index_No " + row("CHP_index_no") + "] : " + strError, zipFileNameForLog)
+                        'End If
+                    Else
+                        row("Data_Source") = DBNull.Value
+                    End If
 
                     'If duplicateList.Contains(row.Item("CHP_index_no")) Then
                     '    exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Warning] [Row " + indexOfRow + "][CHP_Index_No "+row("CHP_index_no")+"] : Duplicated CHP index number")
@@ -693,10 +817,6 @@ Public Class ProgramMgr
                     'strExceptionRemarkForRow only check row content for [Import_Remark]
                     row("Import_Remark") += strExceptionRemarkForRow
                 End If
-
-
-
-
 
             Next row
         Catch ex As Exception

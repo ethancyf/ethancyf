@@ -489,6 +489,47 @@
                 </table>
             </asp:Panel>
 
+            <asp:Panel Style="display: none" ID="panDischargeRecordRemark" runat="server">
+                <asp:Panel ID="panDischargeRecordRemarkHeading" runat="server" Style="cursor: move;">
+                    <table border="0" cellpadding="0" cellspacing="0" style="width: 660px">
+                        <tr>
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
+                                <asp:Label ID="lblpanDischargeRecordRemarkHeading" runat="server" Text="<%$ Resources:Text, Remarks %>" />
+                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
+                        </tr>
+                    </table>
+                </asp:Panel>
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 660px">
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
+                        <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
+                            <asp:Panel ID="panDischargeRecordRemarkContent" runat="server" ScrollBars="None">
+                                <div id="divDischargeRecordRemarkTitle" runat="server" style="width: 620px; margin: 14px 2px 0px 2px">
+                                </div>
+                                <div id="divDischargeRecordRemark" runat="server" style="width: 620px; margin: 6px 2px 2px 2px">
+                                    <asp:Label ID="lblpanDischargeRecordRemarkContent" runat="server" Text="<%$ Resources:Text, DischargeRecordForCOVID19Remark %>" />                                    
+                                </div>
+                            </asp:Panel>
+                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                    </tr>
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
+                        <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
+                            <asp:ImageButton ID="btnDischargeRecordRemarkClose" runat="server" AlternateText="<%$ Resources:AlternateText, CloseBtn %>"
+                                ImageUrl="<%$ Resources:ImageUrl, CloseBtn %>" /></td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                    </tr>
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
+                    </tr>
+                </table>
+            </asp:Panel>
+
             <asp:Panel Style="display: none; z-index:10003;" ID="panConfirmSelectPractice" runat="server" Width="600px">
                 <uc1:ucNoticePopUp ID="ucNoticePopUpConfirmSelectPractice" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel" 
                     MessageText="<%$ Resources:Text, SelectPracticePopup %>"  />
@@ -597,6 +638,15 @@
                 PopupDragHandleControlID="" OkControlID="btnOtherVaccinationRecordRemarkClose" RepositionMode="None">
             </cc1:ModalPopupExtender>
             <%--<asp:Button ID="btnModalPopupOtherVaccinationRecordRemark" runat="server" Style="display: none" >
+            </asp:Button>--%>
+            <%-- End of Popup for Other Vaccination Record Remark --%>
+
+             <%-- Popup for Discharge Record Remark --%>
+            <cc1:ModalPopupExtender ID="ModalPopupDischargeRecordRemark" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupDischargeRecordRemark" PopupControlID="panDischargeRecordRemark" BehaviorID="mpeDischargeRecordRemark"
+                PopupDragHandleControlID="" OkControlID="btnDischargeRecordRemarkClose" RepositionMode="None">
+            </cc1:ModalPopupExtender>
+            <%--<asp:Button ID="btnModalPopupDischargeRecordRemark" runat="server" Style="display: none" >
             </asp:Button>--%>
             <%-- End of Popup for Other Vaccination Record Remark --%>
 
@@ -999,6 +1049,10 @@
                             <tr>
                                 <td class="eHSTableHeading">
                                     <asp:Label ID="lblCDischargeRecordHeading" runat="server" Text="<%$ Resources: Text, DischargeRecordForCOVID19 %>" />
+                                    <asp:Button ID="btnModalPopupDischargeRecordRemark" runat="server" BorderWidth="0" BorderStyle="None" Width="17px" Height="17px"
+                                        AlternateText="<%$ Resources:Text, Remarks%>" 
+                                        style="vertical-align:top;position:relative;top:2px;background-color: transparent;background-image:url('../Images/others/info.png');background-repeat: no-repeat;"
+                                        onmouseover="this.style.cursor='pointer'" Visible ="false"/>
                                 </td>
                             </tr>
                             <tr>

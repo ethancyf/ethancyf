@@ -7,10 +7,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
+-- Modified by:		Chris YIM
+-- Modified date:	28 Mar 2022
+-- CR No.:			CRE20-0023-XX
+-- Description:		Add 4 columns
 -- =============================================
 -- =============================================
 -- Modification History
@@ -46,6 +46,9 @@ BEGIN
 	DECLARE @Result TABLE(
 		[Demographic_Match]	CHAR(1),
 		[Discharge_Date]	DATETIME,
+		[Infection_Date]	DATETIME,
+		[Recovery_Date]		DATETIME,
+		[Death_Indicator]	CHAR(1),
 		[File_ID]			VARCHAR(100)
 	)
 -- =============================================
@@ -96,16 +99,19 @@ BEGIN
 		INSERT @Result(
 			[Demographic_Match],
 			[Discharge_Date],
+			[Infection_Date],
+			[Recovery_Date],
+			[Death_Indicator],
 			[File_ID]
 		)
 		SELECT
 			[Demographic_Match] = CASE
-								WHEN [Discharge_Date] IS NULL THEN 'N'
+								WHEN [Discharge_Date] IS NULL AND [Recovery_Date] IS NULL THEN 'N'
 								WHEN [DOB] IS NULL THEN 'P'
 								WHEN (REPLACE(REPLACE(REPLACE(REPLACE(CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2_1)) + CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2_2)),',',''),' ',''),'-',''),'''','') <> @In_Eng_Name  --Eng Name not match
 										OR Sex <> @In_Sex  -- Sex not match
 										OR ((@ExactDOB = 'Y' OR @ExactDOB = 'V' OR  @ExactDOB = 'R' OR  @ExactDOB = 'A') AND (DOB_Format <> 'EY' OR DATEPART (YEAR, DOB) <> DATEPART (YEAR, @In_DOB)))
-										OR ((@ExactDOB = 'M' OR @ExactDOB = 'U') AND (DOB_Format <> 'EDM' OR DATEPART (YEAR, DOB) <> DATEPART (YEAR, @In_DOB) OR DATEPART (MONTH, DOB) <> DATEPART (MONTH, @In_DOB)))
+										OR ((@ExactDOB = 'M' OR @ExactDOB = 'U') AND (DOB_Format <> 'EMY' OR DATEPART (YEAR, DOB) <> DATEPART (YEAR, @In_DOB) OR DATEPART (MONTH, DOB) <> DATEPART (MONTH, @In_DOB)))
 										OR ((@ExactDOB = 'D' OR @ExactDOB = 'T') AND (DOB_Format <> 'EDMY' OR DATEPART (YEAR, DOB) <> DATEPART (YEAR, @In_DOB) OR DATEPART (MONTH, DOB) <> DATEPART (MONTH, @In_DOB) OR DATEPART (DAY, DOB) <> DATEPART (DAY, @In_DOB)))
 										)
 								THEN 'P'
@@ -114,6 +120,18 @@ BEGIN
 			[Discharge_Date] = CASE
 								WHEN [Discharge_Date] IS NULL THEN NULL
 								ELSE [Discharge_Date]
+							END,
+			[Infection_Date] = CASE
+								WHEN [Infection_Date] IS NULL THEN NULL
+								ELSE [Infection_Date]
+							END,
+			[Recovery_Date] = CASE
+								WHEN [Recovery_Date] IS NULL THEN NULL
+								ELSE [Recovery_Date]
+							END,
+			[Death_Indicator] = CASE
+								WHEN [Death_Indicator] IS NULL THEN 'N'
+								ELSE [Death_Indicator]
 							END,
 			[File_ID] = CASE
 								WHEN [Discharge_Date] IS NULL THEN NULL
@@ -131,16 +149,19 @@ BEGIN
 		INSERT @Result(
 			[Demographic_Match],
 			[Discharge_Date],
+			[Infection_Date],
+			[Recovery_Date],
+			[Death_Indicator],
 			[File_ID]
 		)
 		SELECT
 			[Demographic_Match] = CASE
-								WHEN [Discharge_Date] IS NULL
-								THEN 'N'
+								WHEN [Discharge_Date] IS NULL AND [Recovery_Date] IS NULL THEN 'N'
+								WHEN [DOB] IS NULL THEN 'P'
 								WHEN (REPLACE(REPLACE(REPLACE(REPLACE(CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2_1)) + CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2_2)),',',''),' ',''),'-',''),'''','') <> @In_Eng_Name  --Eng Name not match
 										OR Sex <> @In_Sex  -- Sex not match
 										OR ((@ExactDOB = 'Y' OR @ExactDOB = 'V' OR  @ExactDOB = 'R' OR  @ExactDOB = 'A')  AND  (DOB_Format <> 'EY' OR DATEPART (YEAR, DOB) <> DATEPART (YEAR, @In_DOB)))
-										OR ((@ExactDOB = 'M' OR @ExactDOB = 'U') AND (DOB_Format <> 'EDM' OR DATEPART (YEAR, DOB) <> DATEPART (YEAR, @In_DOB) OR DATEPART (MONTH, DOB) <> DATEPART (MONTH, @In_DOB)))
+										OR ((@ExactDOB = 'M' OR @ExactDOB = 'U') AND (DOB_Format <> 'EMY' OR DATEPART (YEAR, DOB) <> DATEPART (YEAR, @In_DOB) OR DATEPART (MONTH, DOB) <> DATEPART (MONTH, @In_DOB)))
 										OR ((@ExactDOB = 'D' OR @ExactDOB = 'T') AND (DOB_Format <> 'EDMY' OR DATEPART (YEAR, DOB) <> DATEPART (YEAR, @In_DOB) OR DATEPART (MONTH, DOB) <> DATEPART (MONTH, @In_DOB) OR DATEPART (DAY, DOB) <> DATEPART (DAY, @In_DOB)))
 										)
 								THEN 'P'
@@ -149,6 +170,18 @@ BEGIN
 			[Discharge_Date] = CASE
 								WHEN [Discharge_Date] IS NULL THEN NULL
 								ELSE [Discharge_Date]
+							END,
+			[Infection_Date] = CASE
+								WHEN [Infection_Date] IS NULL THEN NULL
+								ELSE [Infection_Date]
+							END,
+			[Recovery_Date] = CASE
+								WHEN [Recovery_Date] IS NULL THEN NULL
+								ELSE [Recovery_Date]
+							END,
+			[Death_Indicator] = CASE
+								WHEN [Death_Indicator] IS NULL THEN 'N'
+								ELSE [Death_Indicator]
 							END,
 			[File_ID] = CASE
 								WHEN [Discharge_Date] IS NULL THEN NULL
@@ -163,10 +196,23 @@ BEGIN
 
 	IF (SELECT COUNT(1) FROM @Result) > 0
 	BEGIN
-		SELECT [Demographic_Match], [Discharge_Date], [File_ID] FROM @Result
+		SELECT 
+			[Demographic_Match], 
+			[Discharge_Date],
+			[Infection_Date], 
+			[Recovery_Date], 
+			[Death_Indicator],
+			[File_ID] 
+		FROM @Result
 	END
 	ELSE
-		SELECT [Demographic_Match] = 'N', [Discharge_Date] = NULL, [File_ID] = NULL
+		SELECT 
+			[Demographic_Match] = 'N', 
+			[Discharge_Date] = NULL, 
+			[Infection_Date] = NULL, 
+			[Recovery_Date] = NULL, 
+			[Death_Indicator] = NULL,
+			[File_ID] = NULL
 
     EXEC [proc_SymmetricKey_close]
 

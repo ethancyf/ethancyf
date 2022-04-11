@@ -752,6 +752,15 @@ Partial Public Class ClaimCreation
     Protected WithEvents lblCDischargeRecordStatus As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''btnModalPopupDischargeRecordRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupDischargeRecordRemark As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''lblCDischargeDateText control.
     '''</summary>
     '''<remarks>
@@ -2001,4 +2010,85 @@ Partial Public Class ClaimCreation
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnCloseDocTypeHelp As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''ModalPopupDischargeRecordRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupDischargeRecordRemark As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''panDischargeRecordRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDischargeRecordRemark As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panDischargeRecordRemarkHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDischargeRecordRemarkHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblpanDischargeRecordRemarkHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblpanDischargeRecordRemarkHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panDischargeRecordRemarkContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDischargeRecordRemarkContent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''divDischargeRecordRemarkTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divDischargeRecordRemarkTitle As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''divDischargeRecordRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divDischargeRecordRemark As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblpanDischargeRecordRemarkContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblpanDischargeRecordRemarkContent As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnDischargeRecordRemarkClose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnDischargeRecordRemarkClose As Global.System.Web.UI.WebControls.ImageButton
 End Class

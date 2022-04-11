@@ -5425,13 +5425,34 @@ Partial Public Class ClaimCreation
             End If
 
             'Discharge date 
-            Me.lblCDischargeDate.Text = udtFormatter.formatDisplayDate(CDate(udtDischargeResult.DischargeDate), Session("Language"))
+            Dim dtmNow As DateTime = udtGeneralFunction.GetSystemDateTime.Date
+            Dim dtmDisplayDischargeDate As Nullable(Of DateTime) = Nothing
+
+            If udtDischargeResult.DischargeDate.HasValue Then
+                dtmDisplayDischargeDate = udtDischargeResult.DischargeDate
+            End If
+
+            If dtmDisplayDischargeDate Is Nothing Then
+                If udtDischargeResult.RecoveryDate.HasValue Then
+                    dtmDisplayDischargeDate = udtDischargeResult.RecoveryDate
+                End If
+            Else
+                If udtDischargeResult.RecoveryDate.HasValue AndAlso udtDischargeResult.RecoveryDate > dtmDisplayDischargeDate Then
+                    dtmDisplayDischargeDate = udtDischargeResult.RecoveryDate
+                End If
+            End If
+
+            Me.lblCDischargeDate.Text = udtFormatter.formatDisplayDate(CDate(dtmDisplayDischargeDate), Session("Language"))
 
             'Remarks
             Dim strDaysApartText As String = HttpContext.GetGlobalResourceObject("AlternateText", "DaysApart")
-            Dim intDaysApart As Integer = DateDiff(DateInterval.Day, CDate(udtDischargeResult.DischargeDate), udtGeneralFunction.GetSystemDateTime.Date)
+            Dim intDaysApart As Integer = DateDiff(DateInterval.Day, CDate(dtmDisplayDischargeDate), dtmNow)
 
-            Me.lblCDischargeRemark.Text = strDaysApartText.Replace("%s", intDaysApart)
+            If dtmDisplayDischargeDate >= dtmNow Then
+                Me.lblCDischargeRemark.Text = String.Empty
+            Else
+                Me.lblCDischargeRemark.Text = strDaysApartText.Replace("%s", intDaysApart)
+            End If
 
         End If
 

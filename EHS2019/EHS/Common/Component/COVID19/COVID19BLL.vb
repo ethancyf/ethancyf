@@ -660,17 +660,97 @@ Namespace Component.COVID19
                 db.RunProc("proc_COVID19InfectedDischargeList_get_ByDocCodeDocNo", prams, dt)
 
                 If dt.Rows.Count > 0 Then
-                    Dim dr As DataRow = Nothing
+                    'Dim dr As DataRow = Nothing
 
-                    Dim dv As DataView = New DataView(dt)
+                    'Dim dv As DataView = New DataView(dt)
 
-                    dv.Sort = "Discharge_Date DESC"
+                    'dv.Sort = "Discharge_Date DESC"
 
-                    dr = dv.ToTable.Rows(0)
+                    'dr = dv.ToTable.Rows(0)
 
-                    udtDischargeResult = New DischargeResultModel(dr("Demographic_Match"), _
-                                                                  IIf(IsDBNull(dr("Discharge_Date")), Nothing, dr("Discharge_Date")), _
-                                                                  IIf(IsDBNull(dr("File_ID")), Nothing, dr("File_ID")))
+                    'udtDischargeResult = New DischargeResultModel(dr("Demographic_Match"), _
+                    '                                              IIf(IsDBNull(dr("Discharge_Date")), Nothing, dr("Discharge_Date")), _
+                    '                                              IIf(IsDBNull(dr("Infection_Date")), Nothing, dr("Infection_Date")), _
+                    '                                              IIf(IsDBNull(dr("Recovery_Date")), Nothing, dr("Recovery_Date")), _
+                    '                                              IIf(IsDBNull(dr("Death_Indicator")), Nothing, dr("Death_Indicator")), _
+                    '                                              IIf(IsDBNull(dr("File_ID")), Nothing, dr("File_ID")))
+
+                    Dim udtResDischargeResult As DischargeResultModel = Nothing
+                    Dim dicDischargeList As New Dictionary(Of Integer, DischargeResultModel)
+                    Dim dtmMaxDischarge As Nullable(Of DateTime) = Nothing
+                    Dim intSelectedDischarge As Integer = 0
+                    Dim intLastFullDischarge As Integer = 0
+
+                    For intCt As Integer = 1 To dt.Rows.Count
+                        Dim dr As DataRow = dt.Rows(intCt - 1)
+
+                        udtResDischargeResult = New DischargeResultModel(dr("Demographic_Match"), _
+                                                                      IIf(IsDBNull(dr("Discharge_Date")), Nothing, dr("Discharge_Date")), _
+                                                                      IIf(IsDBNull(dr("Infection_Date")), Nothing, dr("Infection_Date")), _
+                                                                      IIf(IsDBNull(dr("Recovery_Date")), Nothing, dr("Recovery_Date")), _
+                                                                      IIf(IsDBNull(dr("Death_Indicator")), Nothing, dr("Death_Indicator")), _
+                                                                      IIf(IsDBNull(dr("File_ID")), Nothing, dr("File_ID")))
+
+                        If udtResDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
+                            udtResDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch Then
+
+                            dicDischargeList.Add(intCt, udtResDischargeResult)
+
+                            If dtmMaxDischarge Is Nothing Then
+                                '1st record
+                                If udtResDischargeResult.DischargeDate.HasValue Then
+                                    dtmMaxDischarge = udtResDischargeResult.DischargeDate
+                                    intSelectedDischarge = intCt
+                                End If
+
+                                If dtmMaxDischarge Is Nothing Then
+                                    If udtResDischargeResult.RecoveryDate.HasValue Then
+                                        dtmMaxDischarge = udtResDischargeResult.RecoveryDate
+                                        intSelectedDischarge = intCt
+                                    End If
+                                Else
+                                    If udtResDischargeResult.RecoveryDate.HasValue AndAlso udtResDischargeResult.RecoveryDate > dtmMaxDischarge Then
+                                        dtmMaxDischarge = udtResDischargeResult.RecoveryDate
+                                        intSelectedDischarge = intCt
+                                    End If
+                                End If
+
+                            Else
+                                'After 1st record
+
+                                If udtResDischargeResult.DischargeDate.HasValue AndAlso udtResDischargeResult.DischargeDate >= dtmMaxDischarge Then
+                                    If udtResDischargeResult.DischargeDate = dtmMaxDischarge Then
+                                        If dicDischargeList(intSelectedDischarge).DemographicResult <> DischargeResultModel.Result.ExactMatch Then
+                                            intSelectedDischarge = intCt
+                                        End If
+                                    Else
+                                        dtmMaxDischarge = udtResDischargeResult.DischargeDate
+                                        intSelectedDischarge = intCt
+                                    End If
+                                End If
+
+                                If udtResDischargeResult.RecoveryDate.HasValue AndAlso udtResDischargeResult.RecoveryDate >= dtmMaxDischarge Then
+                                    If udtResDischargeResult.RecoveryDate = dtmMaxDischarge Then
+                                        If dicDischargeList(intSelectedDischarge).DemographicResult <> DischargeResultModel.Result.ExactMatch Then
+                                            intSelectedDischarge = intCt
+                                        End If
+                                    Else
+                                        dtmMaxDischarge = udtResDischargeResult.RecoveryDate
+                                        intSelectedDischarge = intCt
+                                    End If
+                                End If
+
+                            End If
+
+                        End If
+
+                    Next
+
+                    If intSelectedDischarge > 0 Then
+                        udtDischargeResult = dicDischargeList(intSelectedDischarge)
+                    Else
+                        udtDischargeResult = New DischargeResultModel("N", Nothing, Nothing, Nothing, Nothing, Nothing)
+                    End If
 
                 End If
 

@@ -5,6 +5,9 @@ Public Class DischargeResultModel
 
         Private _strDemographicResult As String
         Private _dtmDischargeDate As Nullable(Of DateTime)
+        Private _dtmInfectionDate As Nullable(Of DateTime)
+        Private _dtmRecoveryDate As Nullable(Of DateTime)
+        Private _strDeathIndicator As String
         Private _strFileID As String
 
 #Region "Contants"
@@ -70,6 +73,53 @@ Public Class DischargeResultModel
             End Set
         End Property
 
+        Public Property InfectionDate() As Nullable(Of DateTime)
+            Get
+                Return _dtmInfectionDate
+            End Get
+            Set(ByVal Value As Nullable(Of DateTime))
+                _dtmInfectionDate = Value
+            End Set
+        End Property
+
+        Public Property RecoveryDate() As Nullable(Of DateTime)
+            Get
+                Return _dtmRecoveryDate
+            End Get
+            Set(ByVal Value As Nullable(Of DateTime))
+                _dtmRecoveryDate = Value
+            End Set
+        End Property
+
+        Public Property DeathIndicator() As Nullable(Of Boolean)
+            Get
+                Dim blnRes As Nullable(Of Boolean) = Nothing
+
+                If _strDeathIndicator Is Nothing Then
+                    blnRes = Nothing
+                ElseIf _strDeathIndicator = YesNo.Yes Then
+                    blnRes = True
+                Else
+                    blnRes = False
+                End If
+
+                Return blnRes
+            End Get
+            Set(ByVal Value As Nullable(Of Boolean))
+                If Value IsNot Nothing Then
+                    If Value = True Then
+                        Value = YesNo.Yes
+                    Else
+                        Value = YesNo.No
+                    End If
+
+                    _strDeathIndicator = Value
+                Else
+                    _strDeathIndicator = Nothing
+                End If
+            End Set
+        End Property
+
         Public Property FileID() As String
             Get
                 Return _strFileID
@@ -86,16 +136,25 @@ Public Class DischargeResultModel
         Public Sub New()
             _strDemographicResult = String.Empty
             _dtmDischargeDate = Nothing
+            _dtmInfectionDate = Nothing
+            _dtmRecoveryDate = Nothing
+            _strDeathIndicator = Nothing
             _strFileID = String.Empty
 
         End Sub
 
         Public Sub New(ByVal strDemographicResult As String, _
                        ByVal dtmDischargeDate As Nullable(Of DateTime), _
+                       ByVal dtmInfectionDate As Nullable(Of DateTime), _
+                       ByVal dtmRecoveryDate As Nullable(Of DateTime), _
+                       ByVal strDeathIndicator As String, _
                        ByVal strFileID As String)
 
             _strDemographicResult = strDemographicResult
             _dtmDischargeDate = dtmDischargeDate
+            _dtmInfectionDate = dtmInfectionDate
+            _dtmRecoveryDate = dtmRecoveryDate
+            _strDeathIndicator = strDeathIndicator
             _strFileID = strFileID
 
         End Sub

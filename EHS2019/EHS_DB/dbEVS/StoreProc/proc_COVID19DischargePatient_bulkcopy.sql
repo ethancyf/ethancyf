@@ -17,13 +17,22 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			INT22-0011 (Revise COVID19DischargeImporter to support giant amount)
+-- Modified by:		Winnie SUEN
+-- Modified date:	23 May 2021
+-- Description:		Add "@Del" to control whether to remove records before insert
+--					Add column Filler_01 to Filler_04
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023 (Immu record)
 -- Modified by:		Raiman Chong
 -- Modified date:	11 May 2021
 -- Description:		insert record for COVID19DischargePatient and COVID19DischargePatientLog Table
 -- =============================================
 
-CREATE PROCEDURE [dbo].[proc_COVID19DischargePatient_bulkcopy] @PatientTable COVID19DischargePatientTableType READONLY
+CREATE PROCEDURE [dbo].[proc_COVID19DischargePatient_bulkcopy]	@PatientTable COVID19DischargePatientTableType READONLY,
+																@Del BIT
 AS
     BEGIN
 
@@ -42,8 +51,10 @@ AS
         -- Return results
         -- =============================================
         --Clear the record in HAServicePatient table
-
-        DELETE FROM dbo.COVID19DischargePatient;
+		IF @Del = 1
+		BEGIN
+			DELETE FROM dbo.COVID19DischargePatient;
+		END
 
         INSERT INTO dbo.COVID19DischargePatient
                ([Row_No],
@@ -61,7 +72,11 @@ AS
 				[Discharge_Date],
 				[File_ID],
 				[Import_Remark],
-                Create_Dtm
+                Create_Dtm,
+				[Infection_Date],
+				[Recovery_Date],
+				[Death_Indicator],
+				[DataSource]
                )
         SELECT [Row_No],
 			   [CHP_Index_No], 
@@ -78,7 +93,11 @@ AS
 			   [Discharge_Date],
 			   [File_ID],
 			   [Import_Remark],
-               GETDATE()
+               GETDATE(),
+			   [Infection_Date],
+		       [Recovery_Date],
+			   [Death_Indicator],
+			   [Data_Source]
         FROM @PatientTable;
 
 
