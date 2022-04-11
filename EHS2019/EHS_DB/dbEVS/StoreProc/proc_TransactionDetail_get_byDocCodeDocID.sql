@@ -1,10 +1,17 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_TransactionDetail_get_byDocCodeDocID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_TransactionDetail_get_byDocCodeDocID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_TransactionDetail_get_byDocCodeDocID]
 GO
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+-- =============================================
+-- Modification History
+-- CR No.:			INT22-0009
+-- Modified by:		Chris YIM
+-- Modified date:	20 Mar 2021
+-- Description:		Fix duplicate tx when temp acc and validated acc with diff DOB
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -285,6 +292,7 @@ EXEC [proc_SymmetricKey_close]
    ON VT.[Temp_Voucher_Acc_ID] = tmp.[Voucher_Acc_ID]    
  WHERE    
   VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D' AND VT.[Invalid_acc_id] is null    
+  AND VT.[Voucher_Acc_ID] = ''
         
  UNION    
  --INSERT INTO @tmpVoucherTransaction    
@@ -430,3 +438,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_TransactionDetail_get_byDocCodeDocID] TO WSEXT
 GO
+
