@@ -548,7 +548,6 @@ Partial Public Class ClaimTransDetail
 
                     'Contact No.
                     If (udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
-                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
                         udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty) _
                         OrElse _
                         (udtEHSTransaction.TransactionAdditionFields.OutreachType IsNot Nothing AndAlso _
@@ -568,7 +567,6 @@ Partial Public Class ClaimTransDetail
 
                     'Join EHRSS
                     If (udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
-                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
                         udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty) _
                         OrElse _
                         (udtEHSTransaction.TransactionAdditionFields.OutreachType IsNot Nothing AndAlso _
@@ -714,7 +712,6 @@ Partial Public Class ClaimTransDetail
 
                     'Contact No.
                     If udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
-                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
                         udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty Then
 
                         DisplayContactNo(True)
@@ -729,7 +726,6 @@ Partial Public Class ClaimTransDetail
 
                     'Join EHRSS
                     If udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
-                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
                         udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty Then
 
                         If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
@@ -805,7 +801,7 @@ Partial Public Class ClaimTransDetail
 
                     'Remark
                     DisplayRemarks(False)
-                    
+
                     'Join EHRSS
                     If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
                         DisplayJoinEHRSS(True)

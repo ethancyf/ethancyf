@@ -108,14 +108,14 @@ Public Class ClaimVaccineInput
             If Not _blnShowRemark Then
                 For Each tr As TableRow In table.Rows
                     'tr.Cells(0).Width = Unit.Pixel(195)
-                    tr.Cells(1).Width = Unit.Pixel(300)
+                    tr.Cells(1).Width = Unit.Pixel(400)
                     tr.Cells(2).Width = Unit.Pixel(145)
                     tr.Cells(3).Visible = False
                 Next
             Else
                 For Each tr As TableRow In table.Rows
                     'tr.Cells(0).Width = Unit.Pixel(195)
-                    tr.Cells(1).Width = Unit.Pixel(300)
+                    tr.Cells(1).Width = Unit.Pixel(400)
                     tr.Cells(2).Width = Unit.Pixel(145)
                     tr.Cells(3).Width = Unit.Pixel(320)
                 Next

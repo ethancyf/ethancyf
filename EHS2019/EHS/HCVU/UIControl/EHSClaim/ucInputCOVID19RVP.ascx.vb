@@ -400,19 +400,19 @@ Partial Public Class ucInputCOVID19RVP
             End If
 
             Select Case rblCRecipientType.SelectedValue
-                Case RECIPIENT_TYPE.RESIDENT
-                    trCContactNo.Style.Add("display", "none")
-                    trJoinEHRSS.Style.Add("display", "none")
-                Case RECIPIENT_TYPE.RCH_STAFF, RECIPIENT_TYPE.CCSU_STAFF
+                'Case RECIPIENT_TYPE.RESIDENT
+                '    trCContactNo.Style.Add("display", "none")
+                '    trJoinEHRSS.Style.Add("display", "none")
+                Case RECIPIENT_TYPE.RESIDENT, RECIPIENT_TYPE.RCH_STAFF, RECIPIENT_TYPE.CCSU_STAFF
                     trCContactNo.Style.Remove("display")
                     If MyBase.EHSAccount IsNot Nothing AndAlso MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
                         If blnDisplayJoinEHRSS Then
                             trJoinEHRSS.Style.Remove("display")
                         End If
                     End If
-                Case Else
-                    trCContactNo.Style.Add("display", "none")
-                    trJoinEHRSS.Style.Add("display", "none")
+                    'Case Else
+                    '    trCContactNo.Style.Add("display", "none")
+                    '    trJoinEHRSS.Style.Add("display", "none")
             End Select
 
             ''Assign Subsidize Display Code
@@ -817,7 +817,8 @@ Partial Public Class ucInputCOVID19RVP
 
         'End If
 
-        If rblCRecipientType.SelectedValue <> RECIPIENT_TYPE.RESIDENT AndAlso rblCRecipientType.SelectedValue <> String.Empty Then
+        'If rblCRecipientType.SelectedValue <> RECIPIENT_TYPE.RESIDENT AndAlso rblCRecipientType.SelectedValue <> String.Empty Then
+        If rblCRecipientType.SelectedValue <> String.Empty Then
             'Contact No. : Not empty
             'If String.IsNullOrEmpty(Me.txtCContactNo.Text) AndAlso Me.chkStep2aMobile.Checked Then
             If String.IsNullOrEmpty(Me.txtCContactNo.Text) Then
@@ -1035,7 +1036,8 @@ Partial Public Class ucInputCOVID19RVP
             'Contact No.
             Dim strContactNo As String = String.Empty
 
-            If rblCRecipientType.SelectedValue <> RECIPIENT_TYPE.RESIDENT AndAlso rblCRecipientType.SelectedValue <> String.Empty Then
+            'If rblCRecipientType.SelectedValue <> RECIPIENT_TYPE.RESIDENT AndAlso rblCRecipientType.SelectedValue <> String.Empty Then
+            If rblCRecipientType.SelectedValue <> String.Empty Then
                 strContactNo = ContactNo
             End If
 
@@ -1061,7 +1063,8 @@ Partial Public Class ucInputCOVID19RVP
             'Join eHRSS
             Dim strJoinEHRSS As String = String.Empty
 
-            If rblCRecipientType.SelectedValue <> RECIPIENT_TYPE.RESIDENT AndAlso rblCRecipientType.SelectedValue <> String.Empty Then
+            'If rblCRecipientType.SelectedValue <> RECIPIENT_TYPE.RESIDENT AndAlso rblCRecipientType.SelectedValue <> String.Empty Then
+            If rblCRecipientType.SelectedValue <> String.Empty Then
                 If udtEHSTransaction.EHSAcct.SearchDocCode IsNot Nothing Then
                     If Me.DisplayJoinEHRSS(udtEHSTransaction.EHSAcct) Then
                         strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)

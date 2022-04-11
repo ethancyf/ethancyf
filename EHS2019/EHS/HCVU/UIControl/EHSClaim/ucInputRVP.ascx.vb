@@ -146,6 +146,7 @@ Partial Public Class ucInputRVP
 
             Select Case mvCategory.ActiveViewIndex
                 Case ViewIndexCategory.RVP_COVID19
+                    Me.ucInputRVPCOVID19.ServiceDate = MyBase.ServiceDate
                     Me.ucInputRVPCOVID19.EHSTransaction = MyBase.EHSTransaction
                     Me.ucInputRVPCOVID19.SetupContent(True)
             End Select
@@ -807,6 +808,7 @@ Partial Public Class ucInputRVP
         'Each Category Claim Detail
         Select Case mvCategory.ActiveViewIndex
             Case ViewIndexCategory.RVP_COVID19
+                Me.ucInputRVPCOVID19.ServiceDate = MyBase.ServiceDate
                 Me.ucInputRVPCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine, _strRCHType)
         End Select
 

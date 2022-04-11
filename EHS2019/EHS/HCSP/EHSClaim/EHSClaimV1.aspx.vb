@@ -6566,42 +6566,42 @@ Partial Public Class EHSClaimV1
                                     chkStep2aDeclareJoineHRSS.Enabled = True
                                     trStep2aDeclareJoineHRSS.Style.Remove("display")
 
-                                    'Scheme & recipient option
-                                    If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
-                                       udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
-                                        trStep2aDeclareJoineHRSS.Style.Add("display", "none")
+                                    ''Scheme & recipient option
+                                    'If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
+                                    '   udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+                                    '    trStep2aDeclareJoineHRSS.Style.Add("display", "none")
 
-                                        'COVID19RVP
-                                        Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
+                                    '    'COVID19RVP
+                                    '    Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
 
-                                        If udcInputCOVID19RVP IsNot Nothing Then
-                                            If udcInputCOVID19RVP.RecipientType IsNot Nothing AndAlso _
-                                                udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                                                udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                                    '    If udcInputCOVID19RVP IsNot Nothing Then
+                                    '        If udcInputCOVID19RVP.RecipientType IsNot Nothing AndAlso _
+                                    '            udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                                    '            udcInputCOVID19RVP.RecipientType <> String.Empty Then
 
-                                                trStep2aDeclareJoineHRSS.Style.Remove("display")
-                                            End If
-                                        End If
+                                    '            trStep2aDeclareJoineHRSS.Style.Remove("display")
+                                    '        End If
+                                    '    End If
 
-                                        'RVPCOVID19
-                                        Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+                                    '    'RVPCOVID19
+                                    '    Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
 
-                                        If udcInputRVPCOVID19 IsNot Nothing Then
-                                            If udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH Then
-                                                If udcInputRVPCOVID19.RecipientType IsNot Nothing AndAlso _
-                                                    udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                                                    udcInputRVPCOVID19.RecipientType <> String.Empty Then
+                                    '    If udcInputRVPCOVID19 IsNot Nothing Then
+                                    '        If udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH Then
+                                    '            If udcInputRVPCOVID19.RecipientType IsNot Nothing AndAlso _
+                                    '                udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                                    '                udcInputRVPCOVID19.RecipientType <> String.Empty Then
 
-                                                    trStep2aDeclareJoineHRSS.Style.Remove("display")
-                                                End If
+                                    '                trStep2aDeclareJoineHRSS.Style.Remove("display")
+                                    '            End If
 
-                                            Else
-                                                trStep2aDeclareJoineHRSS.Style.Remove("display")
+                                    '        Else
+                                    '            trStep2aDeclareJoineHRSS.Style.Remove("display")
 
-                                            End If
+                                    '        End If
 
-                                        End If
-                                    End If
+                                    '    End If
+                                    'End If
 
                                     'Carry Forward: Join eHealth
                                     If udtTranDetailLatestVaccine IsNot Nothing Then
@@ -6838,12 +6838,12 @@ Partial Public Class EHSClaimV1
 
                 End If
 
-                'Generate JavaScript for recipient Type
-                If blnNeedVaccLot Then
-                    Dim strRecipientTypeJavaScript As String = (New COVID19.COVID19BLL).GenerateRecipientTypeJavaScript()
+                ''Generate JavaScript for recipient Type
+                'If blnNeedVaccLot Then
+                '    Dim strRecipientTypeJavaScript As String = (New COVID19.COVID19BLL).GenerateRecipientTypeJavaScript()
 
-                    ScriptManager.RegisterStartupScript(Me, Page.GetType(), "COVID19_Recipient_Function", strRecipientTypeJavaScript, True)
-                End If
+                '    ScriptManager.RegisterStartupScript(Me, Page.GetType(), "COVID19_Recipient_Function", strRecipientTypeJavaScript, True)
+                'End If
 
                 '----------------------------------------------------------
 
@@ -6927,41 +6927,41 @@ Partial Public Class EHSClaimV1
                     lblStep2aContactNoRecommendation.Visible = True
                     txtStep2aContactNo.Enabled = True
 
-                    If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
-                       udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+                    'If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
+                    '   udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
 
-                        trStep2aContactNo.Style.Add("display", "none")
+                    '    trStep2aContactNo.Style.Add("display", "none")
 
-                        Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
+                    '    Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
 
-                        If udcInputCOVID19RVP IsNot Nothing Then
-                            If udcInputCOVID19RVP.RecipientType IsNot Nothing AndAlso _
-                                udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                                udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                    '    If udcInputCOVID19RVP IsNot Nothing Then
+                    '        If udcInputCOVID19RVP.RecipientType IsNot Nothing AndAlso _
+                    '            udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                    '            udcInputCOVID19RVP.RecipientType <> String.Empty Then
 
-                                trStep2aContactNo.Style.Remove("display")
-                            End If
-                        End If
+                    '            trStep2aContactNo.Style.Remove("display")
+                    '        End If
+                    '    End If
 
-                        Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+                    '    Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
 
-                        If udcInputRVPCOVID19 IsNot Nothing Then
-                            If udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH Then
-                                If udcInputRVPCOVID19.RecipientType IsNot Nothing AndAlso _
-                                    udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                                    udcInputRVPCOVID19.RecipientType <> String.Empty Then
+                    '    If udcInputRVPCOVID19 IsNot Nothing Then
+                    '        If udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH Then
+                    '            If udcInputRVPCOVID19.RecipientType IsNot Nothing AndAlso _
+                    '                udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                    '                udcInputRVPCOVID19.RecipientType <> String.Empty Then
 
-                                    trStep2aContactNo.Style.Remove("display")
-                                End If
+                    '                trStep2aContactNo.Style.Remove("display")
+                    '            End If
 
-                            Else
-                                trStep2aContactNo.Style.Remove("display")
+                    '        Else
+                    '            trStep2aContactNo.Style.Remove("display")
 
-                            End If
+                    '        End If
 
-                        End If
+                    '    End If
 
-                    End If
+                    'End If
 
                     'Carry Forward: Contact no.
                     If udtTranDetailLatestVaccine IsNot Nothing Then
@@ -9034,9 +9034,14 @@ Partial Public Class EHSClaimV1
             isValid = udcInputRVPCOVID19.Validate(True, Me.udcMsgBoxErr)
 
             If panStep2aRecipinetContactInfo.Visible Then
+                'If Me.txtStep2aContactNo.Enabled AndAlso _
+                '    ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso _
+                '        udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                '        udcInputRVPCOVID19.RecipientType <> String.Empty) OrElse _
+                '    udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
+
                 If Me.txtStep2aContactNo.Enabled AndAlso _
                     ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso _
-                        udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
                         udcInputRVPCOVID19.RecipientType <> String.Empty) OrElse _
                     udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
 
@@ -9397,8 +9402,11 @@ Partial Public Class EHSClaimV1
                     'Contact No.
                     Dim strContactNo As String = String.Empty
 
-                    If ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                        udcInputRVPCOVID19.RecipientType <> String.Empty) _
+                    'If ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                    '    udcInputRVPCOVID19.RecipientType <> String.Empty) _
+                    '    OrElse _
+                    '    udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
+                    If ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso udcInputRVPCOVID19.RecipientType <> String.Empty) _
                         OrElse _
                         udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
 
@@ -9438,9 +9446,13 @@ Partial Public Class EHSClaimV1
                     'JoinEHRSS
                     Dim strJoinEHRSS As String = String.Empty
 
+                    'If panStep2aDeclareJoineHRSS.Visible AndAlso _
+                    '    ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                    '    udcInputRVPCOVID19.RecipientType <> String.Empty) _
+                    '    OrElse _
+                    '    udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
                     If panStep2aDeclareJoineHRSS.Visible AndAlso _
-                        ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                        udcInputRVPCOVID19.RecipientType <> String.Empty) _
+                        ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso udcInputRVPCOVID19.RecipientType <> String.Empty) _
                         OrElse _
                         udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
 
@@ -11268,9 +11280,10 @@ Partial Public Class EHSClaimV1
             isValid = udcInputCOVID19RVP.Validate(True, Me.udcMsgBoxErr)
 
             If panStep2aRecipinetContactInfo.Visible Then
-                If Me.txtStep2aContactNo.Enabled AndAlso _
-                    udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                    udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                'If Me.txtStep2aContactNo.Enabled AndAlso _
+                '    udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                '    udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                If Me.txtStep2aContactNo.Enabled AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
 
                     'If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso Me.chkStep2aMobile.Checked Then
                     If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) Then
@@ -11286,8 +11299,10 @@ Partial Public Class EHSClaimV1
                                                                                                       HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
                     End If
 
-                    If Not String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT _
-                        AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                    'If Not String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT _
+                    '    AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
+
+                    If Not String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
 
                         If Not Regex.IsMatch(Me.txtStep2aContactNo.Text, "^[2-9]\d{7}$") Then
                             isValid = False
@@ -11616,7 +11631,8 @@ Partial Public Class EHSClaimV1
                     'Contact No.
                     Dim strContactNo As String = String.Empty
 
-                    If udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                    'If udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                    If udcInputCOVID19RVP.RecipientType <> String.Empty Then
                         strContactNo = txtStep2aContactNo.Text.Trim
                     End If
 
@@ -11652,9 +11668,11 @@ Partial Public Class EHSClaimV1
                     'JoinEHRSS
                     Dim strJoinEHRSS As String = String.Empty
 
-                    If panStep2aDeclareJoineHRSS.Visible AndAlso _
-                        udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                        udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                    'If panStep2aDeclareJoineHRSS.Visible AndAlso _
+                    '    udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                    '    udcInputCOVID19RVP.RecipientType <> String.Empty Then
+
+                    If panStep2aDeclareJoineHRSS.Visible AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
 
                         strJoinEHRSS = IIf(chkStep2aDeclareJoineHRSS.Checked, YesNo.Yes, YesNo.No)
 
