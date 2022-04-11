@@ -955,7 +955,7 @@ Namespace BLL
                 'Claim COVID19
                 If Not udtEHSAccount Is Nothing AndAlso _
                     (udtEHSAccount.RecordStatus = "A" OrElse (udtEHSAccount.RecordStatus = "S" AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True)) AndAlso _
-                    (udtEHSAccount.SearchDocCode = strDocCode) Then
+                    (strSearchDocCode = strDocCode) Then
                     ' Use Validated Account directly
                 Else
                     ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
@@ -1253,11 +1253,10 @@ Namespace BLL
             ' 8. Search Temporary Account, Check Account Status
             ' -------------------------------------------------------------------------------
             If enumClaimMode = ClaimMode.COVID19 Then
-                'Claim COVID19
-
+                'Claim COVID19                
                 If Not udtEHSAccount Is Nothing AndAlso _
                     (udtEHSAccount.RecordStatus = "A" OrElse (udtEHSAccount.RecordStatus = "S" AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True)) AndAlso _
-                    (udtEHSAccount.SearchDocCode = strDocCode) Then
+                    (strSearchDocCode = strDocCode) Then
                     ' Use Validated Account directly
                 Else
                     ' CRE20-023-67 (COVID19 - Prefill Personal Info) [Start][Winnie SUEN]
@@ -2577,7 +2576,7 @@ Namespace BLL
             Dim udtEHSAccountModelList As New EHSAccountModelCollection
             Dim blnInvalidTempAccountFound As Boolean = False
             Dim udtResultEHSAccount As EHSAccountModel = Nothing
-            
+
             strSearchDocCode = strDocCode.Trim()
             ' -----------------------------------------------------------------------------------
             ' Search Temporary Account with COVID19 transaction (C19 & MEC)
