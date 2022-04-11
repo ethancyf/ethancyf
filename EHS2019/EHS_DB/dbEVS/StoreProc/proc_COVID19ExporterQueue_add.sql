@@ -17,7 +17,14 @@ GO
 
 -- =============================================
 -- Modification History
--- CR No.:			CRE20-0023-80 (4th Dose)
+-- CR No.:			CRE20-0023-83 (Upload latest PMI for Vaccine and MEC)
+-- Modified by:		Winnie SUEN
+-- Modified date:	17 Mar 2022
+-- Description:		1. Send latest PMI which has C19 or MEC transcation
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023-81 (4th Dose)
 -- Modified by:		Winnie SUEN
 -- Modified date:	04 Mar 2022
 -- Description:		1. Handle 4th Dose for 'Vaccine_dose_sequence'
@@ -211,6 +218,9 @@ AS
 
 		EXEC [proc_SymmetricKey_open];
 
+		-- =============================================
+		-- Declaration
+		-- =============================================
         DECLARE @In_Period_From DATETIME= @Period_From;
         DECLARE @In_Period_To DATETIME= @Period_To;
         DECLARE @VBar AS CHAR(1)= '|';
@@ -240,10 +250,44 @@ AS
         DECLARE @TempAccountType AS TINYINT= 2;
 
 		DECLARE @EmptyStringVarbinary AS VARBINARY(MAX) = ENCRYPTBYKEY(KEY_GUID('sym_Key'), N'')
-		-----------------------------------------------------------------
-		    
+		-----------------------------------------------------------------	    
 
-        --check COVID19ExporterForceSendList
+		CREATE TABLE #ResultsUpdatedAccount(
+			Doc_Code			CHAR(20),
+			Encrypt_Field1		VARBINARY(100)
+		)
+
+		-- Included both C19 & MEC Transaction
+		CREATE TABLE #ResultsWithTx(
+			Transaction_ID		CHAR(20)
+		)
+
+		CREATE TABLE #ResultsTxWithAccID(
+			Transaction_ID		CHAR(20),
+			Subsidize_Item_Code	CHAR(10),
+			Voucher_Acc_ID		CHAR(15),	-- Account ID (For both VA & TA)
+			AccountType			INT,		-- 1 = Validated Acc; 2 = Temp Acc
+			Doc_Code			CHAR(20),
+			Encrypt_Field1		VARBINARY(100),
+			Update_Dtm			DATETIME,	-- Personal Info Update Dtm
+            Record_Status		CHAR(1),	-- Tx Status
+            Invalidation		CHAR(1)
+		)
+
+        -- The list contains C19 tx with latest PMI
+        CREATE TABLE #ResultsTxWithLatestAccID (
+			Transaction_ID		CHAR(20),
+			Voucher_Acc_ID		CHAR(15),	-- Account ID (For both VA & TA)
+			AccountType			INT,		-- 1 = Validated Acc; 2 = Temp Acc
+			Doc_Code			CHAR(20)
+		)
+
+-- ================================================================
+-- Part 1: Retrieve Transaction List to be sent to Central DB
+-- ================================================================
+
+        --get Doc No. from COVID19ExporterForceSendList Tx
+		INSERT INTO #ResultsUpdatedAccount (Doc_Code, Encrypt_Field1)
         SELECT CASE
                    WHEN vt.Voucher_Acc_ID <> ''
                    THEN pin.Doc_Code
@@ -254,7 +298,6 @@ AS
                    THEN pin.Encrypt_Field1
                    ELSE tpin.Encrypt_Field1
                END AS 'Encrypt_Field1'
-        INTO #ResultsUpdatedAccount
         FROM COVID19ExporterForceSendList AS cefsl WITH(NOLOCK)
              INNER JOIN VoucherTransaction AS vt WITH(NOLOCK)
              ON vt.Transaction_ID = cefsl.Transaction_ID
@@ -264,23 +307,39 @@ AS
              LEFT JOIN TempPersonalInformation AS tpin WITH(NOLOCK)
              ON tpin.Voucher_Acc_ID = vt.Temp_Voucher_Acc_ID
                 AND vt.Voucher_Acc_ID = '';
+		
 
-        --get TX within the period
-        SELECT DISTINCT 
-               vt.Transaction_ID
-        INTO #ResultsWithTx
+		--get Doc No. which has created or updated the C19 & MEC transaction within the period
+		INSERT INTO #ResultsUpdatedAccount (Doc_Code, Encrypt_Field1)
+        SELECT CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN pin.Doc_Code
+                   ELSE tpin.Doc_Code
+               END AS 'Doc_Code',
+               CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN pin.Encrypt_Field1
+                   ELSE tpin.Encrypt_Field1
+               END AS 'Encrypt_Field1'
         FROM VoucherTransaction AS vt WITH(NOLOCK)
              INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_ID
-                AND td.Subsidize_Item_Code = 'C19'
+                AND td.Subsidize_Item_Code IN ('C19','MEC')
+             LEFT JOIN PersonalInformation AS pin WITH(NOLOCK)
+             ON pin.Voucher_Acc_ID = vt.Voucher_Acc_ID
+                AND pin.Doc_Code = vt.Doc_Code
+             LEFT JOIN TempPersonalInformation AS tpin WITH(NOLOCK)
+             ON tpin.Voucher_Acc_ID = vt.Temp_Voucher_Acc_ID
+                AND vt.Voucher_Acc_ID = ''
         WHERE vt.Create_Dtm < @In_Period_To
               AND ((vt.Transaction_Dtm >= @In_Period_From
                     AND vt.Transaction_Dtm < @In_Period_To)
                    OR (vt.Update_Dtm >= @In_Period_From
                        AND vt.Update_Dtm < @In_Period_To));
 
+
         -- get Doc No. which personal info has been updated
-        INSERT INTO #ResultsUpdatedAccount
+		INSERT INTO #ResultsUpdatedAccount (Doc_Code, Encrypt_Field1)
         SELECT temp.Doc_Code, 
                temp.Encrypt_Field1
         FROM
@@ -298,12 +357,14 @@ AS
                       AND pinfo.Update_Dtm < @In_Period_To)
              ) AS temp;
 
+
+		-- get all C19 & MEC transaction ID by Doc No.
         INSERT INTO #ResultsWithTx
         SELECT vt.Transaction_ID
         FROM VoucherTransaction AS vt
              INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_ID
-                AND td.Subsidize_Item_Code = 'C19'
+                AND td.Subsidize_Item_Code IN ('C19','MEC')
              INNER JOIN TempPersonalInformation AS tpinfo WITH(NOLOCK)
              ON vt.Temp_Voucher_Acc_ID = tpinfo.Voucher_Acc_ID
                 AND vt.Voucher_Acc_ID = ''
@@ -315,7 +376,7 @@ AS
         FROM VoucherTransaction AS vt WITH(NOLOCK)
              INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_ID
-                AND td.Subsidize_Item_Code = 'C19'
+                AND td.Subsidize_Item_Code IN ('C19','MEC')
              INNER JOIN PersonalInformation AS pinfo WITH(NOLOCK)
              ON vt.Voucher_Acc_ID = pinfo.Voucher_Acc_ID
                 AND vt.Doc_Code = vt.Doc_Code
@@ -323,10 +384,11 @@ AS
              ON pinfo.Doc_Code = rua.Doc_Code
                 AND pinfo.Encrypt_Field1 = rua.Encrypt_Field1;
 
-        --[Start]get active C19  Transaction_ID to query--
-        --Find the doc_code and doc_id for all Transactions
+        -- get Transaction_ID with account info to query (for C19 & MEC)
+		INSERT INTO #ResultsTxWithAccID(Transaction_ID, Subsidize_Item_Code, Voucher_Acc_ID, AccountType,Doc_Code,Encrypt_Field1,Update_Dtm,Record_Status,Invalidation)
         SELECT DISTINCT 
                vt.Transaction_ID,
+			   td.Subsidize_Item_Code,
                CASE
                    WHEN vt.Voucher_Acc_ID <> ''
                    THEN pin.Voucher_Acc_ID
@@ -354,13 +416,12 @@ AS
                END AS 'Update_Dtm', 
                vt.Record_Status, 
                vt.Invalidation
-        INTO #ResultsWithActiveTx
         FROM #ResultsWithTx AS r
              INNER JOIN VoucherTransaction AS vt WITH(NOLOCK)
              ON r.Transaction_ID = vt.Transaction_id
              INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_id
-                AND td.Subsidize_Item_Code = 'C19'
+                AND td.Subsidize_Item_Code IN ('C19','MEC')
              LEFT JOIN PersonalInformation AS pin WITH(NOLOCK)
              ON pin.Voucher_Acc_ID = vt.Voucher_Acc_ID
                 AND pin.Doc_Code = vt.Doc_Code
@@ -368,8 +429,9 @@ AS
              ON tpin.Voucher_Acc_ID = vt.Temp_Voucher_Acc_ID
                 AND vt.Voucher_Acc_ID = ''
         WHERE vt.Create_Dtm < @In_Period_To;
-
-        --Find the latest vouncher acc id (Same Doc No. in VA & TA, latest personal info update_dtm)
+		
+		
+        --Find the transaction (C19 only) with latest vouncher acc id (Same Doc No. in VA & TA, latest personal info update_dtm)		
         WITH ctePI
              AS (SELECT Voucher_Acc_ID, 
                         Doc_Code, 
@@ -380,22 +442,26 @@ AS
                                                        Encrypt_Field1
                         ORDER BY Update_Dtm DESC, 
                                  accountType) AS rn
-                 FROM #ResultsWithActiveTx AS RWAT
+                 FROM #ResultsTxWithAccID AS RWAT
                  WHERE RWAT.Record_Status NOT IN('I', 'D')
                  AND ISNULL(RWAT.Invalidation, '') <> 'I')
-             SELECT RWAT.Transaction_ID, 
-                    ISNULL(ctpI.Voucher_Acc_ID, RWAT.Voucher_Acc_ID) AS Voucher_Acc_ID, 
-                    ISNULL(ctpI.accountType, RWAT.accountType) AS accountType, 
-                    ISNULL(ctpI.Doc_Code, RWAT.Doc_Code) AS Doc_Code
-             INTO #ResultsTxWithLatestAccID
-             FROM #ResultsWithActiveTx AS RWAT
-                  LEFT OUTER JOIN ctePI AS ctpI
-                  ON RWAT.Doc_Code = ctpI.Doc_Code
-                     AND RWAT.Encrypt_Field1 = ctpI.Encrypt_Field1
-                     AND ctpI.rn = 1;
 
-        --[End] get active C19 Transaction_ID to query--
-        --get the details
+		INSERT INTO #ResultsTxWithLatestAccID(Transaction_ID, Voucher_Acc_ID, AccountType, Doc_Code)
+        SELECT RWAT.Transaction_ID, 
+            ISNULL(ctpI.Voucher_Acc_ID, RWAT.Voucher_Acc_ID) AS Voucher_Acc_ID, 
+            ISNULL(ctpI.accountType, RWAT.accountType) AS accountType, 
+            ISNULL(ctpI.Doc_Code, RWAT.Doc_Code) AS Doc_Code             
+        FROM #ResultsTxWithAccID AS RWAT
+            LEFT OUTER JOIN ctePI AS ctpI
+            ON RWAT.Doc_Code = ctpI.Doc_Code
+                AND RWAT.Encrypt_Field1 = ctpI.Encrypt_Field1
+                AND ctpI.rn = 1
+		WHERE RWAT.Subsidize_Item_Code = 'C19'
+				
+
+-- ================================================================
+-- Part 2: Get Details of data content
+-- ================================================================
         SELECT CASE
                    WHEN rwt.AccountType = @ValidAccountType
                    THEN CASE pinfo.Doc_Code
@@ -952,7 +1018,11 @@ AS
                 AND VSSSubCat.Column_Name = MainCategory.AdditionalFieldValueCode
                 AND VSSSubCat.Status_Value = SubCategory.AdditionalFieldValueCode;
 
-        --the Table of the lastest transaction
+-- ================================================================
+-- Part 3: Determine whether the record should be sent to Central DB
+-- ================================================================
+
+        --get the latest transaction record sent to central DB by transaction id from queue
         SELECT ceq.Transaction_ID, 
                ceq.transaction_Type, 
                ceq.Encrypt_Field2, 
@@ -997,11 +1067,13 @@ AS
             ON r.Transaction_ID = ceq.Transaction_ID
         WHERE ceq.rn = 1;
 
+
+
+
         --handle Update case
         --Only send the 'Update' record, when the latest record:
         --the Record_Status is complete(C) and
         --personal information is different
-
 
 		-- Mark status as 'Skipped' (S) if personal info has not been changed
 		UPDATE r
@@ -1046,6 +1118,7 @@ AS
              LEFT OUTER JOIN #ResultsLatestByTransaction ctecq
              ON r.Transaction_ID = ctecq.Transaction_ID
         WHERE r.transaction_Type = @Delete;
+
         -------------------------------------------------------------
         --The transactions are skipped to send in COVID19ExporterException table
         UPDATE r
@@ -1069,6 +1142,7 @@ AS
                             WHERE r.Transaction_ID = cee.Transaction_ID
                          );
 
+		-- Clear ForceSendList
         DELETE cefsl
         FROM #Results r
              INNER JOIN COVID19ExporterForceSendList cefsl WITH(NOLOCK)
@@ -1079,7 +1153,11 @@ AS
                             FROM COVID19ExporterException AS cee WITH(NOLOCK)
                             WHERE r.Transaction_ID = cee.Transaction_ID
                          );
-        --------------------------------------------------------------
+      
+-- ================================================================
+-- Part 4: Construct data and insert to queue
+-- ================================================================
+
         INSERT INTO COVID19ExporterQueue
                (Batch_ID, 
                 Transaction_ID, 
@@ -1158,18 +1236,14 @@ AS
                 DROP TABLE #ResultsWithTx;
             END;
 
-        IF OBJECT_ID('tempdb..#ResultsWithActiveTx') IS NOT NULL
+        IF OBJECT_ID('tempdb..#ResultsUpdatedAccount') IS NOT NULL
             BEGIN
-                DROP TABLE #ResultsWithActiveTx;
-            END;
-        IF OBJECT_ID('tempdb..#Results') IS NOT NULL
-            BEGIN
-                DROP TABLE #Results;
+                DROP TABLE #ResultsUpdatedAccount;
             END;
 
-        IF OBJECT_ID('tempdb..#ResultsLatestByTransaction') IS NOT NULL
+        IF OBJECT_ID('tempdb..#ResultsTxWithAccID') IS NOT NULL
             BEGIN
-                DROP TABLE #ResultsLatestByTransaction;
+                DROP TABLE #ResultsTxWithAccID;
             END;
 
         IF OBJECT_ID('tempdb..#ResultsTxWithLatestAccID') IS NOT NULL
@@ -1177,10 +1251,16 @@ AS
                 DROP TABLE #ResultsTxWithLatestAccID;
             END;
 
-        IF OBJECT_ID('tempdb..#ResultsUpdatedAccount') IS NOT NULL
+        IF OBJECT_ID('tempdb..#ResultsLatestByTransaction') IS NOT NULL
             BEGIN
-                DROP TABLE #ResultsUpdatedAccount;
+                DROP TABLE #ResultsLatestByTransaction;
             END;
+
+        IF OBJECT_ID('tempdb..#Results') IS NOT NULL
+            BEGIN
+                DROP TABLE #Results;
+            END;
+
     END;
 
 GO
