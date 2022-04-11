@@ -4240,7 +4240,7 @@ Partial Class InspectionRecordManagement
 
     Protected Overrides Function SF_Search(ByRef udtAuditLogEntry As Common.ComObject.AuditLogEntry, ByVal blnOverrideResultLimit As Boolean) As Common.Component.BaseBLL.BLLSearchResult
         Try
-            Dim bllSearchResult As BaseBLL.BLLSearchResult = GetInspectionRecordList()
+            Dim bllSearchResult As BaseBLL.BLLSearchResult = GetInspectionRecordList(blnOverrideResultLimit, False)
             Return bllSearchResult
         Catch ex As Exception
             Me.udtAuditLogEntry.AddDescripton("Error Message", ex.ToString)
@@ -4281,7 +4281,26 @@ Partial Class InspectionRecordManagement
     End Sub
 
     Protected Overrides Sub SF_ConfirmSearch_Click()
+        udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.WriteStartLog(LogID.LOG00044, AuditLogDesc.IRM_Search_Click)
 
+        Me.udcInfoMsgBox.Visible = False
+        Me.udcMsgBox.Visible = False
+        Dim enumSearchResult As SearchResultEnum 'Result Status        
+        Try
+            enumSearchResult = StartSearchFlow(FunctionCode, udtAuditLogEntry, udcMsgBox, udcInfoMsgBox, False, True)
+
+            Select Case enumSearchResult
+                Case SearchResultEnum.Success '0
+                    MultiViewIRM.SetActiveView(vSearchResult)
+                    udtAuditLogEntry.WriteEndLog(LogID.LOG00045, AuditLogDesc.IRM_Search_Successful)
+                Case Else
+                    Throw New Exception("Error: Class = [HCVU.InspectionRecordManagement], Method = [SF_ConfirmSearch_Click], Message = The unexpected error for the result of re-search")
+            End Select
+
+        Catch ex As Exception
+            udtAuditLogEntry.WriteEndLog(LogID.LOG00046, AuditLogDesc.IRM_Search_Fail)
+        End Try
     End Sub
 
     Protected Overrides Sub SF_CancelSearch_Click()
@@ -5830,11 +5849,16 @@ Partial Class InspectionRecordManagement
 
     Public Sub SearchInspectionRecord()
         MultiViewIRM.SetActiveView(vSearchResult)
-        Dim udtBLLSearchResult As BaseBLL.BLLSearchResult = GetInspectionRecordList()
+        Dim udtBLLSearchResult As BaseBLL.BLLSearchResult = GetInspectionRecordList(True, True)
 
         Select Case udtBLLSearchResult.SqlErrorMessage
             Case BaseBLL.EnumSqlErrorMessage.Normal
                 BindInspectionRecord(udtBLLSearchResult)
+
+            Case BaseBLL.EnumSqlErrorMessage.OverResultList1stLimit
+                Me.udcMsgBox.AddMessage(New SystemMessage(FunctCode.FUNT990001, SeverityCode.SEVD, MsgCode.MSG00009))
+                Me.udcMsgBox.BuildMessageBox("SearchFail", udtAuditLogEntry, LogID.LOG00003, "Search Fail")
+                Return
 
             Case BaseBLL.EnumSqlErrorMessage.OverResultListOverrideLimit
                 Me.udcMsgBox.AddMessage(New SystemMessage(FunctCode.FUNT990001, SeverityCode.SEVD, MsgCode.MSG00017))
@@ -5845,7 +5869,7 @@ Partial Class InspectionRecordManagement
         End Select
     End Sub
 
-    Private Function GetInspectionRecordList() As BaseBLL.BLLSearchResult
+    Private Function GetInspectionRecordList(ByVal blnOverrideResultLimit As Boolean, ByVal blnForceUnlimitResult As Boolean) As BaseBLL.BLLSearchResult
         Dim bllSearchResult As BaseBLL.BLLSearchResult = Nothing
         lblInspectionID.Text = If(txtInspectionID.Text = "", Me.GetGlobalResourceObject("Text", "Any"), udtGeneralFunction.getSeqNo_Prefix_Without_Update_ProfileNum("INSID", "ALL") + txtInspectionID.Text)
         lblFileReferenceNo.Text = If(txtFileReferenceNo.Text = "", Me.GetGlobalResourceObject("Text", "Any"), udtGeneralFunction.getSystemParameter("Inspection_FileRefNo_Prefix") + txtFileReferenceNo.Text)
@@ -5888,7 +5912,7 @@ Partial Class InspectionRecordManagement
             .UserId = udtHCVUUserBLL.GetHCVUUser.UserID,
             .OnlyForOwner = OnlyForOwner
             }
-        bllSearchResult = udtInspectionRecordBLL.SearchInspectionRecordByAny(FunctionCode, param, True)
+        bllSearchResult = udtInspectionRecordBLL.SearchInspectionRecordByAny(FunctionCode, param, blnOverrideResultLimit, blnForceUnlimitResult)
         Return bllSearchResult
     End Function
     Public Sub BindInspectionRecord(ByVal udtBLLSearchResult As BaseBLL.BLLSearchResult)

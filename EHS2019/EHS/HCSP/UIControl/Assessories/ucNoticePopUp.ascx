@@ -41,9 +41,9 @@
                             <colgroup />
                             <%-- Display message --%>
                             <tr>
-                                <td style="text-align:right;width: 5%; height: 42px; padding-right:10px;" valign="top">
+                                <td id="tdIcon" runat="server" style="text-align:right;width: 5%; height: 42px; padding-right:10px;" valign="top">
                                     <asp:Image ID="imgIcon" runat="server" ImageUrl="" /></td>
-                                <td colspan="2" style="text-align:left;width: 85%; height: 42px">
+                                <td id="tdMsg" runat="server" colspan="2" style="text-align:left;width: 85%; height: 42px">
                                     <asp:Label ID="lblMsg" runat="server" Style="font-family: Arial;
                                         font-weight: bold; font-size: 14px; color: #666666;" 
                                         BorderStyle="none"></asp:Label>

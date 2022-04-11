@@ -34,15 +34,15 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             Dim strMaskedName As String = "|" + maskEnglishNameByStar(udtPatientInformation.EName)
 
 
-            Dim strSecondLast_DoseDate As String = "|-"
+            Dim strSecondLast_DoseDate As String = "|"
             Dim strSecondLast_VaccineName As String = "|"
-            Dim strSecondLast_VaccineNameTC As String = "|-"
+            Dim strSecondLast_VaccineNameTC As String = "|"
             Dim strSpecialIndicator_1 As String = "|"
             Dim strThirdLast_VaccinePt_1 As String = "|"
 
-            Dim strLast_DoseDate As String = "|-"
+            Dim strLast_DoseDate As String = "|"
             Dim strLast_VaccineName As String = "|"
-            Dim strLast_VaccineNameTC As String = "|-"
+            Dim strLast_VaccineNameTC As String = "|"
             Dim strSpecialIndicator_2 As String = "|"
             Dim strThirdLast_VaccinePt_2 As String = "|"
 
@@ -69,8 +69,6 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
 
             'Get Vaccine Name & Injection date
 
-            ' CRE20-023-59 (Immu record - 3rd Dose) [Start][Winnie SUEN]
-            ' -------------------------------------------------------------
             ' Defination:
             ' udtLastDose = Last Dose (Not applicable to 1st dose only case), otherwise, = nothing
             ' udtSecondLastDose = 2nd Last Dose (Not applicable to 1st dose only case), otherwise, show 1st Dose
@@ -89,8 +87,8 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
 
             '===== Last Dose =====
             If (Not udtLastDose Is Nothing) Then
-                strLast_VaccineName = "|" + udtLastDose.VaccineName
-                strLast_VaccineNameTC = "|" + udtLastDose.VaccineNameChi
+                strLast_VaccineName = "|" + udtLastDose.VaccineCodeForQRCode
+                strLast_VaccineNameTC = "|" '+ udtLastDose.VaccineNameChi
                 strLast_DoseDate = "|" + FormatDate(udtLastDose.InjectionDate, EnumDateFormat.DDMMYYYY)
 
                 If udtLastDose.NonLocalRecoveredHistory Then blnNonLocalRecovered = True
@@ -99,8 +97,8 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
 
             '===== 2nd Last Dose =====
             If (Not udtSecondLastDose Is Nothing) Then
-                strSecondLast_VaccineName = "|" + udtSecondLastDose.VaccineName
-                strSecondLast_VaccineNameTC = "|" + udtSecondLastDose.VaccineNameChi
+                strSecondLast_VaccineName = "|" + udtSecondLastDose.VaccineCodeForQRCode
+                strSecondLast_VaccineNameTC = "|" '+ udtSecondLastDose.VaccineNameChi
                 strSecondLast_DoseDate = "|" + FormatDate(udtSecondLastDose.InjectionDate, EnumDateFormat.DDMMYYYY)
 
                 If udtSecondLastDose.NonLocalRecoveredHistory Then blnNonLocalRecovered = True
@@ -110,26 +108,24 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             '===== 3rd Last Dose =====
             If (Not udtThirdLastDose Is Nothing) Then
                 strThirdLast_VaccinePt_1 = "|" + FormatDate(udtThirdLastDose.InjectionDate, EnumDateFormat.DDMMYYYY)
-                strThirdLast_VaccinePt_1 += "," + udtThirdLastDose.VaccineName
-                strThirdLast_VaccinePt_2 = "|" + udtThirdLastDose.VaccineNameChi
+                strThirdLast_VaccinePt_1 += "," + udtThirdLastDose.VaccineCodeForQRCode
+                strThirdLast_VaccinePt_2 = "|" '+ udtThirdLastDose.VaccineNameChi
 
                 If udtThirdLastDose.NonLocalRecoveredHistory Then blnNonLocalRecovered = True
             End If
             '===== 3rd Last Dose =====
 
+            '===== SpecialIndicator 1 =====
             'Get COVID recovered indicator
-            If (blnDischarge OrElse blnNonLocalRecovered) AndAlso udtLastDose IsNot Nothing Then
-                strSpecialIndicator_2 = "|001"
-            End If
-
-            If (blnDischarge OrElse blnNonLocalRecovered) AndAlso udtSecondLastDose IsNot Nothing Then
+            If (blnDischarge OrElse blnNonLocalRecovered) Then
                 strSpecialIndicator_1 = "|001"
-
-                If udtLastDose Is Nothing Then
-                    strLast_DoseDate = "|NA"
-                End If
             End If
-            ' CRE20-023-59 (Immu record - 3rd Dose) [End][Winnie SUEN]
+            '===== SpecialIndicator 1 =====
+
+            '===== SpecialIndicator 2 =====
+            strSpecialIndicator_2 = "|" + FormatDOB_QRCodeVersion(udtPatientInformation) + "," + udtVaccinationRecord.MaxDoseSeq.ToString
+
+            '===== SpecialIndicator 2 =====
 
             'Generate Digital Signature
             Dim udtQRcode As QRCodeModel = Nothing
@@ -211,8 +207,15 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
                 strRefNo = "|" + (New Formatter).formatSystemNumber(udtEHSTransaction.TransactionID)
             End If
 
+            '===== SpecialIndicator 1 =====
             'Indicator of Exemption Record
             strSpecialIndicator_1 = "|002"
+            '===== SpecialIndicator 1 =====
+
+            '===== SpecialIndicator 2 =====
+            strSpecialIndicator_2 = "|" + FormatDOB_QRCodeVersion(udtPatientInformation)
+
+            '===== SpecialIndicator 2 =====
 
             'Valid Until
             strSpecialindicator002ValidityEndDate = "|" + FormatDate(udtEHSTransaction.TransactionAdditionFields.ValidUntil, EnumDateFormat.DDMMYYYY)
@@ -237,6 +240,50 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
             End Try
 
             Return String.Concat(strRawData, strDigitialSignature)
+
+        End Function
+
+        Private Function FormatDOB_QRCodeVersion(udtPatientInformation As EHSPersonalInformationModel) As String
+            Dim strDOB As String = String.Empty
+            Dim strExactDOB As String = udtPatientInformation.ExactDOB
+
+            If udtPatientInformation.DocCode = DocType.DocTypeModel.DocTypeCode.EC AndAlso udtPatientInformation.ExactDOB = EHSAccountModel.ExactDOBClass.AgeAndRegistration Then
+                'strDOB = (New Formatter).formatDOB(udtPatientInformation.DOB, udtPatientInformation.ExactDOB, CultureLanguage.English, udtPatientInformation.ECAge, udtPatientInformation.ECDateOfRegistration)
+                Dim dtmDOR As Date = CDate(udtPatientInformation.ECDateOfRegistration.Value)
+                Dim intAge As Integer = CInt(udtPatientInformation.ECAge)
+                Dim dtmDOB As Date
+
+                dtmDOB = DateAdd(DateInterval.Year, -1 * intAge, dtmDOR)
+
+                strDOB = Year(dtmDOB)
+            Else
+                strDOB = (New Formatter).formatDOB(udtPatientInformation.DOB, udtPatientInformation.ExactDOB, CultureLanguage.English, Nothing, Nothing)
+            End If
+
+            Select Case strExactDOB
+                Case EHSAccountModel.ExactDOBClass.ExactYear,
+                     EHSAccountModel.ExactDOBClass.ManualExactYear,
+                     EHSAccountModel.ExactDOBClass.AgeAndRegistration,
+                     EHSAccountModel.ExactDOBClass.ReportedYear
+
+                    'Year Only: 01-01-yyyy
+                    strDOB = String.Format("01-01-{0}", strDOB)
+
+                Case EHSAccountModel.ExactDOBClass.ExactMonth,
+                     EHSAccountModel.ExactDOBClass.ManualExactMonth
+
+                    'Year and Month: 01-MM-yyyy
+                    strDOB = String.Format("01-{0}", strDOB)
+
+                Case EHSAccountModel.ExactDOBClass.ExactDate,
+                     EHSAccountModel.ExactDOBClass.ManualExactDate
+
+                    'Exact Day: dd-MM-yyyy
+                    strDOB = String.Format("{0}", strDOB)
+
+            End Select
+
+            Return strDOB
 
         End Function
 

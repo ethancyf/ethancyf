@@ -483,6 +483,19 @@ Namespace Component.COVID19
 
         End Function
 
+        Public Function GetVaccineCodeForQRCode(ByVal strBrand As String) As String
+            Dim strResult As String = String.Empty
+            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineBrand()
+            Dim dr() As DataRow = dt.Select(String.Format("Brand_ID = '{0}'", strBrand.Trim))
+
+            If dr.Length > 0 Then
+                strResult = IIf(IsDBNull(dr(0)("Brand_Printout_Vaccine_Code")), Nothing, dr(0)("Brand_Printout_Vaccine_Code").ToString)
+            End If
+
+            Return strResult
+
+        End Function
+
         ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
         ' -------------------------------------------------------------
         Public Function GetVaccineManufacturer(ByVal strBrand As String) As String
@@ -1058,7 +1071,6 @@ Namespace Component.COVID19
 
         End Function
 
-        'CRE20-023-54 COVID19OR support DS [Start][Martin]
         Public Function GenerateC19DocumentTypeList() As DocTypeModelCollection
             Dim udtDocTypeBLL As New DocTypeBLL
             Dim udtDocTypeModelList As DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
@@ -1095,7 +1107,7 @@ Namespace Component.COVID19
             Return udtDocTypeModelListFilter
 
         End Function
-        'CRE20-023-54 COVID19OR support DS [End][Martin]
+
 #End Region
 
 #Region "QR Code"

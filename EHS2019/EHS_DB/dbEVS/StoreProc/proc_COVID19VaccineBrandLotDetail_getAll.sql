@@ -1,4 +1,4 @@
-IF EXISTS
+﻿IF EXISTS
          (
              SELECT *
              FROM dbo.sysobjects
@@ -12,10 +12,10 @@ GO
 
 -- =============================================  
 -- Modification History  
--- Modified by:    
--- Modified date:   
--- CR No.:     
--- Description:    
+-- Modified by:		Chris YIM 
+-- Modified date:   22 Mar 2022
+-- CR No.:			CRE20-023-82
+-- Description:     Add mapping on brand name for QR Code use
 -- =============================================
 -- =============================================  
 -- Modification History  
@@ -73,6 +73,7 @@ BEGIN
     WHEN VBD.[Brand_Printout_Name_Chi] = '' THEN VBD.[Brand_Printout_Name]  
     ELSE VBD.[Brand_Printout_Name_Chi]  
    END,  
+  VBD.[Brand_Printout_Vaccine_Code],
   VBD.[HK_Reg_No],  
   VBD.[Manufacturer],  
   VBD.[Vaccination_Window_Min],  
@@ -98,3 +99,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_COVID19VaccineBrandLotDetail_getAll] TO HCSP;
 GO
+

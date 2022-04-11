@@ -41,13 +41,13 @@ Public Class InspectionRecordBLL
             Throw
         End Try
     End Function
-    Public Function SearchInspectionRecordByAny(ByVal strFunctionCode As String, ByVal param As GetInspectionParameter, ByVal blnOverrideResultLimit As Boolean) As BaseBLL.BLLSearchResult
+    Public Function SearchInspectionRecordByAny(ByVal strFunctionCode As String, ByVal param As GetInspectionParameter, ByVal blnOverrideResultLimit As Boolean, ByVal blnForceUnlimitResult As Boolean) As BaseBLL.BLLSearchResult
         Dim dt As New DataTable
         Dim udtBLLSearchResult As BaseBLL.BLLSearchResult = Nothing
 
         Dim prams = GenerateSearchInspectionRecordParameter(param)
 
-        udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_InspectionVisitInfo_get_byAny", prams, blnOverrideResultLimit, db)
+        udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_InspectionVisitInfo_get_byAny", prams, blnOverrideResultLimit, db, blnForceUnlimitResult)
         Return udtBLLSearchResult
     End Function
     Private Function GenerateSearchInspectionRecordParameter(ByVal param As GetInspectionParameter)

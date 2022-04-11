@@ -86,6 +86,15 @@ Partial Public Class ucNoticePopUp
     Protected WithEvents udcMsgBoxErr As Global.CustomControls.MessageBox
 
     '''<summary>
+    '''tdIcon control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdIcon As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
     '''imgIcon control.
     '''</summary>
     '''<remarks>
@@ -93,6 +102,15 @@ Partial Public Class ucNoticePopUp
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgIcon As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''tdMsg control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdMsg As Global.System.Web.UI.HtmlControls.HtmlTableCell
 
     '''<summary>
     '''lblMsg control.

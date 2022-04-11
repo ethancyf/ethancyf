@@ -41,12 +41,18 @@ Namespace Component.COVID19
             End Get
         End Property
 
+        Public ReadOnly Property MaxDoseOrder() As Integer
+            Get
+                Return Me.DoseList.Count
+            End Get
+        End Property
+
 #End Region
 
 #Region "Constructor"
 
         Public Sub New()
-            _udtDoseList = New VaccinationCardDoseRecordSortedList            
+            _udtDoseList = New VaccinationCardDoseRecordSortedList
         End Sub
 
 #End Region
@@ -73,22 +79,29 @@ Namespace Component.COVID19
         Public Function getLastDoseRecordForQRCode(ByVal enumLastDoseSeq As LastDoseSeq) As VaccinationCardDoseRecordModel
             Dim udtResult As VaccinationCardDoseRecordModel = Nothing
 
-            If Me.MaxDoseSeq = 1 Then
-                'Special handle for case with 1st Dose Only
-                'Last Dose = Nothing; Second Last Dose = 1st Dose; Third Last Dose = Nothing
-                If enumLastDoseSeq = LastDoseSeq.SecondLastDose Then
-                    udtResult = Me.DoseList.FilterByDoseSeq(1)
-                Else
-                    udtResult = Nothing
-                End If
+            'If Me.MaxDoseSeq = 1 Then
+            '    'Special handle for case with 1st Dose Only
+            '    'Last Dose = Nothing; Second Last Dose = 1st Dose; Third Last Dose = Nothing
+            '    If enumLastDoseSeq = LastDoseSeq.SecondLastDose Then
+            '        udtResult = Me.DoseList.FilterByDoseSeq(1)
+            '    Else
+            '        udtResult = Nothing
+            '    End If
 
-            Else
-                'Normal Case  e.g. Injected 1st and 3rd Dose, MaxDoseSeq = 3
-                'Last Dose = 3rd Dose; Second Last Dose = Nothing (2nd Dose); Third Last Dose = 1st Dose
-                udtResult = Me.DoseList.FilterByDoseSeq(MaxDoseSeq - enumLastDoseSeq + 1)
+            'Else
+            '    'Normal Case  e.g. Injected 1st and 3rd Dose, MaxDoseSeq = 3
+            '    'Last Dose = 3rd Dose; Second Last Dose = Nothing (2nd Dose); Third Last Dose = 1st Dose
+            '    udtResult = Me.DoseList.FilterByDoseSeq(MaxDoseSeq - enumLastDoseSeq + 1)
+            'End If
+
+            'Normal Case  e.g. Injected 1st and 3rd Dose, MaxDoseSeq = 3
+            'Last Dose = 3rd Dose; Second Last Dose = 1st Dose; Third Last Dose = Nothing;
+            If MaxDoseOrder() >= enumLastDoseSeq Then
+                udtResult = CType(Me.DoseList.GetByIndex(MaxDoseOrder() - enumLastDoseSeq), VaccinationCardDoseRecordModelCollection).FilterFindNearestRecord()
             End If
 
             Return udtResult
+
         End Function
 
         Public Sub AddDoseRecord(ByVal udtVaccinationRecordList As TransactionDetailVaccineModelCollection)

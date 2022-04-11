@@ -8,6 +8,13 @@ Namespace Component.COVID19
 #Region "Class: VaccinationCardDoseRecordModel"
     <Serializable()> Public Class VaccinationCardDoseRecordModel
 
+#Region "Constant"
+        Public Class VaccineCode
+            Public Const NDI = "NDI" 'No detailed information
+        End Class
+
+#End Region
+
 #Region "Private Memeber"
         Private _strAvailableItemCode As String
         Private _strTransaction_ID As String
@@ -15,6 +22,7 @@ Namespace Component.COVID19
         Private _strVaccine_Name As String
         Private _strVaccine_Name_Chi As String
         Private _strVaccine_Manufacturer As String
+        Private _strVaccine_CodeForQRCode As String
         Private _dtmInjection_Date As Date
         Private _strVaccination_Center As String
         Private _strVaccination_Center_Chi As String
@@ -75,6 +83,15 @@ Namespace Component.COVID19
             End Get
             Set(ByVal Value As String)
                 _strVaccine_Manufacturer = Value
+            End Set
+        End Property
+
+        Public Property VaccineCodeForQRCode() As String
+            Get
+                Return _strVaccine_CodeForQRCode
+            End Get
+            Set(ByVal Value As String)
+                _strVaccine_CodeForQRCode = Value
             End Set
         End Property
 
@@ -152,6 +169,7 @@ Namespace Component.COVID19
             Me.VaccineName = dtVaccine.Rows(0)("Brand_Printout_Name")
             Me.VaccineNameChi = dtVaccine.Rows(0)("Brand_Printout_Name_Chi")
             Me.VaccineManufacturer = dtVaccine.Rows(0)("Manufacturer")
+            Me.VaccineCodeForQRCode = getVaccineCode(IIf(IsDBNull(dtVaccine.Rows(0)("Brand_Printout_Vaccine_Code")), Nothing, dtVaccine.Rows(0)("Brand_Printout_Vaccine_Code").ToString))
 
             Me.InjectionDate = _udtEHSTransaction.ServiceDate
 
@@ -184,6 +202,7 @@ Namespace Component.COVID19
             Me.VaccineName = udtCOVID19BLL.GetVaccineBrandPrintoutName(_udtVaccinationRecordHistory.VaccineBrand)
             Me.VaccineNameChi = udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(_udtVaccinationRecordHistory.VaccineBrand)
             Me.VaccineManufacturer = udtCOVID19BLL.GetVaccineManufacturer(_udtVaccinationRecordHistory.VaccineBrand)
+            Me.VaccineCodeForQRCode = getVaccineCode(udtCOVID19BLL.GetVaccineCodeForQRCode(_udtVaccinationRecordHistory.VaccineBrand))
 
             Me.InjectionDate = _udtVaccinationRecordHistory.ServiceReceiveDtm
 
@@ -280,6 +299,16 @@ Namespace Component.COVID19
             End Select
 
         End Sub
+
+        Private Function getVaccineCode(ByVal strVaccineCode As String) As String
+            If strVaccineCode Is Nothing OrElse strVaccineCode = String.Empty Then
+                strVaccineCode = VaccineCode.NDI
+
+            End If
+
+            Return strVaccineCode
+
+        End Function
 
 #End Region
 

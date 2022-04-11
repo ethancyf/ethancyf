@@ -1012,6 +1012,11 @@ Partial Class InspectionRecordApproval
             Case BaseBLL.EnumSqlErrorMessage.Normal
                 BindInspectionRecord(udtBLLSearchResult)
 
+            Case BaseBLL.EnumSqlErrorMessage.OverResultList1stLimit
+                Me.udcMsgBox.AddMessage(New SystemMessage(FunctCode.FUNT990001, SeverityCode.SEVD, MsgCode.MSG00009))
+                Me.udcMsgBox.BuildMessageBox("SearchFail", udtAuditLogEntry, LogID.LOG00003, "Search Fail")
+                Return
+
             Case BaseBLL.EnumSqlErrorMessage.OverResultListOverrideLimit
                 Me.udcMsgBox.AddMessage(New SystemMessage(FunctCode.FUNT990001, SeverityCode.SEVD, MsgCode.MSG00017))
                 Me.udcMsgBox.BuildMessageBox("SearchFail", udtAuditLogEntry, LogID.LOG00003, "Search Fail")

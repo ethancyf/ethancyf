@@ -41,6 +41,7 @@ Partial Public Class ucNoticePopUp
     End Enum
 
     Public Enum enumIconMode
+        None
         ExclamationIcon
         Information
         Question
@@ -361,6 +362,12 @@ Partial Public Class ucNoticePopUp
                 Me.imgIcon.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ExclamationIcon")
             Case enumNoticeMode.Custom
                 Select Case IconMode
+                    Case enumIconMode.None
+                        Me.imgIcon.Visible = False
+                        Me.tdIcon.Style.Remove("width")
+                        Me.tdIcon.Style.Add("width", "0px")
+                        Me.tdMsg.Style.Remove("width")
+                        Me.tdMsg.Style.Add("width", "100%")
                     Case enumIconMode.ExclamationIcon
                         Me.imgIcon.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ExclamationIcon")
                     Case enumIconMode.Information

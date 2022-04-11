@@ -9349,7 +9349,11 @@ Partial Public Class EHSClaimV1
                                 Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = strHeader
                             End If
 
+                            Me.panPopupExclamationConfirmationBox.Width = 1060
+
                             Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+
+                            Me.ModalPopupExclamationConfirmationBox.PopupDragHandleControlID = ucNoticePopUpExclamationConfirm.Header.ClientID
 
                             Me.ModalPopupExclamationConfirmationBox.Show()
 
@@ -10625,7 +10629,11 @@ Partial Public Class EHSClaimV1
                                 Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = strHeader
                             End If
 
+                            Me.panPopupExclamationConfirmationBox.Width = 1060
+
                             Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+
+                            Me.ModalPopupExclamationConfirmationBox.PopupDragHandleControlID = ucNoticePopUpExclamationConfirm.Header.ClientID
 
                             Me.ModalPopupExclamationConfirmationBox.Show()
 
@@ -11087,7 +11095,11 @@ Partial Public Class EHSClaimV1
                                 Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = strHeader
                             End If
 
+                            Me.panPopupExclamationConfirmationBox.Width = 1060
+
                             Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+
+                            Me.ModalPopupExclamationConfirmationBox.PopupDragHandleControlID = ucNoticePopUpExclamationConfirm.Header.ClientID
 
                             Me.ModalPopupExclamationConfirmationBox.Show()
 
@@ -11557,7 +11569,11 @@ Partial Public Class EHSClaimV1
                                 Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = strHeader
                             End If
 
+                            Me.panPopupExclamationConfirmationBox.Width = 1060
+
                             Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+
+                            Me.ModalPopupExclamationConfirmationBox.PopupDragHandleControlID = ucNoticePopUpExclamationConfirm.Header.ClientID
 
                             Me.ModalPopupExclamationConfirmationBox.Show()
 
@@ -12045,7 +12061,11 @@ Partial Public Class EHSClaimV1
                                 Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = strHeader
                             End If
 
+                            Me.panPopupExclamationConfirmationBox.Width = 1060
+
                             Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
+
+                            Me.ModalPopupExclamationConfirmationBox.PopupDragHandleControlID = ucNoticePopUpExclamationConfirm.Header.ClientID
 
                             Me.ModalPopupExclamationConfirmationBox.Show()
 
