@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	24 Mar 2022
+-- CR No.:			CRE21-021 (Add Vaccine Information in the VSS Daily Report)
+-- Description:	    [04 - Raw data report] add practice no., outreach code, outreach name (English) and address (English)	
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Martin Tang
 -- Modified date:	08 Sep 2021
 -- CR. No			CRE21-010
@@ -233,7 +240,11 @@ ORDER BY
   isnull(Col13,''),
   isnull(Col14,''),
   isnull(Col15,''),
-  isnull(Col16,'')
+  isnull(Col16,''),
+  isnull(Col17,''),
+  isnull(Col18,''),
+  isnull(Col19,''),
+  isnull(Col20,'')
  FROM       
   RpteHSD0028_04_VSS_Tx_Raw WITH (NOLOCK)  
  ORDER BY  

@@ -8,6 +8,13 @@ GO
   
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	24 Mar 2022
+-- CR No.:			CRE21-021 (Add Vaccine Information in the VSS Daily Report)
+-- Description:	    [04 - Raw data report] add practice no., outreach code, outreach name (English) and address (English)	
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -123,7 +130,11 @@ SELECT @Str_NA = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType 
   Row				int,
   Vaccine			varchar(25),
   Category_Code		varchar(10),
-  HKIC_Symbol		char(1)
+  HKIC_Symbol		char(1),
+  Practice_Display_Seq	int
+  --Outreach_code		varchar(10),
+  --Outreach_Name_Eng	varchar(255),
+  --Address_Eng		varchar(1000)
  )        
 
           
@@ -146,23 +157,27 @@ SELECT @Str_NA = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType 
            
  DECLARE @ResultTable table (          
   Result_Seq     int,          
-  Result_Value1    varchar(200),          
-  Result_Value2    varchar(200),          
-  Result_Value3    varchar(200),          
-  Result_Value4    varchar(200),          
-  Result_Value5    varchar(200),          
-  Result_Value6    varchar(200),          
-  Result_Value7    varchar(200),          
-  Result_Value8    varchar(200),          
-  Result_Value9    varchar(200),          
-  Result_Value10    varchar(200),          
-  Result_Value11    varchar(200),          
-  Result_Value12    varchar(200),          
-  Result_Value13    varchar(200),          
-  Result_Value14    varchar(200),          
-  Result_Value15    varchar(200),
-  Result_Value16	varchar(200)          
- )          
+  Result_Value1    varchar(1000),          
+  Result_Value2    varchar(1000),          
+  Result_Value3    varchar(1000),          
+  Result_Value4    varchar(1000),          
+  Result_Value5    varchar(1000),          
+  Result_Value6    varchar(1000),          
+  Result_Value7    varchar(1000),          
+  Result_Value8    varchar(1000),          
+  Result_Value9    varchar(1000),          
+  Result_Value10    varchar(1000),          
+  Result_Value11    varchar(1000),          
+  Result_Value12    varchar(1000),          
+  Result_Value13    varchar(1000),          
+  Result_Value14    varchar(1000),          
+  Result_Value15    varchar(1000),
+  Result_Value16	varchar(1000),
+  Result_Value17	varchar(1000),
+  Result_Value18	varchar(1000),
+  Result_Value19	varchar(1000),
+  Result_Value20	varchar(1000)
+)          
     
           
 -- ---------------------------------------------          
@@ -190,7 +205,8 @@ SELECT @Str_NA = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType 
   Row,
   Vaccine,
   Category_Code,
-  HKIC_Symbol            
+  HKIC_Symbol,
+  Practice_Display_Seq
  )          
  SELECT          
   VT.SP_ID,          
@@ -213,15 +229,21 @@ SELECT @Str_NA = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType 
   10 + ROW_NUMBER() OVER (ORDER BY VT.Transaction_Dtm),
   SGC.Display_Code_For_Claim AS [Vaccine],
   VT.Category_Code,
-  VT.HKIC_Symbol
+  VT.HKIC_Symbol,
+  VT.Practice_Display_Seq
  FROM          
   VoucherTransaction VT WITH (NOLOCK) 
-  INNER JOIN transactiondetail td WITH (NOLOCK)     
-	ON vt.transaction_id = td.transaction_id  AND vt.scheme_code = @Scheme_Code AND vt.scheme_code = td.scheme_code     
+	INNER JOIN transactiondetail td WITH (NOLOCK)     
+		ON vt.transaction_id = td.transaction_id  AND vt.scheme_code = @Scheme_Code AND vt.scheme_code = td.scheme_code     
 	LEFT JOIN SubsidizeGroupClaim SGC WITH (NOLOCK)
-	ON	td.Scheme_Code = SGC.Scheme_Code
-	AND	td.Scheme_Seq = SGC.Scheme_Seq
-	AND td.Subsidize_Code = SGC.Subsidize_Code   
+		ON	td.Scheme_Code = SGC.Scheme_Code
+		AND	td.Scheme_Seq = SGC.Scheme_Seq
+		AND td.Subsidize_Code = SGC.Subsidize_Code  
+	--LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)
+	--	ON VT.Transaction_ID = TAF.Transaction_ID
+	--	AND TAF.AdditionalFieldID = 'OutreachCode'
+	--LEFT JOIN OutreachList OL WITH (NOLOCK)
+	--	ON TAF.AdditionalFieldID = OL.Outreach_code
  WHERE          
   VT.Scheme_Code = @Scheme_Code 
    AND VT.Transaction_Dtm <= @Cutoff_Dtm          
@@ -438,8 +460,8 @@ INSERT INTO @ResultTable (result_seq)
 VALUES (3)    
 INSERT INTO @ResultTable (result_seq, result_value1, result_value2, result_value3, result_value4, result_value5,    
 result_value6, result_value7, result_value8, result_value9, result_value10, result_value11, result_value12, Result_Value13, 
-Result_Value14, Result_Value15, Result_Value16)    
-VALUES (4, 'Transaction ID', 'Transaction Time', 'SPID', 'Service Date', 'Category', 'Subsidy', 'Dose', @Display_Text_RecepientCondition,
+Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19, Result_Value20)    
+VALUES (4, 'Transaction ID', 'Transaction Time', 'SPID', 'Practice No.', 'Outreach Code', 'Outreach Name (In English)', 'Outreach Address (In English)', 'Service Date', 'Category', 'Subsidy', 'Dose', @Display_Text_RecepientCondition,
  'DOB', 'DOB Flag', 'Gender', 'Doc Type', 'HKIC Symbol', 'Transaction Status', 'Reimbursement Status', 'Means of Input')
     
 -- ---------------------------------------------          
@@ -449,13 +471,17 @@ VALUES (4, 'Transaction ID', 'Transaction Time', 'SPID', 'Service Date', 'Catego
  INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, 
  Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
  Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, 
- Result_Value16)
+ Result_Value16, Result_Value17, Result_Value18, Result_Value19, Result_Value20)
           
  SELECT          
   A.Row,         
   dbo.func_format_system_number(A.Transaction_ID),
   CONVERT(varchar, T.Transaction_Dtm, 20),          
   T.SP_ID,    
+  T.Practice_Display_Seq,
+  ISNULL(TAF.AdditionalFieldValueCode, ''),
+  ISNULL(OL.Outreach_Name_Eng, ''),
+  ISNULL(OL.Address_Eng, ''),
   FORMAT(T.Service_Receive_Dtm, 'yyyy/MM/dd'),
   CC.Category_Name AS [Category], 
   T.Vaccine as 'Subsidy',
@@ -475,7 +501,7 @@ VALUES (4, 'Transaction ID', 'Transaction Time', 'SPID', 'Service Date', 'Catego
   CASE WHEN ISNULL(SD3.Status_Description, '') = '' THEN  @Str_NA ELSE SD3.Status_Description END,   
   SD1.Status_Description,          
   ISNULL(SD2.Status_Description, ''),   
-  case when T.Create_By_SmartID = 'Y' THEN 'Card Reader' ELSE 'Manual' END Create_By_SmartID            
+  case when T.Create_By_SmartID = 'Y' THEN 'Card Reader' ELSE 'Manual' END Create_By_SmartID 
  FROM          
 @Account A 
 	INNER JOIN @Transaction T 
@@ -494,7 +520,12 @@ VALUES (4, 'Transaction ID', 'Transaction Time', 'SPID', 'Service Date', 'Catego
 			AND SD2.Enum_Class = 'ReimbursementStatus'
 	LEFT JOIN StatusData SD3 WITH (NOLOCK)
 		ON T.HKIC_Symbol = SD3.Status_Value
-			AND SD3.Enum_Class = 'HKICSymbol'               
+			AND SD3.Enum_Class = 'HKICSymbol'   
+	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)
+		ON T.Transaction_ID = TAF.Transaction_ID
+		AND TAF.AdditionalFieldID = 'OutreachCode'
+	LEFT JOIN OutreachList OL WITH (NOLOCK)
+		ON TAF.AdditionalFieldValueCode = OL.Outreach_code
 -- =============================================          
 -- Return result          
 -- =============================================          
@@ -516,7 +547,11 @@ INSERT INTO [RpteHSD0028_04_VSS_Tx_Raw] (
   Col13,
   Col14,
   Col15,
-  Col16
+  Col16,
+  Col17,
+  Col18,
+  Col19,
+  Col20
  )            
  SELECT          
   Result_Seq,          
@@ -535,7 +570,11 @@ INSERT INTO [RpteHSD0028_04_VSS_Tx_Raw] (
   Result_Value13,           
   Result_Value14,            
   Result_Value15,            
-  Result_Value16           
+  Result_Value16,           
+  Result_Value17,           
+  Result_Value18,           
+  Result_Value19,           
+  Result_Value20     
  FROM          
   @ResultTable          
 ORDER BY 
