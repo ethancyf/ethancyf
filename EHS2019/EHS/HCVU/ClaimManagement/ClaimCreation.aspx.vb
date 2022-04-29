@@ -5409,7 +5409,14 @@ Partial Public Class ClaimCreation
 #End Region
 
     Private Sub BuildCOVID19DischargeRecordGrid(ByVal udtDischargeResult As DischargeResultModel)
+        Dim blnHandled As Boolean = False
+        Dim strDischargeDate As String = String.Empty
+        Dim strDischargeRemark As String = String.Empty
+
+        'Initial settings
         panStep2aDischargeRecord.Visible = False
+        Me.lblCDischargeDate.Text = String.Empty
+        Me.lblCDischargeRemark.Text = String.Empty
 
         If udtDischargeResult IsNot Nothing AndAlso _
             (udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.ExactMatch OrElse _
@@ -5424,7 +5431,7 @@ Partial Public Class ClaimCreation
                 lblCDischargeRecordStatus.Text = "(" + GetGlobalResourceObject("Text", "DemographicsNotMatch") + ")"
             End If
 
-            'Discharge date 
+            'Preparation on discharge date
             Dim dtmNow As DateTime = udtGeneralFunction.GetSystemDateTime.Date
             Dim dtmDisplayDischargeDate As Nullable(Of DateTime) = Nothing
 
@@ -5442,19 +5449,51 @@ Partial Public Class ClaimCreation
                 End If
             End If
 
-            Me.lblCDischargeDate.Text = udtFormatter.formatDisplayDate(CDate(dtmDisplayDischargeDate), Session("Language"))
+            'Discharge date & Remarks
+            '1. Discharge date is emtpy
+            If dtmDisplayDischargeDate Is Nothing Then
+                'Date
+                strDischargeDate = String.Empty
+                'Remark
+                strDischargeRemark = HttpContext.GetGlobalResourceObject("Text", "DischargeRecordRemarkFieldDesc")
 
-            'Remarks
-            Dim strDaysApartText As String = HttpContext.GetGlobalResourceObject("AlternateText", "DaysApart")
-            Dim intDaysApart As Integer = DateDiff(DateInterval.Day, CDate(dtmDisplayDischargeDate), dtmNow)
+                blnHandled = True
+            End If
 
-            If dtmDisplayDischargeDate >= dtmNow Then
-                Me.lblCDischargeRemark.Text = String.Empty
-            Else
-                Me.lblCDischargeRemark.Text = strDaysApartText.Replace("%s", intDaysApart)
+            '2. Deceased
+            If Not blnHandled AndAlso udtDischargeResult.DeathIndicator.HasValue AndAlso udtDischargeResult.DeathIndicator Then
+                'Date
+                strDischargeDate = String.Empty
+                'Remark
+                strDischargeRemark = HttpContext.GetGlobalResourceObject("Text", "DischargeRecordRemarkFieldDesc")
+
+                blnHandled = True
+            End If
+
+            '3. Discharge date is past date, current date or future date
+            If Not blnHandled AndAlso dtmDisplayDischargeDate IsNot Nothing Then
+                Dim strDaysApartText As String = HttpContext.GetGlobalResourceObject("AlternateText", "DaysApart")
+                Dim intDaysApart As Integer = DateDiff(DateInterval.Day, CDate(dtmDisplayDischargeDate), dtmNow)
+
+                'Date
+                strDischargeDate = udtFormatter.formatDisplayDate(CDate(dtmDisplayDischargeDate), Session("Language"))
+
+                'Remark
+                If dtmDisplayDischargeDate >= dtmNow Then
+                    'If current date or future date, no remark
+                    strDischargeRemark = String.Empty
+                Else
+                    'If past date, has remark
+                    strDischargeRemark = strDaysApartText.Replace("%s", intDaysApart)
+                End If
+
+                blnHandled = True
             End If
 
         End If
+
+        Me.lblCDischargeDate.Text = strDischargeDate
+        Me.lblCDischargeRemark.Text = strDischargeRemark
 
     End Sub
 

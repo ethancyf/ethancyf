@@ -53,7 +53,8 @@ AS
         --Clear the record in HAServicePatient table
 		IF @Del = 1
 		BEGIN
-			DELETE FROM dbo.COVID19DischargePatient;
+			--DELETE FROM dbo.COVID19DischargePatient;
+			TRUNCATE TABLE dbo.COVID19DischargePatient;
 		END
 
         INSERT INTO dbo.COVID19DischargePatient

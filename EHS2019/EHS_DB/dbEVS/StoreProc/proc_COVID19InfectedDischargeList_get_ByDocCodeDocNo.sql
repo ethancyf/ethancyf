@@ -106,7 +106,7 @@ BEGIN
 		)
 		SELECT
 			[Demographic_Match] = CASE
-								WHEN [Discharge_Date] IS NULL AND [Recovery_Date] IS NULL THEN 'N'
+								--WHEN [Discharge_Date] IS NULL AND [Recovery_Date] IS NULL THEN 'N'
 								WHEN [DOB] IS NULL THEN 'P'
 								WHEN (REPLACE(REPLACE(REPLACE(REPLACE(CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2_1)) + CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2_2)),',',''),' ',''),'-',''),'''','') <> @In_Eng_Name  --Eng Name not match
 										OR Sex <> @In_Sex  -- Sex not match
@@ -156,7 +156,7 @@ BEGIN
 		)
 		SELECT
 			[Demographic_Match] = CASE
-								WHEN [Discharge_Date] IS NULL AND [Recovery_Date] IS NULL THEN 'N'
+								--WHEN [Discharge_Date] IS NULL AND [Recovery_Date] IS NULL THEN 'N'
 								WHEN [DOB] IS NULL THEN 'P'
 								WHEN (REPLACE(REPLACE(REPLACE(REPLACE(CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2_1)) + CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2_2)),',',''),' ',''),'-',''),'''','') <> @In_Eng_Name  --Eng Name not match
 										OR Sex <> @In_Sex  -- Sex not match

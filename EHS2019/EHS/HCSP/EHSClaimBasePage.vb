@@ -774,6 +774,30 @@ Public MustInherit Class EHSClaimBasePage
     Public Shared Sub AuditLogTextOnlyVersionEnterServiceDateNextClick(ByVal udtAuditLogEntry As AuditLogEntry)
         udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00087, "Enter Service Date - Next Click")
     End Sub
+
+    'Enter Claim Detail : Discharge Result Load : LOG00097
+    Public Shared Sub AuditLogEnterClaimDetailDischargeResultLoad(ByRef udtAuditLogEntry As AuditLogEntry,
+                                                                  ByVal udtDischargeResult As Common.Component.COVID19.DischargeResultModel,
+                                                                  ByVal strDischargeDate As String)
+        If udtDischargeResult IsNot Nothing Then
+            'Dim strDischargeDate As String = String.Empty
+
+            'If udtDischargeResult.DischargeDate.HasValue Then
+            '    strDischargeDate = CDate(udtDischargeResult.DischargeDate).ToString("yyyy-MM-dd")
+            'End If
+
+            udtAuditLogEntry.AddDescripton("Recovery Record Result", udtDischargeResult.DemographicResultCode)
+            udtAuditLogEntry.AddDescripton("Recovery Date", strDischargeDate)
+            udtAuditLogEntry.AddDescripton("Deceased", IIf(udtDischargeResult.DeathIndicator.HasValue, IIf(udtDischargeResult.DeathIndicator, YesNo.Yes, YesNo.No), YesNo.No))
+        Else
+            udtAuditLogEntry.AddDescripton("Recovery Record Result", "N")
+            udtAuditLogEntry.AddDescripton("Recovery Date", String.Empty)
+            udtAuditLogEntry.AddDescripton("Deceased", String.Empty)
+        End If
+
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00097, "Enter Claim Detail - Recovery Record Load")
+    End Sub
+
 #End Region
 
 #Region "Audit Log Step2b"

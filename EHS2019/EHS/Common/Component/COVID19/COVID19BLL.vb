@@ -697,26 +697,34 @@ Namespace Component.COVID19
                             dicDischargeList.Add(intCt, udtResDischargeResult)
 
                             If dtmMaxDischarge Is Nothing Then
-                                '1st record
+                                'No discharege date(Latest)
                                 If udtResDischargeResult.DischargeDate.HasValue Then
                                     dtmMaxDischarge = udtResDischargeResult.DischargeDate
-                                    intSelectedDischarge = intCt
+                                    'intSelectedDischarge = intCt
                                 End If
 
                                 If dtmMaxDischarge Is Nothing Then
                                     If udtResDischargeResult.RecoveryDate.HasValue Then
                                         dtmMaxDischarge = udtResDischargeResult.RecoveryDate
-                                        intSelectedDischarge = intCt
+                                        'intSelectedDischarge = intCt
                                     End If
                                 Else
                                     If udtResDischargeResult.RecoveryDate.HasValue AndAlso udtResDischargeResult.RecoveryDate > dtmMaxDischarge Then
                                         dtmMaxDischarge = udtResDischargeResult.RecoveryDate
-                                        intSelectedDischarge = intCt
+                                        'intSelectedDischarge = intCt
                                     End If
                                 End If
 
+                                If intSelectedDischarge > 0 Then
+                                    If dicDischargeList(intSelectedDischarge).DemographicResult <> DischargeResultModel.Result.ExactMatch OrElse dtmMaxDischarge IsNot Nothing Then
+                                        intSelectedDischarge = intCt
+                                    End If
+                                Else
+                                    intSelectedDischarge = intCt
+                                End If
+
                             Else
-                                'After 1st record
+                                'After has discharege date(Latest)
 
                                 If udtResDischargeResult.DischargeDate.HasValue AndAlso udtResDischargeResult.DischargeDate >= dtmMaxDischarge Then
                                     If udtResDischargeResult.DischargeDate = dtmMaxDischarge Then
