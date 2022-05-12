@@ -872,6 +872,31 @@ Namespace Component.EHSClaimVaccine
 
 #End Region
 
+#Region "Filter VSS COVID19"
+        Public Shared Function MatchVaccineBrand(ByVal udtEHSClaimVaccine As EHSClaimVaccineModel, ByVal enumVaccineBrandID As COVID19.COVID19BLL.VaccineBrandID) As Boolean
+            Dim blnRes As Boolean = True
+
+            If udtEHSClaimVaccine IsNot Nothing Then
+                For Each udtSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
+                    If udtSubsidize.Selected Then
+                        If Not COVID19.COVID19BLL.IsMatchVaccindBrand(udtSubsidize.SubsidizeCode, enumVaccineBrandID) Then
+                            blnRes = False
+                            Exit For
+
+                        End If
+
+                    End If
+
+                Next
+
+            End If
+
+            Return blnRes
+
+        End Function
+
+#End Region
+
     End Class
 
 End Namespace

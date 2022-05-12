@@ -77,6 +77,15 @@ Partial Public Class ucInputEHSClaim
     Protected WithEvents ucInputEHSClaim_COVID19 As Global.HCVU.ucInputCOVID19
 
     '''<summary>
+    '''ucInputEHSClaim_COVID19DH control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucInputEHSClaim_COVID19DH As Global.HCVU.ucInputCOVID19DH
+
+    '''<summary>
     '''PlaceHolder1 control.
     '''</summary>
     '''<remarks>

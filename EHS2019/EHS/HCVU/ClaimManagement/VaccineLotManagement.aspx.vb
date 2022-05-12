@@ -783,7 +783,7 @@ Partial Public Class VaccineLotManagement
                     udtAuditLogEntry.WriteEndLog(LogID.LOG00008, AuditMsg00008)
                 ElseIf ViewState("state") = StateType.EDIT Then
                     Dim udtVaccineLotList As VaccineLotModel = Nothing
-                    udtVaccineLotList = udtVaccineLotBLL.GetVaccineLotModalByVaccineLotId(hfEVaccineLotId.Text)
+                    udtVaccineLotList = udtVaccineLotBLL.GetVaccineLotModalByVaccineLotId(hfEVaccineLotId.Text, VaccineLotRecordServiceType.Centre)
                     lblConVaccineCentre.Text = udtVaccineLotList.CentreName
                     lblConVaccineBooth.Text = udtVaccineLotList.Booth
                     lblConVaccineBoothID.Text = udtVaccineLotList.BoothId
@@ -901,7 +901,7 @@ Partial Public Class VaccineLotManagement
 
         Dim strRequestPendingBoothList As String = Nothing
 
-        strRequestPendingBoothList = ckPendingRequestRecordByVLSDataTable(hfConVaccineCentreId.Text, lblConVaccineBoothID.Text.Trim, lblConVaccineLotNo.Text.Trim)
+        strRequestPendingBoothList = ckPendingRequestRecordExist(hfConVaccineCentreId.Text, lblConVaccineBoothID.Text.Trim, lblConVaccineLotNo.Text.Trim)
 
         If Not strRequestPendingBoothList Is Nothing Then
             msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00004), "%s", strRequestPendingBoothList)
@@ -944,6 +944,7 @@ Partial Public Class VaccineLotManagement
                 ibtnRecordConfirm.Enabled = True
                 ibtnRecordConfirm.ImageUrl = GetGlobalResourceObject("ImageUrl", "ConfirmBtn")
 
+                udtVaccineLotList.ServiceType = VaccineLotRecordServiceType.Centre
                 udtVaccineLotList.CentreId = hfConVaccineCentreId.Text
                 udtVaccineLotList.BoothId = lblConVaccineBoothID.Text.Trim
                 udtVaccineLotList.BrandTradeName = lblConVaccineBrandName.Text.Trim
@@ -1067,6 +1068,7 @@ Partial Public Class VaccineLotManagement
             If RemoveRecordInfoValidation(hflblEConVaccineCentreId.Text, hflEConVaccineBoothId.Text, lblEConVaccineLotNo.Text) Then
                 Dim udtVaccineLotList As VaccineLotModel = New VaccineLotModel()
 
+                udtVaccineLotList.ServiceType = VaccineLotRecordServiceType.Centre
                 udtVaccineLotList.CentreId = hflblEConVaccineCentreId.Text
                 udtVaccineLotList.BoothId = hflEConVaccineBoothId.Text
                 udtVaccineLotList.BrandTradeName = lblEConVaccineBrandName.Text
@@ -1131,7 +1133,7 @@ Partial Public Class VaccineLotManagement
             panEditRecord.Visible = True
 
             Dim udtVaccineLotList As VaccineLotModel = Nothing
-            udtVaccineLotList = udtVaccineLotBLL.GetVaccineLotModalByVaccineLotId(hfEVaccineLotId.Text)
+            udtVaccineLotList = udtVaccineLotBLL.GetVaccineLotModalByVaccineLotId(hfEVaccineLotId.Text, VaccineLotRecordServiceType.Centre)
             lblPERConVaccineCentre.Text = udtVaccineLotList.CentreName
             lblPERConVaccineBooth.Text = udtVaccineLotList.Booth
             hfPERConVaccineBoothId.Text = udtVaccineLotList.BoothId
@@ -1444,7 +1446,7 @@ Partial Public Class VaccineLotManagement
 
         Dim udtVaccineLotList As VaccineLotModel = Nothing
         hfEVaccineLotId.Text = strVLID
-        udtVaccineLotList = udtVaccineLotBLL.GetVaccineLotModalByVaccineLotId(strVLID)
+        udtVaccineLotList = udtVaccineLotBLL.GetVaccineLotModalByVaccineLotId(strVLID, VaccineLotRecordServiceType.Centre)
 
         ChangeViewIndex(ViewIndex.EditRecordView)
 
@@ -1523,7 +1525,7 @@ Partial Public Class VaccineLotManagement
         'VaccineLotSummaryDataTable = udtVaccineLotBLL.GetVaccineLotListSummaryByAny(strCentreId, strBoothList, String.Empty, strVaccLotNo)
 
         'check active record
-        strNonExistRecordBoothList = ckNonExistRecordByVLSDataTable(strCentreId, strBoothList, strVaccLotNo)
+        strNonExistRecordBoothList = ckNonExistRecord(strCentreId, strBoothList, strVaccLotNo)
 
         If Not strNonExistRecordBoothList Is Nothing Then
             msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00005), "%s", strNonExistRecordBoothList) ' change later 
@@ -1534,7 +1536,7 @@ Partial Public Class VaccineLotManagement
         'Check any other pending approve
         If blnValid Then
 
-            strRequestPendingBoothList = ckPendingRequestRecordByVLSDataTable(strCentreId, strBoothList, strVaccLotNo)
+            strRequestPendingBoothList = ckPendingRequestRecordExist(strCentreId, strBoothList, strVaccLotNo)
 
             If Not strRequestPendingBoothList Is Nothing Then
                 msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00004), "%s", strRequestPendingBoothList)
@@ -1696,10 +1698,10 @@ Partial Public Class VaccineLotManagement
                 Dim strRequestPendingBoothList As String = Nothing
                 If ViewState("state") = StateType.ADD Then
                     ' VaccineLotSummaryDataTable = udtVaccineLotBLL.GetVaccineLotListSummaryByAny(ddlVaccineCentre.SelectedValue.ToString, strBoothId, String.Empty, ddlVaccineLotNo.SelectedValue.ToString)
-                    strRequestPendingBoothList = ckPendingRequestRecordByVLSDataTable(ddlVaccineCentre.SelectedValue.ToString, strBoothId, ddlVaccineLotNo.SelectedValue.ToString)
+                    strRequestPendingBoothList = ckPendingRequestRecordExist(ddlVaccineCentre.SelectedValue.ToString, strBoothId, ddlVaccineLotNo.SelectedValue.ToString)
                 ElseIf ViewState("state") = StateType.EDIT Then
                     'VaccineLotSummaryDataTable = udtVaccineLotBLL.GetVaccineLotListSummaryByAny(hfPERConVaccineCentreID.Text, lblPERConVaccineBooth.Text, String.Empty, lblPERConVaccineLotNo.Text)
-                    strRequestPendingBoothList = ckPendingRequestRecordByVLSDataTable(hfPERConVaccineCentreID.Text, hfPERConVaccineBoothId.Text, lblPERConVaccineLotNo.Text)
+                    strRequestPendingBoothList = ckPendingRequestRecordExist(hfPERConVaccineCentreID.Text, hfPERConVaccineBoothId.Text, lblPERConVaccineLotNo.Text)
                 End If
 
 
@@ -1816,12 +1818,12 @@ Partial Public Class VaccineLotManagement
         End If
     End Function
 
-    Private Function ckPendingRequestRecordByVLSDataTable(ByVal strCentreId As String, ByVal strBoothList As String, ByVal strVaccLotNo As String) As String
+    Private Function ckPendingRequestRecordExist(ByVal strCentreId As String, ByVal strBoothList As String, ByVal strVaccLotNo As String) As String
         Dim boothDisplayItemList As StaticDataModelCollection = (New StaticDataBLL).GetStaticDataListByColumnName(BoothClassCode)
         Dim strRequestPendingBoothList As String = Nothing
         Dim dtVaccineLotPendingRequest As DataTable = Nothing
 
-        dtVaccineLotPendingRequest = udtVaccineLotBLL.GetVaccineLotPendingRequestList(strCentreId, strBoothList, strVaccLotNo)
+        dtVaccineLotPendingRequest = udtVaccineLotBLL.GetVaccineLotPendingRequestList(strCentreId, strBoothList, strVaccLotNo, VaccineLotRecordServiceType.Centre, "")
 
         For Each row As DataRow In dtVaccineLotPendingRequest.Rows
             Dim strBoothDisplayItem As String = boothDisplayItemList.Item(BoothClassCode, CType(row.Item("Booth"), String).Trim).DataValue
@@ -1834,7 +1836,7 @@ Partial Public Class VaccineLotManagement
         Return strRequestPendingBoothList
     End Function
 
-    Private Function ckNonExistRecordByVLSDataTable(ByVal strCentreId As String, ByVal strBoothList As String, ByVal strVaccLotNo As String) As String
+    Private Function ckNonExistRecord(ByVal strCentreId As String, ByVal strBoothList As String, ByVal strVaccLotNo As String) As String
         Dim strNonExistBoothList As String = Nothing
         Dim nonExistBoothList As List(Of String) = New List(Of String)
         Dim blnExist As Boolean = False

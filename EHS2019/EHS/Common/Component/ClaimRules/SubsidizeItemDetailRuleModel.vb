@@ -4,6 +4,7 @@ Namespace Component.ClaimRules
 #Region "Constant"
         Public Class TypeClass
             Public Const AGE As String = "AGE"
+            Public Const EXACTAGE As String = "EXACTAGE"
             Public Const DOSE As String = "DOSE"
             Public Const DOB As String = "DOB"
             Public Const HIGHRISK As String = "HIGHRISK"

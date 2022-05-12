@@ -440,6 +440,7 @@
     <Content Include="UIControl\EHSClaimText\ucReadOnlyCOVID19.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPIDVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19DH.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19MEC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx" />
@@ -453,6 +454,7 @@
     <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19DH.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19MEC.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx" />
@@ -2787,6 +2789,13 @@
       <DependentUpon>ucReadOnlyPIDVSS.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19DH.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19DH.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19DH.ascx.vb">
+      <DependentUpon>ucInputCOVID19DH.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCOVID19MEC.ascx.designer.vb">
       <DependentUpon>ucInputCOVID19MEC.ascx</DependentUpon>
     </Compile>
@@ -2883,6 +2892,13 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSPID.ascx.vb">
       <DependentUpon>ucInputVSSPID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19DH.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19DH.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19DH.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19DH.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19MEC.ascx.designer.vb">

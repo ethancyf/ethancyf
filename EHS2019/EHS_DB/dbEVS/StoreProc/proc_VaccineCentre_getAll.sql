@@ -1,4 +1,4 @@
-IF EXISTS
+﻿IF EXISTS
          (
              SELECT *
              FROM dbo.sysobjects
@@ -12,17 +12,17 @@ GO
 
 -- =============================================  
 -- Modification History  
--- Modified by:    
--- Modified date:   
--- CR No.:     
--- Description:    
+-- Modified by:		Chris YIM
+-- Modified date:   06 Apr 2022
+-- CR No.:			CRE20-023-86		
+-- Description:		Add column "Centre_Service_Type"
 -- =============================================   
 -- =============================================  
 -- Modification History  
--- Created by:  Raiman Chong  
--- Created date: 29 Mar 2021  
--- CR No.:   CRE20-0023  
--- Description: Get all Vaccine Centre for HCVU User Maintenance Function
+-- Created by:		Raiman Chong  
+-- Created date:	29 Mar 2021  
+-- CR No.:			CRE20-0023  
+-- Description:		Get all Vaccine Centre for HCVU User Maintenance Function
 -- =============================================  
   
 CREATE PROCEDURE [dbo].[proc_VaccineCentre_getAll]  
@@ -44,7 +44,8 @@ BEGIN
  SELECT  
  VC.Centre_ID,
  VC.Centre_Name,
- VC.Centre_Name_Chi
+ VC.Centre_Name_Chi,
+ VC.Centre_Service_Type
  FROM   
   [VaccineCentre] VC WITH(NOLOCK)   
  ORDER BY   

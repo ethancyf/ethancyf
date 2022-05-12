@@ -1,4 +1,4 @@
-
+﻿
 IF EXISTS
 (
     SELECT *
@@ -11,6 +11,13 @@ IF EXISTS
     END;
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-86 (Immu Record)
+-- Modified by:		Winnie SUEN
+-- Modified date:	06 Apr 2022
+-- Description:		Use Centre_Service_Type to declare DH Clinic instead of prefix 'DH0'
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE21-003 (To handle Centre ID with prefix 'DH')
@@ -58,15 +65,17 @@ AS
                centre_name,
                CASE
 					WHEN Centre_ID IS NULL OR service_type <> 'CENTRE' THEN '' 
-					WHEN LEFT(centre_id, 3) = 'DH0' THEN 'DH CLINIC'
-					ELSE 'CENTRE'
+					--WHEN LEFT(centre_id, 3) = 'DH0' THEN 'DH CLINIC'
+					--ELSE 'CENTRE'
+					ELSE Centre_Service_Type
                END AS centre_service_type
         FROM
         (
             SELECT VLM.Vaccine_Lot_No, 
                    VLM.Service_Type, 
                    VLM.Centre_ID, 
-                   VC.Centre_Name
+                   VC.Centre_Name,
+				   VC.Centre_Service_Type
             FROM COVID19VaccineLotMapping AS VLM WITH(NOLOCK)
                  INNER JOIN COVID19VaccineLotDetail AS VLD WITH(NOLOCK) ON VLD.Vaccine_Lot_No = VLM.Vaccine_Lot_No
                  LEFT JOIN VaccineCentre AS VC WITH(NOLOCK) ON VLM.Centre_ID = VC.Centre_ID
@@ -77,7 +86,8 @@ AS
             SELECT VLR.Vaccine_Lot_No, 
                    VLR.Service_Type, 
                    VLR.Centre_ID, 
-                   VC.Centre_Name
+                   VC.Centre_Name,
+				   VC.Centre_Service_Type
             FROM COVID19VaccineLotMappingRequest AS VLR WITH(NOLOCK)
 			INNER JOIN COVID19VaccineLotDetail AS VLD WITH(NOLOCK) ON VLD.Vaccine_Lot_No = VLR.Vaccine_Lot_No
                  LEFT JOIN VaccineCentre AS VC WITH(NOLOCK) ON VC.Centre_ID = VLR.Centre_ID
@@ -90,3 +100,4 @@ AS
 GO
 GRANT EXECUTE ON [dbo].[proc_COVID19VaccineLotMapping_getActive_ByLotNo] TO HCVU;
 GO
+

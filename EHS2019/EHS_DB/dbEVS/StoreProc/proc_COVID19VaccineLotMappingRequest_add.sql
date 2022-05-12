@@ -22,13 +22,14 @@ GO
 -- =============================================  
 -- =============================================  
 -- Modification History  
--- Modified by:   
--- Modified date:   
--- Description:   
+-- Modified by: Jeremy Chan	  
+-- Modified date: 05 Jan 2022  
+-- Description: Add Service_Type & Scheme_Code
 -- =============================================  
 CREATE PROCEDURE [dbo].[proc_COVID19VaccineLotMappingRequest_add] @Request_ID          VARCHAR(10), 
                                                                   @vaccine_Lot_No      VARCHAR(20), 
                                                                   @service_Type        VARCHAR(20), 
+																  @scheme_Code         CHAR(10),
                                                                   @centre_ID           VARCHAR(10), 
                                                                   @booth_list          VARCHAR(1000), 
                                                                   @service_Period_From DATETIME = null, 
@@ -45,6 +46,7 @@ AS
                (Request_ID, 
                 Vaccine_Lot_No, 
                 Service_Type, 
+				Scheme_Code,
                 Centre_ID, 
                 Booth, 
                 RCH_Code, 
@@ -65,6 +67,7 @@ AS
               (@Request_ID, 
                @vaccine_Lot_No, 
                @service_Type, 
+			   @scheme_Code,
                @centre_ID, 
                @booth_list, 
                NULL, 

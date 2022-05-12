@@ -806,6 +806,8 @@ Namespace Component
         Public Const FUNT010423 As String = "010423" ' Claim Management - Vaccine Lot Approval
         Public Const FUNT010424 As String = "010424" ' Vaccine Lot Creation
         Public Const FUNT010425 As String = "010425" ' Vaccine Lot Creation Approval
+        Public Const FUNT010427 As String = "010427" ' Claim Management -  Vaccine Lot Management in Private Clinic
+        Public Const FUNT010428 As String = "010428" ' Claim Management - Vaccine Lot Approval in Private Clinic
         Public Const FUNT010501 As String = "010501"
         Public Const FUNT010601 As String = "010601"
         Public Const FUNT010701 As String = "010701"

@@ -19,9 +19,17 @@ GO
 -- Description:		from the vaccine lot request to update COVID19VaccineLotMapping record
 -- =============================================
 -- exec proc_COVID19VaccineLotMapping_update 'LC0000015','E','HAADM1'
-CREATE PROCEDURE [dbo].[proc_COVID19VaccineLotMapping_update] @request_id  VARCHAR(20) = NULL, 
+-- =============================================
+--Modification History
+-- CR No.:			CRE23-022 (Immu record)
+-- Modified by:		Jeremy Chan
+-- Modified date:	25 Feb 2022
+-- Description:		Seperate to Centre and Scheme
+-- =============================================
+CREATE PROCEDURE [dbo].[proc_COVID19VaccineLotMapping_update] @request_id  VARCHAR(20),
                                                               @action_type VARCHAR(2), 
-                                                              @user_id     VARCHAR(20) = NULL, 
+                                                              @user_id     VARCHAR(20), 
+															  @service_type VARCHAR(20),
                                                               @tsmp        TIMESTAMP
 AS
     BEGIN
@@ -52,6 +60,7 @@ AS
             DECLARE @RecordStatusRemoved AS CHAR(1)= 'D';
             DECLARE @l_request_id VARCHAR(20);
             DECLARE @centre_id AS VARCHAR(10);
+			DECLARE @scheme_code AS CHAR (10); --
             DECLARE @vaccine_lot_no AS VARCHAR(20);
             DECLARE @booth_no AS VARCHAR(1000);
             DECLARE @count INT;
@@ -60,13 +69,21 @@ AS
             DECLARE @New_Lot_ID CHAR(20);
             DECLARE @Profile_ID CHAR(10);
             DECLARE @requested_by VARCHAR(20);
+			DECLARE @l_action_type VARCHAR(20);
+			DECLARE @l_service_type VARCHAR(20);
+			DECLARE @l_user_id VARCHAR(20);
 
             -- =============================================  
             -- Initialization  
             -- =============================================  
             --DECLARE @delimiter VARCHAR(10);
             SET @l_request_id = @request_id;
+			SET @l_action_type = @action_type;
+			SET @l_user_id = @user_id;
+			SET @l_service_type = @service_type;
             SET @Profile_ID = 'VLM';
+IF @l_service_type = 'CENTRE'
+     BEGIN
             SELECT ROW_NUMBER() OVER(
                    ORDER BY VLMR.Booth_no) AS id, 
                    VLMR.Booth_no, 
@@ -85,7 +102,7 @@ AS
                        Requested_By
                 FROM COVID19VaccineLotMappingRequest AS VMR
                      OUTER APPLY func_split_string(VMR.Booth, ',') AS Booth
-                WHERE Request_Id = @request_id
+                WHERE Request_Id = @l_request_id
             ) AS VLMR;
             SELECT *
             FROM #tempMappingRequest;
@@ -101,7 +118,7 @@ AS
             ----------------------------------
             --- Approve
             ----------------------------------
-            IF @action_type = 'A'
+            IF @l_action_type= 'A'
                 BEGIN --if(1)
                     WHILE @count <= @countRow
                         BEGIN -- while start
@@ -130,12 +147,12 @@ AS
                                             UPDATE COVID19VaccineLotMapping
                                               SET Service_Period_From = lmr.Service_Period_From, 
                                                   Service_Period_To = lmr.Service_Period_To, 
-                                                  Update_By = @user_id, 
+                                                  Update_By = @l_user_id, 
                                                   Update_Dtm = GETDATE(), 
                                                   Record_Status = 'A'
                                             FROM COVID19VaccineLotMapping VLM
-                                                 INNER JOIN COVID19VaccineLotMappingRequest lmr
-                                                 ON lmr.Request_id = @request_id
+                                                INNER JOIN COVID19VaccineLotMappingRequest lmr
+                                                ON lmr.Request_id = @l_request_id
                                             WHERE VLM.Centre_id = @centre_id
                                                   AND VLM.Vaccine_Lot_no = @vaccine_lot_no
                                                   AND VLM.booth = @booth_no;
@@ -145,21 +162,19 @@ AS
                                             -- remove
                                             UPDATE COVID19VaccineLotMapping
                                               SET Record_status = 'D', 
-                                                  Update_By = @user_id, 
+                                                  Update_By = @l_user_id, 
                                                   Update_Dtm = GETDATE()
                                             FROM COVID19VaccineLotMapping VLM
-                                                 INNER JOIN COVID19VaccineLotMappingRequest lmr
-                                                 ON lmr.Request_id = @request_id
                                             WHERE VLM.Centre_id = @centre_id
                                                   AND VLM.Vaccine_Lot_no = @vaccine_lot_no
                                                   AND VLM.booth = @booth_no;
                                         END;--if(3)
                                     --update LotmappingRequest
                                     UPDATE COVID19VaccineLotMappingRequest
-                                      SET Approved_by = @user_id, 
+                                      SET Approved_by = @l_user_id, 
                                           Approved_Dtm = GETDATE(), 
                                           Record_status = 'A'
-                                    WHERE Request_Id = @request_id;
+                                    WHERE Request_Id = @l_request_id;
                                 END; --if (exists)
                                 ELSE
                                 BEGIN -- if (not exists)
@@ -206,45 +221,197 @@ AS
                                                    --'A', 
                                                    @requested_by, 
                                                    GETDATE(), 
-                                                   @user_id, 
+                                                   @l_user_id, 
                                                    GETDATE()
                                             FROM COVID19VaccineLotMappingRequest
-                                            WHERE Request_ID = @request_id;
+                                            WHERE Request_ID = @l_request_id;
                                             ---update the request table
 
                                             UPDATE COVID19VaccineLotMappingRequest
-                                              SET Approved_by = @user_id, 
+                                              SET Approved_by = @l_user_id, 
                                                   Approved_Dtm = GETDATE(), 
                                                   Record_status = 'A'
-                                            WHERE Request_Id = @request_id;
+                                            WHERE Request_Id = @l_request_id;
                                         END;
                                         ELSE
                                         BEGIN
                                             ---update the request table
 
                                             UPDATE COVID19VaccineLotMappingRequest
-                                              SET Approved_by = @user_id, 
+                                              SET Approved_by = @l_user_id, 
                                                   Approved_Dtm = GETDATE(), 
                                                   Record_status = 'A'
-                                            WHERE Request_Id = @request_id;
+                                            WHERE Request_Id = @l_request_id;
                                         END;
                                 END; -- if (not exists)
                         END;
                 END; -- while end
-        END;--if(1)
+        --END;--if(1)
         ----------------------------------
         --- Reject
         ----------------------------------
-        IF @action_type = 'R'
+        IF @l_action_type = 'R'
             BEGIN
                 UPDATE COVID19VaccineLotMappingRequest
-                  SET Rejected_by = @user_id, 
+                  SET Rejected_by = @l_user_id, 
                       Rejected_Dtm = GETDATE(), 
                       Record_status = 'A'
-                WHERE Request_Id = @request_id;
+                WHERE Request_Id = @l_request_id;
             END;
         DROP TABLE #tempMappingRequest;
-        END;
+	END
+ELSE IF @l_service_type = 'SCHEME'
+	 BEGIN
+            -- =============================================
+            -- Return results
+            -- =============================================
+            ----------------------------------
+            --- Approve
+            ----------------------------------
+            IF @l_action_type = 'A'
+                BEGIN --if(1)
+                        BEGIN -- while start
+                            SELECT @l_service_type = Service_Type, 
+                                   @vaccine_lot_no = vaccine_lot_no, 
+                                   @scheme_code = Scheme_Code, 
+                                   @requested_by = requested_by,
+								   @request_type = Request_type
+                            FROM COVID19VaccineLotMappingRequest AS VMR
+							WHERE Request_Id = @l_request_id
+                            IF EXISTS
+                            (
+                                SELECT TOP 1 *
+                                FROM COVID19VaccineLotMapping
+                                WHERE Service_Type = @l_service_type
+                                      AND Vaccine_Lot_No = @vaccine_lot_no
+                                      AND Scheme_Code = @scheme_code 
+                            --AND Record_Status ='A'
+                            )
+                                BEGIN -- if (exists)
+                                    IF @request_type = 'A'
+                                       OR @request_type = 'N'
+                                        BEGIN --if(3)
+                                            -- new assign
+                                            -- update Lotmapping
+                                            UPDATE COVID19VaccineLotMapping
+                                              SET Service_Period_From = lmr.Service_Period_From, 
+                                                  Service_Period_To = lmr.Service_Period_To, 
+                                                  Update_By = @l_user_id, 
+                                                  Update_Dtm = GETDATE(), 
+                                                  Record_Status = 'A'
+                                            FROM COVID19VaccineLotMapping VLM
+                                                 INNER JOIN COVID19VaccineLotMappingRequest lmr
+                                                 ON lmr.Request_id = @l_request_id
+                                            WHERE VLM.Service_Type = @l_service_type
+                                                  AND VLM.Vaccine_Lot_no = @vaccine_lot_no
+                                                  AND VLM.Scheme_Code = @scheme_code;
+                                        END;--if(3)
+                                        ELSE
+                                        BEGIN --if(3)
+                                            -- remove
+                                            UPDATE COVID19VaccineLotMapping
+                                              SET Record_status = 'D', 
+                                                  Update_By = @l_user_id, 
+                                                  Update_Dtm = GETDATE()
+                                            FROM COVID19VaccineLotMapping VLM
+                                            WHERE VLM.Service_Type = @l_service_type
+                                                  AND VLM.Vaccine_Lot_no = @vaccine_lot_no
+                                                  AND VLM.Scheme_Code = @scheme_code;
+                                        END;--if(3)
+                                    --update LotmappingRequest
+                                    UPDATE COVID19VaccineLotMappingRequest
+                                      SET Approved_by = @l_user_id, 
+                                          Approved_Dtm = GETDATE(), 
+                                          Record_status = 'A'
+                                    WHERE Request_Id = @l_request_id;
+                                END; --if (exists)
+                                ELSE
+                                BEGIN -- if (not exists)
+
+                                    IF @request_type <> 'R'
+
+                                    --- if the request type is not Remove 
+                                        BEGIN
+                                            -- not exist on the mapping table
+                                            -- get the latest Lot ID
+                                            BEGIN TRANSACTION;
+                                            EXEC proc_SystemProfile_get_byProfileID_withOutputParm @Profile_ID, 
+                                                                                                   @New_Lot_ID OUTPUT;
+                                            COMMIT TRANSACTION;
+                                            --SELECT @New_Lot_ID = 'LC' + CONVERT(CHAR(8), GETDATE(), 112) + RIGHT('0000000000' + RTRIM(LTRIM(
+                                            --@New_Lot_ID)), 5);
+
+											Select  @New_Lot_ID ='LC' + convert(char(8),getdate(),112) + RIGHT('0000000000' + RTRIM(LTRIM(@New_Lot_ID)), 5);
+
+                                            --- insert into the Mapping table
+                                            INSERT INTO [dbo].[COVID19VaccineLotMapping]
+                                                   ([Vaccine_Lot_ID], 
+                                                    [Vaccine_Lot_No], 
+                                                    [Service_Type], 
+                                                    [Centre_ID], 
+                                                    [Booth], 
+                                                    [Service_Period_From], 
+                                                    [Service_Period_To], 
+                                                    [Record_status], 
+                                                    --[Lot_status], --remove it later
+                                                    [Create_By], 
+                                                    [Create_Dtm], 
+                                                    [Update_By], 
+                                                    [Update_dtm],
+													[Scheme_Code]
+                                                   )
+                                            SELECT @New_Lot_ID, 
+                                                   Vaccine_Lot_No, 
+                                                   Service_Type, 
+                                                   Centre_ID, 
+                                                   @booth_no, 
+                                                   Service_Period_From, 
+                                                   Service_Period_To, 
+                                                   'A', 
+                                                   --'A', 
+                                                   @requested_by, 
+                                                   GETDATE(), 
+                                                   @l_user_id, 
+                                                   GETDATE(),
+												   Scheme_Code
+                                            FROM COVID19VaccineLotMappingRequest
+                                            WHERE Request_ID = @l_request_id;
+                                            ---update the request table
+
+                                            UPDATE COVID19VaccineLotMappingRequest
+                                              SET Approved_by = @l_user_id, 
+                                                  Approved_Dtm = GETDATE(), 
+                                                  Record_status = 'A'
+                                            WHERE Request_Id = @l_request_id;
+                                        END;
+                                        ELSE
+                                        BEGIN
+                                            ---update the request table
+
+                                            UPDATE COVID19VaccineLotMappingRequest
+                                              SET Approved_by = @l_user_id, 
+                                                  Approved_Dtm = GETDATE(), 
+                                                  Record_status = 'A'
+                                            WHERE Request_Id = @l_request_id;
+                                        END;
+                                END; -- if (not exists)
+                        END;
+                END; -- while end
+        --END;--if(1)
+        ----------------------------------
+        --- Reject
+        ----------------------------------
+        IF @l_action_type = 'R'
+            BEGIN
+                UPDATE COVID19VaccineLotMappingRequest
+                  SET Rejected_by = @l_user_id, 
+                      Rejected_Dtm = GETDATE(), 
+                      Record_status = 'A'
+                WHERE Request_Id = @l_request_id;
+            END;
+        END
+		END
+		END
 GO
 GRANT EXECUTE ON [dbo].[proc_COVID19VaccineLotMapping_update] TO HCVU;
 GO

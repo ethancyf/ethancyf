@@ -662,8 +662,6 @@ Partial Public Class ClaimTransDetail
                 udcReadOnlyEHSClaim.BuildSSSCMC()
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-                ' CRE20-0XX (Immu record) [Start][Raiman Chong]
-                ' ---------------------------------------------------------------------------------------------------------
             Case SchemeClaimModel.EnumControlType.COVID19
                 udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
                 udcReadOnlyEHSClaim.Width = 204
@@ -698,7 +696,41 @@ Partial Public Class ClaimTransDetail
                     DisplayRemarks(False)
                     DisplayJoinEHRSS(False)
                 End If
-                ' CRE20-0XX (Immu record) [End][Raiman Chong]
+
+            Case SchemeClaimModel.EnumControlType.COVID19DH
+                udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
+                udcReadOnlyEHSClaim.Width = 204
+                udcReadOnlyEHSClaim.BuildCOVID19DH()
+
+                If IsClaimCOVID19(udtEHSTransaction) Then
+                    If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
+                        DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
+                    End If
+
+                    'Contact No.
+                    DisplayContactNo(False)
+
+                    'Remark
+                    DisplayRemarks(True)
+                    FillRemarks(udtEHSTransaction)
+
+                    'Join EHRSS
+                    If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
+                        DisplayJoinEHRSS(True)
+                        FillJoinEHRSS(udtEHSTransaction)
+                    Else
+                        DisplayJoinEHRSS(False)
+                    End If
+
+                    'Non-Local Recovered History
+                    DisplayNonLocalRecoveredHistory(True)
+                    FillNonLocalRecoveredHistory(udtEHSTransaction)
+
+                Else
+                    DisplayContactNo(False)
+                    DisplayRemarks(False)
+                    DisplayJoinEHRSS(False)
+                End If
 
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction

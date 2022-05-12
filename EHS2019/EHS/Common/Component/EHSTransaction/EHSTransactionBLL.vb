@@ -941,7 +941,7 @@ Namespace Component.EHSTransaction
                                 Dim drVaccineLot() As DataRow = Nothing
 
                                 Select Case udtEHSTransactionModel.SchemeCode.Trim
-                                    Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, _
+                                    Case SchemeClaimModel.COVID19CVC, _
                                          SchemeClaimModel.COVID19RVP, SchemeClaimModel.COVID19OR, _
                                          SchemeClaimModel.COVID19SR, SchemeClaimModel.COVID19SB
 
@@ -950,11 +950,12 @@ Namespace Component.EHSTransaction
                                                                                                           udtEHSTransactionModel.ServiceDate, _
                                                                                                           COVID19.COVID19BLL.Source.GetFromDB)
 
-                                    Case SchemeClaimModel.VSS
+                                    Case SchemeClaimModel.VSS, SchemeClaimModel.COVID19DH
                                         dtVaccineLot = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(udtEHSTransactionModel.ServiceProviderID, _
-                                                                                                          udtEHSTransactionModel.PracticeID, _
-                                                                                                          udtEHSTransactionModel.ServiceDate, _
-                                                                                                          COVID19.COVID19BLL.Source.GetFromDB)
+                                                                                                           udtEHSTransactionModel.PracticeID, _
+                                                                                                           udtEHSTransactionModel.ServiceDate, _
+                                                                                                           udtEHSTransactionModel.SchemeCode.Trim, _
+                                                                                                           COVID19.COVID19BLL.Source.GetFromDB)
 
                                     Case SchemeClaimModel.RVP
                                         dtVaccineLot = udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH(udtEHSTransactionModel.ServiceDate, _

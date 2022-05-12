@@ -21,8 +21,7 @@
         <table cellpadding="0" cellspacing="0" style="width: 772px">
             <tbody>
                 <tr>
-                    <td id="hkid_cell" runat="server" style="background-image: url(../Images/HKID/HKID_Empty.jpg);
-                        background-repeat: no-repeat; height: 310px" valign="top" enableviewstate="true">
+                    <td id="hkid_cell" runat="server" valign="top" enableviewstate="true">
                         <table cellpadding="0" cellspacing="0" style="width: 515px; height: 72px">
                             <tbody>
                                 <tr>

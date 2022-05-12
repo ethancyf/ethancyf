@@ -73,9 +73,11 @@
                 <asp:Label ID="lblECHKIDText" runat="server" CssClass="tableTitle" Width="175px"></asp:Label></td>
             <td valign="top" style="padding-bottom: 8px;">
                 <asp:TextBox ID="txtECHKID" runat="server" AutoCompleteType="Disabled" MaxLength="11"
-                    onChange="formatHKID(this);" Width="85px"></asp:TextBox><asp:Image ID="ErrECHKID"
+                    onChange="formatHKID(this);" Width="100px" style="position:relative;top:-1px" />
+                <asp:Image ID="ErrECHKID"
                         runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
-                        Visible="False" ImageAlign="AbsMiddle" /></td>
+                        Visible="False" ImageAlign="AbsMiddle" />
+            </td>
             <td valign="top">
                 <asp:Label ID="lblHKIDECHint" runat="server" CssClass="tableTitle"></asp:Label></td>
         </tr>
@@ -86,7 +88,8 @@
                 <asp:RadioButton ID="rbECDOB" runat="server" AutoPostBack="True" Checked="true" CssClass="tableTitle"
                     GroupName="groupECDOA" Text="" />
                 <asp:TextBox ID="txtECDOB" runat="server" AutoCompleteType="Disabled" Enabled="true"
-                    MaxLength="10" Width="85px" onkeydown="filterDateInputKeyDownHandler(this, event);"
+                    MaxLength="10" Width="90px" style="border:1px solid #707070;height:16px;position:relative;top:-1px"
+                    onkeydown="filterDateInputKeyDownHandler(this, event);"
                     onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
                     onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
                 <asp:Label ID="lblECDOBOrText" runat="server" CssClass="tableTitle"> </asp:Label>
@@ -105,7 +108,9 @@
                                 GroupName="groupECDOA" />&nbsp;</td>
                         <td align="left">
                             <asp:TextBox ID="txtECDOAAge" runat="server" AutoCompleteType="Disabled" Enabled="false"
-                                MaxLength="3" Width="30px"></asp:TextBox>&nbsp;<asp:Image ID="ErrECDOAAge" runat="server"
+                                MaxLength="3" Width="30px" style="border:1px solid #707070;height:16px" />
+                            &nbsp;
+                            <asp:Image ID="ErrECDOAAge" runat="server"
                                     AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
                                     Visible="False" ImageAlign="AbsMiddle" />
                         </td>
@@ -113,19 +118,23 @@
                             <asp:Label ID="lblECDOAOnText" runat="server" CssClass="tableTitle"></asp:Label>&nbsp;</td>
                         <td align="center">
                             <asp:TextBox ID="txtECDOADayEn" runat="server" AutoCompleteType="Disabled" Enabled="false"
-                                MaxLength="2" Width="20px"></asp:TextBox>
+                                MaxLength="2" Width="20px" style="border:1px solid #707070;height:16px" />
                             <asp:TextBox ID="txtECDOAYearChi" runat="server" AutoCompleteType="Disabled" Enabled="false"
-                                MaxLength="4" Width="36px"></asp:TextBox>
-                            <asp:Label ID="lblECDOAYearChiText" runat="server" CssClass="tableTitle"></asp:Label></td>
+                                MaxLength="4" Width="36px" style="border:1px solid #707070;height:16px" />
+                            <asp:Label ID="lblECDOAYearChiText" runat="server" CssClass="tableTitle" />
+                        </td>
                         <td align="center">
-                            &nbsp;<asp:DropDownList ID="ddlECDOAMonth" runat="server" Enabled="false">
-                            </asp:DropDownList><asp:Label ID="lblECDOAMonthChiText" runat="server" CssClass="tableTitle"></asp:Label>&nbsp;</td>
+                            &nbsp;
+                            <asp:DropDownList ID="ddlECDOAMonth" runat="server" Enabled="false" style="border:1px solid #707070;height:20px" />
+                            <asp:Label ID="lblECDOAMonthChiText" runat="server" CssClass="tableTitle" />&nbsp;
+                        </td>
                         <td align="center">
                             <asp:TextBox ID="txtECDOAYearEn" runat="server" AutoCompleteType="Disabled" Enabled="false"
-                                MaxLength="4" Width="36px"></asp:TextBox>
+                                MaxLength="4" Width="36px" style="border:1px solid #707070;height:16px" />
                             <asp:TextBox ID="txtECDOADayChi" runat="server" AutoCompleteType="Disabled" Enabled="false"
-                                MaxLength="2" Width="20px"></asp:TextBox>
-                            <asp:Label ID="lblECDOADayChiText" runat="server" CssClass="tableTitle"></asp:Label></td>
+                                MaxLength="2" Width="20px" style="border:1px solid #707070;height:16px" />
+                            <asp:Label ID="lblECDOADayChiText" runat="server" CssClass="tableTitle" />
+                        </td>
                         <td align="center">
                             <asp:Image ID="ErrECDOA" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                 ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />&nbsp;</td>
@@ -194,7 +203,7 @@
                                 Width="175px"></asp:Label></td>
                         <td valign="top" style="padding-bottom: 8px; width: 225px;">
                             <asp:TextBox ID="txtSearchShortIdentityNo" runat="server" AutoCompleteType="Cellular"
-                                MaxLength="11" Width="85px"></asp:TextBox>
+                                MaxLength="11" Width="100px" style="border:1px solid #707070;height:16px;position:relative;top:-1px" />
                             <asp:Image ID="ErrSearchShortIdentityNo" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                 ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />
                         </td>
@@ -207,7 +216,8 @@
                                 Width="175px"></asp:Label></td>
                         <td valign="top" style="padding-bottom: 8px; width: 225px;">
                             <asp:TextBox ID="txtSearchShortDOB" runat="server" AutoCompleteType="Disabled" Enabled="true"
-                                MaxLength="10" Width="85px" onkeydown="filterDateInputKeyDownHandler(this, event);"
+                                MaxLength="10" Width="100px" style="border:1px solid #707070;height:16px;position:relative;top:-1px" 
+                                onkeydown="filterDateInputKeyDownHandler(this, event);"
                                 onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
                                 onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
                             <asp:Image ID="ErrSearchShortDOB" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
@@ -292,12 +302,12 @@
                                     <td valign="top">
                                         <table style="width: 100%;padding-left:30px; padding-top: 5px;" cellpadding="0" cellspacing="0">
                                             <tr>
-                                                <td valign="top" style="padding-bottom: 10px;">
-                                                    <asp:Label ID="lblSearchHKICNoText" runat="server" CssClass="tableTitle" Width="120px"></asp:Label>
+                                                <td valign="top" style="padding-bottom: 10px;width:130px">
+                                                    <asp:Label ID="lblSearchHKICNoText" runat="server" CssClass="tableTitle"></asp:Label>
                                                 </td>
-                                                <td valign="top" style="padding-bottom: 8px; white-space:nowrap">
-                                                    <asp:TextBox ID="txtSearchHKICNo" runat="server" AutoCompleteType="Cellular" MaxLength="11"
-                                                        Width="85px" TabIndex="2" />
+                                                <td valign="top" style="padding-bottom: 8px; white-space:nowrap;width:130px">
+                                                    <asp:TextBox ID="txtSearchHKICNo" runat="server" AutoCompleteType="Cellular" 
+                                                        MaxLength="11" Width="100px" TabIndex="2" />
                                                     <asp:Image ID="ErrSearchHKICNo" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />
                                                 </td>
@@ -308,7 +318,7 @@
                                                 </td>
                                                 <td valign="top" style="padding-bottom: 18px;white-space:nowrap">
                                                     <asp:TextBox ID="txtSearchHKICDOB" runat="server" AutoCompleteType="Disabled" Enabled="true"
-                                                        MaxLength="10" Width="85px" onkeydown="filterDateInputKeyDownHandler(this, event);"
+                                                        MaxLength="10" Width="100px" onkeydown="filterDateInputKeyDownHandler(this, event);"
                                                         onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
                                                         onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"
                                                         TabIndex="3" />

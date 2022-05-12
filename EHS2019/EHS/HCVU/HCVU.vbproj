@@ -160,9 +160,11 @@
     <Content Include="ClaimManagement\VaccinationFileConfirmation.aspx" />
     <Content Include="ClaimManagement\VaccinationFileRectification.aspx" />
     <Content Include="ClaimManagement\VaccinationFileUpload.aspx" />
+    <Content Include="ClaimManagement\PrivateClinicalVaccineLotApproval.aspx" />
     <Content Include="ClaimManagement\VaccineLotApproval.aspx" />
     <Content Include="ClaimManagement\VaccineLotCreation.aspx" />
     <Content Include="ClaimManagement\VaccineLotCreationApproval.aspx" />
+    <Content Include="ClaimManagement\PrivateClinicalVaccineLotManagement.aspx" />
     <Content Include="ClaimManagement\VaccineLotManagement.aspx" />
     <Content Include="CSS\bootstrap-multiselect.css" />
     <Content Include="CSS\bootstrap.css" />
@@ -193,7 +195,9 @@
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileRectification.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileUpload.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccineAndLotNoApprovalInCentres.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccineAndLotNoApprovalInPrivateClinics.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccineAndLotNoManagementInCentres.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccineAndLotNoManagementInPrivateClinics.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccineLotApproval.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccineLotManagement.png" />
     <Content Include="Images\banner\eHSAccount\banner_eHealthSubsidiesAccountEnquiryCallCentre.png" />
@@ -373,6 +377,7 @@
     <Content Include="UIControl\DocType\ucReadOnlyROP140.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyTW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19DH.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19MEC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
@@ -388,6 +393,7 @@
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19DH.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19MEC.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx" />
@@ -639,12 +645,18 @@
       <DependentUpon>VaccinationFileUpload.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="ClaimManagement\PrivateClinicalVaccineLotApproval.aspx.designer.vb">
+      <DependentUpon>PrivateClinicalVaccineLotApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\PrivateClinicalVaccineLotApproval.aspx.vb">
+      <DependentUpon>PrivateClinicalVaccineLotApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="ClaimManagement\VaccineLotApproval.aspx.designer.vb">
       <DependentUpon>VaccineLotApproval.aspx</DependentUpon>
     </Compile>
     <Compile Include="ClaimManagement\VaccineLotApproval.aspx.vb">
       <DependentUpon>VaccineLotApproval.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ClaimManagement\VaccineLotCreation.aspx.designer.vb">
       <DependentUpon>VaccineLotCreation.aspx</DependentUpon>
@@ -658,6 +670,13 @@
     </Compile>
     <Compile Include="ClaimManagement\VaccineLotCreationApproval.aspx.vb">
       <DependentUpon>VaccineLotCreationApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\PrivateClinicalVaccineLotManagement.aspx.designer.vb">
+      <DependentUpon>PrivateClinicalVaccineLotManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\PrivateClinicalVaccineLotManagement.aspx.vb">
+      <DependentUpon>PrivateClinicalVaccineLotManagement.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ClaimManagement\VaccineLotManagement.aspx.designer.vb">
@@ -1744,6 +1763,13 @@
       <DependentUpon>ucInputCIVSS.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19DH.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19DH.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19DH.ascx.vb">
+      <DependentUpon>ucInputCOVID19DH.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCOVID19MEC.ascx.designer.vb">
       <DependentUpon>ucInputCOVID19MEC.ascx</DependentUpon>
     </Compile>
@@ -1883,6 +1909,13 @@
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCIVSS.ascx.vb">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19DH.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19DH.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19DH.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19DH.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19MEC.ascx.designer.vb">
       <DependentUpon>ucReadOnlyCOVID19MEC.ascx</DependentUpon>

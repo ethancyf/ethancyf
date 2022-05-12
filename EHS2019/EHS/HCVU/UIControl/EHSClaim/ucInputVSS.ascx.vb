@@ -983,11 +983,13 @@ Partial Public Class ucInputVSS
                 blnResult = blnResult And Me.ucInputVSSDA.Validate(blnShowErrorImage, objMsgBox)
             Case ViewIndexCategory.VSS_PID
                 blnResult = blnResult And Me.ucInputVSSPID.Validate(blnShowErrorImage, objMsgBox)
-                ' CRE20-0023 (Immu record) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
             Case ViewIndexCategory.VSS_COVID19
-                blnResult = blnResult And Me.ucInputVSSCOVID19.Validate(blnShowErrorImage, objMsgBox)
-                ' CRE20-0023 (Immu record) [End][Chris YIM]
+                Dim blnDoseError As Boolean = False
+                blnResult = blnResult And Me.ucInputVSSCOVID19.Validate(blnShowErrorImage, objMsgBox, udtEHSClaimVaccine, blnDoseError)
+
+                If blnDoseError Then
+                    Me.SetDoseErrorImage(True)
+                End If
         End Select
 
         'Check High Risk option if turned on 

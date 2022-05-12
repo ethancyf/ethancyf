@@ -1,17 +1,17 @@
 Imports Common
 Imports Common.ComFunction
 Imports Common.Component
+Imports Common.Component.ClaimCategory
 Imports Common.Component.ClaimRules.ClaimRulesBLL
+Imports Common.Component.COVID19.COVID19BLL
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
 Imports Common.Component.StaticData
-Imports Common.Component.ClaimCategory
 Imports HCSP.BLL
 Imports System.Web.Security.AntiXss
 Imports System.Web.Script.Serialization
 Imports System.Linq
-
 
 Partial Public Class ucInputVSSCOVID19
     Inherits ucInputEHSClaimBase
@@ -291,6 +291,7 @@ Partial Public Class ucInputVSSCOVID19
         Dim dtVaccineLotNo As DataTable = _udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(CurrentPractice.SPID, _
                                                                                                CurrentPractice.PracticeID, _
                                                                                                ServiceDate, _
+                                                                                               SchemeClaimModel.VSS, _
                                                                                                COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
@@ -766,6 +767,7 @@ Partial Public Class ucInputVSSCOVID19
             Dim strSubsidizeCode As String = String.Empty
             Dim strAvailableItemCode As String = String.Empty
             Dim blnSelected As Boolean = False
+            Dim strVaccineBrand As String = txtCVaccineBrand.Text.Trim
 
             If ddlCDoseCovid19.SelectedValue.Contains("_") Then
                 Dim strSelectedValue() As String = Split(ddlCDoseCovid19.SelectedValue, "_")
@@ -776,6 +778,18 @@ Partial Public Class ucInputVSSCOVID19
             End If
 
             For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
+
+                Select Case strVaccineBrand
+                    Case 1
+                        If IsMatchVaccindBrand(udtEHSClaimSubsidize.SubsidizeCode, VaccineBrandID.BioNTech) Then Continue For
+
+                    Case 2
+                        If IsMatchVaccindBrand(udtEHSClaimSubsidize.SubsidizeCode, VaccineBrandID.Sinovac) Then Continue For
+
+                    Case Else
+                        Throw New Exception(String.Format("Invalid vacccine brand type ({0}).", strVaccineBrand))
+                End Select
+
                 If udtEHSClaimSubsidize.Available Then
                     For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
                         If udtEHSClaimSubsidizeDetail.AvailableItemCode.ToUpper.Trim = strAvailableItemCode.ToUpper.Trim Then
@@ -809,6 +823,7 @@ Partial Public Class ucInputVSSCOVID19
         dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(CurrentPractice.SPID, _
                                                                              CurrentPractice.PracticeID, _
                                                                              ServiceDate, _
+                                                                             SchemeClaimModel.VSS, _
                                                                              COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
@@ -1367,7 +1382,8 @@ Partial Public Class ucInputVSSCOVID19
 
     End Sub
 
-    Private Sub BindCOVID19VaccineBrand(drVaccineLotNo() As DataRow)
+    Private Sub BindCOVID19VaccineBrand(ByVal drVaccineLotNo() As DataRow)
+        Dim drOriVaccineLotNo() As DataRow = drVaccineLotNo
         Dim strSelectedValue As String = Nothing
         Dim strSelectedValueDDL As String = Nothing
 
@@ -1404,11 +1420,34 @@ Partial Public Class ucInputVSSCOVID19
         Me.ddlCVaccineBrandCovid19.SelectedValue = Nothing
         Me.ddlCVaccineBrandCovid19.ClearSelection()
 
+        'Allow BioNTech subsidize if enrolled
+        If drOriVaccineLotNo.Length > 0 Then
+            Dim dtFilteredVaccineLotNo As DataTable = drOriVaccineLotNo.CopyToDataTable.Clone
+            Dim dtOriVaccineBrand As DataTable = drOriVaccineLotNo.CopyToDataTable.DefaultView.ToTable(True, New String() {"Brand_ID", "Brand_Trade_Name", "Brand_Trade_Name_Chi"})
+            Dim udtEHSClaimVaccine As EHSClaimVaccineModel = MyBase.SessionHandler.EHSClaimVaccineGetFromSession()
+
+            For Each dr As DataRow In dtOriVaccineBrand.Rows
+                Dim drFilteredVaccineLotNo() As DataRow = Nothing
+
+                drFilteredVaccineLotNo = EHSClaimVaccineModel.FilterVaccineBrand(udtEHSClaimVaccine, drOriVaccineLotNo, CInt(dr.Item("Brand_ID")))
+
+                If drFilteredVaccineLotNo IsNot Nothing AndAlso drFilteredVaccineLotNo.Count > 0 Then
+                    For intCt As Integer = 0 To drFilteredVaccineLotNo.Count - 1
+                        dtFilteredVaccineLotNo.ImportRow(drFilteredVaccineLotNo(intCt))
+                    Next
+                End If
+            Next
+
+            'Override the original result
+            drOriVaccineLotNo = dtFilteredVaccineLotNo.Select()
+
+        End If
+
         'Build Vaccine Brand dropdownlist
-        If drVaccineLotNo.Length > 0 Then
+        If drOriVaccineLotNo.Length > 0 Then
             Me.ddlCVaccineBrandCovid19.Enabled = True
 
-            dtVaccineBrand = drVaccineLotNo.CopyToDataTable.DefaultView.ToTable(True, New String() {"Brand_ID", "Brand_Trade_Name", "Brand_Trade_Name_Chi"})
+            dtVaccineBrand = drOriVaccineLotNo.CopyToDataTable.DefaultView.ToTable(True, New String() {"Brand_ID", "Brand_Trade_Name", "Brand_Trade_Name_Chi"})
 
             Me.ddlCVaccineBrandCovid19.DataSource = dtVaccineBrand
 
@@ -1596,7 +1635,32 @@ Partial Public Class ucInputVSSCOVID19
         Dim lstItem As ListItem = Nothing
 
         If EHSClaimVaccine IsNot Nothing Then
+            Dim enumVaccineBrandID As VaccineBrandID = VaccineBrandID.Sinovac
+            Dim intCountSinovac As Integer = 0
+            Dim intCountBioNTech As Integer = 0
+
+            'Collect the information for select which subsidy determines the dose for selection
             For Each udtSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In EHSClaimVaccine.SubsidizeList
+                If IsMatchVaccindBrand(udtSubsidize.SubsidizeCode, VaccineBrandID.Sinovac) Then
+                    intCountSinovac = intCountSinovac + 1
+                End If
+
+                If IsMatchVaccindBrand(udtSubsidize.SubsidizeCode, VaccineBrandID.BioNTech) Then
+                    intCountBioNTech = intCountBioNTech + 1
+                End If
+            Next
+
+            If intCountSinovac > 0 Then
+                'First priority to use
+                enumVaccineBrandID = VaccineBrandID.Sinovac
+            Else
+                enumVaccineBrandID = VaccineBrandID.BioNTech
+            End If
+
+            For Each udtSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In EHSClaimVaccine.SubsidizeList
+                'Only use Sinovac subsidies to determine the dose for selection
+                If Not IsMatchVaccindBrand(udtSubsidize.SubsidizeCode, enumVaccineBrandID) Then Continue For
+
                 For Each udtEHSClaimSubidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtSubsidize.SubsidizeDetailList
                     If udtEHSClaimSubidizeDetail.Available Then
                         lstItem = New ListItem

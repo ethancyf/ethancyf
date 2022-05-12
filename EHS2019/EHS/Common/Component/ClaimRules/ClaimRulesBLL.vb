@@ -4313,7 +4313,7 @@ Namespace Component.ClaimRules
                             Return CheckClaimRuleSingleEntryByCheckOnList(intCount, udtClaimRule.Operator.Trim())
 
                         Case CheckList.VSSBioNTechList
-                            Dim dtVaccineLot As DataTable = (New COVID19BLL).GetCOVID19VaccineLotMappingForPrivate(udtInputPicker.SPID, udtInputPicker.PracticeDisplaySeq, dtmServiceDate, COVID19BLL.Source.GetFromSession)
+                            Dim dtVaccineLot As DataTable = (New COVID19BLL).GetCOVID19VaccineLotMappingForPrivate(udtInputPicker.SPID, udtInputPicker.PracticeDisplaySeq, dtmServiceDate, SchemeClaimModel.VSS, COVID19BLL.Source.GetFromSession)
 
                             Dim drVaccineLot() As DataRow = dtVaccineLot.Select(String.Format("Brand_ID={0}", 2))
 
@@ -6076,6 +6076,11 @@ Namespace Component.ClaimRules
                     Select Case udtSubsidizeItemDetailRuleModel.Type.Trim.ToUpper()
                         Case SubsidizeItemDetailRuleModel.TypeClass.AGE
                             blnMatched = blnMatched AndAlso CompareEligibleRuleByAge(dtmServiceDate, udtEHSPersonalInfo, _
+                                CInt(udtSubsidizeItemDetailRuleModel.CompareValue), udtSubsidizeItemDetailRuleModel.Operator, _
+                                udtSubsidizeItemDetailRuleModel.CompareUnit, udtSubsidizeItemDetailRuleModel.CheckingMethod)
+
+                        Case SubsidizeItemDetailRuleModel.TypeClass.EXACTAGE
+                            blnMatched = blnMatched AndAlso CompareEligibleRuleByExactAge(dtmServiceDate, udtEHSPersonalInfo, _
                                 CInt(udtSubsidizeItemDetailRuleModel.CompareValue), udtSubsidizeItemDetailRuleModel.Operator, _
                                 udtSubsidizeItemDetailRuleModel.CompareUnit, udtSubsidizeItemDetailRuleModel.CheckingMethod)
 

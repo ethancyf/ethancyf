@@ -26,13 +26,14 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const HCVS_CHINA As String = "~/UIControl/EHSClaim/ucReadOnlyHCVSCHina.ascx"
         Public Const PIDVSS As String = "~/UIControl/EHSClaim/ucReadOnlyPIDVSS.ascx"
         Public Const VSS As String = "~/UIControl/EHSClaim/ucReadOnlyVSS.ascx"
-        Public Const VSSCOVID19 As String = "~/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx" ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        Public Const VSSCOVID19 As String = "~/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx"
         Public Const VACCINE As String = "~/UIControl/EHSClaim/ucReadOnlyVaccine.ascx"
         Public Const EHAPP As String = "~/UIControl/EHSClaim/ucReadOnlyEHAPP.ascx"
         Public Const ENHVSSO As String = "~/UIControl/EHSClaim/ucReadOnlyENHVSSO.ascx"
         Public Const PPP As String = "~/UIControl/EHSClaim/ucReadOnlyPPP.ascx"
         Public Const SSSCMC As String = "~/UIControl/EHSClaim/ucReadOnlySSSCMC.ascx"
-        Public Const COVID19 As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19.ascx"  ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
+        Public Const COVID19 As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19.ascx"
+        Public Const COVID19DH As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19DH.ascx"
         Public Const COVID19RVP As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19RVP.ascx"
         Public Const COVID19OR As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx"
         Public Const COVID19MEC As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19MEC.ascx" ' CRE20-0023-71 (Immu record) [Winnie SUEN]
@@ -251,6 +252,18 @@ Partial Public Class ucReadOnlyEHSClaim
         udcReadOnlyCOVID19.Build(_udtEHSTransaction, _intWidth)
 
         phReadOnlyEHSClaim.Controls.Add(udcReadOnlyCOVID19)
+    End Sub
+
+    Public Sub BuildCOVID19DH()
+        setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
+        setSessionValue("_intWidth", _intWidth)
+        setSessionValue("EHSClaimBuild", "COVID19DH")
+
+        Dim udcReadOnlyCOVID19DH As ucReadOnlyCOVID19DH = Me.LoadControl(UserControlPath.COVID19DH)
+
+        udcReadOnlyCOVID19DH.Build(_udtEHSTransaction, _intWidth)
+
+        phReadOnlyEHSClaim.Controls.Add(udcReadOnlyCOVID19DH)
     End Sub
     
     Public Sub BuildCOVID19RVP()

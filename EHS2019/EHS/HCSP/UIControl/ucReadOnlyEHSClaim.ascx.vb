@@ -37,8 +37,9 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const ENHVSSO As String = "ucReadOnlyEHSClaim_ENHVSSO"
         Public Const PPP As String = "ucReadOnlyEHSClaim_PPP"
         Public Const SSSCMC As String = "ucReadOnlyEHSClaim_SSSCMC"
-        Public Const COVID19 As String = "ucReadOnlyEHSClaim_COVID19"     ' CRE20-0022 (Immu record) [Winnie SUEN]
-        Public Const COVID19RVP As String = "ucReadOnlyEHSClaim_COVID19RVP"     ' CRE20-0022 (Immu record) [Winnie SUEN]
+        Public Const COVID19 As String = "ucReadOnlyEHSClaim_COVID19"
+        Public Const COVID19DH As String = "ucReadOnlyEHSClaim_COVID19DH"
+        Public Const COVID19RVP As String = "ucReadOnlyEHSClaim_COVID19RVP"
         Public Const COVID19OR As String = "ucReadOnlyEHSClaim_COVID19OR"
         Public Const COVID19MEC As String = "ucReadOnlyEHSClaim_COVID19MEC"
 
@@ -163,6 +164,10 @@ Partial Public Class ucReadOnlyEHSClaim
             Case SchemeClaimModel.EnumControlType.COVID19
                 udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19.ascx", strFolderPath))
                 udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19
+
+            Case SchemeClaimModel.EnumControlType.COVID19DH
+                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19DH.ascx", strFolderPath))
+                udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19DH
 
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19RVP.ascx", strFolderPath))

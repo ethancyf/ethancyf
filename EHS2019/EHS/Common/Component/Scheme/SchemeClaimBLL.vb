@@ -362,6 +362,7 @@ Namespace Component.Scheme
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.ENHVSSO OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.PPP OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19 OrElse _
+                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19DH OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19OR _
                         ) AndAlso dtmCheckDate <= dtmCurrentDateTime Then

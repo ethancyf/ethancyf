@@ -61,7 +61,7 @@ Partial Public Class ucInputRVPCOVID19
         Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
         Dim dtVaccineLotNo As DataTable = Nothing
 
-        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForRCH()
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, SchemeClaimModel.RVP)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
@@ -221,7 +221,7 @@ Partial Public Class ucInputRVPCOVID19
         Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
         Dim dtVaccineLotNo As DataTable = Nothing
 
-        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForRCH()
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, SchemeClaimModel.RVP)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
 
@@ -539,7 +539,7 @@ Partial Public Class ucInputRVPCOVID19
         Dim dtVaccineLotNo As DataTable = Nothing
         Dim strVaccineLotID As String = String.Empty
 
-        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForRCH()
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, SchemeClaimModel.RVP)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select

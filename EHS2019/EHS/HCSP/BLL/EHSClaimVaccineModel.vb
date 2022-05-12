@@ -2,6 +2,7 @@ Imports Common.ComObject
 Imports Common.Component.ClaimRules
 Imports Common.Component.Scheme
 Imports Common.Component
+Imports Common.Component.COVID19.COVID19BLL
 
 
 <Serializable()> Public Class EHSClaimVaccineModel
@@ -970,6 +971,44 @@ Imports Common.Component
         Return isValid
     End Function
 
+
+#End Region
+
+#Region "Filter VSS COVID19"
+    Public Shared Function FilterVaccineBrand(ByVal udtEHSClaimVaccine As EHSClaimVaccineModel, ByVal drVaccineLotNo() As DataRow, ByVal enumVaccineBrandID As VaccineBrandID) As DataRow()
+        Dim drRes() As DataRow = Nothing
+        Dim strVaccineBrand As String = enumVaccineBrandID
+
+        Dim blnAllowVaccine As Boolean = False
+
+        If udtEHSClaimVaccine IsNot Nothing Then
+            For Each udtSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
+                Select Case enumVaccineBrandID
+                    Case VaccineBrandID.Sinovac
+                        If Not IsMatchVaccindBrand(udtSubsidize.SubsidizeCode, VaccineBrandID.Sinovac) Then Continue For
+
+                    Case VaccineBrandID.BioNTech
+                        If Not IsMatchVaccindBrand(udtSubsidize.SubsidizeCode, VaccineBrandID.BioNTech) Then Continue For
+
+                End Select
+
+                If udtSubsidize.Available Then
+                    blnAllowVaccine = True
+                    Exit For
+                End If
+
+            Next
+        End If
+
+        If blnAllowVaccine Then
+            If drVaccineLotNo.Length > 0 Then
+                drRes = drVaccineLotNo.CopyToDataTable.Select(String.Format("Brand_ID = {0}", strVaccineBrand))
+            End If
+        End If
+
+        Return drRes
+
+    End Function
 
 #End Region
 

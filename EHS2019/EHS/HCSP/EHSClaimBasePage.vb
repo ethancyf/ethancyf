@@ -665,12 +665,12 @@ Public MustInherit Class EHSClaimBasePage
                 udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP,
-                SchemeClaimModel.EnumControlType.COVID19OR, SchemeClaimModel.EnumControlType.COVID19MEC
+            Case SchemeClaimModel.EnumControlType.COVID19,
+                SchemeClaimModel.EnumControlType.COVID19DH,
+                SchemeClaimModel.EnumControlType.COVID19RVP,
+                SchemeClaimModel.EnumControlType.COVID19OR,
+                SchemeClaimModel.EnumControlType.COVID19MEC
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
-                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
@@ -878,18 +878,15 @@ Public MustInherit Class EHSClaimBasePage
             Case SchemeClaimModel.EnumControlType.PPP
                 udtAuditLogEntry = AuditLogPPP(udtAuditLogEntry, udtEHSTransaction)
 
-                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
             Case SchemeClaimModel.EnumControlType.SSSCMC
                 udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
-                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP,
-                SchemeClaimModel.EnumControlType.COVID19OR, SchemeClaimModel.EnumControlType.COVID19MEC
+            Case SchemeClaimModel.EnumControlType.COVID19,
+                SchemeClaimModel.EnumControlType.COVID19DH,
+                SchemeClaimModel.EnumControlType.COVID19RVP,
+                SchemeClaimModel.EnumControlType.COVID19OR,
+                SchemeClaimModel.EnumControlType.COVID19MEC
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
-                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
@@ -967,18 +964,15 @@ Public MustInherit Class EHSClaimBasePage
             Case SchemeClaimModel.EnumControlType.PPP
                 udtAuditLogEntry = AuditLogPPP(udtAuditLogEntry, udtEHSTransaction)
 
-                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
             Case SchemeClaimModel.EnumControlType.SSSCMC
                 udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
-                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP,
-                SchemeClaimModel.EnumControlType.COVID19OR, SchemeClaimModel.EnumControlType.COVID19MEC
+            Case SchemeClaimModel.EnumControlType.COVID19,
+                SchemeClaimModel.EnumControlType.COVID19DH,
+                SchemeClaimModel.EnumControlType.COVID19RVP,
+                SchemeClaimModel.EnumControlType.COVID19OR,
+                SchemeClaimModel.EnumControlType.COVID19MEC
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
-                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))

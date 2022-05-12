@@ -306,7 +306,7 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.HKIC
                 Me.panSearchHKIC.Visible = True
 
-                Me.txtSearchHKICNo.Width = 85
+                Me.txtSearchHKICNo.Width = 100
                 Me.txtSearchHKICNo.MaxLength = 11
 
                 ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
@@ -490,7 +490,7 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140
                 Me.panSearchShortNo.Visible = True
 
-                Me.txtSearchShortIdentityNo.Width = 85
+                Me.txtSearchShortIdentityNo.Width = 100
                 Me.txtSearchShortIdentityNo.MaxLength = 11
 
                 If Not IsNothing(udtEHSPersonalInfo) Then
@@ -568,7 +568,7 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.REPMT, DocTypeModel.DocTypeCode.DI
                 Me.panSearchShortNo.Visible = True
 
-                Me.txtSearchShortIdentityNo.Width = 85
+                Me.txtSearchShortIdentityNo.Width = 100
                 Me.txtSearchShortIdentityNo.MaxLength = 9
 
                 If Not IsNothing(udtEHSPersonalInfo) Then
@@ -644,7 +644,7 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.ID235B
                 Me.panSearchShortNo.Visible = True
 
-                Me.txtSearchShortIdentityNo.Width = 85
+                Me.txtSearchShortIdentityNo.Width = 100
                 Me.txtSearchShortIdentityNo.MaxLength = 8
 
                 If Not IsNothing(udtEHSPersonalInfo) Then

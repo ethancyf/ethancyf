@@ -131,7 +131,7 @@
                         <table>
                             <tr style="height: 25px;">
                                 <td style="width: 80px">
-                                    <asp:Label ID="lblVaccCentre" runat="server" Text="<%$ Resources:Text, VaccineCentre %>"></asp:Label></td>
+                                    <asp:Label ID="lblSearchVaccCentre" runat="server" Text="<%$ Resources:Text, VaccineCentre %>"></asp:Label></td>
                                 <td style="width: 350px">
 
                                     <asp:DropDownList ID="ddlVaccCentre" runat="server" AppendDataBoundItems="True" AutoPostBack="true" OnSelectedIndexChanged="ddlVaccCentre_SelectedIndexChanged">
@@ -387,7 +387,7 @@
                             <table style="width: 100%; padding-left: 22px" cellpadding="1" cellspacing="0">
                                 <tr>
                                     <td style="width: 200px; height: 25px; padding-top: 8px; vertical-align: top">
-                                        <asp:Label ID="lblVaccineCentreText" runat="server" Text="<%$ Resources:Text, VaccineCentre %>" Style="position: relative; top: 2px" />
+                                        <asp:Label ID="lblResultVaccineCentreText" runat="server" Text="<%$ Resources:Text, VaccineCentre %>" Style="position: relative; top: 2px" />
                                     </td>
                                     <td style="height: 25px; padding-top: 8px; vertical-align: top">
                                         <table cellpadding="0" cellspacing="0">

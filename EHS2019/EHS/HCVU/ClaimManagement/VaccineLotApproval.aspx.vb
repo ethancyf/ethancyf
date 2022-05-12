@@ -82,10 +82,13 @@ Partial Public Class VaccineLotApproval
     Protected Overrides Function SF_Search(ByRef udtAuditLogEntry As Common.ComObject.AuditLogEntry, ByVal blnOverrideResultLimit As Boolean) As Common.Component.BaseBLL.BLLSearchResult
         Dim bllSearchResult As Common.Component.BaseBLL.BLLSearchResult
 
+        Dim udtHCVUUser As HCVUUserModel = udtHCVUUserBLL.GetHCVUUser
 
         ' bllSearchResult = udtVaccineLotBLL.GetVaccineLotSearch(ddlVaccCentre.SelectedValue.ToString())
-        bllSearchResult = udtVaccineLotBLL.GetVaccineLotRequest(ddlVaccCentre.SelectedValue.Trim, _
-                                                               VaccineLotRecordConstantType.VaccineLotRecordStatus_PendingApproval)
+        bllSearchResult = udtVaccineLotBLL.GetVaccineLotRequestInCentre(VaccineLotRecordServiceType.Centre,
+                                                                        ddlVaccCentre.SelectedValue.Trim, _
+                                                                        VaccineLotRecordConstantType.VaccineLotRecordStatus_PendingApproval,
+                                                                        udtHCVUUser.UserID)
 
         Return bllSearchResult
     End Function
@@ -321,9 +324,15 @@ Partial Public Class VaccineLotApproval
 
         Dim blnNotFind As Boolean = False
 
+        Dim udtHCVUUser As HCVUUserModel = udtHCVUUserBLL.GetHCVUUser
+
         Dim udtVaccineLotList As VaccineLotRequestModel = Nothing
 
-        udtVaccineLotList = udtVaccineLotBLL.GetVaccineLotModalByRequestID(strRequestID, VaccineLotRecordConstantType.VaccineLotRecordStatus_PendingApproval)
+        'Dim strCentreID = ddlVaccCentre.SelectedValue
+        udtVaccineLotList = udtVaccineLotBLL.GetVaccineLotModalByRequestID(strRequestID,
+                                                                           VaccineLotRecordServiceType.Centre,
+                                                                           VaccineLotRecordConstantType.VaccineLotRecordStatus_PendingApproval,
+                                                                           udtHCVUUser.UserID)
 
         If IsNothing(udtVaccineLotList) Then
             blnNotFind = True
@@ -341,9 +350,6 @@ Partial Public Class VaccineLotApproval
             ChangeViewIndex(ViewIndex.ErrorPage)
         Else
             'check user 
-            Dim udtHCVUUser As HCVUUserModel
-            Dim udtHCVUUserBLL As New HCVUUserBLL
-            udtHCVUUser = udtHCVUUserBLL.GetHCVUUser
 
             'disable the approval and reject button 
             If (udtHCVUUser.UserID = udtVaccineLotList.RequestBy.Trim) Or (udtVaccineLotList.RequestType = String.Empty) Then
@@ -605,7 +611,7 @@ Partial Public Class VaccineLotApproval
                 udtAuditLogEntry.AddDescripton("Request Id", lblDetailRequestID.Text)
                 udtAuditLogEntry.WriteLog(LogID.LOG00014, AuditMsg00014)
                 Try
-                    blnResult = udtVaccineLotBLL.VaccineLotEditApproveAction(lblDetailRequestID.Text, VACCINELOT_ACTIONTYPE.ACTION_REJECT, udtVaccineLotList.TSMP)
+                    blnResult = udtVaccineLotBLL.VaccineLotEditApproveAction(lblDetailRequestID.Text, VACCINELOT_ACTIONTYPE.ACTION_REJECT, VaccineLotRecordServiceType.Centre, udtVaccineLotList.TSMP)
 
                     If (blnResult) Then
                         udcInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00002)
@@ -823,7 +829,7 @@ Partial Public Class VaccineLotApproval
         Dim udtVaccineLotList As VaccineLotRequestModel = Session(SESS_VaccineLotListModal)
         ViewState("action") = ActionType.Approval
         Try
-            blnResult = udtVaccineLotBLL.VaccineLotEditApproveAction(lblDetailRequestID.Text, VACCINELOT_ACTIONTYPE.ACTION_APPROVE, udtVaccineLotList.TSMP)
+            blnResult = udtVaccineLotBLL.VaccineLotEditApproveAction(lblDetailRequestID.Text, VACCINELOT_ACTIONTYPE.ACTION_APPROVE, VaccineLotRecordServiceType.Centre, udtVaccineLotList.TSMP)
 
             If (blnResult) Then
                 udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete

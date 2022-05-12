@@ -62,6 +62,7 @@ Partial Public Class ucInputEHSClaim
         Public Const PPP As String = "ucInputEHSClaim_PPP"
         Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
         Public Const COVID19 As String = "ucInputEHSClaim_COVID19"
+        Public Const COVID19DH As String = "ucInputEHSClaim_COVID19DH"
         Public Const COVID19RVP As String = "ucInputEHSClaim_COVID19RVP"
         Public Const COVID19OR As String = "ucInputEHSClaim_COVID19OR"
         ' CRE20-0023-71 (Immu record) [Start][Chris YIM]
@@ -97,6 +98,7 @@ Partial Public Class ucInputEHSClaim
         ucInputEHSClaim_PPP.Visible = False
         ucInputEHSClaim_SSSCMC.Visible = False
         ucInputEHSClaim_COVID19.Visible = False
+        ucInputEHSClaim_COVID19DH.Visible = False
 
         Select Case New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(Me._strSchemeCode)
             Case SchemeClaimModel.EnumControlType.VOUCHER
@@ -187,6 +189,12 @@ Partial Public Class ucInputEHSClaim
                 Dim udcInputCOVID19 As ucInputCOVID19 = CType(udcInputEHSClaim, ucInputCOVID19)
                 AddHandler udcInputCOVID19.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
 
+            Case SchemeClaimModel.EnumControlType.COVID19DH
+                udcInputEHSClaim = Me.ucInputEHSClaim_COVID19DH
+
+                Dim udcInputCOVID19DH As ucInputCOVID19DH = CType(udcInputEHSClaim, ucInputCOVID19DH)
+                AddHandler udcInputCOVID19DH.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
+
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19RVP.ascx", strFolderPath))
                 udcInputEHSClaim.ID = EHSClaimControlID.COVID19RVP
@@ -235,12 +243,12 @@ Partial Public Class ucInputEHSClaim
         ' ---------------------------------------------------------------------------------------------------------
         Select Case udcControl.ID
             Case EHSClaimControlID.HCVS, EHSClaimControlID.HCVS_CHINA, EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP, _
-                 EHSClaimControlID.SSSCMC, EHSClaimControlID.COVID19
+                 EHSClaimControlID.SSSCMC, EHSClaimControlID.COVID19, EHSClaimControlID.COVID19DH
                 'Show Input Control
                 udcControl.Visible = True
 
                 Select Case udcControl.ID
-                    Case EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP, EHSClaimControlID.COVID19
+                    Case EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP, EHSClaimControlID.COVID19, EHSClaimControlID.COVID19DH
                         'For vaccine input setup
                         udcControl.SetupContent(_blnPostbackRebuild)
 
@@ -326,6 +334,13 @@ Partial Public Class ucInputEHSClaim
             ucCOVID19Control.Visible = False
         End If
         ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' COVID19DH
+        Dim ucCOVID19DHControl As ucInputEHSClaimBase = GetCOVID19DHControl()
+        If Not ucCOVID19DHControl Is Nothing Then
+            ucCOVID19DHControl.Clear()
+            ucCOVID19DHControl.Visible = False
+        End If
 
         Me.PlaceHolder1.Controls.Clear()
 
@@ -611,8 +626,6 @@ Partial Public Class ucInputEHSClaim
     End Function
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
-    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public Function GetSSSCMCControl() As ucInputEHSClaimBase
         Dim control As Control = Me.FindControl(EHSClaimControlID.SSSCMC)
         If Not control Is Nothing Then
@@ -621,10 +634,7 @@ Partial Public Class ucInputEHSClaim
             Return Nothing
         End If
     End Function
-    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
-    ' CRE20-0022 (Immu record) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public Function GetCOVID19Control() As ucInputEHSClaimBase
         Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19)
         If Not control Is Nothing Then
@@ -633,10 +643,16 @@ Partial Public Class ucInputEHSClaim
             Return Nothing
         End If
     End Function
-    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-    ' CRE20-0023 (Immu record) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
+    Public Function GetCOVID19DHControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19DH)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCOVID19DH)
+        Else
+            Return Nothing
+        End If
+    End Function
+
     Public Function GetCOVID19RVPControl() As ucInputEHSClaimBase
         Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19RVP)
         If Not control Is Nothing Then
@@ -645,10 +661,7 @@ Partial Public Class ucInputEHSClaim
             Return Nothing
         End If
     End Function
-    ' CRE20-0023 (Immu record) [End][Chris YIM]
 
-    ' CRE20-0023 (Immu record) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public Function GetCOVID19ORControl() As ucInputEHSClaimBase
         Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19OR)
         If Not control Is Nothing Then
@@ -657,7 +670,6 @@ Partial Public Class ucInputEHSClaim
             Return Nothing
         End If
     End Function
-    ' CRE20-0023 (Immu record) [End][Chris YIM]
 
     ' CRE20-0023-071 (Immu record) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
@@ -670,6 +682,7 @@ Partial Public Class ucInputEHSClaim
         End If
     End Function
     ' CRE20-0023-071 (Immu record) [End][Chris YIM]
+
 #End Region
 
 #Region "Property"

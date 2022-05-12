@@ -4,6 +4,8 @@ Namespace Component.VaccineLot
     <Serializable()> Public Class VaccineLotModel
         Private _strVaccineLotNo As String
         Private _strVaccineLotID As String
+        Private _strServiceType As String
+        Private _strSchemeCode As String
         Private _strCentreName As String
         Private _strCentreId As String
         Private _strBrandName As String
@@ -49,6 +51,24 @@ Namespace Component.VaccineLot
             End Get
             Set(ByVal value As String)
                 _strVaccineLotNo = value
+            End Set
+        End Property
+
+        Public Property ServiceType() As String
+            Get
+                Return _strServiceType
+            End Get
+            Set(ByVal value As String)
+                _strServiceType = value
+            End Set
+        End Property
+
+        Public Property SchemeCode() As String
+            Get
+                Return _strSchemeCode
+            End Get
+            Set(ByVal value As String)
+                _strSchemeCode = value
             End Set
         End Property
 
@@ -292,6 +312,8 @@ Namespace Component.VaccineLot
         Public Sub New(ByVal udtVaccineLotModel As VaccineLotModel)
             _strVaccineLotID = udtVaccineLotModel.VaccineLotID
             _strVaccineLotNo = udtVaccineLotModel.VaccineLotNo
+            _strServiceType = udtVaccineLotModel.ServiceType
+            _strSchemeCode = udtVaccineLotModel.SchemeCode
             _strCentreName = udtVaccineLotModel.CentreName
             _strCentreId = udtVaccineLotModel.CentreId
             _strBrandName = udtVaccineLotModel.BrandName
@@ -323,7 +345,7 @@ Namespace Component.VaccineLot
             _strUpToExpiryDtm = udtVaccineLotModel.UpToExpiryDtm
         End Sub
 
-        Public Sub New(ByVal strVaccineLotID As String, ByVal strVaccineLotNo As String, ByVal strCentreName As String, ByVal strCentreId As String, ByVal strBrandName As String, ByVal strBrandTradeName As String, ByVal strVaccineExpiryDate As String, _
+        Public Sub New(ByVal strVaccineLotID As String, ByVal strVaccineLotNo As String, ByVal strServiceType As String, ByVal strSchemeCode As String, ByVal strCentreName As String, ByVal strCentreId As String, ByVal strBrandName As String, ByVal strBrandTradeName As String, ByVal strVaccineExpiryDate As String, _
                         ByVal strVaccineLotEffectiveDFrom As String, ByVal strVaccineLotEffectiveDTo As String, ByVal strRecordStatus As String, ByVal strNewRecordStatus As String, _
                         ByVal strCreateBy As String, ByVal dtmCreateDtm As Nullable(Of DateTime), ByVal strUpdateBy As String, _
                         ByVal dtmUpdateDtm As Nullable(Of DateTime), ByVal byteTSMP As Byte(), ByVal strRequestType As String, _
@@ -333,6 +355,8 @@ Namespace Component.VaccineLot
 
             _strVaccineLotID = strVaccineLotID
             _strVaccineLotNo = strVaccineLotNo
+            _strServiceType = strServiceType
+            _strSchemeCode = strSchemeCode
             _strCentreName = strCentreName
             _strCentreId = strCentreId
             _strBrandName = strBrandName

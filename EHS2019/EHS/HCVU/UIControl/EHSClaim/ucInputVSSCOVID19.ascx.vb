@@ -130,7 +130,7 @@ Partial Public Class ucInputVSSCOVID19
         Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
         Dim dtVaccineLotNo As DataTable = Nothing
 
-        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForPrivate()
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForPrivate(String.Empty, Nothing, SchemeClaimModel.VSS)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             'CRE20-023 Fix the vaccine lot not filtered by service date and record status [Start][Nichole]
@@ -632,8 +632,13 @@ Partial Public Class ucInputVSSCOVID19
 
         'For render the server side dropdown
         If drVaccineLotNoFilterWithBrand IsNot Nothing AndAlso drVaccineLotNoFilterWithBrand.Length > 0 Then
+            Dim dtVaccineLotNoFilterWithBrand As DataTable = Nothing
+
+            dtVaccineLotNoFilterWithBrand = drVaccineLotNoFilterWithBrand.CopyToDataTable.DefaultView.ToTable(True, New String() {"Vaccine_Lot_No"})
+
             Me.ddlCVaccineLotNoCovid19.Enabled = True
-            Me.ddlCVaccineLotNoCovid19.DataSource = drVaccineLotNoFilterWithBrand.CopyToDataTable()
+            'Me.ddlCVaccineLotNoCovid19.DataSource = drVaccineLotNoFilterWithBrand.CopyToDataTable()
+            Me.ddlCVaccineLotNoCovid19.DataSource = dtVaccineLotNoFilterWithBrand
 
             Me.ddlCVaccineLotNoCovid19.DataValueField = "Vaccine_Lot_No"
             Me.ddlCVaccineLotNoCovid19.DataTextField = "Vaccine_Lot_No"
@@ -680,7 +685,7 @@ Partial Public Class ucInputVSSCOVID19
 #End Region
 
 #Region "UI Input Validation"
-    Public Function Validate(ByVal blnShowErrorImage As Boolean, ByVal objMsgBox As CustomControls.MessageBox) As Boolean
+    Public Function Validate(ByVal blnShowErrorImage As Boolean, ByVal objMsgBox As CustomControls.MessageBox, ByVal udtEHSClaimVaccine As EHSClaimVaccineModel, ByRef blnDoseError As Boolean) As Boolean
         Dim objMsg As ComObject.SystemMessage = Nothing
         Dim blnResult As Boolean = True
 
@@ -788,6 +793,24 @@ Partial Public Class ucInputVSSCOVID19
 
             End If
 
+            'Check Vaccine Brand - Whether matches with subsidy
+            If Not String.IsNullOrEmpty(Me.ddlCVaccineBrandCovid19.SelectedValue) Then
+                Dim blnMatch As Boolean = EHSClaimVaccineModel.MatchVaccineBrand(udtEHSClaimVaccine, ddlCVaccineBrandCovid19.SelectedValue.Trim)
+
+                If Not blnMatch Then
+                    blnResult = False
+                    blnDoseError = True
+
+                    imgCVaccineBrandError.Visible = True
+
+                    objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00527)
+                    If objMsgBox IsNot Nothing Then
+                        objMsgBox.AddMessage(objMsg)
+                    End If
+                End If
+
+            End If
+
         End If
 
         Return blnResult
@@ -807,7 +830,7 @@ Partial Public Class ucInputVSSCOVID19
         Dim dtVaccineLotNo As DataTable = Nothing
         Dim strVaccineLotID As String = String.Empty
 
-        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForPrivate()
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForPrivate(String.Empty, Nothing, SchemeClaimModel.VSS)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             'CRE20-023 Fix the vaccine lot not filtered by service date and record status [Start][Nichole]

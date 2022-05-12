@@ -308,12 +308,13 @@ Partial Public Class VoidClaimSelectTransaction
                 udtAuditLogEntry = EHSClaimBasePage.AuditLogENHVSSO(udtAuditLogEntry, udtEHSTransaction)
 
             Case SchemeClaimModel.EnumControlType.PPP
-                'no text version
+                'No text version
 
-                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
-                'no text version
-                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+            Case SchemeClaimModel.EnumControlType.COVID19,
+                 SchemeClaimModel.EnumControlType.COVID19DH,
+                 SchemeClaimModel.EnumControlType.COVID19RVP,
+                 SchemeClaimModel.EnumControlType.COVID19OR
+                'No text version
 
         End Select
         ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]

@@ -6,6 +6,7 @@
 <%@ Register Src="~/UIControl/EHSClaim/ucInputPPP.ascx" TagName="ucInputPPP" TagPrefix="uc5" %>
 <%@ Register Src="~/UIControl/EHSClaim/ucInputSSSCMC.ascx" TagName="ucInputSSSCMC" TagPrefix="uc6" %>
 <%@ Register Src="~/UIControl/EHSClaim/ucInputCOVID19.ascx" TagName="ucInputCOVID19" TagPrefix="uc7" %>
+<%@ Register Src="~/UIControl/EHSClaim/ucInputCOVID19DH.ascx" TagName="ucInputCOVID19DH" TagPrefix="uc8" %>
 
 <table border="0" cellpadding="0" cellspacing="0">
     <tr>
@@ -17,6 +18,7 @@
             <uc5:ucInputPPP id="ucInputEHSClaim_PPP" runat="server" Visible="false" EnableViewState="true" />
             <uc6:ucInputSSSCMC id="ucInputEHSClaim_SSSCMC" runat="server" Visible="false" EnableViewState="true" />
             <uc7:ucInputCOVID19 id="ucInputEHSClaim_COVID19" runat="server" Visible="false" EnableViewState="true" />
+            <uc8:ucInputCOVID19DH id="ucInputEHSClaim_COVID19DH" runat="server" Visible="false" EnableViewState="true" />
             <asp:PlaceHolder ID="PlaceHolder1" runat="server"></asp:PlaceHolder>
         </td>
     </tr>

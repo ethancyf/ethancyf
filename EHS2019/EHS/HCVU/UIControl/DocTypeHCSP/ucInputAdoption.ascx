@@ -1,5 +1,11 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false" CodeBehind="ucInputAdoption.ascx.vb" Inherits="HCVU.UIControl.DocTypeHCSP.ucInputAdoption" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+
+<%--Do not remove this tags. If removed, the error "Failed to load viewstate" will occur.--%>
+<script language="javascript" type="text/javascript">
+</script>
+<%--Do not remove this tags. If removed, the error "Failed to load viewstate" will occur.--%>
+
 <asp:Panel ID="PanVISA" runat="server">
     <table cellpadding="0" cellspacing="0">
         <tr runat="server" id="trReferenceNo_M">

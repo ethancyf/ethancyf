@@ -1,13 +1,15 @@
-Imports Common.Component
-Imports Common.DataAccess
+Imports Common.ComFunction
 Imports Common.ComObject
+Imports Common.Component
+Imports Common.Component.DocType
+Imports Common.DataAccess
+Imports System.ComponentModel
 Imports System.Data.SqlClient
 Imports System.Data
+Imports System.IO
 Imports System.Linq
 Imports System.Web.Script.Serialization
-Imports Common.ComFunction
-Imports System.IO
-Imports Common.Component.DocType
+Imports Common.Component.EHSClaimVaccine
 
 Namespace Component.COVID19
     Public Class COVID19BLL
@@ -23,6 +25,7 @@ Namespace Component.COVID19
             Public Const SPID As String = "COVID19BLL_SESS_SPID"
             Public Const PracticeDisplaySeq As String = "COVID19BLL_SESS_PracticeDisplaySeq"
             Public Const ServiceDate As String = "COVID19BLL_SESS_ServiceDate"
+            Public Const Scheme As String = "COVID19BLL_SESS_Scheme"
             Public Const VaccineLotList_Centre As String = "COVID19BLL_SESS_VaccineLotList_Centre"
             Public Const VaccineLotList_Private As String = "COVID19BLL_SESS_VaccineLotList_Private"
             Public Const VaccineLotList_RVP As String = "COVID19BLL_SESS_VaccineLotList_RVP"
@@ -34,14 +37,21 @@ Namespace Component.COVID19
             NoSession
         End Enum
 
-        ' I-CRE21-003 (To handle Centre ID with prefix 'DH') [Start][Winnie SUEN]
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
         Public Enum VaccineCentreType
-            Centre
-            DHClinic
+            <Description("Centre")> Centre
+            <Description("DHClinic")> DHClinic
         End Enum
 
-        Private DHClinicPrefix As String = "DH0"
-        ' I-CRE21-003 (To handle Centre ID with prefix 'DH') [End][Winnie SUEN]
+        'Private DHClinicPrefix As String = "DH0"
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        Public Enum VaccineBrandID
+            NA = 0
+            Sinovac = 1
+            BioNTech = 2
+        End Enum
+
 #End Region
 
 #Region "Private Member"
@@ -167,6 +177,7 @@ Namespace Component.COVID19
             HttpContext.Current.Session.Remove(SESS.SPID)
             HttpContext.Current.Session.Remove(SESS.PracticeDisplaySeq)
             HttpContext.Current.Session.Remove(SESS.ServiceDate)
+            HttpContext.Current.Session.Remove(SESS.Scheme)
             HttpContext.Current.Session.Remove(SESS.VaccineLotList_Centre)
             HttpContext.Current.Session.Remove(SESS.VaccineLotList_Private)
             HttpContext.Current.Session.Remove(SESS.VaccineLotList_RVP)
@@ -231,13 +242,14 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function GetCOVID19VaccineLotMappingForPrivate(ByVal dtmServiceDate As DateTime, ByVal enumSource As Source) As DataTable
-            Return GetCOVID19VaccineLotMappingForPrivate(String.Empty, Nothing, dtmServiceDate, enumSource)
+        Public Function GetCOVID19VaccineLotMappingForPrivate(ByVal dtmServiceDate As DateTime, ByVal strSchemeCode As String, ByVal enumSource As Source) As DataTable
+            Return GetCOVID19VaccineLotMappingForPrivate(String.Empty, Nothing, dtmServiceDate, strSchemeCode, enumSource)
         End Function
 
         Public Function GetCOVID19VaccineLotMappingForPrivate(ByVal strSPID As String, _
                                                               ByVal intPracticeDisplaySeq As Nullable(Of Integer), _
                                                               ByVal dtmServiceDate As DateTime, _
+                                                              ByVal strSchemeCode As String, _
                                                               Optional ByVal enumSource As Source = Source.GetFromDB) As DataTable
 
             Dim dt As New DataTable
@@ -260,9 +272,15 @@ Namespace Component.COVID19
                 blnDiff = True
             End If
 
+            If HttpContext.Current.Session(SESS.Scheme) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.Scheme), String) <> strSchemeCode Then
+                blnDiff = True
+            End If
+
             HttpContext.Current.Session(SESS.SPID) = strSPID
             HttpContext.Current.Session(SESS.PracticeDisplaySeq) = intPracticeDisplaySeq
             HttpContext.Current.Session(SESS.ServiceDate) = dtmServiceDate
+            HttpContext.Current.Session(SESS.Scheme) = strSchemeCode
 
             Dim objPracticeDisplaySeq As Object = DBNull.Value
             If intPracticeDisplaySeq.HasValue Then
@@ -273,10 +291,12 @@ Namespace Component.COVID19
                 Dim parms() As SqlParameter = { _
                     db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
                     db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
-                    db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
+                    db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate)), _
+                    db.MakeInParam("@Scheme_Code", SqlDbType.VarChar, 10, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode))
+                }
 
                 Try
-                    db.RunProc("proc_COVID19VaccineLotMapping_get_ForPrivate", parms, dt)
+                    db.RunProc("proc_COVID19VaccineLotMapping_get_ForScheme", parms, dt)
 
                     HttpContext.Current.Session(SESS.VaccineLotList_Private) = dt
 
@@ -296,12 +316,13 @@ Namespace Component.COVID19
         End Function
 
         Public Function GetCOVID19VaccineLotMappingForRCH(ByVal dtmServiceDate As DateTime, ByVal enumSource As Source) As DataTable
-            Return GetCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, dtmServiceDate, enumSource)
+            Return GetCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, dtmServiceDate, Common.Component.Scheme.SchemeClaimModel.RVP, enumSource)
         End Function
 
         Public Function GetCOVID19VaccineLotMappingForRCH(ByVal strSPID As String, _
                                                           ByVal intPracticeDisplaySeq As Nullable(Of Integer), _
                                                           ByVal dtmServiceDate As DateTime, _
+                                                          ByVal strSchemeCode As String, _
                                                           Optional ByVal enumSource As Source = Source.GetFromDB) As DataTable
 
             Dim dt As New DataTable
@@ -324,9 +345,15 @@ Namespace Component.COVID19
                 blnDiff = True
             End If
 
+            If HttpContext.Current.Session(SESS.Scheme) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.Scheme), String) <> strSchemeCode Then
+                blnDiff = True
+            End If
+
             HttpContext.Current.Session(SESS.SPID) = strSPID
             HttpContext.Current.Session(SESS.PracticeDisplaySeq) = intPracticeDisplaySeq
             HttpContext.Current.Session(SESS.ServiceDate) = dtmServiceDate
+            HttpContext.Current.Session(SESS.Scheme) = strSchemeCode
 
             Dim objPracticeDisplaySeq As Object = DBNull.Value
             If intPracticeDisplaySeq.HasValue Then
@@ -337,10 +364,12 @@ Namespace Component.COVID19
                 Dim parms() As SqlParameter = { _
                     db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
                     db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
-                    db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
+                    db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate)), _
+                    db.MakeInParam("@Scheme_Code", SqlDbType.VarChar, 10, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode))
+                }
 
                 Try
-                    db.RunProc("proc_COVID19VaccineLotMapping_get_ForRCH", parms, dt)
+                    db.RunProc("proc_COVID19VaccineLotMapping_get_ForScheme", parms, dt)
 
                     HttpContext.Current.Session(SESS.VaccineLotList_RVP) = dt
 
@@ -378,7 +407,9 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function GetALLCOVID19VaccineLotMappingForPrivate(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
+        Public Function GetALLCOVID19VaccineLotMappingForPrivate(Optional ByVal strSPID As String = "",
+                                                             Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing,
+                                                             Optional ByVal strSchemeCode As String = "") As DataTable
             Dim dt As New DataTable
             Dim db As New Database
 
@@ -389,15 +420,19 @@ Namespace Component.COVID19
 
             Dim parms() As SqlParameter = { _
                     db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                    db.MakeInParam("@Scheme_Code", SqlDbType.VarChar, 10, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode))
+                }
 
-            db.RunProc("proc_COVID19VaccineLotMapping_getAll_ForPrivate", parms, dt)
+            db.RunProc("proc_COVID19VaccineLotMapping_getAll_ForScheme", parms, dt)
 
             Return dt
 
         End Function
 
-        Public Function GetALLCOVID19VaccineLotMappingForRCH(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
+        Public Function GetALLCOVID19VaccineLotMappingForRCH(Optional ByVal strSPID As String = "",
+                                                             Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing,
+                                                             Optional ByVal strSchemeCode As String = "") As DataTable
             Dim dt As New DataTable
             Dim db As New Database
 
@@ -408,9 +443,11 @@ Namespace Component.COVID19
 
             Dim parms() As SqlParameter = { _
                     db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                    db.MakeInParam("@Scheme_Code", SqlDbType.VarChar, 10, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode))
+                }
 
-            db.RunProc("proc_COVID19VaccineLotMapping_getAll_ForRCH", parms, dt)
+            db.RunProc("proc_COVID19VaccineLotMapping_getAll_ForScheme", parms, dt)
 
             Return dt
 
@@ -496,8 +533,6 @@ Namespace Component.COVID19
 
         End Function
 
-        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [Start][Winnie SUEN]
-        ' -------------------------------------------------------------
         Public Function GetVaccineManufacturer(ByVal strBrand As String) As String
             Dim strResult As String = String.Empty
             Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineBrand()
@@ -510,8 +545,62 @@ Namespace Component.COVID19
             Return strResult
 
         End Function
-        ' CRE20-023-59 (COVID19 - Revise Vaccination Card) [End][Winnie SUEN]
 
+        Public Shared Function FilterVaccineBrand(ByVal udtEHSClaimVaccine As EHSClaimVaccineModel, ByVal drVaccineLotNo() As DataRow, ByVal enumVaccineBrandID As VaccineBrandID) As DataRow()
+            Dim drRes() As DataRow = Nothing
+            Dim strVaccineBrand As String = enumVaccineBrandID
+
+            Dim blnAllowVaccine As Boolean = False
+
+            If udtEHSClaimVaccine IsNot Nothing Then
+                For Each udtSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
+                    Select Case enumVaccineBrandID
+                        Case VaccineBrandID.Sinovac
+                            If Not IsMatchVaccindBrand(udtSubsidize.SubsidizeCode, VaccineBrandID.Sinovac) Then Continue For
+
+                        Case VaccineBrandID.BioNTech
+                            If Not IsMatchVaccindBrand(udtSubsidize.SubsidizeCode, VaccineBrandID.BioNTech) Then Continue For
+
+                    End Select
+
+                    If udtSubsidize.Available Then
+                        blnAllowVaccine = True
+                        Exit For
+                    End If
+
+                Next
+            End If
+
+            If blnAllowVaccine Then
+                If drVaccineLotNo.Length > 0 Then
+                    drRes = drVaccineLotNo.CopyToDataTable.Select(String.Format("Brand_ID = {0}", strVaccineBrand))
+                End If
+            End If
+
+            Return drRes
+
+        End Function
+
+        Public Shared Function IsMatchVaccindBrand(ByVal strSubsidizeCode As String, ByVal enumVaccineBrandID As VaccineBrandID) As Boolean
+            Dim blnRes As Boolean = False
+
+            Select Case enumVaccineBrandID
+                Case VaccineBrandID.Sinovac
+                    Select Case strSubsidizeCode
+                        Case "VC19C19B", "VC19C19A", "VC19C19E", "VC19OC19B", "VC19OC19A", "VC19OC19E"
+                            blnRes = True
+                    End Select
+
+                Case VaccineBrandID.BioNTech
+                    Select Case strSubsidizeCode
+                        Case "VC19C19AB", "VC19C19EB", "VC19OC19AB", "VC19OC19EB"
+                            blnRes = True
+                    End Select
+
+            End Select
+
+            Return blnRes
+        End Function
 #End Region
 
 #Region "Get Vaccination Centre"
@@ -556,23 +645,23 @@ Namespace Component.COVID19
 
         End Function
 
-        ' I-CRE21-003 (To handle Centre ID with prefix 'DH') [Start][Winnie SUEN]
-        ' -------------------------------------------------------------
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Public Function FilterByCentreType(ByVal enumVaccineCentreType As VaccineCentreType) As String
-            Dim strFilter As String = String.Empty            
-            'Dim strCentrePrefix As String = "CVC"
+            Dim strFilter As String = String.Empty
 
             If enumVaccineCentreType = VaccineCentreType.Centre Then
-                strFilter = String.Format("Centre_ID NOT LIKE '{0}%'", DHClinicPrefix)
-                'strFilter = String.Format("Centre_ID like '{0}%'", strCentrePrefix)
-            Else
-                strFilter = String.Format("Centre_ID LIKE '{0}%'", DHClinicPrefix)
+                strFilter = String.Format("Centre_Service_Type = '{0}'", Format.Formatter.EnumToString(VaccineCentreType.Centre).ToUpper.Trim)
+            End If
+
+            If enumVaccineCentreType = VaccineCentreType.DHClinic Then
+                strFilter = String.Format("Centre_Service_Type = '{0}'", Format.Formatter.EnumToString(VaccineCentreType.DHClinic).ToUpper.Trim)
             End If
 
             Return strFilter
 
         End Function
-        ' I-CRE21-003 (To handle Centre ID with prefix 'DH') [End][Winnie SUEN]
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
 #End Region
 

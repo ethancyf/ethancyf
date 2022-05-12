@@ -1,4 +1,4 @@
-
+﻿
 IF EXISTS
 (
     SELECT *
@@ -10,7 +10,8 @@ IF EXISTS
         DROP PROCEDURE [dbo].[proc_COVID19VaccineLotRequest_get];
     END;
 GO    
--- =============================================     
+
+-- =============================================  
 -- CR No.:  CRE20-022   (Vaccine Lot Management)
 -- Author:  Nichole Ip
 -- Create date:  Mar 2021
@@ -18,8 +19,26 @@ GO
 -- =============================================    
 --exec proc_COVID19VaccineLotRequest_get 'CVC003','HAADM1','P',NULL,1,1,1
 --exec proc_COVID19VaccineLotRequest_get NULL,'HAADM1','P','R00007',1,1,1
+-- =============================================  
+-- CR No.:  CRE20-022   (Vaccine Lot Management)
+-- Author:  Nichole Ip
+-- Create date:  Mar 2021
+-- Description:  Get the vaccine lot mapping request by centre ID
+-- =============================================    
+--exec proc_COVID19VaccineLotRequest_get 'CVC003','HAADM1','P',NULL,1,1,1
+--exec proc_COVID19VaccineLotRequest_get NULL,'HAADM1','P','R00007',1,1,1
+-- CR No.:  CRE20-023   (Vaccine Lot Management)
+-- Author:  Jeremy Chan
+-- Create date:  Feb 2022
+-- Description:  Get the vaccine lot mapping request by Service Type (edited from "proc_COVID19VaccineLotRequest_get")
+-- =============================================    
+--exec proc_COVID19VaccineLotRequest_get '','SCHEME','RVP','HAADM1','P',NULL,1,1,1
+--exec proc_COVID19VaccineLotRequest_get '','SCHEME','VSS','HAADM1','P',NULL,1,1,1
+-- =============================================   
 
-CREATE PROCEDURE [dbo].[proc_COVID19VaccineLotRequest_get] @centre_id                    VARCHAR(10), 
+CREATE PROCEDURE [dbo].[proc_COVID19VaccineLotRequest_get] @centre_id                    VARCHAR(10)= NULL, 
+                                                           @service_type                 VARCHAR(20),
+														   @scheme_code                  CHAR(10) = NULL,
                                                            @user_id                      VARCHAR(20) = NULL, 
                                                            @record_status                VARCHAR(1)  = NULL, 
                                                            @request_id                   VARCHAR(20) = NULL, 
@@ -35,6 +54,8 @@ AS
         DECLARE @rowcount INT;
         DECLARE @row_cnt_error VARCHAR(MAX);
         DECLARE @l_centre_id VARCHAR(10);
+		DECLARE @l_service_type VARCHAR(10);
+		DECLARE @l_scheme_code CHAR(10);
         DECLARE @l_user_id VARCHAR(20);
         DECLARE @delimiter VARCHAR(5);
         DECLARE @l_record_status VARCHAR(1);
@@ -42,46 +63,76 @@ AS
         DECLARE @tblBooth TABLE(Booth VARCHAR(10));
 
         SET @l_centre_id = @centre_id;
+		SET @l_service_type = @service_type;
+		SET @l_scheme_code = @scheme_code;
         SET @l_user_id = @user_id;
         SET @l_record_status = @record_status;
         SET @l_request_id = @request_id;
-
+		 
         -- =============================================  
         -- Initialization  
         -- =============================================  
-        SELECT TOP ([dbo].[func_get_top_row](@result_limit_1st_enable, @result_limit_override_enable)) 
-				VLR.[Request_ID] AS [Request_ID], 
-                VLR.[Vaccine_Lot_No] AS [Vaccine_Lot_No], 
-                VC.[Centre_Name] AS [Centre_Name], 
-                VLR.[Booth] AS [Booth], 
-                VBD.[Brand_Name] AS [BrandName], 
-                VLD.[Expiry_Date] AS [Expiry_Date], 
-                VLR.[Service_Period_From] AS
-                [Request_EffectiveDateFrom], 
-                VLR.[Service_Period_To] AS
-                [Request_EffectiveDateTo], 
-                VLR.[Record_status] AS [Record_Status], 
-                ISNULL(VLR.[Request_Type], '') AS
-                [Request_Type], 
-                VLR.[Create_By] AS [Create_By], 
-                VLR.[Create_Dtm] AS [Create_Dtm], 
-                VLR.[Update_By] AS [Update_By], 
-                VLR.[Update_dtm] AS [Update_Dtm], 
-                VLR.[Requested_By] AS [Requested_by], 
-                VLR.[Requested_Dtm] AS [Requested_Dtm], 
-                VLR.[Approved_By] AS [Approved_By], 
-                VLR.[Approved_Dtm] AS [Approved_Dtm], 
-                VLR.[Rejected_By] AS [Rejected_By], 
-                VLR.[Rejected_Dtm] AS [Rejected_Dtm], 
-                VLR.[TSMP] AS [TSMP],
-				CASE
-                   WHEN VLR.Service_Period_To IS NULL
-                        AND VLR.Request_Type <> 'R'
+		
+		SELECT TOP ([dbo].[func_get_top_row](@result_limit_1st_enable, @result_limit_override_enable)) 
+			FilteredVaccine.[Request_ID] AS [Request_ID], 
+               FilteredVaccine.[Vaccine_Lot_No] AS [Vaccine_Lot_No], 
+               FilteredVaccine.Centre_Name AS [Centre_Name], 
+               FilteredVaccine.Booth AS [Booth], 
+			   FilteredVaccine.[Service_Type] AS [Service_Type],
+			   FilteredVaccine.[Scheme_Code] AS [Scheme_Code],
+               VBD.[Brand_Name] AS [BrandName], 
+               VLD.[Expiry_Date] AS [Expiry_Date], 
+               FilteredVaccine.[Service_Period_From] AS [Request_EffectiveDateFrom], 
+               ISNULL(FilteredVaccine.[Service_Period_To], VLD.Expiry_Date) AS [Request_EffectiveDateTo], 
+               FilteredVaccine.[Record_status] AS [Record_Status], 
+               ISNULL(FilteredVaccine.[Request_Type], '') AS [Request_Type], 
+               FilteredVaccine.[Create_By] AS [Create_By], 
+               FilteredVaccine.[Create_Dtm] AS [Create_Dtm], 
+               FilteredVaccine.[Update_By] AS [Update_By], 
+               FilteredVaccine.[Update_dtm] AS [Update_Dtm], 
+               FilteredVaccine.[Requested_By] AS [Requested_by], 
+               FilteredVaccine.[Requested_Dtm] AS [Requested_Dtm], 
+               FilteredVaccine.[Approved_By] AS [Approved_By], 
+               FilteredVaccine.[Approved_Dtm] AS [Approved_Dtm], 
+               FilteredVaccine.[Rejected_By] AS [Rejected_By], 
+               FilteredVaccine.[Rejected_Dtm] AS [Rejected_Dtm], 
+               FilteredVaccine.[TSMP] AS [TSMP],
+			   CASE
+			   WHEN FilteredVaccine.Service_Period_To IS NULL
+                        AND FilteredVaccine.Request_Type <> 'R'
                    THEN 'Y'
                    ELSE 'N'
-               END AS Up_To_ExpiryDtm, 
-               VBD.Brand_Trade_Name AS [Brand_Trade_Name]
+				   END AS Up_To_ExpiryDtm ,
+			   VBD.Brand_Trade_Name AS [Brand_Trade_Name]
         INTO #tempResult
+		FROM
+		(
+		 -- =============================================      
+        -- Centre
+        -- =============================================    
+        SELECT 
+				VLR.Request_ID, 
+                VLR.Vaccine_Lot_No, 
+                VC.Centre_Name, 
+				VLR.Service_Type,
+				NULL AS Scheme_Code,
+                VLR.Booth, 
+                VLR.Service_Period_From, 
+                VLR.Service_Period_To, 
+                VLR.Record_status, 
+                VLR.Request_Type, 
+                VLR.Create_By, 
+                VLR.Create_Dtm, 
+                VLR.Update_By, 
+                VLR.Update_dtm, 
+                VLR.Requested_By, 
+                VLR.Requested_Dtm, 
+                VLR.Approved_By, 
+                VLR.Approved_Dtm, 
+                VLR.Rejected_By, 
+                VLR.Rejected_Dtm, 
+                VLR.TSMP
+
         FROM COVID19VaccineLotMappingRequest AS VLR WITH(NOLOCK)
              INNER JOIN VaccineCentre AS VC WITH(NOLOCK)
              ON VLR.Centre_ID = VC.Centre_ID
@@ -89,15 +140,59 @@ AS
              ON(VCM.User_id = @l_user_id
                 OR @user_id IS NULL)
                AND VCM.Centre_ID = VLR.Centre_ID
-             INNER JOIN COVID19VaccineLotDetail AS VLD WITH(NOLOCK)
-             ON VLR.Vaccine_Lot_No = VLD.Vaccine_Lot_No
-             INNER JOIN COVID19VaccineBrandDetail AS VBD WITH(NOLOCK)
-             ON VBD.Brand_ID = VLD.Brand_ID
         WHERE VLR.[Record_Status] = @l_record_status
               AND (VLR.Centre_ID = @l_centre_id
                    OR @l_centre_id IS NULL)
               AND (VLR.Request_id = @l_request_id
-                   OR @l_request_id IS NULL);
+                   OR @l_request_id IS NULL)
+			  AND VLR.Service_Type = @l_service_type
+			  
+         -- =============================================      
+        -- Clinics    
+        -- =============================================    
+
+		UNION
+
+
+		SELECT VLR.Request_ID, 
+               VLR.Vaccine_Lot_No, 
+               NULL AS Centre_Name, 
+			   VLR.Service_Type,
+			   VLR.Scheme_Code,
+               VLR.Booth, 
+               VLR.Service_Period_From, 
+			   VLR.Service_Period_To, 
+               VLR.Record_status, 
+               VLR.Request_Type, 
+               VLR.Create_By, 
+               VLR.Create_Dtm, 
+               VLR.Update_By, 
+               VLR.Update_dtm, 
+               VLR.Requested_By, 
+               VLR.Requested_Dtm, 
+               VLR.Approved_By, 
+               VLR.Approved_Dtm, 
+               VLR.Rejected_By, 
+               VLR.Rejected_Dtm, 
+               VLR.TSMP
+               
+        FROM COVID19VaccineLotMappingRequest AS VLR WITH(NOLOCK)
+			 INNER JOIN UserRole AS UR WITH(NOLOCK)
+			 ON UR.Scheme_Code = VLR.Scheme_Code
+             AND (UR.User_id = @l_user_id
+               OR @l_user_id IS NULL)
+        WHERE VLR.[Record_Status] = @l_record_status
+				   AND VLR.Service_Type = @l_service_type
+              AND (VLR.Request_id = @l_request_id
+                   OR @l_request_id IS NULL)
+		      AND (VLR.Scheme_Code = @l_scheme_code
+                   OR @l_scheme_code IS NULL)
+		) FilteredVaccine
+			INNER JOIN COVID19VaccineLotDetail AS VLD WITH(NOLOCK)
+             ON FilteredVaccine.Vaccine_Lot_No = VLD.Vaccine_Lot_No
+             INNER JOIN COVID19VaccineBrandDetail AS VBD WITH(NOLOCK)
+             ON VBD.Brand_ID = VLD.Brand_ID
+
 
         -- =============================================      
         -- Max Row Checking    
@@ -115,55 +210,35 @@ AS
             RAISERROR(@row_cnt_error, 16, 1);
             RETURN;
         END CATCH;
-        DROP TABLE #tempResult;
+
+
         -- =============================================
         -- Return results
         -- =============================================   
 
-        SELECT VLR.[Request_ID] AS [Request_ID], 
-               VLR.[Vaccine_Lot_No] AS [Vaccine_Lot_No], 
-               VC.[Centre_Name] AS [Centre_Name], 
-               VLR.[Booth] AS [Booth], 
-               VBD.[Brand_Name] AS [BrandName], 
-               VLD.[Expiry_Date] AS [Expiry_Date], 
-               VLR.[Service_Period_From] AS [Request_EffectiveDateFrom], 
-               ISNULL(VLR.[Service_Period_To], VLD.Expiry_Date) AS [Request_EffectiveDateTo], 
-               VLR.[Record_status] AS [Record_Status], 
-               ISNULL(VLR.[Request_Type], '') AS [Request_Type], 
-               VLR.[Create_By] AS [Create_By], 
-               VLR.[Create_Dtm] AS [Create_Dtm], 
-               VLR.[Update_By] AS [Update_By], 
-               VLR.[Update_dtm] AS [Update_Dtm], 
-               VLR.[Requested_By] AS [Requested_by], 
-               VLR.[Requested_Dtm] AS [Requested_Dtm], 
-               VLR.[Approved_By] AS [Approved_By], 
-               VLR.[Approved_Dtm] AS [Approved_Dtm], 
-               VLR.[Rejected_By] AS [Rejected_By], 
-               VLR.[Rejected_Dtm] AS [Rejected_Dtm], 
-               VLR.[TSMP] AS [TSMP],
-               CASE
-                   WHEN VLR.Service_Period_To IS NULL
-                        AND VLR.Request_Type <> 'R'
-                   THEN 'Y'
-                   ELSE 'N'
-               END AS Up_To_ExpiryDtm, 
-               VBD.Brand_Trade_Name AS [Brand_Trade_Name]
-        FROM COVID19VaccineLotMappingRequest AS VLR WITH(NOLOCK)
-             INNER JOIN VaccineCentre AS VC WITH(NOLOCK)
-             ON VLR.Centre_ID = VC.Centre_ID
-             INNER JOIN VaccineCentreVUMapping AS VCM WITH(NOLOCK)
-             ON(VCM.User_id = @l_user_id
-                OR @l_user_id IS NULL)
-               AND VCM.Centre_ID = VLR.Centre_ID
-             INNER JOIN COVID19VaccineLotDetail AS VLD WITH(NOLOCK)
-             ON VLR.Vaccine_Lot_No = VLD.Vaccine_Lot_No
-             INNER JOIN COVID19VaccineBrandDetail AS VBD WITH(NOLOCK)
-             ON VBD.Brand_ID = VLD.Brand_ID
-        WHERE VLR.[Record_Status] = @l_record_status
-              AND (VLR.Centre_ID = @l_centre_id
-                   OR @l_centre_id IS NULL)
-              AND (VLR.Request_id = @l_request_id
-                   OR @l_request_id IS NULL);
+		SELECT 
+		tr.Request_ID,
+		tr.Vaccine_Lot_No,
+		tr.Centre_Name,
+		tr.Booth,
+		tr.Service_Type,
+		tr.Scheme_Code,
+		tr.BrandName,
+		tr.Expiry_Date,
+		tr.Request_EffectiveDateFrom,
+		tr.Request_EffectiveDateTo,
+		tr.Record_Status,
+		tr.Request_Type,
+		tr.Create_By,
+		tr.Create_Dtm,
+		tr.Approved_By,
+		tr.Approved_Dtm,
+		tr.Rejected_By,
+		tr.Rejected_Dtm,
+		tr.TSMP
+		FROM #tempResult AS tr;
+		DROP TABLE #tempResult;
+
     END;  
 GO
 GRANT EXECUTE ON [dbo].[proc_COVID19VaccineLotRequest_get] TO HCVU;

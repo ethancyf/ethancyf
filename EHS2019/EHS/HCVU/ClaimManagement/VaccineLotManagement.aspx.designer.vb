@@ -104,13 +104,13 @@ Partial Public Class VaccineLotManagement
     Protected WithEvents tabTransaction As Global.AjaxControlToolkit.TabPanel
 
     '''<summary>
-    '''lblVaccCentre control.
+    '''lblSearchVaccCentre control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblVaccCentre As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblSearchVaccCentre As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''ddlVaccCentre control.
@@ -401,13 +401,13 @@ Partial Public Class VaccineLotManagement
     Protected WithEvents panNewRecord As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''lblVaccineCentreText control.
+    '''lblResultVaccineCentreText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblVaccineCentreText As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblResultVaccineCentreText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''ddlVaccineCentre control.
