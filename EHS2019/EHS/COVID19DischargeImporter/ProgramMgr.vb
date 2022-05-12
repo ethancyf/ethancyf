@@ -1,3 +1,4 @@
+Imports Common.Component
 Imports Common.Component.Inbox
 Imports Common.Component.InternetMail
 Imports Common.ComFunction.ParameterFunction
@@ -8,7 +9,8 @@ Imports System.Text.RegularExpressions
 Imports Common.Encryption.Encrypt
 Imports Common.Validation
 Imports Common.ComObject.SystemMessage
-
+Imports System.Configuration.ConfigurationManager
+Imports System.Data
 
 Public Class ProgramMgr
 
@@ -70,16 +72,49 @@ Public Class ProgramMgr
     Public Sub StartCOVID19DischargeProcess()
 
         Try
+            Dim strImportToReplication As String = System.Configuration.ConfigurationManager.AppSettings("ImportToReplication")
+            Dim blnImportToReplication As Boolean = False
+
+            If Not String.IsNullOrEmpty(strImportToReplication) AndAlso strImportToReplication = YesNo.Yes Then
+                blnImportToReplication = True
+            End If
+
+            If blnImportToReplication Then
+                COVID19DischargeLogger.LogLine("Start to import data to replication...")
+                COVID19DischargeLogger.Log(Common.Component.LogID.LOG00000, Nothing, "Start to import data to replication...", zipFileNameForLog)
+            End If
+
             objLogStartKeyStack.Push(Nothing)
-            Me.ImportCovid19DHCIPFileFromImportFolder()
+            Me.ImportCovid19DHCIPFileFromImportFolder(blnImportToReplication)
 
         Catch ex As Exception
             COVID19DischargeLogger.LogLine(ex.ToString())
             COVID19DischargeLogger.ErrorLog(ex)
 
         Finally
-            Dim triggerAlertStr As String = COVID19DischargeLogger.ChkEmailAndPagerAlert()
-            COVID19DischargeLogger.LogLine(triggerAlertStr)
+            Dim strPagerAlert As String = String.Empty
+            Dim strEmailAlert As String = String.Empty
+            Dim blnPagerAlert As Boolean = False
+            Dim blnEmailAlert As Boolean = False
+
+            strPagerAlert = COVID19DischargeLogger.ChkPagerAlert()
+
+            If Not String.IsNullOrEmpty(strPagerAlert) Then
+                COVID19DischargeLogger.LogLine(strPagerAlert)
+                blnPagerAlert = True
+            End If
+
+            strEmailAlert = COVID19DischargeLogger.ChkEmailAlert()
+
+            If Not String.IsNullOrEmpty(strEmailAlert) Then
+                COVID19DischargeLogger.LogLine(strEmailAlert)
+                blnEmailAlert = True
+            End If
+
+            If Not blnPagerAlert AndAlso Not blnEmailAlert Then
+                COVID19DischargeLogger.LogLine(COVID19DischargeLogger.NoAlert())
+            End If
+
         End Try
 
 
@@ -88,7 +123,7 @@ Public Class ProgramMgr
 
 #Region "COVID19 Discharge Importer Importer File"
 
-    Private Sub ImportCovid19DHCIPFileFromImportFolder()
+    Private Sub ImportCovid19DHCIPFileFromImportFolder(ByVal blnImportToReplication As Boolean)
 
         Try
             Dim dtToday As String = Format(Date.Now(), "yyyyMMddHHmm").ToString()
@@ -100,21 +135,80 @@ Public Class ProgramMgr
             COVID19DischargeLogger.LogLine("Start checking folder...")
             objLogStartKeyStack.Push(COVID19DischargeLogger.Log(Common.Component.LogID.LOG00000, Nothing, "<Start><chkFolder>Start checking folder...", zipFileNameForLog))
 
-            If (lastImportFile > todayFileNameWithTime) Then
-                COVID19DischargeLogger.LogLine("[Error]Invalid setting : System variable [COVID19_Discharge_Patient_Last_Import] value (" + getCOVID19DischargePatientLastImport() + ") > system date (" + (Format(Date.Now(), "dd/MM/yyyy").ToString()) + ").")
-                COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "Invalid setting : System variable [COVID19_Discharge_Patient_Last_Import] value (" + getCOVID19DischargePatientLastImport() + ") > system date (" + (Format(Date.Now(), "dd/MM/yyyy").ToString()) + ").", zipFileNameForLog)
-                Throw New System.Exception("[Error]Invalid setting : System variable [COVID19_Discharge_Patient_Last_Import] value (" + getCOVID19DischargePatientLastImport() + ") > system date (" + (Format(Date.Now(), "dd/MM/yyyy").ToString()) + ").")
+            If Not blnImportToReplication Then
+                If (lastImportFile > todayFileNameWithTime) Then
+                    COVID19DischargeLogger.LogLine("[Error]Invalid setting : System variable [COVID19_Discharge_Patient_Last_Import] value (" + getCOVID19DischargePatientLastImport() + ") > system date (" + (Format(Date.Now(), "dd/MM/yyyy").ToString()) + ").")
+                    COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "Invalid setting : System variable [COVID19_Discharge_Patient_Last_Import] value (" + getCOVID19DischargePatientLastImport() + ") > system date (" + (Format(Date.Now(), "dd/MM/yyyy").ToString()) + ").", zipFileNameForLog)
+                    Throw New System.Exception("[Error]Invalid setting : System variable [COVID19_Discharge_Patient_Last_Import] value (" + getCOVID19DischargePatientLastImport() + ") > system date (" + (Format(Date.Now(), "dd/MM/yyyy").ToString()) + ").")
+                End If
             End If
 
             Dim fileListForImport() As String = IO.Directory.GetFiles(m_strImportFolderPath, "*.zip")
 
             'check not exist today zip file
-            Dim todayFileNameDateOnly = "dhcip_case_list_checking_" + Format(Date.Now(), "yyyyMMdd").ToString() + "*.zip"
-            Dim chkTodayFileExists() As String = IO.Directory.GetFiles(m_strImportFolderPath, todayFileNameDateOnly)
+            Dim dicFileName As New SortedDictionary(Of String, Boolean)
+            Dim strDateBackDay As String = System.Configuration.ConfigurationManager.AppSettings("DateBackDay")
+            Dim strEnablePagerAlert As String = System.Configuration.ConfigurationManager.AppSettings("EnableFileNotFoundPagerAlert")
+            Dim intDateBackDay As Integer = 0
+            Dim blnEnablePagerAlert As Boolean = True
+            Dim strLogID As String = LogID.LOG00011
+            Dim blnAnyFileExist As Boolean = False
 
-            If (chkTodayFileExists.Length <= 0) Then
-                COVID19DischargeLogger.LogLine("[Error]Today zip file(" + Me.m_strImportFolderPath + "\" + todayFileNameDateOnly + ") cannot be found in import folder.")
-                COVID19DischargeLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "Today zip file(" + Me.m_strImportFolderPath + "\" + todayFileNameWithTime + ") cannot be found in import folder.", zipFileNameForLog)
+            Dim strFileName As String = String.Empty
+            Dim chkTodayFileExists() As String = Nothing
+
+            If Not String.IsNullOrEmpty(strDateBackDay) AndAlso strDateBackDay <> "0" AndAlso Integer.TryParse(strDateBackDay, intDateBackDay) Then
+                'If valid, intDateBackDay will be assigned
+            End If
+
+            For intCt As Integer = 0 To intDateBackDay
+                Dim blnFileExist As Boolean = False
+                strFileName = "dhcip_case_list_checking_" + Format(DateAdd(DateInterval.Day, intCt * -1, Date.Now().Date), "yyyyMMdd").ToString() + "*.zip"
+                chkTodayFileExists = IO.Directory.GetFiles(m_strImportFolderPath, strFileName)
+
+                If (chkTodayFileExists.Length > 0) Then
+                    blnAnyFileExist = True
+                    Exit For
+                End If
+
+                dicFileName.Add(strFileName, blnFileExist)
+            Next
+
+            If Not blnAnyFileExist Then
+                If Not String.IsNullOrEmpty(strEnablePagerAlert) Then
+                    If strEnablePagerAlert = Common.Component.YesNo.Yes Then
+                        blnEnablePagerAlert = True
+                    End If
+
+                    If strEnablePagerAlert = Common.Component.YesNo.No Then
+                        blnEnablePagerAlert = False
+                    End If
+                End If
+
+                If blnEnablePagerAlert Then
+                    strLogID = LogID.LOG00011
+                Else
+                    strLogID = LogID.LOG00012
+                End If
+
+                For Each kvp As KeyValuePair(Of String, Boolean) In dicFileName.Reverse
+                    'COVID19DischargeLogger.LogLine("[Error]Today zip file(" + Me.m_strImportFolderPath + "\" + kvp.Key + ") cannot be found in import folder.")
+                    COVID19DischargeLogger.LogLine("[Error]Zip file(" + Me.m_strImportFolderPath + "\" + kvp.Key + ") cannot be found in import folder.")
+                Next
+
+                If intDateBackDay > 0 Then
+                    Dim strDay As String = String.Empty
+
+                    If intDateBackDay = 1 Then
+                        strDay = String.Format("{0} day", intDateBackDay.ToString)
+                    Else
+                        strDay = String.Format("{0} days", intDateBackDay.ToString)
+                    End If
+
+                    COVID19DischargeLogger.Log(strLogID, objLogStartKeyStack.Peek, "Today zip file(" + Me.m_strImportFolderPath + "\" + todayFileNameWithTime + ") and past " + strDay + " zip file cannot be found in import folder.", zipFileNameForLog)
+                Else
+                    COVID19DischargeLogger.Log(strLogID, objLogStartKeyStack.Peek, "Today zip file(" + Me.m_strImportFolderPath + "\" + todayFileNameWithTime + ") cannot be found in import folder.", zipFileNameForLog)
+                End If
             End If
 
             'sort the file name by desc
@@ -153,7 +247,7 @@ Public Class ProgramMgr
                 COVID19DischargeLogger.LogLine("[" + fileName + "] Complete checking zip file...")
                 COVID19DischargeLogger.Log(Common.Component.LogID.LOG00000, objLogStartKeyStack.Pop, "<Success><Check File Name>[" + fileName + "]Complete checking zip file in import folder..." + fileName + " in import folder.", zipFileNameForLog)
 
-                If (fileName > lastImportFile) Then
+                If (fileName > lastImportFile OrElse blnImportToReplication) Then
 
                     COVID19DischargeLogger.LogLine("[" + fileName + "] Start Unzipping File")
                     objLogStartKeyStack.Push(COVID19DischargeLogger.Log(Common.Component.LogID.LOG00001, Nothing, "<Start><UnzipFile>[" + fileName + "] Start Unzipping File", zipFileNameForLog))
@@ -167,8 +261,11 @@ Public Class ProgramMgr
                             COVID19DischargeLogger.LogLine("[" + fileName + "] Start Importing File")
                             objLogStartKeyStack.Push(COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, Nothing, "<Start><ImportFile>[" + fileName + "] Start Importing File", zipFileNameForLog))
 
-                            ImportCovid19DHCIPFile()
-                            updateCOVID19DischargePatientLastImport(Path.GetFileNameWithoutExtension(fileName))
+                            ImportCovid19DHCIPFile(blnImportToReplication)
+
+                            If Not blnImportToReplication Then
+                                updateCOVID19DischargePatientLastImport(Path.GetFileNameWithoutExtension(fileName))
+                            End If
 
                             COVID19DischargeLogger.LogLine("[" + fileName + "] Import File Success")
                             COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, objLogStartKeyStack.Pop, "<Success><ImportFile>[" + fileName + "] Import File Success", zipFileNameForLog)
@@ -212,6 +309,9 @@ Public Class ProgramMgr
 
                     End If
 
+                Else
+                    COVID19DischargeLogger.LogLine("[" + fileName + "] Skip Unzipping File : the file is old or the same with the last imported")
+                    COVID19DischargeLogger.Log(Common.Component.LogID.LOG00000, Nothing, "[" + fileName + "] Skip Unzipping File : the file is old or the same with the last imported", String.Empty)
 
                 End If
 
@@ -267,7 +367,7 @@ Public Class ProgramMgr
     End Sub
 
 
-    Private Sub ImportCovid19DHCIPFile()
+    Private Sub ImportCovid19DHCIPFile(ByVal blnImportToReplication As Boolean)
         exceptionText = ""
         Dim tmpstream As System.IO.StreamReader
 
@@ -286,7 +386,13 @@ Public Class ProgramMgr
                 objLogStartKeyStack.Push(COVID19DischargeLogger.Log(Common.Component.LogID.LOG00002, Nothing, "<Start><ImportCSVFile>[" + csvFileNameForLog + "] Start Import CSV File", zipFileNameForLog))
                 tmpstream = File.OpenText(strfilename)
 
-                Dim udtDB As New Common.DataAccess.Database()
+                Dim udtDB As Common.DataAccess.Database = Nothing
+
+                If blnImportToReplication Then
+                    udtDB = New Common.DataAccess.Database(Common.Component.DBFlagStr.DBFlag2)
+                Else
+                    udtDB = New Common.DataAccess.Database()
+                End If
 
                 Try
                     Dim tempTable As DataTable = covid19Discharge.getCOVID19DischargeTempDataTable
@@ -319,7 +425,7 @@ Public Class ProgramMgr
 
                             exceptionText = ""
                         End If
-                        
+
                         'Remove all new line character
                         Dim arrOri As Array = strNextLine.Replace(vbCr, "").Replace(vbLf, "").Split("|")
                         Dim arrResize As New ArrayList

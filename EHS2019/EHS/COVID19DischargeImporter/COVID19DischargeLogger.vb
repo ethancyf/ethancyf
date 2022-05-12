@@ -1,8 +1,11 @@
+Imports System.Data
+
 Public Class COVID19DischargeLogger
-    Private Shared emailAlertSwitch As Boolean = False
-    Private Shared pagerAlertSwitch As Boolean = False
-    Private Shared emailAlertFile As String
-    Private Shared pagerAlertFile As String
+    Private Shared blnEmailAlertSwitch As Boolean = False
+    Private Shared blnPagerAlertSwitch As Boolean = False
+    Private Shared blnFileNotFound As Boolean = False
+    Private Shared strEmailAlertFile As String = String.Empty
+    Private Shared strPagerAlertFile As String = String.Empty
     Private Shared ScheduleJobLogEntryObj As New Common.ComObject.ScheduleJobLogEntry(Common.Component.ScheduleJobID.COVID19DischargeImporter)
 
 
@@ -15,15 +18,31 @@ Public Class COVID19DischargeLogger
 
     Public Shared Function Log(ByVal strLogID As String, ByVal objLogStartKey As Common.ComObject.AuditLogStartKey, ByVal strDesc As String, alertZipFile As String) As Common.ComObject.AuditLogStartKey
 
-        If (strLogID = Common.Component.LogID.LOG00007 And Not emailAlertSwitch) Then
-            emailAlertSwitch = True
-            emailAlertFile = strDesc
+        If (strLogID = Common.Component.LogID.LOG00007 And (Not blnEmailAlertSwitch Or blnFileNotFound)) Then
+            blnEmailAlertSwitch = True
+            strEmailAlertFile = strDesc
+            blnFileNotFound = False
         End If
 
-        If (strLogID = Common.Component.LogID.LOG00008 And Not pagerAlertSwitch) Then
-            pagerAlertSwitch = True
-            pagerAlertFile = strDesc
+        If (strLogID = Common.Component.LogID.LOG00012) Then
+            blnEmailAlertSwitch = True
+            strEmailAlertFile = strDesc
+            blnFileNotFound = True
         End If
+
+        If strLogID = Common.Component.LogID.LOG00008 And (Not blnPagerAlertSwitch Or blnFileNotFound) Then
+            blnPagerAlertSwitch = True
+            strPagerAlertFile = strDesc
+            blnFileNotFound = False
+        End If
+
+        If (strLogID = Common.Component.LogID.LOG00011) Then
+            blnPagerAlertSwitch = True
+            strPagerAlertFile = strDesc
+            blnFileNotFound = True
+        End If
+
+
 
         If IsNothing(objLogStartKey) Then
             Return ScheduleJobLogEntryObj.WriteStartLog(strLogID, strDesc)
@@ -38,18 +57,32 @@ Public Class COVID19DischargeLogger
 
     'Common.Component.LogID.LOG00009 for pager alert log
     'Common.Component.LogID.LOG00010 for email alert log
-    Public Shared Function ChkEmailAndPagerAlert()
+    Public Shared Function ChkEmailAlert() As String
+        Dim strRes As String = String.Empty
 
-        If (pagerAlertSwitch) Then
-            ScheduleJobLogEntryObj.WriteStartLog(Common.Component.LogID.LOG00010, "<Alert:Pager>" + pagerAlertFile + "")
-            Return "Pager alert triggered!"
-        ElseIf emailAlertSwitch Then
-            ScheduleJobLogEntryObj.WriteStartLog(Common.Component.LogID.LOG00009, "<Alert:Email>" + emailAlertFile + "")
-            Return "Email alert triggered!"
-        Else
-            Return "No alert triggered!"
+        If blnEmailAlertSwitch Then
+            ScheduleJobLogEntryObj.WriteStartLog(Common.Component.LogID.LOG00009, "<Alert:Email>" + strEmailAlertFile + "")
+            strRes = "Email alert triggered!"
         End If
 
+        Return strRes
+
+    End Function
+
+    Public Shared Function ChkPagerAlert() As String
+        Dim strRes As String = String.Empty
+
+        If (blnPagerAlertSwitch) Then
+            ScheduleJobLogEntryObj.WriteStartLog(Common.Component.LogID.LOG00010, "<Alert:Pager>" + strPagerAlertFile + "")
+            strRes = "Pager alert triggered!"
+        End If
+
+        Return strRes
+
+    End Function
+
+    Public Shared Function NoAlert() As String
+        Return "No alert triggered!"
     End Function
 
     Public Shared Sub ErrorLog(ByVal ex As Exception)
