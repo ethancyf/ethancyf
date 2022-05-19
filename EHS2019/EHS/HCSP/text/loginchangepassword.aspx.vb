@@ -158,7 +158,7 @@ Partial Public Class loginchangepassword1
         'Else
         '    Me.lblStatement.Text = Me.GetGlobalResourceObject("Text", "1stLoginChgPwdStatement")
         'End If
-        Me.PageTitle.Text = Me.GetGlobalResourceObject("Title", "ChangePassword")
+        Me.Page.Title = Me.GetGlobalResourceObject("Title", "ChangePassword")
     End Sub
 
     Private Sub btnLogin_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnLogin.Click

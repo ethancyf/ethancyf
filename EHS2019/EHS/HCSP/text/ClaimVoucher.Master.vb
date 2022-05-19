@@ -74,6 +74,8 @@ Partial Public Class ClaimVoucherMaster
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
+        CSRFToken.Text = CSRFTokenHelper.doCSRF(CSRFTokenHelper.EnumMasterPage.ClaimVoucher)
+
         '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
         Me.CheckConcurrentAccessForHttpPost()

@@ -2,6 +2,8 @@ Public Partial Class redirectInvalidLink
     Inherits System.Web.UI.Page
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Page.Title = "Untitled Page"
+
         Dim strlink As String = String.Empty
         If Session("language") = "zh-tw" Then
             strlink = "~/zh/invalidlink.aspx"

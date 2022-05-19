@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D1C393B5-8283-4EF7-B2AB-C448AB8488DF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common.iAMSmart.Base</RootNamespace>
+    <AssemblyName>Common.iAMSmart.Base</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\ServiceStack.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Common, Version=1.0.4333.5581, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.OrmLite, Version=3.0.3.5599, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\ServiceStack.OrmLite.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.OrmLite.SqlServer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\ServiceStack.OrmLite.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.ServiceInterface, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\ServiceStack.ServiceInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>CommonBin\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="eID.Bussiness\BaseRequestService.cs" />
+    <Compile Include="eID.Bussiness\EncryptService.cs" />
+    <Compile Include="eID.Bussiness\Impl\EMeInfoImpl.cs" />
+    <Compile Include="eID.Bussiness\Impl\LoginServiceImpl.cs" />
+    <Compile Include="eID.Bussiness\Impl\ProfileImpl.cs" />
+    <Compile Include="eID.Bussiness\Impl\SignServiceImpl.cs" />
+    <Compile Include="eID.Bussiness\Impl\StepUpAuthImpl.cs" />
+    <Compile Include="eID.Bussiness\Interface\IEMeInfoService.cs" />
+    <Compile Include="eID.Bussiness\Interface\ILoginService.cs" />
+    <Compile Include="eID.Bussiness\Interface\IProfileService.cs" />
+    <Compile Include="eID.Bussiness\Interface\ISignService.cs" />
+    <Compile Include="eID.Bussiness\Interface\IStepUpAuthService.cs" />
+    <Compile Include="eService.Common\AdobeLtvEnabling.cs" />
+    <Compile Include="eService.Common\AuthConstants.cs" />
+    <Compile Include="eService.Common\CacheKeyUtils.cs" />
+    <Compile Include="eService.Common\CAConstants.cs" />
+    <Compile Include="eService.Common\CAUtils.cs" />
+    <Compile Include="eService.Common\CodeUtils.cs" />
+    <Compile Include="eService.Common\CommonHelper.cs" />
+    <Compile Include="eService.Common\Constants.cs" />
+    <Compile Include="eService.Common\ConstantsUri.cs" />
+    <Compile Include="eService.Common\CookieUtils.cs" />
+    <Compile Include="eService.Common\DatetimeUtils.cs" />
+    <Compile Include="eService.Common\EidSignatureContainer.cs" />
+    <Compile Include="eService.Common\EncryptConstants.cs" />
+    <Compile Include="eService.Common\EncryptUtils.cs" />
+    <Compile Include="eService.Common\GetPrivateKeyUtils.cs" />
+    <Compile Include="eService.Common\GetQRUtils.cs" />
+    <Compile Include="eService.Common\HttpHelper.cs" />
+    <Compile Include="eService.Common\IAMSmartCacheBLL.cs" />
+    <Compile Include="eService.Common\JsonUtils.cs" />
+    <Compile Include="eService.Common\LogUtils.cs" />
+    <Compile Include="eService.Common\RedisHelper.cs" />
+    <Compile Include="eService.Common\SessionHelper.cs" />
+    <Compile Include="eService.Common\SignUtils.cs" />
+    <Compile Include="eService.Common\StateUtils.cs" />
+    <Compile Include="eService.Common\UnicodeFontFactory.cs" />
+    <Compile Include="eService.Common\URLEncoderUtils.cs" />
+    <Compile Include="eService.Common\UUIDUtils.cs" />
+    <Compile Include="eService.DTO\Enum\EnumExtensions.cs" />
+    <Compile Include="eService.DTO\Enum\ReturnCode.cs" />
+    <Compile Include="eService.DTO\JSONSearializer\ProfileDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqAnonymousHashSignDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqAnonymousPdfSignDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqAuthCallbackDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqEMeCallbackDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqEMeFieldsDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqEncryptBizPostDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqHashSignDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqHashSignResultCallbackDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqPdfSignDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqPdfSignResultCallbackDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqProfileCallbackDTO.cs" />
+    <Compile Include="eService.DTO\Request\ReqStepUpAuthCallbackDTO.cs" />
+    <Compile Include="eService.DTO\Response\AccessTokenDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResAnonymousEmeInfoDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResAnonymousHashSignDetailDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResAnonymousHashSignDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResAnonymousPdfSignDetailDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResAnonymousPdfSignDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResApplyQRCodeDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResBizAESKeyDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResCallbackDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResEMeDetailDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResEmeInfoDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResFormDataDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResGetQRDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResHashSignDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResPdfSignDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResponseDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResProfileDetailDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResProfileDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResSignDownloadDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResStepUpAuthDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResTokenIDDTO.cs" />
+    <Compile Include="eService.DTO\Response\ResUploadDTO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405b1bf-72c2-4a3c-bdb5-44956b723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CommonBin\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

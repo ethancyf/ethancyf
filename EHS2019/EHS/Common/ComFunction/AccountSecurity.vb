@@ -27,6 +27,7 @@ Namespace ComFunction
             Pass
             Incorrect
             RequireUpdate
+            ByPass ' CRE20-011 iamsmart - no need to check the password
         End Enum
         Public Enum IVRSFunctCode
             FunctcodeLogin = 990201
@@ -154,24 +155,28 @@ Namespace ComFunction
             If strAccountPasswordLevel < intMinLevel Then
                 IResult.VerifyResult = EnumVerifyPasswordResult.RequireUpdate
             Else
-                If strAccountPassword = Hash(strInputPassword, strAccountPasswordLevel) Then
-                    IResult.VerifyResult = EnumVerifyPasswordResult.Pass
-                    If strAccountPasswordLevel < intMaxLevel Then
-                        Dim udtPasswordModel As New TransitPasswordModel(strID1, strID2, strInputPassword, bytTSMP)
-                        IResult.TransitPassword = TransitPassword(udtType, udtPasswordModel)
-                    End If
+                If strInputPassword = String.Empty Then 'iamsmart
+                    IResult.VerifyResult = EnumVerifyPasswordResult.Bypass
+                Else
+                    If strAccountPassword = Hash(strInputPassword, strAccountPasswordLevel) Then
+                        IResult.VerifyResult = EnumVerifyPasswordResult.Pass
+                        If strAccountPasswordLevel < intMaxLevel Then
+                            Dim udtPasswordModel As New TransitPasswordModel(strID1, strID2, strInputPassword, bytTSMP)
+                            IResult.TransitPassword = TransitPassword(udtType, udtPasswordModel)
+                        End If
 
-                    If udtType = EnumPlatformType.IVRS AndAlso blnBackwardCheck Then
-                        If Not dtUserAC_OriginalIVRS Is Nothing AndAlso dtUserAC_OriginalIVRS.Rows.Count > 0 Then
+                        If udtType = EnumPlatformType.IVRS AndAlso blnBackwardCheck Then
+                            If Not dtUserAC_OriginalIVRS Is Nothing AndAlso dtUserAC_OriginalIVRS.Rows.Count > 0 Then
                                 UpdateOriginalIVRSStatus(strID1)
+                            End If
+                        End If
+                    ElseIf Not dtUserAC_OriginalIVRS Is Nothing AndAlso dtUserAC_OriginalIVRS.Rows.Count > 0 Then
+                        If udtType = EnumPlatformType.IVRS AndAlso blnBackwardCheck AndAlso strIVRSOrginalPassword = Hash(strInputPassword, strIVRSOrginalPasswordLevel) Then
+                            IResult.VerifyResult = EnumVerifyPasswordResult.Pass
+                            ErrorHandler.Log(IVRSFunctCode.FunctcodeLogin, ErrorHandler.SeverityCode, "99999", HttpContext.Current.Request.PhysicalPath, HttpContext.Current.Request.UserHostAddress, "Hash password fail check with " + PasswordLevel.SHA512.ToString + ", success with " + PasswordLevel.MD5.ToString + " , SPID : " + strID1)
                         End If
                     End If
-                ElseIf Not dtUserAC_OriginalIVRS Is Nothing AndAlso dtUserAC_OriginalIVRS.Rows.Count > 0 Then
-                    If udtType = EnumPlatformType.IVRS AndAlso blnBackwardCheck AndAlso strIVRSOrginalPassword = Hash(strInputPassword, strIVRSOrginalPasswordLevel) Then
-                        IResult.VerifyResult = EnumVerifyPasswordResult.Pass
-                        ErrorHandler.Log(IVRSFunctCode.FunctcodeLogin, ErrorHandler.SeverityCode, "99999", HttpContext.Current.Request.PhysicalPath, HttpContext.Current.Request.UserHostAddress, "Hash password fail check with " + PasswordLevel.SHA512.ToString + ", success with " + PasswordLevel.MD5.ToString + " , SPID : " + strID1)
-                    End If              
-                End If
+                End If 'iamsmart
             End If
 
             Return IResult

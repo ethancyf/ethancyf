@@ -9,6 +9,11 @@ Namespace Text.EN
         Private _FunctCodeCommon As String = Common.Component.FunctCode.FUNT029901
 
         Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+            Master.Page.Title = "eHealth System (Subsidies) - Concurrent access or improper access detected"
+
+            CSRFTokenHelper.RemoveAllSession()
+
             Dim udtAuditLogEntry As New AuditLogEntry(Me._FunctCodeCommon)
             udtAuditLogEntry.AddDescripton("Language", Session("language"))
             udtAuditLogEntry.WriteLog(LogID.LOG00004, "Improper Access page load (Text only version)")

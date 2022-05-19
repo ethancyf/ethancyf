@@ -5,6 +5,7 @@ Imports Common.Component.DataEntryUser
 Imports Common.ComObject
 Imports Common.Component
 Imports HCSP.Component.FunctionInformation
+Imports System.Web.Helpers
 
 Partial Public Class MasterPageNonLogin
     Inherits System.Web.UI.MasterPage
@@ -47,6 +48,9 @@ Partial Public Class MasterPageNonLogin
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+        CSRFToken.Text = CSRFTokenHelper.doCSRF(CSRFTokenHelper.EnumMasterPage.NonLogin)
+
         Dim strSPName As String = String.Empty
 
         Response.Expires = -1

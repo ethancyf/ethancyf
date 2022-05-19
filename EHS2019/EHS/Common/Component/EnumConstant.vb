@@ -755,6 +755,14 @@ Namespace Component
     End Class
     'CRE20-023 Immue record (Vaccine lot management/creation) [End][Nichole]
 
+    'CRE20-011 eID [Start][Nichole]
+    Public Class SPiAMSmartStatus
+        Public Const Connected As String = "A"
+        Public Const Disconnected As String = "D"
+
+        Public Const ClassCode As String = "SPiAMSmartStatus"
+    End Class
+    'CRE20-011 eID [End][Nichole]
     Public Class FunctCode
 
         ''' <summary>
@@ -828,6 +836,7 @@ Namespace Component
         Public Const FUNT020005 As String = "020005"
         Public Const FUNT020007 As String = "020007"
         Public Const FUNT020008 As String = "020008" ' Recover Login
+        Public Const FUNT020009 As String = "020009" ' iAM Smart
         Public Const FUNT020101 As String = "020101"
         Public Const FUNT020102 As String = "020102"
         Public Const FUNT020201 As String = "020201"
@@ -846,6 +855,7 @@ Namespace Component
         Public Const FUNT021001 As String = "021001"
         Public Const FUNT021101 As String = "021101"
         Public Const FUNT021201 As String = "021201"  'CRE20-006 DHC Claim Access Nichole
+
         ''' <summary>
         ''' HCSP Common Log, e.g. System error, current browser handling
         ''' </summary>
@@ -972,6 +982,10 @@ Namespace Component
         Public Const FUNT070401 As String = "070401" ' DHC-to-eHS: getExternalWebS() - DHC integration
         'CRE20-006 DHC integration [End][Nichole]
 
+        'CRE20-011 iAM Smart [Start][Nichole]
+        Public Const FUNT070501 As String = "070501" ' OGCIO-to-eHS: iAMSmartService
+        'CRE20-011 iAM Smart  [End][Nichole]
+
         Public Const FUNT080101 As String = "080101" ' Form Generation Service
         Public Const FUNT090101 As String = "090101" ' Interface Control Webpage - EVaccine Check
         Public Const FUNT090102 As String = "090102" ' Interface Control Webpage - EVaccine Control
@@ -1009,6 +1023,15 @@ Namespace Component
         Public Const FUNT110201 As String = "110201"
         Public Const FUNT110301 As String = "110301"
         Public Const FUNT110401 As String = "110401"
+
+        ' ===========================================================================
+        ' Reserved for iAMSmart
+        ' ===========================================================================
+        ''' <summary>
+        ''' iAMSmart
+        ''' </summary>
+        ''' <remarks></remarks>
+        Public Const FUNT120101 As String = "120101"
 
         Public Const FUNT990000 As String = "990000"
         Public Const FUNT990001 As String = "990001"
@@ -3272,6 +3295,11 @@ Namespace Component
     Public Class YesNo
         Public Const Yes As String = "Y"
         Public Const No As String = "N"
+    End Class
+
+    Public Class iAMSmartMode
+        Public Const Live As String = "L"
+        Public Const Stimulate As String = "S"
     End Class
 
     Public Class HAVaccinationRecordStatus

@@ -10,12 +10,9 @@ Partial Public Class index1
     Public Const English As String = "en-us"
     Private udcGeneralF = New Common.ComFunction.GeneralFunction()
 
-    Private Sub index1_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
-
-        Me.basetag.Attributes("href") = udcGeneralF.getPageBasePath()
-    End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
         If Request.IsSecureConnection Then
             ' Setting the secure flag in the ASP.NET Session id cookie
             Request.Cookies("ASP.NET_SessionId").Secure = True

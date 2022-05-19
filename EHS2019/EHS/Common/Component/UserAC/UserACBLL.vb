@@ -44,6 +44,24 @@ Namespace Component.UserAC
 
         End Function
 
+        Public Shared Function GetDataEntryUser() As DataEntryUserModel
+            Dim udtUserAC As UserACModel = GetUserAC()
+
+            If udtUserAC.UserType = SPAcctType.ServiceProvider Then
+                Return Nothing
+
+            ElseIf udtUserAC.UserType = SPAcctType.DataEntryAcct Then
+                Return DirectCast(udtUserAC, DataEntryUserModel)
+
+            Else
+                Throw New Exception(String.Format("Unexpected value (udtUserAC.UserType={0})", udtUserAC.UserType))
+
+            End If
+
+            Return Nothing
+
+        End Function
+
         Public Shared Function Exist() As Boolean
             If HttpContext.Current.Session Is Nothing Then Return False
             If Not HttpContext.Current.Session(SESS_USERAC) Is Nothing Then

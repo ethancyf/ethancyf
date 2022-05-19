@@ -2,6 +2,7 @@
     Codebehind="Home.aspx.vb" Inherits="HCSP.Home_Text" Title="<%$Resources:Title, HomePage%>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder" runat="server">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <%--    <table cellpadding="0" cellspacing="0" style="width: 100%">
         <tr>
             <td valign="top">

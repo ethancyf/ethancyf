@@ -5,14 +5,10 @@ Imports Common.Component
 Partial Public Class index2
     Inherits System.Web.UI.Page
 
-    Private udcGeneralF = New Common.ComFunction.GeneralFunction()
-
-    Private Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
-
-        Me.basetag.Attributes("href") = udcGeneralF.getPageBasePath()
-    End Sub
-
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+        Master.Page.Title = "醫健通(資助)系統"
+
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
         Dim strSubPlatform As String = ConfigurationManager.AppSettings("SubPlatform")
         Dim enumSubPlatform As EnumHCSPSubPlatform = EnumHCSPSubPlatform.HK

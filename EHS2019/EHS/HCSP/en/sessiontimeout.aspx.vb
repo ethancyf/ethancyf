@@ -9,12 +9,10 @@ Partial Public Class sessiontimeout1
 
     Private _FunctCodeCommon As String = Common.Component.FunctCode.FUNT029901
 
-    Private Sub sessiontimeout1_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
-        Dim udcGeneralFun = New Common.ComFunction.GeneralFunction()
-        Me.basetag.Attributes("href") = udcGeneralFun.getPageBasePath()
-    End Sub
-
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+        Master.Page.Title = "eHealth System (Subsidies) - Session Timeout"
+
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
         Dim strSubPlatform As String = ConfigurationManager.AppSettings("SubPlatform")
         Dim enumSubPlatform As EnumHCSPSubPlatform = EnumHCSPSubPlatform.HK

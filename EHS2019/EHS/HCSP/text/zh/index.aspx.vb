@@ -3,9 +3,7 @@ Namespace Text.ZH
         Inherits System.Web.UI.Page
 
         Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-            Response.Expires = -1
-            Response.CacheControl = "no-cache"
-            Response.AddHeader("Pragma", "no-cache")
+            Page.Title = "醫健通(資助)系統"
             Session("language") = Common.Component.CultureLanguage.TradChinese
             Me.Response.Redirect("..\login.aspx")
         End Sub

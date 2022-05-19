@@ -1,0 +1,67 @@
+﻿.dark {
+    height:40px;
+    background-color: #2b7367;
+    background-image:url("../Images/others/icon-dark.png");
+    background-repeat: no-repeat;
+    background-position: 12px, 2px;
+    background-size: 20px;
+    border: none;
+    color: #FFFFFF;
+    /*padding: 4.375px 8.75px 4.375px 8.75px;*/
+    padding: 4.375px 8.75px 4.375px 32px;
+    cursor: pointer;
+    outline:none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
+    font-size: 14.8px;
+}
+
+.light {
+    height:40px;
+    background-color: #FFFFFF;
+    background-image:url("../Images/others/icon-dark.png");
+    background-repeat: no-repeat;
+    border: 1px solid #2b7367;
+    color: #2b7367;
+    /*padding: 4.375px 8.75px 4.375px 8.75px;*/
+    padding: 4.375px 8.75px 4.375px 32px;
+    cursor: pointer;
+    outline:none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
+    font-size: 14.8px;
+}
+
+.LightBlue {
+    width:520px;
+    height:40px;
+    background-color: #3d99c5;
+    border: 1px solid #3d99c5;
+    color: #2b7367;
+    padding: 4.375px 8.75px 4.375px 4.375px;
+    cursor: pointer;
+    outline:none;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: white;
+
+}
+
+.buttontext {
+    font-size: 16.2px;
+    padding-left: 8.75px;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+    text-overflow: ellipsis;
+}

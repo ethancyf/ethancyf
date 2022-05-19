@@ -14,49 +14,31 @@ Option Explicit On
 Partial Public Class login
 
     '''<summary>
-    '''Head1 control.
+    '''UpdateProgress1 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Head1 As Global.System.Web.UI.HtmlControls.HtmlHead
+    Protected WithEvents UpdateProgress1 As Global.System.Web.UI.UpdateProgress
 
     '''<summary>
-    '''PageTitle control.
+    '''UpdatePanelLogin control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents PageTitle As Global.System.Web.UI.HtmlControls.HtmlTitle
+    Protected WithEvents UpdatePanelLogin As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
-    '''basetag control.
+    '''AntiForgeryToken control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents basetag As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-
-    '''<summary>
-    '''form1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
-
-    '''<summary>
-    '''ScriptManager1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ScriptManager1 As Global.System.Web.UI.ScriptManager
+    Protected WithEvents AntiForgeryToken As Global.System.Web.UI.WebControls.Literal
 
     '''<summary>
     '''NonLoginPageKey control.
@@ -291,15 +273,6 @@ Partial Public Class login
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnHiddenShowCopyList As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''UpdateProgress1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents UpdateProgress1 As Global.System.Web.UI.UpdateProgress
 
     '''<summary>
     '''ModalPopupExtender1 control.
@@ -669,6 +642,33 @@ Partial Public Class login
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnLogin As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''paniAMSmart control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents paniAMSmart As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''btniAMSmart control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btniAMSmart As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''lnkiAMSmart control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lnkiAMSmart As Global.System.Web.UI.WebControls.HyperLink
 
     '''<summary>
     '''SPHashPWExpiredView control.

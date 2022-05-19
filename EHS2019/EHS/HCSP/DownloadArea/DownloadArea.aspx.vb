@@ -1,6 +1,7 @@
 Imports Common.ComFunction
 Imports Common.Component
 Imports Common.Component.UserAC
+Imports System.Web.WebPages
 
 Partial Public Class DownloadArea
     Inherits BasePage
@@ -22,6 +23,7 @@ Partial Public Class DownloadArea
 #Region "Page Event"
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Page.Title = Me.GetGlobalResourceObject("Title", "DownloadAreaBanner")
 
         Dim strSelectedLang As String = IIf(IsNothing(Session("language")), CultureLanguage.English, Session("language")).ToString().Trim
 

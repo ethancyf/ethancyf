@@ -1,4 +1,4 @@
-Imports System.IO
+﻿Imports System.IO
 Imports Common.ComFunction
 Imports Common.Component
 
@@ -9,12 +9,9 @@ Namespace CN
 
         Private udcGeneralF = New Common.ComFunction.GeneralFunction()
 
-        Private Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
-
-            Me.basetag.Attributes("href") = udcGeneralF.getPageBasePath()
-        End Sub
-
         Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+            Page.Title = "医健通(资助)系統"
+
             If Request.IsSecureConnection Then
                 ' Setting the secure flag in the ASP.NET Session id cookie
                 Request.Cookies("ASP.NET_SessionId").Secure = True

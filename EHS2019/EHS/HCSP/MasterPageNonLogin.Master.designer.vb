@@ -41,6 +41,33 @@ Partial Public Class MasterPageNonLogin
     Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
 
     '''<summary>
+    '''ScriptManager1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ScriptManager1 As Global.System.Web.UI.ScriptManager
+
+    '''<summary>
+    '''pnlCSRFToken control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlCSRFToken As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''CSRFToken control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents CSRFToken As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
     '''tblBanner control.
     '''</summary>
     '''<remarks>

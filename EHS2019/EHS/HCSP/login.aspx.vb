@@ -22,12 +22,9 @@ Imports SSODataType
 Imports System.Net.Security
 Imports System.Security.Cryptography.X509Certificates
 Imports Common.ComFunction.AccountSecurity
-
-'---CRE20-006 includes DHC client personal information model [Start][Nichole]
 Imports Common.Component.DHCClaim
 Imports Common.Component.DHCClaim.DHCClaimBLL
-'---CRE20-006 includes DHC client personal information model [End][Nichole]
-
+Imports Common.iAMSmart
 
 Partial Public Class login
     Inherits BasePage
@@ -42,6 +39,11 @@ Partial Public Class login
     Private Const SESS_LoginFailCount As String = "LoginFailCount"
 
     Private Const SESS_NonLoginPageKey As String = "NonLoginPageKey"
+
+    Private Const SESS_Show4thLevelAlertD28 As String = "Show4thLevelAlertD28" 'CRE20-011 iAM Smart 
+    Private Const SESS_FirstChangePassword As String = "FirstChangePassword"   'CRE20-011 iAM Smart 
+
+    Private Const SESS_MustChangePassword As String = "MustChangePassword"
 
     Private udcGeneralF As New Common.ComFunction.GeneralFunction
     Private udcSessionHandler As New SessionHandler
@@ -67,16 +69,11 @@ Partial Public Class login
 
 #End Region
 
-    Private Sub login_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
-        Dim udcGeneralFun = New Common.ComFunction.GeneralFunction()
-        Me.basetag.Attributes("href") = udcGeneralFun.getPageBasePath()
-
-    End Sub
-
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
         Dim commfunc As GeneralFunction = New GeneralFunction
         Dim strEnableTextOnlyVersion As String = String.Empty
+        Dim strEnableiAMSmart As String = String.Empty
 
         Response.Expires = -1
         Response.CacheControl = "no-cache"
@@ -102,6 +99,11 @@ Partial Public Class login
 
             If lblAppEnvironment.Text.ToLower = "production" Then lblAppEnvironment.Text = String.Empty
             ' CRE15-006 Rename of eHS [End][Lawrence]
+
+            If Session(SESS_MustChangePassword) IsNot Nothing Then
+                Session(SESS_MustChangePassword) = Nothing
+                loginMultiView.SetActiveView(SPHashPWExpiredView)
+            End If
 
             ' CRE17-015 (Disallow public using WinXP) [Start][Chris YIM]
             ' ----------------------------------------------------------
@@ -184,29 +186,6 @@ Partial Public Class login
         End Select
         ' CRE15-006 Rename of eHS [End][Lawrence]
 
-        'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
-        Dim hlCommonStyleCSS As HtmlLink = New HtmlLink
-        Dim hlMenuStyleCSS As HtmlLink = New HtmlLink
-        If DirectCast(Me.Page, BasePage).SubPlatform = EnumHCSPSubPlatform.CN Then
-            hlCommonStyleCSS.Href = "CSS/CommonStyle_cn.css"
-            hlMenuStyleCSS.Href = "CSS/MenuStyle_cn.css"
-        Else
-            hlCommonStyleCSS.Href = "CSS/CommonStyle.css"
-            hlMenuStyleCSS.Href = "CSS/MenuStyle.css"
-        End If
-
-        'Add CommonStyle CSS File
-        hlCommonStyleCSS.Attributes.Add("rel", "stylesheet")
-        hlCommonStyleCSS.Attributes.Add("type", "text/css")
-        Me.Page.Header.Controls.Add(hlCommonStyleCSS)
-
-        'Add MenuStyle CSS File
-        hlMenuStyleCSS.Attributes.Add("rel", "stylesheet")
-        hlMenuStyleCSS.Attributes.Add("type", "text/css")
-        Me.Page.Header.Controls.Add(hlMenuStyleCSS)
-        'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
-
         Dim strPleaseWaitScript As New StringBuilder
         strPleaseWaitScript.Append("function ModalUpdProgInitialize(sender, args) {")
         strPleaseWaitScript.Append("var upd = $find('" & Me.UpdateProgress1.ClientID & "');")
@@ -241,6 +220,8 @@ Partial Public Class login
             Me.txtPassword.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
             Me.txtPinNo.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
             Me.txtSPID.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+            Me.btniAMSmart.Attributes.Add("onmouseover", "checkIDEASComboClientAndVersion()")
+            Me.btniAMSmart.Attributes.Add("onclick", "checkIDEASComboClientAndVersion()")
         End If
         ' CRE20-0022 (Immu record) [End][Chris YIM]
 
@@ -250,6 +231,22 @@ Partial Public Class login
         Else
             Me.lnkbtnTextOnlyVersion.Visible = False
         End If
+
+        ' CRE20-011 (Adoption of iAM Smart as the tool for direct login to eHS(S)) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        If DirectCast(Me.Page, BasePage).SubPlatform = EnumHCSPSubPlatform.CN Then
+            paniAMSmart.Visible = False
+        Else
+            commfunc.getSystemParameter("IAMSmartEnable", strEnableiAMSmart, "")
+
+            If strEnableiAMSmart.Equals("Y") Then
+                Me.paniAMSmart.Visible = True
+            Else
+                Me.paniAMSmart.Visible = False
+            End If
+
+        End If
+        ' CRE20-011 (Adoption of iAM Smart as the tool for direct login to eHS(S)) [End][Chris YIM]
 
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
         Dim strJSOpenNewWin As String = "javascript:openNewHTML('{0}');return false;"
@@ -302,7 +299,7 @@ Partial Public Class login
         Dim udtDHCClient As New DHCPersonalInformationModel
         Dim strArtifactTimeout As String = String.Empty
         Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
-      
+
         If strFromOutsider IsNot Nothing Then
             'change the artifact para from activation code into the hashed value
             strFromOutsider = Hash(strFromOutsider).HashedValue
@@ -321,6 +318,7 @@ Partial Public Class login
                     txtUserName.Text = udtDHCClient.SPID
                     txtUserName.Enabled = False
                     rbLoginRole.Enabled = False
+                    paniAMSmart.Visible = False 'DHC not allowed to use iAM Smart
                 Else
                     'Remove the artifact from session
                     udcSessionHandler.ArtifactRemoveFromSession()
@@ -454,10 +452,7 @@ Partial Public Class login
     '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
     Private Sub ibtnLogin_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnLogin.Click
-        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         SaveToSessionIdeasComboClientInfo(Me.txtIDEASComboResult.Text, Me.txtIDEASComboVersion.Text)
-        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         If Not ValidateLoginInput() Then
             ' Empty input, should be block by logic inside "LoginAction"
@@ -1603,6 +1598,8 @@ Partial Public Class login
             Me.txtSPID.Visible = True
             Me.lblLoginAliasText.Visible = False
             Me.lblUsernameText.Visible = True
+
+            paniAMSmart.Visible = False 'DataEntry Mode can't use iamsmart 
         ElseIf Me.rbLoginRole.SelectedValue = SPAcctType.ServiceProvider Then
             Me.lblPinNoText.Visible = True
             Me.txtPinNo.Visible = True
@@ -1640,9 +1637,9 @@ Partial Public Class login
         BuildMenu()
         'If Not (Me.Menu1 Is Nothing) Then
 
-        Me.PageTitle.Text = Me.GetGlobalResourceObject("Title", "SystemLogin")
+        Me.Title = Me.GetGlobalResourceObject("Title", "SystemLogin")
         Me.lnkbtnTextOnlyVersion.Text = Me.GetGlobalResourceObject("Text", "TextOnlyVersion")
-
+        MyBase.Form.DefaultButton = ibtnLogin.UniqueID
         'Me.Menu1.Items(0).Text = Me.GetGlobalResourceObject("Text", "MenuLogin").ToString
         'Me.Menu1.Items(1).Text = Me.GetGlobalResourceObject("Text", "UserManual").ToString
         'Me.Menu1.Items(2).Text = Me.GetGlobalResourceObject("Text", "Faqs").ToString
@@ -1704,10 +1701,11 @@ Partial Public Class login
     Private Sub login_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
         If Not Me.udcMessageBox.Visible Then
             If Not strDataEntryAccount Is Nothing Then
+                System.Web.UI.ScriptManager.GetCurrent(Me.Page)
                 Me.txtUserName.Text = strDataEntryAccount
-                Me.ScriptManager1.SetFocus(Me.txtPassword)
+                _ScriptManager.SetFocus(Me.txtPassword)
             Else
-                Me.ScriptManager1.SetFocus(Me.txtUserName)
+                _ScriptManager.SetFocus(Me.txtUserName)
             End If
         End If
 
@@ -1718,6 +1716,39 @@ Partial Public Class login
             lnkbtnEnglish.Visible = False
         End If
         ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+
+        Select Case LCase(Session("language"))
+            Case English
+                btniAMSmart.Style.Add("width", "200px")
+                btniAMSmart.Style.Add("position", "relative")
+                btniAMSmart.Style.Add("left", "280px")
+
+                lnkiAMSmart.Style.Add("position", "relative")
+                lnkiAMSmart.Style.Add("left", "350px")
+                lnkiAMSmart.Style.Add("top", "10px")
+                lnkiAMSmart.Style.Add("color", "blue")
+
+            Case TradChinese
+                btniAMSmart.Style.Add("width", "150px")
+                btniAMSmart.Style.Add("position", "relative")
+                btniAMSmart.Style.Add("left", "280px")
+
+                lnkiAMSmart.Style.Add("position", "relative")
+                lnkiAMSmart.Style.Add("left", "330px")
+                lnkiAMSmart.Style.Add("top", "10px")
+                lnkiAMSmart.Style.Add("color", "blue")
+
+            Case SimpChinese
+                btniAMSmart.Style.Add("width", "150px")
+                btniAMSmart.Style.Add("position", "relative")
+                btniAMSmart.Style.Add("left", "280px")
+
+                lnkiAMSmart.Style.Add("position", "relative")
+                lnkiAMSmart.Style.Add("left", "330px")
+                lnkiAMSmart.Style.Add("top", "10px")
+                lnkiAMSmart.Style.Add("color", "blue")
+
+        End Select
 
     End Sub
 
@@ -2176,7 +2207,7 @@ Partial Public Class login
         ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         'CRE20-006 DHC Integration [Start][Nichole]
-		'7. DHC parameters Artifact bypass function
+        '7. DHC parameters Artifact bypass function
         Cache7 = udcSessionHandler.ArtifactGetFromSession()
 
         '8 DHCCLAIM model information
@@ -2208,9 +2239,9 @@ Partial Public Class login
         '6b. IDEAS Combo Version
         udcSessionHandler.IDEASComboVersionSaveToSession(Cache6)
         ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
-		
+
         'CRE20-006 DHC Integration [Start][Nichole]
-		'7. DHC parameters Artifact bypass function
+        '7. DHC parameters Artifact bypass function
         udcSessionHandler.ArtifactSaveToSession(Cache7)
 
         '8. DHC Claim model
@@ -2244,4 +2275,590 @@ Partial Public Class login
     End Sub
     ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
+    Protected Sub btniAMSmart_Click(sender As Object, e As EventArgs)
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT020001, Me)
+
+        udtAuditLogEntry.WriteStartLog(LogID.LOG00040, "iAM Smart Login button click")
+
+        Dim strUrl As String = String.Empty
+
+        '--------------------------------------
+        '---- Store Ideas info into session
+        '--------------------------------------
+        SaveToSessionIdeasComboClientInfo(Me.txtIDEASComboResult.Text, Me.txtIDEASComboVersion.Text)
+
+        '--------------------------------------
+        '---- Check the browser type 
+        '--------------------------------------
+        Dim strBrowser As String = iAMSmartSPBLL.CheckBrowserType(HttpContext.Current.Request.UserAgent)
+        Session(iAMSmartLogin.SESS_iAMSmart.BrowserType) = strBrowser
+        Dim strLanguage As String = iAMSmartSPBLL.CheckLanguage(Session("language"))
+
+        '--------------------------------------
+        '---- Generate get QR code url
+        '--------------------------------------
+        Dim strDemoVersion As String = ConfigurationManager.AppSettings("iAMSmartMode")
+
+        If strDemoVersion = iAMSmartMode.Stimulate Then
+            HttpContext.Current.Response.Redirect("~/iAMSmart/iAMSmartLogin.aspx?code=2b70ba0633eb4a01b81646a240ab6abd&state=9c7b0fb307ec4c63bb70e49abef22ba1&cookie=0")
+        Else
+            strUrl = (New iAMSmartSPBLL).getQR(strBrowser, strLanguage, FunctCode.FUNT020001)
+        End If
+
+        '--------------------------------------
+        '---- Go to get QR code web page
+        '--------------------------------------
+        If strUrl IsNot Nothing Then
+            Dim udtiAMSmartBLL As New iAMSmart.iAMSmartBLL
+
+            udtAuditLogEntry.AddDescripton("QR Code URL", strUrl)
+            udtAuditLogEntry.WriteEndLog(LogID.LOG00041, "iAM Smart Login click - success")
+
+            udtiAMSmartBLL.AddiAMSmartState(Session(iAMSmartLogin.SESS_iAMSmart.State), 0, DateTime.Now.AddSeconds(eService.Common.Constants.Eservice_State_Cookie_ExpiresTime))
+
+            HttpContext.Current.Response.Redirect(strUrl)
+
+        Else
+            udtAuditLogEntry.WriteEndLog(LogID.LOG00042, "iAM Smart Login click - fail")
+            Throw New Exception("Generate QR code url failed.")
+
+        End If
+
+    End Sub
+
+#Region "Login Action - function"
+
+    Private Sub HandleConcurrentPopup(ByVal IsCalledFromConcurrentAccessPopup As Boolean, ByRef strPassword As String, ByRef strPassCode As String)
+        If IsCalledFromConcurrentAccessPopup Then
+            If Not Session("word") Is Nothing Then
+                strPassword = Session("word").ToString
+            End If
+
+            If Not Session("code") Is Nothing Then
+                strPassCode = Session("code").ToString
+            End If
+            SavePasswordAndTokenPassCodeToSession("", "")
+        Else
+            strPassword = Me.txtPassword.Text
+            strPassCode = Me.txtPinNo.Text
+        End If
+    End Sub
+
+    'Private Sub HandleConcurrentBrowser(ByVal strLogSPId As String, ByVal strLogDataEntryAccount As String)
+    '    Dim strReturnMsg As String = String.Empty
+    '    Dim udtLoginBLL As New LoginBLL
+    '    Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT020001)
+
+    '    If Not RedirectHandler.IsTurnOnConcurrentBrowserHandling Then
+    '        strReturnMsg = udtLoginBLL.HandleConcurrentBrowser()
+    '        If (strReturnMsg IsNot String.Empty) Then
+    '            Dim udtSytemMessage As New Common.ComObject.SystemMessage("990001", "D", strReturnMsg)
+    '            Me.udcMessageBox.AddMessage(udtSytemMessage)
+    '            udcMessageBox.BuildMessageBox("ValidationFail", udtAuditLogEntry, "Login Session Exist already", LogID.LOG00030, strLogSPID, strLogDataEntryAccount)
+    '        End If
+    '    End If
+    'End Sub
+
+
+    Private Sub ClearAllSession()
+        If Not Session Is Nothing Then
+            If Not Session(SESS_DataEntryAccount) Is Nothing Then
+                strDataEntryAccount = Session(SESS_DataEntryAccount)
+                ViewState(VS_DataEntryAccount) = strDataEntryAccount
+                Session(SESS_DataEntryAccount) = Nothing
+            End If
+
+            'Disallow public using WinXP
+            HandleSessionVariable()
+
+        End If
+    End Sub
+
+    Private Sub HandleFailLogin(ByVal strLoginRole As String, ByVal strLogSPID As String, ByVal strLogDataEntryAccount As String)
+        Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
+        ' Check Login fail consecutively with same Login ID
+        Dim strLoginID As String = String.Empty
+        Dim blnConsecutiveFail As Boolean = False
+        Dim intLoginFailCount As Integer = -1
+        Dim strLoginFailCount As String = ""
+
+        If strLoginRole = SPAcctType.ServiceProvider Then
+            strLoginID = strLogSPID
+        Else
+            strLoginID = strLogDataEntryAccount
+        End If
+
+
+        If Session(SESS_LoginRole) Is Nothing OrElse Session(SESS_LoginRole) <> strLoginRole Then
+            Session(SESS_LoginRole) = strLoginRole
+            Session(SESS_LoginID) = strLoginID
+            Session(SESS_LoginFailCount) = 1
+        Else
+            If Session(SESS_LoginID) <> strLoginID Then
+                Session(SESS_LoginID) = strLoginID
+                Session(SESS_LoginFailCount) = 1
+            Else
+                Session(SESS_LoginFailCount) = CInt(Session(SESS_LoginFailCount)) + 1
+            End If
+        End If
+
+        udtGeneralFunction.getSystemParameter("LoginFailConsecutivelyCount", strLoginFailCount, String.Empty)
+        intLoginFailCount = CInt(strLoginFailCount)
+
+        If intLoginFailCount = -1 Then
+            blnConsecutiveFail = False
+
+        ElseIf Session(SESS_LoginFailCount) >= intLoginFailCount Then
+            blnConsecutiveFail = True
+        End If
+
+        If blnConsecutiveFail Then
+            If strLoginRole = SPAcctType.ServiceProvider Then
+                Me.udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00003)
+            Else
+                Me.udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00004)
+            End If
+        Else
+            If strLoginRole = SPAcctType.ServiceProvider Then
+                Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00134)
+            Else
+                Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00135)
+            End If
+        End If
+
+    End Sub
+
+    Function CheckInputSP(ByRef dtUserAC As DataTable, ByVal strLoginRole As String, ByRef strLogSPID As String, ByRef strLogDataEntryAccount As String, ByVal strPassword As String, ByVal strPassCode As String) As Boolean
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT020001)
+        Dim udtValidator As New Validator
+        Dim blnPassLogin As Boolean = True
+        ' Dim dtUserAC As DataTable = Nothing
+        Dim udtUserACBLL As New UserACBLL
+
+        'Check SP ID input
+        If udtValidator.IsEmpty(Me.txtUserName.Text.Trim) Then
+            Me.udcMessageBox.AddMessage(FunctCode.FUNT020001, SeverityCode.SEVE, MsgCode.MSG00001)
+            Me.imgUserNameAlert.Visible = True
+            blnPassLogin = False
+        Else
+            'Get the detail of SP info.
+            dtUserAC = udtUserACBLL.GetUserACForLogin(Me.txtUserName.Text, Me.txtSPID.Text, strLoginRole)
+        End If
+
+        'Check SP is existed or not
+        If Not dtUserAC Is Nothing AndAlso dtUserAC.Rows.Count = 1 Then
+            strLogSPID = CStr(dtUserAC.Rows(0).Item("SP_ID")).Trim
+            strLogDataEntryAccount = Nothing
+        Else
+            strLogSPID = Me.txtUserName.Text
+            strLogDataEntryAccount = Nothing
+            'Service Provider Login fail: Incorrect UserID
+            udtAuditLogEntry.WriteLog(LogID.LOG00024, LoginBLL.AuditLog_Prefix.SP & LoginBLL.AuditLog.MSG00002 & "[" & Me.txtUserName.Text.Trim & "]", strLogSPID, strLogDataEntryAccount)
+            blnPassLogin = False
+        End If
+
+        'Check the password
+        If udtValidator.IsEmpty(strPassword.ToString) Then
+            Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00043)
+            Me.imgPasswordAlert.Visible = True
+            blnPassLogin = False
+        End If
+
+        'Check the token
+        If udtValidator.IsEmpty(strPassCode.ToString) Then
+            Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00044)
+            Me.imgPinNoAlert.Visible = True
+            blnPassLogin = False
+        End If
+
+        Return blnPassLogin
+    End Function
+
+    Function CheckInputDataEntry(ByRef dtUserAC As DataTable, ByVal strLoginRole As String, ByRef strLogSPID As String, ByRef strLogDataEntryAccount As String, ByVal strPassword As String, ByVal strPassCode As String) As Boolean
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT020001)
+        Dim udtValidator As New Validator
+        Dim blnPassLogin As Boolean = True
+        'Dim dtUserAC As DataTable = Nothing
+        Dim udtUserACBLL As New UserACBLL
+
+        'Check SP ID input
+        If udtValidator.IsEmpty(Me.txtUserName.Text.Trim) Then
+            Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00042)
+            Me.imgUserNameAlert.Visible = True
+            blnPassLogin = False
+        Else
+            'Get the detail of SP info.
+            dtUserAC = udtUserACBLL.GetUserACForLogin(Me.txtUserName.Text, Me.txtSPID.Text, strLoginRole, Me.SubPlatform)
+        End If
+
+        'Check Data Entry account
+        If Not dtUserAC Is Nothing AndAlso dtUserAC.Rows.Count = 1 Then
+            strLogSPID = CStr(dtUserAC.Rows(0).Item("SP_ID")).Trim
+            strLogDataEntryAccount = CStr(dtUserAC.Rows(0).Item("Data_Entry_Account")).Trim
+        Else
+            strLogSPID = Me.txtSPID.Text
+            strLogDataEntryAccount = Me.txtUserName.Text
+            'Data Entry Account Login fail: Data Entry Account & Service Provider not match
+            udtAuditLogEntry.WriteLog(LogID.LOG00027, LoginBLL.AuditLog_Prefix.DE & LoginBLL.AuditLog.MSG00011 & "[" & Me.txtUserName.Text.Trim & "][" & Me.txtSPID.Text.Trim & "]", strLogSPID, strLogDataEntryAccount)
+        End If
+
+        'Check the password
+        If udtValidator.IsEmpty(strPassword.ToString) Then
+            Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00043)
+            Me.imgPasswordAlert.Visible = True
+            blnPassLogin = False
+        End If
+        'Check SP ID
+        If udtValidator.IsEmpty(Me.txtSPID.Text.Trim) Then
+            Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00132)
+            Me.imgSPIDAlert.Visible = True
+            blnPassLogin = False
+        End If
+
+        Return blnPassLogin
+    End Function
+
+
+    Private Sub HandleUnsuccessLog(ByVal dtUserAC As DataTable, ByVal strLoginRole As String)
+        Dim udtLoginBLL As New LoginBLL
+
+        If Not dtUserAC Is Nothing AndAlso dtUserAC.Rows.Count = 1 Then
+            Dim strSPID As String = CStr(dtUserAC.Rows(0).Item("SP_ID"))
+            Try
+                If strLoginRole = SPAcctType.ServiceProvider Then
+                    udtLoginBLL.UpdateUnsuccessLoginDtm(strSPID, Nothing, strLoginRole)
+                Else
+                    Dim strDataEntryAccount As String = CStr(dtUserAC.Rows(0).Item("Data_Entry_Account"))
+                    udtLoginBLL.UpdateUnsuccessLoginDtm(strSPID, strDataEntryAccount, strLoginRole)
+                End If
+            Catch eSQL As SqlClient.SqlException
+                If eSQL.Number = 50000 Then
+
+                Else
+                    Throw eSQL
+                End If
+            Catch ex As Exception
+                Throw ex
+            End Try
+        End If
+    End Sub
+#End Region
+
+#Region "LoginAction"
+    Private Sub SPLoginAction(ByVal IsCalledFromConcurrentAccessPopup As Boolean, ByVal blnClearAllSession As Boolean)
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT020001)
+        Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
+        Dim blnNoUnsuccessLog As Boolean = False
+        Dim strEnableToken As String = String.Empty
+
+        Dim udtValidator As New Validator
+        Dim dtUserAC As DataTable = Nothing
+        Dim udtUserACBLL As New UserACBLL
+        Dim strLoginRole As String = Me.rbLoginRole.SelectedValue
+        Dim strLogSPID As String = String.Empty
+        Dim strLogDataEntryAccount As String = String.Empty
+
+        Dim udtLoginBLL As New LoginBLL
+        Dim strAuditLogDesc As String = String.Empty
+        Dim strLogID As String = String.Empty
+        Dim strSuccessLogID As String = String.Empty
+        Dim strFirstLogID As String = String.Empty
+        Dim strForceLogID As String = String.Empty
+        Dim strFailLogID As String = String.Empty
+        Dim strForceResetLogID As String = String.Empty
+
+        Dim strPassword As String = String.Empty
+        Dim strPassCode As String = String.Empty
+        Dim strUnderMaint As String = String.Empty
+        Dim strSPStatus As String = String.Empty
+        Dim strValidation As String = String.Empty
+        Dim strShow4thLevelAlertD28 As String = String.Empty
+        Dim strFirstChangePassword As String = String.Empty
+        Dim strLanguage As String = String.Empty
+
+        Dim udtChangePasswordUserAC As UserACModel = Nothing
+        Dim blnLoginFail As Boolean = False
+        Dim blnPassLogin As Boolean = True
+        Dim blnSP_CommonUser As Boolean = True
+
+        Dim udtServiceProvider As ServiceProviderModel = Nothing
+        Dim udtDataEntryUserModel As DataEntryUserModel = Nothing
+
+        Dim intChgPwdDay As Integer
+
+        '--------------------------------
+        'Step 1: Handle Concurrent popup
+        '--------------------------------
+        HandleConcurrentPopup(IsCalledFromConcurrentAccessPopup, strPassword, strPassCode)
+
+        'Handle Concurrent Browswer (login session)
+        'HandleConcurrentBrowser(strLogSPID, strLogDataEntryAccount)
+
+        'AuditLog for SP
+        udtAuditLogEntry.AddDescripton(LoginBLL.AuditLogDesc.Field00001, Me.txtUserName.Text)
+        udtAuditLogEntry.AddDescripton(LoginBLL.AuditLogDesc.Field00002, strPassCode.ToString)
+        strLogSPID = Me.txtUserName.Text
+        strLogDataEntryAccount = Nothing
+
+        '--------------------------------
+        'Step 2: Reset the image
+        '--------------------------------
+        ResetAlertImage()
+
+        '--------------------------------
+        'Step 3:  Down Service Checking
+        '--------------------------------
+        strUnderMaint = udtLoginBLL.CheckServiceDown()
+        If strUnderMaint = "Y" Then
+            'Service under construction
+            Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00151)
+            blnPassLogin = False
+        End If
+
+        'AuditLog for ideascombo
+        udtAuditLogEntry.AddDescripton("IdeasComboClient", IIf(udcSessionHandler.IDEASComboClientGetFormSession() Is Nothing, YesNo.No, udcSessionHandler.IDEASComboClientGetFormSession()))
+        udtAuditLogEntry.AddDescripton("IdeasComboVersion", IIf(udcSessionHandler.IDEASComboVersionGetFormSession() Is Nothing, String.Empty, udcSessionHandler.IDEASComboVersionGetFormSession()))
+
+        'Set Log ID
+        strLogID = LogID.LOG00001
+        strSuccessLogID = LogID.LOG00002
+        strFirstLogID = LogID.LOG00003
+        strForceLogID = LogID.LOG00003
+        strFailLogID = LogID.LOG00004
+        strForceResetLogID = LogID.LOG00032
+        strAuditLogDesc = "Service Provider "
+
+        'Write the start log of login
+        udtAuditLogEntry.WriteStartLog(strLogID, strAuditLogDesc & LoginBLL.AuditLog.MSG00001, strLogSPID, strLogDataEntryAccount)
+
+
+
+        '--------------------------------
+        'Step 4: Check Input
+        '--------------------------------
+        If blnPassLogin Then
+            blnPassLogin = CheckInputSP(dtUserAC, strLoginRole, strLogSPID, strLogDataEntryAccount, strPassword, strPassCode)
+        End If
+
+        '--------------------------------
+        'Step 5: Validation
+        '--------------------------------
+        If blnPassLogin Then
+            'strValidation = udtLoginBLL.LoginValidationSP(dtUserAC, strPassword, strAuditLogDesc, strForceResetLogID, strPassCode, strLogSPID, strLogDataEntryAccount, strLoginRole, strSPStatus, Me.SubPlatform, txtUserName.Text, txtSPID.Text)
+            Select Case strValidation.Trim
+                Case EnumVerifyPasswordResult.RequireUpdate
+                    loginMultiView.SetActiveView(SPHashPWExpiredView)
+                    blnPassLogin = False
+                Case EnumVerifyPasswordResult.Incorrect
+                    blnPassLogin = False
+                Case EnumVerifyPasswordResult.Pass
+                    blnPassLogin = True
+            End Select
+        End If
+
+        '-----------------------------------------------
+        'Step 6: Get the No of days for change password
+        '-----------------------------------------------
+        'intChgPwdDay = udtLoginBLL.GetChangePwdDay()
+
+        '-----------------------------------------------
+        'Step 7: Clear session
+        '-----------------------------------------------
+        If blnPassLogin Then
+            ' Remove all Session while press login
+            If blnClearAllSession Then
+                ClearAllSession()
+            End If
+            Me.udcMessageBox.Visible = False
+        End If
+
+        '-----------------------------------------------
+        'Step 8:  Check record status of SP and handle 4 level alert
+        '-----------------------------------------------
+        If blnPassLogin Then
+            'blnPassLogin = udtLoginBLL.CheckRecordStatusSP(dtUserAC, strLoginRole, strSPStatus, blnNoUnsuccessLog, strLogSPID, intChgPwdDay, strLogDataEntryAccount, strSuccessLogID, strAuditLogDesc, strFirstLogID, strForceLogID, Me.SubPlatform, txtUserName.Text, txtSPID.Text, udcMessageBox, blnSP_CommonUser, strShow4thLevelAlertD28, strFirstChangePassword, udtChangePasswordUserAC, strLanguage)
+            Session("SP_CommonUser") = blnSP_CommonUser
+            Session(SESS_Show4thLevelAlertD28) = strShow4thLevelAlertD28
+            Session(SESS_FirstChangePassword) = strFirstChangePassword
+            Session(SESS_ChangePasswordUserAC) = udtChangePasswordUserAC
+            Session("language") = strLanguage
+
+            If strFirstChangePassword = YesNo.No Then
+                Session.Remove(UserACBLL.SESS_USERAC)
+            End If
+        End If
+
+        '-----------------------------------------------
+        'Step 9:  Handle Fail login
+        '-----------------------------------------------
+        If blnPassLogin = False Then
+            HandleFailLogin(strLoginRole, strLogSPID, strLogDataEntryAccount)
+            If blnNoUnsuccessLog = False Then
+                HandleUnsuccessLog(dtUserAC, strLoginRole)
+            End If
+            udcMessageBox.BuildMessageBox(LoginBLL.AuditLogDesc.Header00001, udtAuditLogEntry, LoginBLL.AuditLog_Prefix.SP & LoginBLL.AuditLog.MSG00007, strFailLogID, strLogSPID, strLogDataEntryAccount)
+        End If
+
+    End Sub
+
+    Private Sub DataEntryLoginAction(ByVal IsCalledFromConcurrentAccessPopup As Boolean, ByVal blnClearAllSession As Boolean)
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT020001)
+        Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
+        Dim blnNoUnsuccessLog As Boolean = False
+        Dim strEnableToken As String = String.Empty
+
+        Dim udtValidator As New Validator
+        Dim dtUserAC As DataTable = Nothing
+        Dim udtUserACBLL As New UserACBLL
+        Dim strLoginRole As String = Me.rbLoginRole.SelectedValue
+        Dim strLogSPID As String = String.Empty
+        Dim strLogDataEntryAccount As String = String.Empty
+
+        Dim udtLoginBLL As New LoginBLL
+        Dim strAuditLogDesc As String = String.Empty
+        Dim strLogID As String = String.Empty
+        Dim strSuccessLogID As String = String.Empty
+        Dim strFirstLogID As String = String.Empty
+        Dim strForceLogID As String = String.Empty
+        Dim strFailLogID As String = String.Empty
+        Dim strForceResetLogID As String = String.Empty
+
+        Dim strPassword As String = String.Empty
+        Dim strPassCode As String = String.Empty
+
+        Dim strUnderMaint As String = String.Empty
+        Dim strSPStatus As String = String.Empty
+        Dim strValidation As String = String.Empty
+        Dim strShow4thLevelAlertD28 As String = String.Empty
+        Dim strFirstChangePassword As String = String.Empty
+        Dim strLanguage As String = String.Empty
+
+        Dim udtChangePasswordUserAC As UserACModel = Nothing
+
+        Dim blnPassLogin As Boolean = True
+        Dim blnSP_CommonUser As Boolean = True
+        Dim blnLoginFail As Boolean = False
+
+        Dim udtServiceProvider As ServiceProviderModel = Nothing
+
+        Dim intChgPwdDay As Integer
+
+        '--------------------------------
+        'Step 1 : Handle Concurrent popup
+        '--------------------------------
+        HandleConcurrentPopup(IsCalledFromConcurrentAccessPopup, strPassword, strPassCode)
+
+        'Handle Concurrent Browswer(login session)
+        'HandleConcurrentBrowser(strLogSPID, strLogDataEntryAccount)
+
+
+        'AuditLog for Data Entry
+        udtAuditLogEntry.AddDescripton(LoginBLL.AuditLogDesc.Field00003, Me.txtUserName.Text)
+        udtAuditLogEntry.AddDescripton(LoginBLL.AuditLogDesc.Field00000, Me.txtSPID.Text)
+        strLogSPID = Me.txtSPID.Text
+        strLogDataEntryAccount = Me.txtUserName.Text
+
+        '--------------------------------
+        'Step 2: Reset the image
+        '--------------------------------
+        ResetAlertImage()
+
+        '--------------------------------
+        'Step 3: Down Service Checking
+        '--------------------------------
+        strUnderMaint = udtLoginBLL.CheckServiceDown()
+        If strUnderMaint = "Y" Then
+            'Service under construction
+            Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00151)
+            blnLoginFail = True
+        End If
+
+        'AuditLog for ideascombo
+        udtAuditLogEntry.AddDescripton("IdeasComboClient", IIf(udcSessionHandler.IDEASComboClientGetFormSession() Is Nothing, YesNo.No, udcSessionHandler.IDEASComboClientGetFormSession()))
+        udtAuditLogEntry.AddDescripton("IdeasComboVersion", IIf(udcSessionHandler.IDEASComboVersionGetFormSession() Is Nothing, String.Empty, udcSessionHandler.IDEASComboVersionGetFormSession()))
+
+
+        'Set Log ID
+        strLogID = LogID.LOG00005
+        strSuccessLogID = LogID.LOG00006
+        strFirstLogID = LogID.LOG00007
+        strForceLogID = LogID.LOG00008
+        strFailLogID = LogID.LOG00009
+        strForceResetLogID = LogID.LOG00036
+        strAuditLogDesc = "Data Entry Account "
+
+        'Write the start log of login
+        udtAuditLogEntry.WriteStartLog(strLogID, strAuditLogDesc & LoginBLL.AuditLog.MSG00001, Me.txtSPID.Text, Me.txtUserName.Text)
+
+        '--------------------------------
+        'Step 4: Check Input
+        '--------------------------------
+        If blnPassLogin Then
+            blnPassLogin = CheckInputDataEntry(dtUserAC, strLoginRole, strLogSPID, strLogDataEntryAccount, strPassword, strPassCode)
+        End If
+
+        '--------------------------------
+        'Step 5: Validation
+        '--------------------------------
+        If blnPassLogin Then
+            strValidation = udtLoginBLL.LoginValidationDataEntry(dtUserAC, strPassword, strAuditLogDesc, strForceResetLogID, strLogSPID, strLogDataEntryAccount, strLoginRole, strSPStatus, Me.SubPlatform, txtUserName.Text, txtSPID.Text)
+            Select Case strValidation.Trim
+                Case EnumVerifyPasswordResult.RequireUpdate
+                    loginMultiView.SetActiveView(DEHashPWExpiredView)
+                    blnPassLogin = False
+                Case EnumVerifyPasswordResult.Incorrect
+                    blnPassLogin = False
+                Case EnumVerifyPasswordResult.Pass
+                    blnPassLogin = True
+            End Select
+        End If
+
+        '-----------------------------------------------
+        'Step 6: Get the No of days for change password
+        '-----------------------------------------------
+        'intChgPwdDay = udtLoginBLL.GetChangePwdDay()
+
+        '-----------------------------------------------
+        'Step 7: Clear session
+        '-----------------------------------------------
+        If blnPassLogin Then
+            ' Remove all Session while press login
+            If blnClearAllSession Then
+                ClearAllSession()
+            End If
+
+            Me.udcMessageBox.Visible = False
+        End If
+
+        '-----------------------------------------------
+        'Step 8: Check record status of SP and handle 4 level alert
+        '-----------------------------------------------
+        If blnPassLogin Then
+            blnPassLogin = udtLoginBLL.CheckRecordStatusDataEntry(dtUserAC, strLoginRole, strSPStatus, blnNoUnsuccessLog, strLogSPID, intChgPwdDay, strLogDataEntryAccount, blnLoginFail, strSuccessLogID, strAuditLogDesc, strFirstLogID, strForceLogID, Me.SubPlatform, txtUserName.Text, txtSPID.Text, udcMessageBox, blnSP_CommonUser, strShow4thLevelAlertD28, strFirstChangePassword, udtChangePasswordUserAC, strLanguage)
+
+            Session("SP_CommonUser") = blnSP_CommonUser
+            Session(SESS_Show4thLevelAlertD28) = strShow4thLevelAlertD28
+            Session(SESS_FirstChangePassword) = strFirstChangePassword
+            Session(SESS_ChangePasswordUserAC) = udtChangePasswordUserAC
+
+            If strFirstChangePassword = YesNo.Yes Then
+                Session.Remove(UserACBLL.SESS_USERAC)
+            End If
+        End If
+
+        '-----------------------------------------------
+        'Step 9:  Handle Fail login
+        '-----------------------------------------------
+        If blnPassLogin = False Then
+            HandleFailLogin(strLoginRole, strLogSPID, strLogDataEntryAccount)
+            If blnNoUnsuccessLog = False Then
+                HandleUnsuccessLog(dtUserAC, strLoginRole)
+            End If
+            'Data Entry Login failed
+            udcMessageBox.BuildMessageBox(LoginBLL.AuditLogDesc.Header00001, udtAuditLogEntry, LoginBLL.AuditLog.MSG00012, strFailLogID, strLogSPID, strLogDataEntryAccount)
+        End If
+
+    End Sub
+
+#End Region
 End Class

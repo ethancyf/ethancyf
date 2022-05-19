@@ -101,9 +101,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -142,18 +140,26 @@
     <Content Include="CSS\bootstrap-select.min.css" />
     <Content Include="CSS\bootstrap.min.css" />
     <Content Include="CSS\CommonStyle_cn.css" />
+    <Content Include="CSS\iAMSmart.css" />
     <Content Include="CSS\MenuStyle_cn.css" />
     <Content Include="DownloadArea\DownloadArea.aspx" />
     <Content Include="en\ReadSmartIDTips.htm" />
+    <Content Include="iAMSmart\iAMSmartLogin.aspx" />
     <Content Include="IDEASComboReader\IDEASComboReaderGuide.aspx" />
     <Content Include="IDEASComboReader\IDEASComboReader.aspx" />
     <Content Include="en\InvalidOS.aspx" />
+    <Content Include="Images\banner\banner_iAMSmartLogin.png" />
+    <Content Include="Images\banner\banner_iAMSmartLogin_cn.png" />
+    <Content Include="Images\banner\banner_iAMSmartLogin_tw.png" />
     <Content Include="Images\banner\banner_RecoverLogin.png" />
     <Content Include="Images\banner\banner_RecoverLogin_cn.png" />
     <Content Include="Images\banner\banner_RecoverLogin_tw.png" />
     <Content Include="Images\banner\banner_VaccinationFileManagement.png" />
     <Content Include="Images\banner\banner_VaccinationFileManagement_cn.png" />
     <Content Include="Images\banner\banner_VaccinationFileManagement_tw.png" />
+    <Content Include="Images\button\btn_BackToLogin.png" />
+    <Content Include="Images\button\btn_BackToLogin_cn.png" />
+    <Content Include="Images\button\btn_BackToLogin_tw.png" />
     <Content Include="Images\button\btn_cancel_cn.png" />
     <Content Include="Images\button\btn_checkAvailability_cn.png" />
     <Content Include="Images\button\btn_CloseWindow.png" />
@@ -165,8 +171,17 @@
     <Content Include="Images\button\btn_ConfirmClaim_D_cn.png" />
     <Content Include="Images\button\btn_ConfirmClaim_D_tw.png" />
     <Content Include="Images\button\btn_ConfirmClaim_tw.png" />
+    <Content Include="Images\button\btn_Disable.png" />
+    <Content Include="Images\button\btn_Disable_cn.png" />
+    <Content Include="Images\button\btn_Disable_tw.png" />
     <Content Include="Images\button\btn_GetUsernameFromEHRSS.png" />
     <Content Include="Images\button\btn_GetUsernameFromEHRSS_tw.png" />
+    <Content Include="Images\button\btn_GoToEnrolment.png" />
+    <Content Include="Images\button\btn_GoToEnrolment_cn.png" />
+    <Content Include="Images\button\btn_GoToEnrolment_tw.png" />
+    <Content Include="Images\button\btn_LoginNow.png" />
+    <Content Include="Images\button\btn_LoginNow_cn.png" />
+    <Content Include="Images\button\btn_LoginNow_tw.png" />
     <Content Include="Images\button\btn_not_proceed.png" />
     <Content Include="Images\button\btn_not_proceed_cn.png" />
     <Content Include="Images\button\btn_not_proceed_tw.png" />
@@ -583,6 +598,14 @@
       <DependentUpon>sessiontimeout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="CSRFMasterPage.Master.designer.vb">
+      <DependentUpon>CSRFMasterPage.Master</DependentUpon>
+    </Compile>
+    <Compile Include="CSRFMasterPage.Master.vb">
+      <DependentUpon>CSRFMasterPage.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CSRFTokenHelper.vb" />
     <Compile Include="DownloadArea\DownloadArea.aspx.designer.vb">
       <DependentUpon>DownloadArea.aspx</DependentUpon>
     </Compile>
@@ -597,6 +620,13 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="EHSClaimBasePage.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="iAMSmart\iAMSmartLogin.aspx.designer.vb">
+      <DependentUpon>iAMSmartLogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="iAMSmart\iAMSmartLogin.aspx.vb">
+      <DependentUpon>iAMSmartLogin.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="IDEASComboReader\IDEASComboReaderGuide.aspx.designer.vb">
@@ -5619,6 +5649,7 @@
     <Content Include="Doc\ReadSmartIDTips_CHI.pdf" />
     <Content Include="Doc\User Guide for Smart HKID Card Reading Software_CHI.pdf" />
     <Content Include="Doc\User Guide for Smart HKID Card Reading Software.pdf" />
+    <Content Include="CSRFMasterPage.Master" />
     <None Include="Doc\voucheracccreation.pdf" />
     <None Include="Doc\voucherconsent.pdf" />
     <None Include="My Project\Application.myapp">
@@ -5847,6 +5878,14 @@
     <ProjectReference Include="..\Common.eHRIntegration\Common.eHRIntegration.vbproj">
       <Project>{a096aa76-6acf-4117-80e1-b7abaf11ed26}</Project>
       <Name>Common.eHRIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common.iAMSmart.Base\Common.iAMSmart.Base.csproj">
+      <Project>{d1c393b5-8283-4ef7-b2ab-c448ab8488df}</Project>
+      <Name>Common.iAMSmart.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common.iAMSmart\Common.iAMSmart.vbproj">
+      <Project>{4322af9f-b490-4e7f-95d1-ad0e942ba495}</Project>
+      <Name>Common.iAMSmart</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common.OCSSS\Common.OCSSS.vbproj">
       <Project>{1fcab446-d1e7-4ecb-972b-f7a476a668f2}</Project>

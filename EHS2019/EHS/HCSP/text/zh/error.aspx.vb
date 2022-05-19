@@ -7,9 +7,7 @@ Namespace Text.ZH
 
 
         Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-            Response.Expires = -1
-            Response.CacheControl = "no-cache"
-            Response.AddHeader("Pragma", "no-cache")
+            Page.Title = "醫健通(資助)系統 - 系統錯誤"
 
             Try
                 Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT029901)

@@ -7123,7 +7123,7 @@ Partial Public Class EHSClaimV2
         Dim strDocTypeCode As String = String.Empty
 
         Dim udtDocTypeBLL As New DocTypeBLL()
-        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(strScheme)
+        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeBySchemeClaimType(strScheme, SchemeDocTypeModel.ClaimTypeEnumClass.Normal)
         For Each udtSchemeDocType As SchemeDocTypeModel In udtSchemeDocTypeList
             If udtSchemeDocType.IsMajorDoc Then
                 strDocTypeCode = udtSchemeDocType.DocCode.Trim()

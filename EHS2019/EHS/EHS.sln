@@ -119,6 +119,16 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "COVID19Exporter", "COVID19E
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "COVID19DischargeImporter", "COVID19DischargeImporter\COVID19DischargeImporter.vbproj", "{9F0B72B1-2F3B-4921-82F6-C16775E748B6}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "COVID19MECExporter", "COVID19MECExporter\COVID19MECExporter.vbproj", "{E6FFCAB2-7CAB-4455-9654-441629C77964}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Common.iAMSmart", "Common.iAMSmart\Common.iAMSmart.vbproj", "{4322AF9F-B490-4E7F-95D1-AD0E942BA495}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.iAMSmart.Base", "Common.iAMSmart.Base\Common.iAMSmart.Base.csproj", "{D1C393B5-8283-4EF7-B2AB-C448AB8488DF}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "iAMSmartService", "iAMSmartService\iAMSmartService.vbproj", "{7E94C4D6-ADC8-483C-9251-1257769189D3}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "iAMSmartTester", "iAMSmartTester\iAMSmartTester.vbproj", "{8FEAB455-0A65-4C51-8773-AC51412AD870}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -699,6 +709,16 @@ Global
 		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Release|Win32.ActiveCfg = Release|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8FEAB455-0A65-4C51-8773-AC51412AD870}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

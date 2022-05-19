@@ -29,6 +29,10 @@ Public MustInherit Class BasePage
     Public Const SelectSimpChinese As String = "ctl00$lnkbtnSimpChinese"
     Public Const SelectEnglish As String = "ctl00$lnkbtnEnglish"
 
+    Public Const SelectTradChineseLogin As String = "ctl00$ContentPlaceHolder1$lnkbtnTradChinese"
+    Public Const SelectSimpChineseLogin As String = "ctl00$ContentPlaceHolder1$lnkbtnSimpChinese"
+    Public Const SelectEnglishLogin As String = "ctl00$ContentPlaceHolder1$lnkbtnEnglish"
+
     Public Const _SelectTradChinese As String = "lnkbtnTradChinese"
     Public Const _SelectSimpChinese As String = "lnkbtnSimpChinese"
     Public Const _SelectEnglish As String = "lnkbtnEnglish"
@@ -187,13 +191,13 @@ Public MustInherit Class BasePage
             'Dim controlID As String = Request.Form(PostBackEventTarget)
             Dim controlID As String = Page.Request.Params.Get(PostBackEventTarget)
             If Not controlID.Equals(_SelectTradChinese) AndAlso Not controlID.Equals(_SelectSimpChinese) AndAlso Not controlID.Equals(_SelectEnglish) Then
-                If controlID.Equals(SelectTradChinese) Then
+                If controlID.Equals(SelectTradChinese) OrElse controlID.Equals(SelectTradChineseLogin) Then
                     selectedValue = TradChinese
                     Session("language") = selectedValue
-                ElseIf controlID.Equals(SelectSimpChinese) Then
+                ElseIf controlID.Equals(SelectSimpChinese) OrElse controlID.Equals(SelectSimpChineseLogin) Then
                     selectedValue = SimpChinese
                     Session("language") = selectedValue
-                ElseIf controlID.Equals(SelectEnglish) Then
+                ElseIf controlID.Equals(SelectEnglish) OrElse controlID.Equals(SelectEnglishLogin) Then
                     selectedValue = English
                     Session("language") = selectedValue
                 End If

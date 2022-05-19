@@ -234,7 +234,7 @@ Imports System.Web.Security.AntiXss
     End Sub
 
     Private Sub ReRenderPage()
-        Me.PageTitle.Text = Me.GetGlobalResourceObject("Title", "SystemLogin")
+        Me.Title = Me.GetGlobalResourceObject("Title", "SystemLogin")
         Me.lblUserNameText.Text = Me.GetGlobalResourceObject("Text", "Username")
         Me.lblPasswordText.Text = Me.GetGlobalResourceObject("Text", "Password")
         Me.lblPinNoText.Text = Me.GetGlobalResourceObject("Text", "PinNo")

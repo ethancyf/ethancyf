@@ -6,12 +6,14 @@
 
 <%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+ 
 <%@ Register Src="../UIControl/SchemeLegend.ascx" TagName="SchemeLegend" TagPrefix="uc1" %>
 <%@ Register Src="../UIControl/PCDIntegration/ucTypeOfPracticePopup.ascx" TagName="ucTypeOfPracticePopup"
     TagPrefix="uc2" %>
 <%@ Register Src="../UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucNoticePopUp" TagPrefix="uc3" %>
 <%@ Register Src="../UIControl/Token/ucInputTokenPopUp.ascx" TagName="ucInputTokenPopUp" TagPrefix="uc4" %>
 <%@ Register Src="../UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucReturnCodeHandlingPopUp" TagPrefix="uc6" %>
+ 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style type="text/css">
@@ -754,7 +756,7 @@ function tabChanges(sender, e) {
                         <cc1:TabPanel ID="tabSystemInfo" runat="server" HeaderText="<%$ Resources:Text, SystemInfo %>"
                             Width="950px">
                             <ContentTemplate>
-                                <table style="width: 87%" cellpadding="0" cellspacing="0">
+                                <table style="width: 87%" cellpadding="0" cellspacing="0" border="0">
                                     <tr>
                                         <td class="tableHeading" colspan="3">
                                             <asp:Label ID="lblSPLoginInformation" runat="server" Text="<%$ Resources:Text, LoginInformation %>"></asp:Label></td>
@@ -829,7 +831,33 @@ function tabChanges(sender, e) {
                                         <td colspan="2" valign="top" style="width: 685px">
                                             <asp:Label ID="lblTokenSerialNo" runat="server" CssClass="tableText"></asp:Label></td>
                                     </tr>
+                                     <tr>
+                                        <td style="width: 250px; height: 10px" valign="top"></td>
+                                        <td colspan="1" style="height: 10px; width: 370px" valign="top"></td>
+                                        <td colspan="1" style="height: 10px; width: 315px;" valign="top"></td>
+                                    </tr>
+                                    <!---CRE20-011 iamSmart [Start][Nichole] -->
+                                   
+                                    <tr>
+                                        <td style="width: 250px;" valign="middle">
+                                            <asp:Label ID="lbliAMSmartText" runat="server" Text="<%$ Resources:Text, iAMSmartLinked %>" Height="30px"
+                                                Style="font-weight: bold"></asp:Label></td>
+                                        <td valign="top" style="width: 685px" colspan="2">
+                                            <table  style="width: 100%" border="0" cellspacing="0">
+                                                <tr>
 
+                                            <td width="40px" valign="top" ><asp:Label ID="lbliAMSmart" runat="server" CssClass="tableText" valign="top" ></asp:Label></td>
+                                            <td>
+                                            <asp:ImageButton ID="btniAMSmartDisconnect" runat="server" onClick="btnDisconnect_Click" ImageUrl="<%$ Resources:ImageURL, DisableBtn %>"
+                                                AlternateText="<%$ Resources:AlternateText, DisableBtn %>" />
+                                                </td></tr>
+                                            </table>
+                                        </td>
+                                      
+                                    </tr>
+
+                                    
+                                    <!---CRE20-011 iamSmart [End][Nichole] -->
                                     <asp:Panel ID="PanelSPSystemSettings" runat="server">
                                         <tr>
                                             <td class="tableHeading" colspan="3">
@@ -1962,6 +1990,19 @@ function tabChanges(sender, e) {
             </cc1:ModalPopupExtender>
             <%-- End of Notice Popup for logout eHS and login PCD--%>
 
+             <%-- iAMSmart Disconnected --%>
+               <asp:Panel ID="panNoticeDisconnectiAMSmartPopUp" runat="server" Style="display: none; width: 540px;">
+                <uc3:ucNoticePopUp ID="UcNoticeDisconnectiAMSmartPopUp" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel"  
+                    HeaderText="" MessageText="<%$ Resources:Text, iAMSmartDisconnectMessage %>" />
+                <asp:Button ID="btniAMSmartDisconnectDummy" runat="server" Style="display: none" />
+            </asp:Panel>
+            <cc1:ModalPopupExtender ID="ModalPopupExtenderNoticeDisconnectiAMSmart" runat="server" TargetControlID="btniAMSmartDisconnectDummy"
+                PopupControlID="panNoticeDisconnectiAMSmartPopUp" BehaviorID="MyProfile_Popup_iAMSmart" BackgroundCssClass="modalBackgroundTransparent"
+                DropShadow="False" RepositionMode="none" PopupDragHandleControlID="">
+            </cc1:ModalPopupExtender>
+          
+            <%-- End of iAMSmart Disconnected --%>
+
             <%-- Consent of Get Username from eHRSS--%>
             <asp:Panel ID="panGetUsernameFromeHRSS" runat="server" Style="display: none;">
                 <asp:Panel ID="panGetUsernameFromeHRSSHeading" runat="server" Style="cursor: move;">
@@ -2014,6 +2055,8 @@ function tabChanges(sender, e) {
                 DropShadow="False" RepositionMode="None" PopupDragHandleControlID="panGetUsernameFromeHRSSHeading">
             </cc1:ModalPopupExtender>
             <%-- End of Consent of Get Username from eHRSS--%>
+
+            
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>

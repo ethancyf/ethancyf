@@ -8,6 +8,7 @@ Namespace Text.ZH
         Private _FunctCodeCommon As String = Common.Component.FunctCode.FUNT029901
 
         Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+            Page.Title = "醫健通(資助)系統 - 不支援的操作系統"
             Try
                 Dim udtAuditLogEntry As New AuditLogEntry(Me._FunctCodeCommon)
                 udtAuditLogEntry.AddDescripton("Language", "zh-tw")

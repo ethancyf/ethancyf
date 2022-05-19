@@ -13,9 +13,9 @@ Namespace ZH
 
         Private Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-            Response.Expires = -1
-            Response.CacheControl = "no-cache"
-            Response.AddHeader("Pragma", "no-cache")
+            Master.Page.Title = "醫健通(資助)系統 - 發現多於一個瀏覽器同時操作或不正當的操作"
+
+            CSRFTokenHelper.RemoveAllSession()
 
             ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
             Dim strSubPlatform As String = ConfigurationManager.AppSettings("SubPlatform")

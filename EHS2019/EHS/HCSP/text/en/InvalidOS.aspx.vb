@@ -8,6 +8,7 @@ Namespace Text.EN
         Private _FunctCodeCommon As String = Common.Component.FunctCode.FUNT029901
 
         Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+            Page.Title = "eHealth System (Subsidies) - Unsupported Operating System"
             Try
                 Dim udtAuditLogEntry As New AuditLogEntry(Me._FunctCodeCommon)
                 udtAuditLogEntry.AddDescripton("Language", "en-US")

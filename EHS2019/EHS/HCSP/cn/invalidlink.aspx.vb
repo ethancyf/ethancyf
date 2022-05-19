@@ -1,4 +1,4 @@
-Imports System.IO
+﻿Imports System.IO
 Imports Common.ComFunction
 Imports Common.Component
 
@@ -7,15 +7,9 @@ Namespace CN
     Partial Public Class InvalidLink
         Inherits System.Web.UI.Page
 
-        Private Sub invalidlink_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
-            Dim udcGeneralFun = New Common.ComFunction.GeneralFunction()
-            Me.basetag.Attributes("href") = udcGeneralFun.getPageBasePath()
-        End Sub
-
         Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-            Response.Expires = -1
-            Response.CacheControl = "no-cache"
-            Response.AddHeader("Pragma", "no-cache")
+
+            Page.Title = "医健通(资助)系統 - 未能找到网页"
 
             ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
             Dim strSubPlatform As String = ConfigurationManager.AppSettings("SubPlatform")

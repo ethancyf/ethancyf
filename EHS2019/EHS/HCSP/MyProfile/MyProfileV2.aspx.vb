@@ -19,6 +19,7 @@ Imports CustomControls
 Imports Common.ComFunction
 Imports Common.ComFunction.AccountSecurity
 Imports Common.PCD.WebService.Interface
+Imports Common.iAMSmart
 
 Partial Public Class MyProfileV2
     Inherits BasePageWithGridView
@@ -71,7 +72,12 @@ Partial Public Class MyProfileV2
         'Public Const LoadDataEntryAccountInfo As String = "Edit Data Entry Account Save click"
         ' I-CRE16-007-02 Refine system from CheckMarx findings [End][Dickson Law]
 
-
+        'CRE20-011 eID
+        Public Const iAMSmartLinkUp As String = "iAM Smart Link Up Click"
+        Public Const iAMSmartDisconnect As String = "iAM Smart Disconnect Click"
+        Public Const iAMSmartDisconnectCancel As String = "Notice Disconnect iAM Smart PopUp Cancel Clicked"
+        Public Const iAMSmartDisconnectConfirm As String = "Notice Disconnect iAM Smart PopUp OK Clicked"
+        'CRE20-011 eID
 
     End Class
 #End Region
@@ -87,6 +93,7 @@ Partial Public Class MyProfileV2
     Dim udtDataEntryAcctBLL As DataEntryAcctBLL = New DataEntryAcctBLL
     Dim udtServiceProviderBLL As ServiceProviderBLL = New ServiceProviderBLL
     Dim udtDataEntryUserBLL As DataEntryUserBLL = New DataEntryUserBLL
+    Dim udtiAMSmartBLL As New Common.Component.iAMSmart.iAMSmartBLL
 
     Private udtDB As Database = New Database
 
@@ -385,6 +392,7 @@ Partial Public Class MyProfileV2
             Me.ModalPopupExtenderNoticeLogoutEHS.PopupDragHandleControlID = Me.ucNoticeLogoutEHSPopUp.Header.ClientID
             Me.ModalPopupExtenderToken.PopupDragHandleControlID = Me.ucInputTokenPopup.Header.ClientID
             Me.ModalPopupExtenderPCDEnrolled.PopupDragHandleControlID = Me.ucPCDEnrolledPopup.Header.ClientID
+            Me.ModalPopupExtenderNoticeDisconnectiAMSmart.PopupDragHandleControlID = Me.UcNoticeDisconnectiAMSmartPopUp.Header.ClientID 'CRE20-011 iamSmart [Nichole]
             'Integration End
 
             ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [Start][Koala]
@@ -421,6 +429,8 @@ Partial Public Class MyProfileV2
             End If
             'Integration End
         End If
+
+        ShowiAMSmartStatus(udtsp.SPID) 'CRe20-011 eID 
 
         ' [CRE12-011] Not to display PPI-ePR token serial no. for service provider who use PPIePR issued token in eHS [Start][Tommy]
 
@@ -3586,7 +3596,7 @@ Partial Public Class MyProfileV2
             Dim udtSPBLL As New ServiceProviderBLL
             Dim objPCDWS As New Common.PCD.PCDWebService(CType(Me.Page, BasePage).FunctionCode)
             Dim objResult As Common.PCD.WebService.Interface.PCDCheckAvailableForVerifiedEnrolmentResult = Nothing
-            
+
             udtAuditLogEntry.AddDescripton("WebMethod", "CheckAvailableForVerifiedEnrolment")
             udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00023, "CheckAvailableForVerifiedEnrolment Start")
 
@@ -3595,7 +3605,7 @@ Partial Public Class MyProfileV2
             udtAuditLogEntry.AddDescripton("WebMethod", "CheckAvailableForVerifiedEnrolment")
             udtAuditLogEntry.AddDescripton("ReturnCode", objResult.ReturnCode)
             udtAuditLogEntry.AddDescripton("MessageID", objResult.MessageID)
-            
+
             Select Case objResult.ReturnCode
                 Case PCDCheckAvailableForVerifiedEnrolmentResult.enumReturnCode.Available
                     ' Display Type of Practice Popup
@@ -4266,6 +4276,106 @@ Partial Public Class MyProfileV2
         Return blnRes
     End Function
     ' --- CRE17-016 (Checking of PCD status during VSS enrolment) [End]   (Marco) ---
+
+    'CRE20-011 eID [Start][Nichole]
+    Protected Sub btnDisconnect_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        Dim udtAuditLogEntry As New AuditLogEntry(Me.strFuncCode, Me)
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00044, AublitLogDescription.iAMSmartDisconnect)
+
+        ModalPopupExtenderNoticeDisconnectiAMSmart.Show()
+    End Sub
+
+    'Protected Sub btnLinkUp_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    '    Dim udtAuditLogEntry As New AuditLogEntry(Me.strFuncCode, Me)
+    '    Dim strUrl As String = String.Empty
+    '    udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00044, AublitLogDescription.iAMSmartLinkUp)
+
+    '    strUrl = (New iAMSmartSPBLL).getQR(HttpContext.Current.Request.UserAgent)
+    '    HttpContext.Current.Response.Redirect(strUrl)
+    'End Sub
+
+    Private Sub UcNoticeDisconnectiAMSmartPopUp_ButtonClick(ByVal e As ucNoticePopUp.enumButtonClick) Handles UcNoticeDisconnectiAMSmartPopUp.ButtonClick
+        Dim blnUpdateRecordStatus As Boolean
+        Dim udtAuditLogEntry As New AuditLogEntry(Me.strFuncCode, Me)
+        udtAuditLogEntry.AddDescripton("SP_ID", Me.lblSPID.Text)
+        Dim dt As DataTable
+        Dim udtsp As ServiceProviderModel
+
+        Select Case e
+            Case HCSP.ucNoticePopUp.enumButtonClick.Cancel
+                udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00037, AublitLogDescription.iAMSmartDisconnectCancel)
+                Me.ModalPopupExtenderNoticeDisconnectiAMSmart.Hide()
+
+            Case HCSP.ucNoticePopUp.enumButtonClick.OK
+                udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00038, AublitLogDescription.iAMSmartDisconnectConfirm)
+                Me.ModalPopupExtenderNoticeDisconnectiAMSmart.Hide()
+
+                udtsp = Me.udtServiceProviderBLL.GetSP()
+                dt = udtiAMSmartBLL.GetServiceProviderBySPID_iAMSmart(udtsp.SPID)
+
+                'update the record status of IAMSmartTokenInfo
+                'blnUpdateRecordStatus = udtiAMSmartBLL.UpdateInfoOniAMSmartSPMapping(udtsp.SPID, String.Empty, SPiAMSmartStatus.Disconnected, udtsp.SPID, dt.Rows(0).Item("TSMP"))
+                blnUpdateRecordStatus = udtiAMSmartBLL.DeleteiAMSmartSPMapping(udtsp.SPID, dt.Rows(0).Item("TSMP"))
+
+                If (blnUpdateRecordStatus) Then
+                    Me.udcInfoMsgBox.Visible = True
+                    Me.udcInfoMsgBox.AddMessage(strFuncCode, "I", "00007")
+                    Me.udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Complete
+                    Me.udcInfoMsgBox.BuildMessageBox()
+                    'refresh the label and button
+                    ShowiAMSmartStatus(udtsp.SPID)
+                Else
+                    Me.udcInfoMsgBox.Visible = True
+                    Me.udcInfoMsgBox.AddMessage(strFuncCode, "I", "00008")
+                    Me.udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Information
+                    Me.udcInfoMsgBox.BuildMessageBox()
+                    'refresh the label and button
+                    ShowiAMSmartStatus(udtsp.SPID)
+                End If
+        End Select
+
+    End Sub
+
+    Private Sub ShowiAMSmartStatus(ByVal strSPID As String)
+        Dim dtiAMSmart As DataTable = New DataTable
+        'Dim striAMSmartStatus As String = String.Empty
+
+        dtiAMSmart = udtiAMSmartBLL.GetServiceProviderBySPID_iAMSmart(strSPID)
+
+        If dtiAMSmart IsNot Nothing Then
+            'If Session("language") = CultureLanguage.TradChinese Then
+            '    Status.GetDescriptionFromDBCode("SPiAMSmartStatus", SPiAMSmartStatus.Connected, String.Empty, striAMSmartStatus)
+            'ElseIf Session("language") = CultureLanguage.SimpChinese Then
+            '    Status.GetDescriptionFromDBCode("SPiAMSmartStatus", SPiAMSmartStatus.Connected, String.Empty, String.Empty, striAMSmartStatus)
+            'Else
+            '    Status.GetDescriptionFromDBCode("SPiAMSmartStatus", SPiAMSmartStatus.Connected, striAMSmartStatus, String.Empty)
+            'End If
+            lbliAMSmart.Text = HttpContext.GetGlobalResourceObject("Text", "Yes")
+            btniAMSmartDisconnect.Visible = True
+
+            'If dtiAMSmart.Rows(0).Item("Record_Status") = SPiAMSmartStatus.Connected Then
+            '    btniAMSmartDisconnect.Visible = True
+            '    ' btniAMSmartLinkUp.Visible = False
+            'Else
+            '    btniAMSmartDisconnect.Visible = False
+            '    'btniAMSmartLinkUp.Visible = True
+            'End If
+        Else
+            'If Session("language") = CultureLanguage.TradChinese Then
+            '    striAMSmartStatus = HttpContext.GetGlobalResourceObject("Text", "ChiN/A")
+            'ElseIf Session("language") = CultureLanguage.SimpChinese Then
+            '    striAMSmartStatus = HttpContext.GetGlobalResourceObject("Text", "CNN/A")
+            'Else
+            '    striAMSmartStatus = HttpContext.GetGlobalResourceObject("Text", "EngN/A")
+            'End If
+            lbliAMSmart.Text = HttpContext.GetGlobalResourceObject("Text", "No")
+            btniAMSmartDisconnect.Visible = False
+            ' btniAMSmartLinkUp.Visible = False
+        End If
+        'lbliAMSmart.Text = striAMSmartStatus
+        'CRE20-011 eID [End][Nichole]
+    End Sub
+    'CRE20-011 eID [End][Nichole]
 End Class
 
 

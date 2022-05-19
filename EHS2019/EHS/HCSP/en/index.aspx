@@ -1,55 +1,47 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="index.aspx.vb" Inherits="HCSP.index1" %>
+﻿<%@ Page Language="vb" AutoEventWireup="false" MasterPageFile="~/CSRFMasterPage.Master"  CodeBehind="index.aspx.vb" Inherits="HCSP.index1" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>eHealth System (Subsidies)</title>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
 
-    <script type="text/javascript" src="../JS/Common.js"></script>
+        <script type="text/javascript">
 
-    <base id="basetag" runat="server" />
+            function goNewWin(l) {
 
-    <script type="text/javascript">
+                var win;
+                var tmp;
+                var w = screen.availWidth || screen.width;
+                var h = screen.availHeight || screen.height;
 
-        function goNewWin(l) {
+                w = 0;
+                h = 0;
 
-            var win;
-            var tmp;
-            var w = screen.availWidth || screen.width;
-            var h = screen.availHeight || screen.height;
+                var opts;
 
-            w = 0;
-            h = 0;
+                opts = 'resizable=yes,status=yes,toolbar=no,location=no,scrollbars=yes,left=0,top=0,width=' + w + ',height=' + h;
+                win = window.open(l, '_blank', opts);
 
-            var opts;
+                while (!win.open) { }
 
-            opts = 'resizable=yes,status=yes,toolbar=no,location=no,scrollbars=yes,left=0,top=0,width=' + w + ',height=' + h;
-            win = window.open(l, '_blank', opts);
+                window.self.opener = window.self;
+                /*window.self.close();*/
+            }
+        </script>
 
-            while (!win.open) { }
+        <style type="text/css">
+            .LinkStyle1 {
+                display: block;
+                width: 170px;
+                text-decoration: none;
+            }
 
-            window.self.opener = window.self;
-            /*window.self.close();*/
-        }
-    </script>
+            .LinkTextStyle1 {
+                color: #000099;
+                font-size: 14pt;
+                font-weight: bold;
+            }
+        </style>
 
-    <link href="../CSS/CommonStyle.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-        .LinkStyle1 {
-            display: block;
-            width: 170px;
-            text-decoration: none;
-        }
-
-        .LinkTextStyle1 {
-            color: #000099;
-            font-size: 14pt;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <form id="form1" runat="server">
         <table border="0" cellpadding="0" cellspacing="0" style="width: 990px">
             <tr>
                 <td align="right" style="background-image: url(../Images/master/banner_header.jpg); background-repeat: no-repeat; height: 100px"
@@ -151,6 +143,7 @@
                 </td>
             </tr>
         </table>
-    </form>
-</body>
-</html>
+ 
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</asp:Content>

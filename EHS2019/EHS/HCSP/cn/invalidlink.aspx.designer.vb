@@ -15,31 +15,13 @@ Namespace CN
     Partial Public Class InvalidLink
 
         '''<summary>
-        '''Head1 control.
+        '''UpdatePanel1 control.
         '''</summary>
         '''<remarks>
         '''Auto-generated field.
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
-        Protected WithEvents Head1 As Global.System.Web.UI.HtmlControls.HtmlHead
-
-        '''<summary>
-        '''basetag control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents basetag As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-
-        '''<summary>
-        '''form1 control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
+        Protected WithEvents UpdatePanel1 As Global.System.Web.UI.UpdatePanel
 
         '''<summary>
         '''tblBanner control.

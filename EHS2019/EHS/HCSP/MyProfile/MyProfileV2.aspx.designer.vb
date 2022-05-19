@@ -491,6 +491,33 @@ Partial Public Class MyProfileV2
     Protected WithEvents lblTokenSerialNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lbliAMSmartText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lbliAMSmartText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lbliAMSmart control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lbliAMSmart As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btniAMSmartDisconnect control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btniAMSmartDisconnect As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''PanelSPSystemSettings control.
     '''</summary>
     '''<remarks>
@@ -2505,6 +2532,42 @@ Partial Public Class MyProfileV2
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ModalPopupExtenderNoticeLogoutEHS As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''panNoticeDisconnectiAMSmartPopUp control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panNoticeDisconnectiAMSmartPopUp As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''UcNoticeDisconnectiAMSmartPopUp control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UcNoticeDisconnectiAMSmartPopUp As Global.HCSP.ucNoticePopUp
+
+    '''<summary>
+    '''btniAMSmartDisconnectDummy control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btniAMSmartDisconnectDummy As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExtenderNoticeDisconnectiAMSmart control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExtenderNoticeDisconnectiAMSmart As Global.AjaxControlToolkit.ModalPopupExtender
 
     '''<summary>
     '''panGetUsernameFromeHRSS control.
