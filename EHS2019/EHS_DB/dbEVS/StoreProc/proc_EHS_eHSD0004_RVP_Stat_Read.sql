@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
  
+ -- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	21 April 2022
+-- CR No.:			CRE21-022
+-- Description:		Add sub-report for voidded COVID-19 records
+-- =============================================
 -- =============================================
 -- Modified by:		Raiman Chong
 -- Modified date:	04 May 2021
@@ -164,6 +171,8 @@ INSERT INTO @ContentTable (Value1, Value2)
 SELECT 'eHS(S)D0004-03', 'Report on RVP transaction (by cutoff date)'
 INSERT INTO @ContentTable (Value1, Value2)
 SELECT 'eHS(S)D0004-04', 'Raw Data of RVP transactions' 
+INSERT INTO @ContentTable (Value1, Value2)
+SELECT 'eHS(S)D0004-05', 'Raw Data of RVP transactions (Voided)' 
 
 INSERT INTO @ContentTable (Value1) SELECT ''
 INSERT INTO @ContentTable (Value1) SELECT ''
@@ -276,6 +285,41 @@ FROM
 ORDER BY    
 	Display_Seq    
 
+	      
+-- --------------------------------------------------    
+-- From stored procedure: proc_EHS_eHSD0004_05_PrepareData    
+-- To Excel sheet:   05- Raw Data of RVP transactions (Voided COVID-19 vaccination records) (RVP)    
+-- --------------------------------------------------    
+SELECT    
+	Result_Value1,    
+	Result_Value2,    
+	Result_Value3,    
+	Result_Value4,    
+	Result_Value5,    
+	Result_Value6,    
+	Result_Value7,    
+	Result_Value8,    
+	Result_Value9,    
+	Result_Value10,    
+	Result_Value11,    
+	Result_Value12,    
+	Result_Value13,     
+	Result_Value14,    
+	Result_Value15,    
+	Result_Value16,   
+	Result_Value17,   
+	Result_Value18,
+	Result_Value19,    
+	Result_Value20,   
+	Result_Value21,   
+	Result_Value22,
+	Result_Value23,
+	Result_Value24,
+	Result_Value25
+FROM      
+	RpteHSD0004_05_RVP_Tx_Void WITH (NOLOCK)   
+ORDER BY    
+	Display_Seq    
 -- --------------------------------------------------    
 -- From stored procedure: [proc_EHS_VaccineRemark_Stat_Read]    
 -- To Excel sheet:   eHSD0004-Remarks: Remarks    

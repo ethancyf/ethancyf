@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
+-- Modified by:		Koala CHENG
+-- Modified date:	21 April 2022
+-- CR No.:			CRE21-022
+-- Description:		Add sub-report for voidded COVID-19 records
 -- =============================================
 -- =============================================
 -- Modification History
@@ -54,6 +54,8 @@ AS BEGIN
 	EXEC [proc_EHS_eHSD0004_02_03_PrepareData] @Cutoff_Dtm
 
 	EXEC [proc_EHS_eHSD0004_04_PrepareData] @Cutoff_Dtm
+
+	EXEC [proc_EHS_eHSD0004_05_PrepareData] @Cutoff_Dtm
 
 
 -- =============================================  

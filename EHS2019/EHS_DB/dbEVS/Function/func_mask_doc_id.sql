@@ -7,15 +7,16 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG	
+-- Modified date:	17 May 2022		
+-- CR No.:			CRE21-022 (Update RVP report)
+-- Description:		Support new identity document	
+-- =============================================
+-- =============================================
 -- Author:			Vincent
 -- Create date:	27 JAN 2010
 -- Description:	Mask Document Number
--- =============================================
--- =============================================
--- Modification History
--- Modified by:			
--- Modified date:			
--- Description:			
 -- =============================================
 CREATE FUNCTION [dbo].[func_mask_doc_id]
 (
@@ -45,7 +46,7 @@ BEGIN
 	IF @doc_code = 'ADOPC'
 	BEGIN
 
-		SET @result = LEFT(@doc_id1, 4) + REPLICATE(@mask, 3) + '/' + LEFT(@doc_id2, 2) + REPLICATE(@mask, 3)
+		SET @result = LEFT(@doc_id2, 4) + REPLICATE(@mask, 7 - LEN(LEFT(@doc_id2, 4))) + '/' + LEFT(@doc_id1, 2) + REPLICATE(@mask, 5 - LEN(LEFT(@doc_id1, 2)))
 
 	END
 	ELSE IF @doc_code = 'Doc/I'
@@ -54,7 +55,7 @@ BEGIN
 		SET @result = LEFT(@doc_id1, 4) + REPLICATE(@mask, 5)
 
 	END
-	ELSE IF @doc_code = 'EC' OR @doc_code = 'HKBC' OR @doc_code = 'HKIC'
+	ELSE IF @doc_code = 'EC' OR @doc_code = 'HKBC' OR @doc_code = 'HKIC' OR @doc_code = 'CCIC'  OR @doc_code = 'ROP140'
 	BEGIN
 
 		SET @temp_trim_id = LTRIM(RTRIM(@doc_id1))
@@ -83,8 +84,17 @@ BEGIN
 		SET @result = SUBSTRING(@result, 1, 4) + '-' + SUBSTRING(@result, 5, 7) + '-' + SUBSTRING(@result, 12, 2) + '(' + SUBSTRING(@result, 14, 1) + ')'
 
 	END
-
-
+	ELSE 
+	BEGIN
+		IF LEN(@doc_id1) <= 4 
+			BEGIN
+				SET @result = @doc_id1 + REPLICATE(@mask, 9 - LEN(@doc_id1))
+			END
+		ELSE
+			BEGIN
+				SET @result = LEFT(@doc_id1,4) + REPLICATE(@mask, LEN(@doc_id1)-4)
+			END
+	END
 	-- =============================================
 	-- Return results
 	-- =============================================

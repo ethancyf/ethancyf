@@ -9046,6 +9046,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSD0001_HCVS_Stat_Schedule_get.sql -tex
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSD0004_01_PrepareData.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSD0004_02_03_PrepareData.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSD0004_04_PrepareData.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSD0004_05_PrepareData.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSD0004_RVP_Stat_Read.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSD0004_RVP_Stat_Write.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSD0005_02_PrepareData.sql -text
