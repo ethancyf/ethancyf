@@ -1368,10 +1368,21 @@ Public Class SearchEngineBLL
         Try
             ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
             ' -----------------------------------------------------------------------------------------
-            Dim prams() As SqlParameter = {db.MakeInParam("@status", SqlDbType.Char, 1, EHSTransaction.EHSTransactionModel.TransRecordStatusClass.PendingApprovalForNonReimbursedClaim), _
-                                            db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID)}
+            ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+            ' -------------------------------------------------------------------------
+            Dim prams() As SqlParameter = {db.MakeInParam("@sp_id", SqlDbType.Char, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderID), DBNull.Value, udtSearchCriteria.ServiceProviderID)), _
+                                           db.MakeInParam("@sp_name", SqlDbType.VarChar, 40, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderName), DBNull.Value, udtSearchCriteria.ServiceProviderName)), _
+                                           db.MakeInParam("@sp_chi_name", SqlDbType.NVarChar, 6, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderChiName), DBNull.Value, udtSearchCriteria.ServiceProviderChiName)), _
+                                           db.MakeInParam("@Service_Receive_Dtm_From", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceDateFrom), DBNull.Value, udtSearchCriteria.ServiceDateFrom)), _
+                                           db.MakeInParam("@Service_Receive_Dtm_To", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceDateTo), DBNull.Value, udtSearchCriteria.ServiceDateTo)), _
+                                           db.MakeInParam("@scheme", SqlDbType.Char, 10, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchemeCode), DBNull.Value, udtSearchCriteria.SchemeCode)), _
+                                           db.MakeInParam("@from_date", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.FromDate), DBNull.Value, udtSearchCriteria.FromDate)), _
+                                           db.MakeInParam("@to_date", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.CutoffDate), DBNull.Value, udtSearchCriteria.CutoffDate)), _
+                                           db.MakeInParam("@status", SqlDbType.Char, 1, EHSTransaction.EHSTransactionModel.TransRecordStatusClass.PendingApprovalForNonReimbursedClaim), _
+                                           db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID)}
 
             ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
+            ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
 
             ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
             ' -------------------------------------------------------------------------

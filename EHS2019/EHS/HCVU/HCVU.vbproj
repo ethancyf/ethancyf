@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -207,16 +207,24 @@
     <Content Include="Images\button\btn_AddAccount.png" />
     <Content Include="Images\button\btn_AddAccount_D.png" />
     <Content Include="Images\button\btn_Approve_D.png" />
+    <Content Include="Images\button\btn_Assign.png" />
+    <Content Include="Images\button\btn_Assign_D.png" />
+    <Content Include="Images\button\btn_BackToSearchResult.png" />
     <Content Include="Images\button\btn_BatchAssign.png" />
     <Content Include="Images\button\btn_BatchAssign_D.png" />
     <Content Include="Images\button\btn_BatchRemove.png" />
     <Content Include="Images\button\btn_BatchRemove_D.png" />
+    <Content Include="Images\button\btn_CancelRequest.png" />
+    <Content Include="Images\button\btn_CancelRequest_D.png" />
     <Content Include="Images\button\btn_CloseCase.png" />
     <Content Include="Images\button\btn_CloseCase_D.png" />
+    <Content Include="Images\button\btn_CompleteReimbursement.png" />
+    <Content Include="Images\button\btn_CompleteReimbursement_D.png" />
     <Content Include="Images\button\btn_ConfirmAndAcceptWarning.png" />
     <Content Include="Images\button\btn_ConversionRateHistory.png" />
     <Content Include="Images\button\btn_ConversionRateHistory_D.png" />
     <Content Include="Images\button\btn_CreateConversionRate.png" />
+    <Content Include="Images\button\btn_CreateNewLot.png" />
     <Content Include="Images\button\btn_DownloadLater.png" />
     <Content Include="Images\button\btn_DownloadNow.png" />
     <Content Include="Images\button\btn_DownloadRectificationReport.png" />
@@ -238,9 +246,11 @@
     <Content Include="Images\button\btn_NewInspectionRecord.png" />
     <Content Include="Images\button\btn_NewInspectionRecord_D.png" />
     <Content Include="Images\button\btn_NewOutreachRecord.png" />
+    <Content Include="Images\button\btn_NewRecord.png" />
     <Content Include="Images\button\btn_PDF.png" />
     <Content Include="Images\button\btn_PDF_D.png" />
     <Content Include="Images\button\btn_ReactivateTransaction.png" />
+    <Content Include="Images\button\btn_ReadCardAndSearch.png" />
     <Content Include="Images\button\btn_RemoveRectifiedFile.png" />
     <Content Include="Images\button\btn_RemoveRectifiedFile_D.png" />
     <Content Include="Images\button\btn_RemoveStudentFile.png" />
@@ -252,6 +262,7 @@
     <Content Include="Images\button\btn_ReopenCase.png" />
     <Content Include="Images\button\btn_ReopenCase_D.png" />
     <Content Include="Images\button\btn_ReplaceToken_D.png" />
+    <Content Include="Images\button\btn_Reprint_D.png" />
     <Content Include="Images\button\btn_ShowRectificationRecord.png" />
     <Content Include="Images\button\btn_ShowVaccinationClaimRecord.png" />
     <Content Include="Images\button\btn_SuspendEnquiry_D.png" />
@@ -657,6 +668,7 @@
     </Compile>
     <Compile Include="ClaimManagement\VaccineLotApproval.aspx.vb">
       <DependentUpon>VaccineLotApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ClaimManagement\VaccineLotCreation.aspx.designer.vb">
       <DependentUpon>VaccineLotCreation.aspx</DependentUpon>

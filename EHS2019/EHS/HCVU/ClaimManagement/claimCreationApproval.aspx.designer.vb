@@ -86,6 +86,213 @@ Partial Public Class claimCreationApproval
     Protected WithEvents MultiViewClaimTransEnquiry As Global.System.Web.UI.WebControls.MultiView
 
     '''<summary>
+    '''vwSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vwSearch As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''txtServiceProviderSPID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtServiceProviderSPID As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgServiceProviderSPIDErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgServiceProviderSPIDErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''txtServiceProviderSPName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtServiceProviderSPName As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgServiceProviderSPNameErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgServiceProviderSPNameErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''txtServiceProviderSPChiName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtServiceProviderSPChiName As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgServiceProviderSPChiNameErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgServiceProviderSPChiNameErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblTabServiceProviderTypeOfDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTabServiceProviderTypeOfDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rblTabServiceProviderTypeOfDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblTabServiceProviderTypeOfDate As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
+    '''lblServiceProviderDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblServiceProviderDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtServiceProviderDateFrom control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtServiceProviderDateFrom As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnServiceProviderCalenderDateFrom control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnServiceProviderCalenderDateFrom As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''CalExtServiceProviderDateFrom control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents CalExtServiceProviderDateFrom As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''TxtExtServiceProviderDateFrom control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents TxtExtServiceProviderDateFrom As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''lblTabServiceProviderToText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTabServiceProviderToText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtServiceProviderDateTo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtServiceProviderDateTo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnServiceProviderCalenderDateTo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnServiceProviderCalenderDateTo As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''CalExtServiceProviderDateTo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents CalExtServiceProviderDateTo As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''TxtExtServiceProviderDateTo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents TxtExtServiceProviderDateTo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''imgServiceProviderDateErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgServiceProviderDateErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblServiceProviderSchemeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblServiceProviderSchemeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlServiceProviderScheme control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlServiceProviderScheme As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''ibtnSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnSearch As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''ViewTransaction control.
     '''</summary>
     '''<remarks>
@@ -93,6 +300,114 @@ Partial Public Class claimCreationApproval
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ViewTransaction As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''udcCollapsibleSearchCriteriaReview control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcCollapsibleSearchCriteriaReview As Global.HCVU.ucCollapsibleSearchCriteriaReview
+
+    '''<summary>
+    '''panSearchCriteriaReview control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panSearchCriteriaReview As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblRSPIDText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRSPIDText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRSPID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRSPID As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRSPNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRSPNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRSPName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRSPName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRSPChiNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRSPChiNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRSPChiName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRSPChiName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRSchemeCodeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRSchemeCodeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRSchemeCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRSchemeCode As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''btnHidden control.
@@ -111,6 +426,15 @@ Partial Public Class claimCreationApproval
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents gvTransaction As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''ibtnBack control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnBack As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''ViewDetail control.

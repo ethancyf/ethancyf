@@ -360,19 +360,21 @@
     </form>
     <script type="text/javascript">
         //alert(document.getElementById('ctl00_caMenu').innerHTML)
-        if (Sys.Extended.UI.TabContainer != null) {
-            Sys.Extended.UI.TabContainer.prototype._app_onload = function (sender, e) {
-                if (this._cachedActiveTabIndex != -1) {
-                    this.set_activeTabIndex(this._cachedActiveTabIndex);
-                    this._cachedActiveTabIndex = -1;
+        if (Sys.Extended != null){
+            if (Sys.Extended.UI.TabContainer != null) {
+                Sys.Extended.UI.TabContainer.prototype._app_onload = function (sender, e) {
+                    if (this._cachedActiveTabIndex != -1) {
+                        this.set_activeTabIndex(this._cachedActiveTabIndex);
+                        this._cachedActiveTabIndex = -1;
 
-                    var activeTab = this.get_tabs()[this._activeTabIndex];
-                    if (activeTab) {
-                        activeTab._wasLoaded = true;
-                        //activeTab._setFocus(activeTab); //-- disable focus on active tab in the last TabContainer
+                        var activeTab = this.get_tabs()[this._activeTabIndex];
+                        if (activeTab) {
+                            activeTab._wasLoaded = true;
+                            //activeTab._setFocus(activeTab); //-- disable focus on active tab in the last TabContainer
+                        }
                     }
+                    this._loaded = true;
                 }
-                this._loaded = true;
             }
         }
     </script>

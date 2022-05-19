@@ -9,6 +9,24 @@ Public MustInherit Class BasePageWithGridView
     Private Const strImgArrowDown As String = "~/Images/others/arrowdown.png"
     Private Const strImgArrowBlank As String = "~/Images/others/arrowblank.png"
 
+    Public Property PreviousSortExpression(ByVal gvSort As GridView)
+        Get
+            Return ViewState("SortExpression_" & gvSort.ID)
+        End Get
+        Set(value)
+            ViewState("SortExpression_" & gvSort.ID) = value
+        End Set
+    End Property
+
+    Public Property PreviousSortDirection(ByVal gvSort As GridView)
+        Get
+            Return ViewState("SortDirection_" & gvSort.ID)
+        End Get
+        Set(value)
+            ViewState("SortDirection_" & gvSort.ID) = value
+        End Set
+    End Property
+
     Public Sub GridViewSortingHandler(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs, ByVal strDataSource As String)
         Dim gvSort As GridView = CType(sender, GridView)
         Dim gvFunction As Common.ComFunction.GridviewFunction = New Common.ComFunction.GridviewFunction(ViewState("SortDirection_" & gvSort.ID), ViewState("SortExpression_" & gvSort.ID))
@@ -50,6 +68,8 @@ Public MustInherit Class BasePageWithGridView
         If blnKeepPageIndex = False Then
             'intPageIndex = gvSort.PageIndex
             intPageIndex = 0
+        Else
+            intPageIndex = gvSort.PageIndex
         End If
 
         ViewState("SortDirection_" & gvSort.ID) = strSortDirection

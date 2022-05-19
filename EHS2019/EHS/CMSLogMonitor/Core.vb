@@ -394,6 +394,9 @@ Public Class ScheduleJob
         End If
 
         Dim dtmNow As DateTime = DateTime.Now
+        ' Remove second from start time to make sure to check log in every [5] minutes start from 00 seconds, e.g. 00:00:00 to 00:05:00
+        dtmNow = New DateTime(dtmNow.Year, dtmNow.Month, dtmNow.Day, dtmNow.Hour, dtmNow.Minute, 0, 0)
+        Log("Monitor Task Start (" + dtmNow.ToString("yyyy-MM-dd HH:mm:ss") + ")")
 
         Dim dtmLastCheck As New List(Of DateTime)
 

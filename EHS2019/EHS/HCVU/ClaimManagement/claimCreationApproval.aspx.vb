@@ -20,12 +20,15 @@ Partial Public Class claimCreationApproval
     ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
 
 #Region "Private Classes"
-
+   
     Private Class ViewIndex
-        'Public Const InputCriteria As Integer = 0
-        Public Const Transaction As Integer = 0
-        Public Const Detail As Integer = 1
-        Public Const Finish As Integer = 2
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+        ' -------------------------------------------------------------------------
+        Public Const Search As Integer = 0
+        ' CRE12-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
+        Public Const Transaction As Integer = 1
+        Public Const Detail As Integer = 2
+        Public Const Finish As Integer = 3
 
     End Class
 
@@ -33,6 +36,13 @@ Partial Public Class claimCreationApproval
         Public Const ApproveReview As Integer = 0
         Public Const InputReason As Integer = 1
         Public Const ConfirmReason As Integer = 2
+    End Class
+    ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+    ' -------------------------------------------------------------------------
+    Private Class TypeOfDate
+        Public Const ServiceDate As String = "SD"
+        Public Const TransactionDate As String = "TD"
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
     End Class
 #End Region
 
@@ -61,14 +71,26 @@ Partial Public Class claimCreationApproval
 #End Region
 
 #Region "Session Constants"
-
+    Private Const SESS_SchemeClaimList As String = "010409_SchemeClaimList"
     Private Const SESS_SearchCriteria As String = "010409_SearchCriteria"
     Private Const SESS_TransactionDataTable As String = "010409_TransactionDataTable"
     Private Const SESS_TransactionDetailTSMP As String = "010409_TransactionDetailTSMP"
-
+    Private Const SESS_KeepSorting As String = "010409_KeepSorting"
+    Private Const SESS_SchemeClaimListFilteredByUserRole As String = "010409_SchemeClaimListFilteredByUserRole"
 
 #End Region
+#Region "Audit Log Description"
+    Public Class AuditLogDescription
+        Public Const Search_Btn_Click As String = "Search Button Click" '19
+        Public Const Search_Btn_Click_ID As String = LogID.LOG00019
 
+        Public Const Back_Btn_Click As String = "Back Button Click" '20
+        Public Const Back_Btn_Click_ID As String = LogID.LOG00020
+
+        Public Const Return_Btn_Click As String = "Return Button Click" '21
+        Public Const Return_Btn_Click_ID As String = LogID.LOG00021
+    End Class
+#End Region
     Dim dtTransaction As DataTable
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -80,8 +102,8 @@ Partial Public Class claimCreationApproval
             udtAuditLogEntry.WriteLog(LogID.LOG00000, "Claim Creation Approval Loaded")
 
             FunctionCode = FunctCode.FUNT010409
-            RefreshGrid()
-            MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Transaction
+            MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Search
+            BindScheme(Me.ddlServiceProviderScheme)
    ' CRE17-006 Add eHA ID to eHA enquiry-scheme information [Start][Dickson]
         Else
             If MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Detail Then
@@ -91,7 +113,54 @@ Partial Public Class claimCreationApproval
         End If
 
     End Sub
+    Private Sub BindScheme(ByVal ddlScheme As DropDownList)
+        Dim udtSchemeClaimModelListFilter As New SchemeClaimModelCollection
+        Dim udtUserRoleCollection As UserRoleModelCollection = udtUserRoleBLL.GetUserRoleCollection(udtHCVUUserBLL.GetHCVUUser.UserID)
 
+        Dim udtSchemeCList As SchemeClaimModelCollection = udtSchemeClaimBLL.getAllDistinctSchemeClaim()
+        Session(SESS_SchemeClaimList) = udtSchemeCList
+
+        For Each udtSchemeC As SchemeClaimModel In udtSchemeCList
+            For Each udtUserRoleModel As UserRoleModel In udtUserRoleCollection.Values
+                If udtUserRoleModel.SchemeCode.Trim = udtSchemeC.SchemeCode Then
+                    If Not udtSchemeClaimModelListFilter.Contains(udtSchemeC) Then udtSchemeClaimModelListFilter.Add(udtSchemeC)
+                End If
+            Next
+        Next
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Session(SESS_SchemeClaimListFilteredByUserRole) = udtSchemeClaimModelListFilter
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ddlScheme.DataSource = udtSchemeClaimModelListFilter
+        ddlScheme.DataValueField = "SchemeCode"
+        ddlScheme.DataTextField = "DisplayCode"
+        ddlScheme.DataBind()
+
+        ' Set the scheme list to disabled if only 1 scheme
+        If udtSchemeClaimModelListFilter.Count = 1 Then
+            ddlScheme.SelectedIndex = 1
+            ddlScheme.Enabled = False
+        Else
+            ddlScheme.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "Any"), ""))
+            ddlScheme.SelectedIndex = 0
+            ddlScheme.Enabled = True
+
+            Dim HasRVPorPPP As Boolean = False
+
+            For idxItem As Integer = 0 To ddlScheme.Items.Count - 1
+                Dim strScheme As String = ddlScheme.Items(idxItem).Value
+
+                If strScheme = SchemeClaimModel.RVP Or _
+                    strScheme = SchemeClaimModel.PPP Or _
+                    strScheme = SchemeClaimModel.PPPKG Then
+                    HasRVPorPPP = True
+                End If
+            Next
+        End If
+
+    End Sub
     ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
     ' -------------------------------------------------------------------------
 #Region "Abstract Method of [HCVU.BasePageWithControl]"
@@ -99,12 +168,173 @@ Partial Public Class claimCreationApproval
     End Sub
 
     Protected Overrides Function SF_ValidateSearch(ByRef udtAuditLogEntry As AuditLogEntry) As Boolean
-        Return True
+        ' Data validation
+        Dim blnValidDate As Boolean = True
+        Dim udtSystemMessage As SystemMessage
+
+        ' If any text fields are inputted, bypass the Transaction Date From/To empty checking
+        'CRE13-012 (RCH Code sorting) [Start][Chris YIM]
+        '-----------------------------------------------------------------------------------------
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+        ' -------------------------------------------------------------------------
+        Dim blnTextFieldInputted As Boolean = False
+        Dim txtDateFrom As TextBox = Nothing
+        Dim txtDateTo As TextBox = Nothing
+        Dim txtAccID As TextBox = Nothing
+        Dim imgDateErr As Image = Nothing
+        Dim imgAccIDErr As Image = Nothing
+        Dim lblDateText As Label = Nothing
+        'INT21-0022 Performance tuning on advanced search [Start][Nichole]
+        Dim blnSPTextFieldInputted As Boolean = False
+        Dim blnDateTextFieldInputted As Boolean = False
+        'INT21-0022 Performance tuning on advanced search [End][Nichole]
+
+
+        ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
+        imgServiceProviderSPIDErr.Visible = False
+        imgServiceProviderSPNameErr.Visible = False
+        imgServiceProviderSPChiNameErr.Visible = False
+        imgServiceProviderDateErr.Visible = False
+    
+      
+
+        'INT21-0022 Performance tuning on advanced search [end][Nichole]
+
+        txtDateFrom = Me.txtServiceProviderDateFrom
+        txtDateTo = Me.txtServiceProviderDateTo
+        imgDateErr = Me.imgServiceProviderDateErr
+        lblDateText = Me.lblServiceProviderDateText
+
+
+
+        ' Transaction Date can be empty only if any text fields are inputted
+        If txtDateFrom.Text.Trim = String.Empty AndAlso txtDateTo.Text.Trim = String.Empty Then
+            ' Okay, bypass the checking
+        Else
+            ' One or both fields have been inputted, need checking
+
+            ' 1: Check completeness
+            If (txtDateFrom.Text.Trim = String.Empty AndAlso txtDateTo.Text.Trim <> String.Empty) _
+                    OrElse (txtDateFrom.Text.Trim <> String.Empty AndAlso txtDateTo.Text.Trim = String.Empty) Then
+                ' Please complete "Date". 
+                udcErrorMessage.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00364, "%s", lblDateText.Text.Trim)
+                imgDateErr.Visible = True
+                blnValidDate = False
+            End If
+
+            ' 2: Check the date format
+            Dim strTransactionDateFrom As String = IIf(udtFormatter.formatInputDate(txtDateFrom.Text.Trim) <> String.Empty, udtFormatter.formatInputDate(txtDateFrom.Text.Trim), txtDateFrom.Text.Trim)
+            Dim strTransactionDateTo As String = IIf(udtFormatter.formatInputDate(txtDateTo.Text.Trim) <> String.Empty, udtFormatter.formatInputDate(txtDateTo.Text.Trim), txtDateTo.Text.Trim)
+
+            If blnValidDate Then
+                ' Format the input date (Date From / To)
+                udtSystemMessage = udtValidator.chkInputDate(strTransactionDateFrom, True, True)
+                If IsNothing(udtSystemMessage) Then udtSystemMessage = udtValidator.chkInputDate(strTransactionDateTo, True, True)
+
+                If Not IsNothing(udtSystemMessage) Then
+                    udcErrorMessage.AddMessage(udtSystemMessage, "%s", lblDateText.Text.Trim)
+                    imgDateErr.Visible = True
+                    blnValidDate = False
+                End If
+            End If
+
+            ' 3: Check date dependency: From < To
+            If blnValidDate Then
+                udtSystemMessage = udtValidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00374, _
+                        udtFormatter.convertDate(strTransactionDateFrom, String.Empty), udtFormatter.convertDate(strTransactionDateTo, String.Empty))
+
+                ' The From Date should not be later than the To Date in "Date".
+                If Not IsNothing(udtSystemMessage) Then
+                    imgDateErr.Visible = True
+                    udcErrorMessage.AddMessage(udtSystemMessage, "%s", lblDateText.Text.Trim)
+                End If
+            End If
+
+            If blnValidDate Then
+                txtDateFrom.Text = strTransactionDateFrom
+                txtDateTo.Text = strTransactionDateTo
+            End If
+        End If
+
+
+
+        '' Check Service Date
+        'If txtSServiceDateFrom.Text.Trim <> String.Empty OrElse txtSServiceDateTo.Text.Trim <> String.Empty Then
+        '    ' One or both fields have been inputted, need checking
+        '    blnValidDate = True
+
+        '    ' 1: Check completeness
+        '    If txtSServiceDateFrom.Text.Trim = String.Empty OrElse txtSServiceDateTo.Text.Trim = String.Empty Then
+        '        ' Please complete the "Service Date".
+        '        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00009)
+        '        imgAlertSServiceDate.Visible = True
+        '        blnValidDate = False
+        '    End If
+
+        '    ' 2: Check the date format
+        '    'INT15-0015 (Fix date format checking in HCVU) [Start][Chris YIM]
+        '    '-----------------------------------------------------------------------------------------
+        '    Dim strServiceDateFrom As String = IIf(udtFormatter.formatInputDate(txtSServiceDateFrom.Text.Trim) <> String.Empty, udtFormatter.formatInputDate(txtSServiceDateFrom.Text.Trim), txtSServiceDateFrom.Text.Trim)
+        '    Dim strServiceDateTo As String = IIf(udtFormatter.formatInputDate(txtSServiceDateTo.Text.Trim) <> String.Empty, udtFormatter.formatInputDate(txtSServiceDateTo.Text.Trim), txtSServiceDateTo.Text.Trim)
+
+        '    If blnValidDate Then
+        '        ' Format the input date (Service Date From / To)
+        '        'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
+        '        '-----------------------------------------------------------------------------------------
+        '        'txtSServiceDateFrom.Text = udtFormatter.formatDate(txtSServiceDateFrom.Text.Trim)
+        '        'txtSServiceDateTo.Text = udtFormatter.formatDate(txtSServiceDateTo.Text.Trim)
+        '        'txtSServiceDateFrom.Text = udtFormatter.formatInputDate(txtSServiceDateFrom.Text.Trim)
+        '        'txtSServiceDateTo.Text = udtFormatter.formatInputDate(txtSServiceDateTo.Text.Trim)
+        '        'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+
+        '        'udtSystemMessage = udtValidator.chkInputDate(txtSServiceDateFrom.Text, False)
+        '        'If IsNothing(udtSystemMessage) Then udtSystemMessage = udtValidator.chkInputDate(txtSServiceDateTo.Text, False)
+        '        udtSystemMessage = udtValidator.chkInputDate(strServiceDateFrom, True, True)
+        '        If IsNothing(udtSystemMessage) Then udtSystemMessage = udtValidator.chkInputDate(strServiceDateTo, True, True)
+
+        '        'If Not IsNothing(udtSystemMessage) AndAlso udtSystemMessage.MessageCode <> MsgCode.MSG00028 Then
+        '        If Not IsNothing(udtSystemMessage) Then
+        '            udcMessageBox.AddMessage(udtSystemMessage, "%s", lblSServiceDateText.Text)
+        '            imgAlertSServiceDate.Visible = True
+        '            blnValidDate = False
+        '        End If
+        '    End If
+
+        '    ' 3: Check date dependency: From < To
+        '    If blnValidDate Then
+        '        'udtSystemMessage = udtValidator.chkInputValidFromDateCutoffDate(FunctionCode, MsgCode.MSG00010, _
+        '        '        udtFormatter.convertDate(txtSServiceDateFrom.Text, String.Empty), udtFormatter.convertDate(txtSServiceDateTo.Text, String.Empty))
+        '        udtSystemMessage = udtValidator.chkInputValidFromDateCutoffDate(FunctionCode, MsgCode.MSG00010, _
+        '                udtFormatter.convertDate(strServiceDateFrom, String.Empty), udtFormatter.convertDate(strServiceDateTo, String.Empty))
+        '        'INT15-0015 (Fix date format checking in HCVU) [End][Chris YIM]
+
+        '        ' The "Service Date From" should not be later than the "Service Date To".
+        '        If Not IsNothing(udtSystemMessage) Then
+        '            imgAlertSServiceDate.Visible = True
+        '            udcMessageBox.AddMessage(udtSystemMessage)
+        '        End If
+        '    End If
+
+        '    If blnValidDate Then
+        '        txtSServiceDateFrom.Text = strServiceDateFrom
+        '        txtSServiceDateTo.Text = strServiceDateTo
+        '    End If
+        '    'INT15-0015 (Fix date format checking in HCVU) [End][Chris YIM]
+        'End If
+        'CRE13-012 (RCH Code sorting) [End][Chris YIM]
+
+        If udcErrorMessage.GetCodeTable.Rows.Count <> 0 Then
+            udcErrorMessage.BuildMessageBox("ValidationFail", udtAuditLogEntry, LogID.LOG00003, "Search Fail")
+            Return False
+        Else
+            Return True
+        End If
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
     End Function
 
     Protected Overrides Function SF_Search(ByRef udtAuditLogEntry As AuditLogEntry, ByVal blnOverrideResultLimit As Boolean) As BaseBLL.BLLSearchResult
         If blnOverrideResultLimit Then
-            Return GetTransaction(Nothing, True)
+            Return GetTransaction(Session(SESS_SearchCriteria), True)
         Else
             Return GetTransaction()
         End If
@@ -122,16 +352,121 @@ Partial Public Class claimCreationApproval
         End Try
 
         intRowCount = dtTransaction.Rows.Count
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+        ' -------------------------------------------------------------------------
+        If intRowCount > 0 Then
 
-        If dtTransaction.Columns.Count > 0 Then
             LoadTransactionGrid(dtTransaction)
+
+            Dim udtSearchCriteria As SearchCriteria = Session(SESS_SearchCriteria)
+            BuildSearchCriteriaReview(udtSearchCriteria)
+
+            MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Transaction
         End If
 
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
         Return intRowCount
     End Function
 
     Protected Overrides Sub SF_FinalizeSearch(ByRef udtAuditLogEntry As AuditLogEntry)
     End Sub
+    ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+    ' -------------------------------------------------------------------------
+    Protected Sub ibtnSearch_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnSearch.Click
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.AddDescripton("SPID", Me.txtServiceProviderSPID.Text.Trim)
+        udtAuditLogEntry.AddDescripton("SP Name", Me.txtServiceProviderSPName.Text.Trim)
+        udtAuditLogEntry.AddDescripton("SP Chi Name", Me.txtServiceProviderSPChiName.Text.Trim)
+        udtAuditLogEntry.AddDescripton("Type of Date", Me.rblTabServiceProviderTypeOfDate.SelectedItem.Text.Trim)
+        udtAuditLogEntry.AddDescripton("Date From", Me.txtServiceProviderDateFrom.Text.Trim)
+        udtAuditLogEntry.AddDescripton("Date To", Me.txtServiceProviderDateTo.Text.Trim)
+        udtAuditLogEntry.AddDescripton("Status", EHSTransaction.EHSTransactionModel.TransRecordStatusClass.PendingApprovalForNonReimbursedClaim)
+        udtAuditLogEntry.AddDescripton("User ID", udtHCVUUserBLL.GetHCVUUser.UserID.Trim)
+        udtAuditLogEntry.AddDescripton("Scheme", Me.ddlServiceProviderScheme.SelectedValue)
+        udtAuditLogEntry.WriteLog(AuditLogDescription.Search_Btn_Click_ID, AuditLogDescription.Search_Btn_Click)
+
+        udcInfoMessageBox.Visible = False
+        udcErrorMessage.Visible = False
+        PreviousSortExpression(gvTransaction) = Nothing
+       
+
+        RefreshGrid()
+
+    End Sub
+    ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
+
+
+    Protected Sub ibtnBack_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.WriteLog(AuditLogDescription.Back_Btn_Click_ID, AuditLogDescription.Back_Btn_Click)
+
+        MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Search
+    End Sub
+    ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+    ' -------------------------------------------------------------------------
+    Private Sub BuildSearchCriteriaReview(ByVal udtSearchCriteria As SearchCriteria)
+        Dim strServiceDate As String = String.Empty
+        Dim strTransactionDate As String = String.Empty
+        Dim strTypeOfDate As String = String.Empty
+
+        ' Service Provider ID
+        lblRSPID.Text = FillAnyToEmptyString(udtSearchCriteria.ServiceProviderID)
+
+        ' Service Provider Name
+        lblRSPName.Text = FillAnyToEmptyString(udtSearchCriteria.ServiceProviderName)
+
+        ' Service Provider Chi Name
+        lblRSPChiName.Text = FillAnyToEmptyString(udtSearchCriteria.ServiceProviderChiName)
+
+        ' Scheme
+        If udtSearchCriteria.SchemeCode <> String.Empty Then
+            For Each udtSchemeC As SchemeClaimModel In CType(Session(SESS_SchemeClaimList), SchemeClaimModelCollection)
+                If udtSchemeC.SchemeCode = udtSearchCriteria.SchemeCode Then
+                    Me.lblRSchemeCode.Text = udtSchemeC.DisplayCode
+                    Exit For
+                End If
+            Next
+        Else
+            lblRSchemeCode.Text = FillAnyToEmptyString(udtSearchCriteria.SchemeCode)
+        End If
+
+        ' Date From/To
+        ' Service Date
+        If udtSearchCriteria.ServiceDateFrom = String.Empty AndAlso udtSearchCriteria.ServiceDateTo = String.Empty Then
+            strServiceDate = FillAnyToEmptyString(String.Empty)
+        Else
+            strServiceDate = String.Format("{0} {1} {2}", udtSearchCriteria.ServiceDateFrom, Me.GetGlobalResourceObject("Text", "To_S"), udtSearchCriteria.ServiceDateTo)
+        End If
+
+        ' Transaction Date
+        If udtSearchCriteria.FromDate = String.Empty AndAlso udtSearchCriteria.CutoffDate = String.Empty Then
+            strTransactionDate = FillAnyToEmptyString(String.Empty)
+        Else
+            strTransactionDate = String.Format("{0} {1} {2}", udtSearchCriteria.FromDate, Me.GetGlobalResourceObject("Text", "To_S"), udtSearchCriteria.CutoffDate)
+        End If
+
+        strTypeOfDate = Me.rblTabServiceProviderTypeOfDate.SelectedValue
+        If strTypeOfDate = TypeOfDate.ServiceDate Then
+            Me.lblRDateText.Text = Me.GetGlobalResourceObject("Text", "ServiceDate")
+            Me.lblRDate.Text = strServiceDate
+        End If
+
+        If strTypeOfDate = TypeOfDate.TransactionDate Then
+            Me.lblRDateText.Text = Me.GetGlobalResourceObject("Text", "TransactionDateVU")
+            Me.lblRDate.Text = strTransactionDate
+        End If
+
+
+    End Sub
+    ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
+
+    Private Function FillAnyToEmptyString(ByVal value As String) As String
+        If IsNothing(value) OrElse value.Trim = String.Empty Then
+            Return Me.GetGlobalResourceObject("Text", "Any")
+        End If
+
+        Return value
+    End Function
 
     Protected Overrides Sub SF_ConfirmSearch_Click()
         RefreshGrid(True)
@@ -158,7 +493,7 @@ Partial Public Class claimCreationApproval
         Dim enumSearchResult As SearchResultEnum
 
         Try
-            enumSearchResult = StartSearchFlow(FunctionCode, udtAuditLogEntry, Nothing, udcInfoMessageBox, False, blnOverrideResultLimit)
+            enumSearchResult = StartSearchFlow(FunctionCode, udtAuditLogEntry, Nothing, udcInfoMessageBox, True, blnOverrideResultLimit)
 
         Catch eSQL As SqlClient.SqlException
             Throw eSQL
@@ -178,7 +513,7 @@ Partial Public Class claimCreationApproval
 
             Case SearchResultEnum.ValidationFail
                 ' No Validation
-                Throw New Exception("Error: Class = [HCVU.claimCreationApproval], Method = [RefreshGrid], Message = The method - [SF_ValidateSearch] should not return [False]")
+                'Throw New Exception("Error: Class = [HCVU.claimCreationApproval], Method = [RefreshGrid], Message = The method - [SF_ValidateSearch] should not return [False]")
 
             Case SearchResultEnum.NoRecordFound
                 udtAuditLogEntry.AddDescripton("No of record", dtTransaction.Rows.Count)
@@ -224,28 +559,43 @@ Partial Public Class claimCreationApproval
     Private Function GetTransaction(Optional ByVal udtSearchCriteria As SearchCriteria = Nothing, Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
         ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+     
+            If IsNothing(udtSearchCriteria) Then
 
-        If IsNothing(udtSearchCriteria) Then
-            udtSearchCriteria = New SearchCriteria()
+                udtSearchCriteria = New SearchCriteria()
 
-            udtSearchCriteria.TransStatus = "B"
-            'udtSearchCriteria.TransStatus = "A"
+                udtSearchCriteria.TransStatus = "B"
+            ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+            ' -------------------------------------------------------------------------
+                udtSearchCriteria.ServiceDateFrom = IIf(Me.txtServiceProviderDateFrom.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateFrom.Text.Trim, String.Empty))
+                udtSearchCriteria.ServiceDateTo = IIf(Me.txtServiceProviderDateTo.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateTo.Text.Trim, String.Empty))
 
-            'udtSearchCriteria.ServiceProviderHKIC = udtFormatter.formatHKIDInternal(txtSPHKID.Text)
-            'udtSearchCriteria.AuthorizedStatus = ddlAuthorizedStatus.SelectedValue
+                udtSearchCriteria.FromDate = IIf(Me.txtServiceProviderDateFrom.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateFrom.Text.Trim, String.Empty))
+                udtSearchCriteria.CutoffDate = IIf(Me.txtServiceProviderDateTo.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateTo.Text.Trim, String.Empty))
 
-            'Dim aryDocumentNo As String() = txtEHealthDocNo.Text.Replace("(", "").Replace(")", "").Replace("-", "").Split("/")
-            'If aryDocumentNo.Length > 1 Then
-            '            udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
-            'udtSearchCriteria.DocumentNo2 = aryDocumentNo(1)
-            'Else
-            'udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
-            'udtSearchCriteria.DocumentNo2 = String.Empty
-            'End If
+                udtSearchCriteria.ServiceProviderID = Me.txtServiceProviderSPID.Text.Trim
+                udtSearchCriteria.ServiceProviderName = Me.txtServiceProviderSPName.Text.Trim
+            udtSearchCriteria.ServiceProviderChiName = Me.txtServiceProviderSPChiName.Text.Trim
+            udtSearchCriteria.SchemeCode = Me.ddlServiceProviderScheme.SelectedValue
+            ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
+                'udtSearchCriteria.TransStatus = "A"
 
-            Session(SESS_SearchCriteria) = udtSearchCriteria
+                'udtSearchCriteria.ServiceProviderHKIC = udtFormatter.formatHKIDInternal(txtSPHKID.Text)
+                'udtSearchCriteria.AuthorizedStatus = ddlAuthorizedStatus.SelectedValue
 
-        End If
+                'Dim aryDocumentNo As String() = txtEHealthDocNo.Text.Replace("(", "").Replace(")", "").Replace("-", "").Split("/")
+                'If aryDocumentNo.Length > 1 Then
+                '            udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
+                'udtSearchCriteria.DocumentNo2 = aryDocumentNo(1)
+                'Else
+                'udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
+                'udtSearchCriteria.DocumentNo2 = String.Empty
+                'End If
+
+                Session(SESS_SearchCriteria) = udtSearchCriteria
+            End If
+
+            Return udtReimbursementBLL.GetTransactionManualReimbursedByStatus(FunctionCode, udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim, blnOverrideResultLimit)
         'udtEHSTransactionBLL.LoadEHSTransaction(udtEHSAccount.TransactionID.Trim)
         'Dim dtTransaction As DataTable = udtReimbursementBLL.GetTransactionManualReimbursedByStatus(udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim)
 
@@ -255,7 +605,7 @@ Partial Public Class claimCreationApproval
 
         'Try
         'dtTransaction = udtReimbursementBLL.GetTransactionManualReimbursedByStatus(udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim)
-        Return udtReimbursementBLL.GetTransactionManualReimbursedByStatus(FunctionCode, udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim, blnOverrideResultLimit)
+
 
         'Catch eSQL As SqlClient.SqlException
         'If eSQL.Number = 50000 AndAlso eSQL.Message = "00009" Then
@@ -274,6 +624,7 @@ Partial Public Class claimCreationApproval
         ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
     End Function
 
+   
     Private Sub LoadDetail(ByVal strTransactionNo As String)
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
         udtAuditLogEntry.AddDescripton("Transaction No", strTransactionNo)
@@ -308,9 +659,27 @@ Partial Public Class claimCreationApproval
     Private Sub LoadTransactionGrid(ByVal dt As DataTable)
         'GridViewDataBind(gvTransaction, dt, "transDate", "ASC", False)
         'dt.DefaultView.Sort = String.Format("{0} {1}", "Service_Receive_Dtm", "DESC")
-        dt.DefaultView.Sort = "Service_Receive_Dtm DESC"
-        GridViewDataBind(gvTransaction, dt, "Service_Receive_Dtm", "DESC", False)
+        'dt.DefaultView.Sort = "Service_Receive_Dtm DESC"
+        'GridViewDataBind(gvTransaction, dt, "Service_Receive_Dtm", "DESC", False)
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+        ' -------------------------------------------------------------------------
+        If String.IsNullOrEmpty(PreviousSortExpression(gvTransaction)) Then
+            ' Default sorting order
+            dt.DefaultView.Sort = "Service_Receive_Dtm DESC"
+            GridViewDataBind(gvTransaction, dt, "Service_Receive_Dtm", "DESC", False)
+        Else
+            ' Keep previous sorting order and page index
+            dt.DefaultView.Sort = PreviousSortExpression(gvTransaction) + " " + PreviousSortDirection(gvTransaction)
+            GridViewDataBind(gvTransaction, dt, PreviousSortExpression(gvTransaction), _
+                                                PreviousSortDirection(gvTransaction), True)
+        End If
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
         Session(SESS_TransactionDataTable) = dt
+    End Sub
+
+    Private Sub ClearSorting(ByVal gvSort As GridView)
+        ViewState("SortDirection_" & gvSort.ID) = Nothing
+        ViewState("SortExpression_" & gvSort.ID) = Nothing
     End Sub
 
     Protected Sub gvTransaction_PageIndexChanging(ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs)
@@ -525,17 +894,30 @@ Partial Public Class claimCreationApproval
 
 
     Protected Sub ibtnReturn_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
+        ' -------------------------------------------------------------------------
+        'Audit Log
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.WriteLog(AuditLogDescription.Return_Btn_Click_ID, AuditLogDescription.Return_Btn_Click)
+
+
         ' return button on Finish view
         udcErrorMessage.Clear()
         udcInfoMessageBox.Clear()
         udcInfoMessageBox.Visible = False
         udcClaimTransDetail.ClearDocumentType()
-        MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Transaction
-        ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
-        ' -------------------------------------------------------------------------
-        'RefreshGrid()
-        RefreshGrid(True)
-        ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
+        Dim intRowsCount As Integer = gvTransaction.Rows.Count
+        If intRowsCount - 1 = 0 Then
+            MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Search
+        Else
+            MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Transaction
+            ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
+            ' -------------------------------------------------------------------------
+            'RefreshGrid()
+            RefreshGrid(True)
+            ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
+        End If
+        ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
     End Sub
 
     Protected Sub ibtnApprove_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)

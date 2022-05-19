@@ -4177,6 +4177,7 @@ EHS2019/EHS/HCVU/Images/button/btn_Approve_D.png -text
 EHS2019/EHS/HCVU/Images/button/btn_Assign.png -text
 EHS2019/EHS/HCVU/Images/button/btn_Assign_D.png -text
 EHS2019/EHS/HCVU/Images/button/btn_BackNreleaseTran.png -text
+EHS2019/EHS/HCVU/Images/button/btn_BackToSearchResult.png -text
 EHS2019/EHS/HCVU/Images/button/btn_BatchAssign.png -text
 EHS2019/EHS/HCVU/Images/button/btn_BatchAssign_D.png -text
 EHS2019/EHS/HCVU/Images/button/btn_BatchRemove.png -text
@@ -10118,7 +10119,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransactionVoid_upd.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransaction_CancelInvalidation.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransaction_ConfirmInvalid.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransaction_Get_ByTransactionDtm.sql -text
-EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransaction_ManualReimbursedClaim_get_byStatus.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransaction_ManualReimbursedClaim_get_byStatus.sql -text svneol=unset#unset
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransaction_MarkInvalid.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransaction_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_VoucherTransaction_check.sql -text
