@@ -132,7 +132,7 @@
                             </tr>
                         </table>
                         <div style="text-align: center; margin-top: 10px">
-                            <asp:ImageButton ID="ibtnSearch" runat="server" ImageUrl="~/Images/button/btn_search.png" OnClientClick="return checkSearch()" />
+                            <asp:ImageButton ID="ibtnSearch" runat="server" ImageUrl="~/Images/button/btn_search.png" />
                         </div>
                         <br />
                         <br />

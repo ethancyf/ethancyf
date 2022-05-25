@@ -37,6 +37,7 @@ Namespace SearchCriteria
         Private _strMeansOfInput As String
         Private _strServiceDateFrom As String
         Private _strServiceDateTo As String
+        Private _strTypeOfDate As String
 
         'TransactionDetail
         Private _strSubsidizeItemCode As String
@@ -103,6 +104,7 @@ Namespace SearchCriteria
             _strMeansOfInput = Nothing
             _strServiceDateFrom = Nothing
             _strServiceDateTo = Nothing
+            _strTypeOfDate = Nothing
 
             'TransactionDetail
             _strSubsidizeItemCode = Nothing
@@ -500,6 +502,15 @@ Namespace SearchCriteria
             End Get
             Set(ByVal value As String)
                 _strServiceDateTo = value
+            End Set
+        End Property
+
+        Public Property TypeOfDate() As String
+            Get
+                Return _strTypeOfDate
+            End Get
+            Set(ByVal value As String)
+                _strTypeOfDate = value
             End Set
         End Property
 

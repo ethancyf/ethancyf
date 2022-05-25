@@ -405,8 +405,7 @@ Partial Public Class claimCreationApproval
     ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
     ' -------------------------------------------------------------------------
     Private Sub BuildSearchCriteriaReview(ByVal udtSearchCriteria As SearchCriteria)
-        Dim strServiceDate As String = String.Empty
-        Dim strTransactionDate As String = String.Empty
+        Dim strDate As String = String.Empty
         Dim strTypeOfDate As String = String.Empty
 
         ' Service Provider ID
@@ -430,32 +429,24 @@ Partial Public Class claimCreationApproval
             lblRSchemeCode.Text = FillAnyToEmptyString(udtSearchCriteria.SchemeCode)
         End If
 
-        ' Date From/To
-        ' Service Date
-        If udtSearchCriteria.ServiceDateFrom = String.Empty AndAlso udtSearchCriteria.ServiceDateTo = String.Empty Then
-            strServiceDate = FillAnyToEmptyString(String.Empty)
-        Else
-            strServiceDate = String.Format("{0} {1} {2}", udtSearchCriteria.ServiceDateFrom, Me.GetGlobalResourceObject("Text", "To_S"), udtSearchCriteria.ServiceDateTo)
-        End If
 
-        ' Transaction Date
-        If udtSearchCriteria.FromDate = String.Empty AndAlso udtSearchCriteria.CutoffDate = String.Empty Then
-            strTransactionDate = FillAnyToEmptyString(String.Empty)
-        Else
-            strTransactionDate = String.Format("{0} {1} {2}", udtSearchCriteria.FromDate, Me.GetGlobalResourceObject("Text", "To_S"), udtSearchCriteria.CutoffDate)
-        End If
-
+        ' Type Of Date
         strTypeOfDate = Me.rblTabServiceProviderTypeOfDate.SelectedValue
         If strTypeOfDate = TypeOfDate.ServiceDate Then
             Me.lblRDateText.Text = Me.GetGlobalResourceObject("Text", "ServiceDate")
-            Me.lblRDate.Text = strServiceDate
         End If
 
         If strTypeOfDate = TypeOfDate.TransactionDate Then
             Me.lblRDateText.Text = Me.GetGlobalResourceObject("Text", "TransactionDateVU")
-            Me.lblRDate.Text = strTransactionDate
         End If
 
+        ' Date From/To
+        If udtSearchCriteria.FromDate = String.Empty AndAlso udtSearchCriteria.CutoffDate = String.Empty Then
+            strDate = FillAnyToEmptyString(String.Empty)
+        Else
+            strDate = String.Format("{0} {1} {2}", udtSearchCriteria.FromDate, Me.GetGlobalResourceObject("Text", "To_S"), udtSearchCriteria.CutoffDate)
+        End If
+        Me.lblRDate.Text = strDate
 
     End Sub
     ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
@@ -553,75 +544,33 @@ Partial Public Class claimCreationApproval
 
     End Sub
 
-    ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
-    ' -------------------------------------------------------------------------
-    'Private Function GetTransaction(Optional ByVal udtSearchCriteria As SearchCriteria = Nothing) As DataTable
     Private Function GetTransaction(Optional ByVal udtSearchCriteria As SearchCriteria = Nothing, Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
-        ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
+
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
      
-            If IsNothing(udtSearchCriteria) Then
+        If IsNothing(udtSearchCriteria) Then
 
-                udtSearchCriteria = New SearchCriteria()
+            udtSearchCriteria = New SearchCriteria()
 
-                udtSearchCriteria.TransStatus = "B"
+            udtSearchCriteria.TransStatus = "B"
             ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [Start][Ethan]
             ' -------------------------------------------------------------------------
-                udtSearchCriteria.ServiceDateFrom = IIf(Me.txtServiceProviderDateFrom.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateFrom.Text.Trim, String.Empty))
-                udtSearchCriteria.ServiceDateTo = IIf(Me.txtServiceProviderDateTo.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateTo.Text.Trim, String.Empty))
 
-                udtSearchCriteria.FromDate = IIf(Me.txtServiceProviderDateFrom.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateFrom.Text.Trim, String.Empty))
-                udtSearchCriteria.CutoffDate = IIf(Me.txtServiceProviderDateTo.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateTo.Text.Trim, String.Empty))
+            udtSearchCriteria.TypeOfDate = Me.rblTabServiceProviderTypeOfDate.Text.Trim
+            udtSearchCriteria.FromDate = IIf(Me.txtServiceProviderDateFrom.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateFrom.Text.Trim, String.Empty))
+            udtSearchCriteria.CutoffDate = IIf(Me.txtServiceProviderDateTo.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtServiceProviderDateTo.Text.Trim, String.Empty))
 
-                udtSearchCriteria.ServiceProviderID = Me.txtServiceProviderSPID.Text.Trim
-                udtSearchCriteria.ServiceProviderName = Me.txtServiceProviderSPName.Text.Trim
+            udtSearchCriteria.ServiceProviderID = Me.txtServiceProviderSPID.Text.Trim
+            udtSearchCriteria.ServiceProviderName = Me.txtServiceProviderSPName.Text.Trim
             udtSearchCriteria.ServiceProviderChiName = Me.txtServiceProviderSPChiName.Text.Trim
             udtSearchCriteria.SchemeCode = Me.ddlServiceProviderScheme.SelectedValue
             ' CRE22-0XX - Keep sorting in HCVU Claim Creation Approval [End][Ethan]
-                'udtSearchCriteria.TransStatus = "A"
 
-                'udtSearchCriteria.ServiceProviderHKIC = udtFormatter.formatHKIDInternal(txtSPHKID.Text)
-                'udtSearchCriteria.AuthorizedStatus = ddlAuthorizedStatus.SelectedValue
+            Session(SESS_SearchCriteria) = udtSearchCriteria
+        End If
 
-                'Dim aryDocumentNo As String() = txtEHealthDocNo.Text.Replace("(", "").Replace(")", "").Replace("-", "").Split("/")
-                'If aryDocumentNo.Length > 1 Then
-                '            udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
-                'udtSearchCriteria.DocumentNo2 = aryDocumentNo(1)
-                'Else
-                'udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
-                'udtSearchCriteria.DocumentNo2 = String.Empty
-                'End If
+        Return udtReimbursementBLL.GetTransactionManualReimbursedByStatus(FunctionCode, udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim, blnOverrideResultLimit)
 
-                Session(SESS_SearchCriteria) = udtSearchCriteria
-            End If
-
-            Return udtReimbursementBLL.GetTransactionManualReimbursedByStatus(FunctionCode, udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim, blnOverrideResultLimit)
-        'udtEHSTransactionBLL.LoadEHSTransaction(udtEHSAccount.TransactionID.Trim)
-        'Dim dtTransaction As DataTable = udtReimbursementBLL.GetTransactionManualReimbursedByStatus(udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim)
-
-        ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
-        ' -------------------------------------------------------------------------
-        'Dim dtTransaction As New DataTable()
-
-        'Try
-        'dtTransaction = udtReimbursementBLL.GetTransactionManualReimbursedByStatus(udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim)
-
-
-        'Catch eSQL As SqlClient.SqlException
-        'If eSQL.Number = 50000 AndAlso eSQL.Message = "00009" Then
-        'Me.udcErrorMessage.AddMessage(New SystemMessage(FunctCode.FUNT990001, SeverityCode.SEVD, "00016"))
-        'Me.udcErrorMessage.BuildMessageBox("SearchFail", udtAuditLogEntry, Common.Component.LogID.LOG00013, "Load Claim Creation Approval Failed")
-        'Else
-        'Throw eSQL
-        'End If
-        'Catch ex As Exception
-        'udcErrorMessage.AddMessage(FunctCode.FUNT010409, SeverityCode.SEVE, MsgCode.MSG00006)
-        'udcErrorMessage.BuildMessageBox("Warning")
-        'udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception: " + ex.Message)
-        'End Try
-
-        'Return dtTransaction
-        ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
     End Function
 
    

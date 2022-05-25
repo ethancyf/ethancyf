@@ -1991,7 +1991,7 @@ Partial Public Class eHSAccountMaint
             Dim dtDOBValue As DateTime
             Dim dtDOB As DateTime
             Dim strExactDOB As String = String.Empty
-
+            Dim isValid As Boolean = True
             'Doc Code
             strDocCode = Me.ddlSearchDocTypeR2.SelectedValue.Trim
             Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = strDocCode
@@ -2026,6 +2026,7 @@ Partial Public Class eHSAccountMaint
             If Not IsNothing(udtSM) Then
                 Me.imgIdentityNumErr.Visible = True
                 Me.udcMsgBox.AddMessage(udtSM)
+                isValid = False
             End If
 
             'Name
@@ -2044,6 +2045,7 @@ Partial Public Class eHSAccountMaint
                 If Not IsNothing(udtSM) Then
                     Me.imgDOBError.Visible = True
                     Me.udcMsgBox.AddMessage(udtSM)
+                    isValid = False
                 Else
                     dtDOB = dtDOBValue
                 End If
@@ -2053,14 +2055,19 @@ Partial Public Class eHSAccountMaint
             Dim blnSameIDAccFoundButAllowProceed As Boolean
             blnSameIDAccFoundButAllowProceed = False
 
-            If IsNothing(udtSM) Then
+            If isValid Then
                 Me.udtSM = Me.udteHSAccountMaintBLL.SearchEHSAccountForBOAccountCreation(strDocCode, _
                                             strIdentityNum, blnSameIDAccFoundButAllowProceed, _
                                             strAdoptionPrefixNum)
-                Me.udcMsgBox.AddMessage(udtSM)
+                If Not IsNothing(udtSM) Then
+                    Me.udcMsgBox.AddMessage(udtSM)
+                    isValid = False
+                End If
+
+
             End If
 
-            If IsNothing(udtSM) Then
+            If isValid Then
 
                 ResetAccountCreationControls()
 
